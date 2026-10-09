@@ -24,13 +24,13 @@ namespace MachineBrigade.Sim.Economy
     {
         internal readonly Dictionary<string, double> ReadyAt = new();
 
-        public TeamEconomy(int team, float startCp = 12f, float income = 1f, float bank = 30f, int armyCap = 0,
+        public TeamEconomy(int team, float? startCp = null, float income = 1f, float? bank = null, int armyCap = 0,
             IReadOnlyList<string>? vehicles = null, IReadOnlyList<string>? supports = null)
         {
             Team = team;
-            Cp = startCp;
+            Cp = (startCp ?? global::MachineBrigade.Sim.Content.SimTunables.Modes.TeamEconomy.CtorStartCp);
             _income = income;
-            _bank = bank;
+            _bank = (bank ?? global::MachineBrigade.Sim.Content.SimTunables.Modes.TeamEconomy.CtorBank);
             _armyCap = armyCap;
             Vehicles = vehicles ?? Array.Empty<string>();
             Supports = supports ?? Array.Empty<string>();
@@ -354,7 +354,7 @@ namespace MachineBrigade.Sim.Economy
                 return;
             }
             var angle = index * 2.39996f;
-            var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));
+            var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.AirliftIndexAdd + (index % global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.AirliftIndexMod) * global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.AirliftIndexScale2));
             _pending.Add((team, defId, _world.Time + def.DropDelay, landing));
             if (ally) _allyLandings.Add(landing);
             _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(near), def.DropDelay));
@@ -547,7 +547,7 @@ namespace MachineBrigade.Sim.Economy
         {
             var map = _world.Map;
             var p = zone;
-            for (var step = 0; step < 40 && map.EdgeDistance(p - inward * 4f) >= 2f; step++)
+            for (var step = 0; step < global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.EdgeBehindStepMax && map.EdgeDistance(p - inward * global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.EdgeBehindInwardScale) >= global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.EdgeBehindEdgeDistanceMin; step++)
                 p -= inward * 4f;
             return p;
         }

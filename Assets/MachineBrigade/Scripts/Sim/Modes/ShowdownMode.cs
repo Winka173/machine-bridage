@@ -183,7 +183,7 @@ namespace MachineBrigade.Sim.Modes
             }
             if (now >= _nextLook)
             {
-                _nextLook = now + 0.5;
+                _nextLook = now + global::MachineBrigade.Sim.Content.SimTunables.Modes.ShowdownMode.TickNowAdd;
                 for (var team = 0; team <= 1; team++)
                     if (!_breached[team] && (world.Walls.RubbleRoute(team) || EnemyInside(world, team))) _breached[team] = true;
             }
@@ -210,7 +210,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 var a = _sdDamage[PlayerTeam];
                 var b = _sdDamage[EnemyTeam];
-                End(world, MathF.Abs(a - b) < 0.5f ? -1 : a > b ? PlayerTeam : EnemyTeam);
+                End(world, MathF.Abs(a - b) < global::MachineBrigade.Sim.Content.SimTunables.Modes.ShowdownMode.TickAbsMax ? -1 : a > b ? PlayerTeam : EnemyTeam);
             }
         }
 

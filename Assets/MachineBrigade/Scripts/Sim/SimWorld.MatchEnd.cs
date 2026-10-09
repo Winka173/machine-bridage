@@ -66,10 +66,10 @@ namespace MachineBrigade.Sim
         /// <summary>The presentation's length for a kind (the middle of the sheet's range).</summary>
         public static double DurationFor(EndKind kind) => kind switch
         {
-            EndKind.FirstBigWin => 7.0,
-            EndKind.FirstWin => 4.5,
-            EndKind.Replay => 3.0,
-            _ => 3.5,
+            EndKind.FirstBigWin => global::MachineBrigade.Sim.Content.SimTunables.Modes.MatchEnd.DurationForKindValue,
+            EndKind.FirstWin => global::MachineBrigade.Sim.Content.SimTunables.Modes.MatchEnd.DurationForKindValue2,
+            EndKind.Replay => global::MachineBrigade.Sim.Content.SimTunables.Modes.MatchEnd.DurationForKindValue3,
+            _ => global::MachineBrigade.Sim.Content.SimTunables.Modes.MatchEnd.DurationForKindValue4,
         };
 
         /// <summary>Whether the presentation may slow the pictures (boss, HQ and big operation wins; never a loss).</summary>

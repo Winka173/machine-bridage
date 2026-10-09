@@ -61,27 +61,27 @@ namespace MachineBrigade.Sim.Modes
                     foreach (var m in b.Mounts)
                         if (m.Weapon.Damage > 0f) dps += FirePower.Sustained(m.Weapon, b) * Matchup.ClassEffect(catalog.Damage, m.Weapon, armor);
                 }
-                score += dps / t.Cards.Count / 100f;
+                score += dps / t.Cards.Count / global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreDpsDivisor;
                 // Mines under the deck's vehicles (the blast on the roof of what drives over it).
                 if (b.Mines is { } mines)
                 {
                     var hit = 0f;
                     foreach (var card in t.Cards)
-                        if (!card.Flying) hit += mines.Max * mines.Blast.Damage * (card.Armor == ArmorClass.Heavy ? 0.6f : 1f) / MathF.Max(1f, mines.Interval);
-                    score += hit / t.Cards.Count / 100f;
+                        if (!card.Flying) hit += mines.Max * mines.Blast.Damage * (card.Armor == ArmorClass.Heavy ? global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreArmorTrue : 1f) / MathF.Max(1f, mines.Interval);
+                    score += hit / t.Cards.Count / global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreHitDivisor;
                 }
             }
             if (b.Aps is { } aps)
                 score += (aps.Heavy ? 3f * t.HeavyMissiles : !aps.Direct ? 2f * (t.Artillery + t.Drones) : 2f * t.Straight) + aps.Charges * 0.02f;
             if (b.Dome != null) score += 1f + 1.5f * (t.Artillery + t.Drones);
-            if (b.Wards != null) score += 1f + 1.5f * (t.Heavy + t.Straight) + MathF.Min(1f, towers / 10f);
+            if (b.Wards != null) score += 1f + global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreHeavyScale * (t.Heavy + t.Straight) + MathF.Min(1f, towers / global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreTowersDivisor);
             if (b.Relay != null) score += 1f;
             if (b.Loot != null) score += 0.6f + 1.2f * t.Light;
             if (b.RevealAir > 0f) score += 2f * t.Air + t.Stealth;
-            if (b.CounterBattery != null) score += 2f * t.Artillery;
+            if (b.CounterBattery != null) score += global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreArtilleryScale2 * t.Artillery;
             if (b.Jammer > 0f) score += b.Jammer / 30f * 1.5f * (t.Drones + t.Straight);
             if (b.Obstacle) score += b.SlowAura != null ? 1f + t.Light : 1f + t.Heavy;
-            if (b.TowerRangeAura != null) score += 0.3f + 2f * t.Stealth + (towers >= 6 ? 0.3f : 0f);
+            if (b.TowerRangeAura != null) score += global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreStealthAdd + global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreStealthScale * t.Stealth + (towers >= global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreTowersMin ? global::MachineBrigade.Sim.Content.SimTunables.Modes.BranchChoice.ScoreTowersTrue : 0f);
             return score;
         }
 

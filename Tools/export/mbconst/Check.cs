@@ -600,7 +600,13 @@ internal static class Check
             {
                 var oi = om.GetTypeInfo(oldNode);
                 var ni = nm.GetTypeInfo(newNode);
-                if (Disp(oi.Type) != Disp(ni.Type) || Disp(oi.ConvertedType) != Disp(ni.ConvertedType))
+                if (Disp(oi.Type) == Disp(ni.Type) && Disp(ni.ConvertedType) == Disp(oi.ConvertedType) + "?"
+                    && (newNode.Parent is ArgumentSyntax || newNode.Parent is PrefixUnaryExpressionSyntax { Parent: ArgumentSyntax })
+                    && (nm.GetSymbolInfo(newNode.FirstAncestorOrSelf<ArgumentSyntax>()!.Parent!.Parent!).Symbol as IMethodSymbol)?.Parameters
+                        .Any(p => p.HasExplicitDefaultValue && p.ExplicitDefaultValue == null && Disp(p.Type) == Disp(ni.ConvertedType)) == true)
+                    // pass 2: the argument of a parameter the nullable-default pattern turned T -> T? (same value; "x ?? field" reads it)
+                    r.Rewrites.Add($"{Repo.Short(s.File)}:{s.NewLine} argument {s.LiteralText} -> {s.Path} now converts to {Disp(ni.ConvertedType)} (a T? = null parameter of pass 2): same value");
+                else if (Disp(oi.Type) != Disp(ni.Type) || Disp(oi.ConvertedType) != Disp(ni.ConvertedType))
                     r.TypeChanges.Add($"{Repo.Short(s.File)}:{s.NewLine} {s.LiteralText} -> {s.Path}: {oi.Type}/{oi.ConvertedType} vs {ni.Type}/{ni.ConvertedType}");
                 SyntaxNode? o = oldNode.Parent, n = newNode.Parent;
                 for (var depth = 0; depth < 8 && o is ExpressionSyntax oe && n is ExpressionSyntax ne && o is not AnonymousFunctionExpressionSyntax; depth++)

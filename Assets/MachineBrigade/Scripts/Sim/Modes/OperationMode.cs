@@ -377,8 +377,8 @@ namespace MachineBrigade.Sim.Modes
                 {
                     if (!o.IsAlive || o.Flying) continue;
                     var d = Vector2.DistanceSquared(o.Position, v.Position);
-                    if (o.Team == foe && d < 12f * 12f) count++;
-                    else if (o.Team == team && d < (reach + 4f) * (reach + 4f))
+                    if (o.Team == foe && d < global::MachineBrigade.Sim.Content.SimTunables.Campaign.OperationMode.StrikeTargetScale * global::MachineBrigade.Sim.Content.SimTunables.Campaign.OperationMode.StrikeTargetScale) count++;
+                    else if (o.Team == team && d < (reach + global::MachineBrigade.Sim.Content.SimTunables.Campaign.OperationMode.StrikeTargetReachAdd) * (reach + global::MachineBrigade.Sim.Content.SimTunables.Campaign.OperationMode.StrikeTargetReachAdd))
                     {
                         clear = false;
                         break;

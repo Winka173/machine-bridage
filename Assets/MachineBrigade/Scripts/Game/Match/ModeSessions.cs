@@ -603,7 +603,7 @@ namespace MachineBrigade.Game.Match
             _mode = new AssaultMode(new AssaultRules
             {
                 // Prompt 13 H.4: the defender 26 -> 32 CP and 1.05 -> 1.3 income, 12 -> 8 CP a sector for the attacker.
-                StartSeconds = start, Attacker = PlayerSide(20f, 1.45f), Defender = EnemySide(32f, 1.3f, Difficulty, world.Catalog, seed), SectorCp = 8f,
+                StartSeconds = start, Attacker = PlayerSide(global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultSession.BuildCp, global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultSession.BuildIncome), Defender = EnemySide(global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultSession.BuildCp2, global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultSession.BuildIncome2, Difficulty, world.Catalog, seed), SectorCp = global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultSession.BuildSectorCp,
                 Bases = Bases(world, GameModeKind.Assault, seed),
             });
             Mode = _mode;
@@ -680,34 +680,34 @@ namespace MachineBrigade.Game.Match
             var hard = Difficulty >= AiDifficulty.Hard;
             var easy = Difficulty == AiDifficulty.Easy;
             var defender = PlayerSide(30f, 1.35f);
-            defender.ArmyCap = 38;
+            defender.ArmyCap = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildArmyCap;
             // The difficulty's income multiplier (ModeSession.Create) sets Easy, Hard and Very Hard apart.
             var attacker = EnemySide(22f, 1.1f, Difficulty, world.Catalog, seed);
-            attacker.ArmyCap = 40;
+            attacker.ArmyCap = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildArmyCap2;
             _mode = new SiegeMode(new SiegeRules
             {
                 PlayerDefends = true, Endless = _endless,
                 // The clock the enemy has to break in: longer the harder it is.
-                StartSeconds = hard ? 540f : easy ? 420f : 480f, StageBonus = new[] { 60f, 90f }, MaxBank = 900f,
+                StartSeconds = hard ? global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildHardTrue : easy ? global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildEasyTrue : global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildEasyFalse, StageBonus = new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.StageBonus1, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.StageBonus2 }, MaxBank = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildMaxBank,
                 // Owner fix 11 (2026-10-03): matchRules defend.timeLimit (720 s) is the Normal clock with both bonuses earned;
                 // SiegeRules.Apply moves each difficulty's start above by the same amount (Normal 480 -> 570).
-                NormalStartSeconds = 480f,
-                WaveSeconds = _endless ? 55f : 70f, StageCp = 12f, Hardening = 4.5f, LineHardening = 2f, RetreatCp = new[] { 24f, 32f },
+                NormalStartSeconds = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildNormalStartSeconds,
+                WaveSeconds = _endless ? global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildEndlessTrue : global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildEndlessFalse, StageCp = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildStageCp, Hardening = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildHardening, LineHardening = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildLineHardening, RetreatCp = new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.RetreatCp1, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.RetreatCp2 },
                 // The player's inner lines are the strong ones.
                 // Prompt 13 H.7: Defend's outer line 1 -> 1.45 and the inner ones 1.4 / 1.8 -> 1.25 / 1.4 (the outer line
                 // always fell and the HQ never did); Endless 1.2 / 1.3 / 1.5.
                 // The balance pass after prompt 18 (D.2): the outer line fell in every battle (15 of 15 at 3-5 minutes, the HQ
                 // always held): outer 1.45 -> 2.0 as tough and 1.15 -> 1.3 as hard-hitting, the first waves smaller; the inner as they were.
-                LineHealth = _endless ? new[] { 1.2f, 1.3f, 1.5f } : new[] { 2.0f, 1.25f, 1.4f },
-                LineDamage = _endless ? new[] { 1.05f, 1.15f, 1.25f } : new[] { 1.3f, 1.1f, 1.2f },
+                LineHealth = _endless ? new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineHealthEndless1, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineHealthEndless2, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineHealthEndless3 } : new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineHealthNotEndless1, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineHealthNotEndless2, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineHealthNotEndless3 },
+                LineDamage = _endless ? new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineDamageEndless1, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineDamageEndless2, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineDamageEndless3 } : new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineDamageNotEndless1, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineDamageNotEndless2, global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.LineDamageNotEndless3 },
                 // Swarms that grow in numbers, not heavier (up to the ceiling of attackers alive).
                 WaveRoster = Available(world, Swarm), WaveHeavy = Available(world, Heavy),
                 // Balance pack (lane B, rule B): the wave curve's numbers are tunables modes.defendWaves.
                 WaveStart = SiegeMode.DefendWaveStart(_endless, Difficulty), WaveGrowth = SiegeMode.DefendWaveGrowth(_endless, Difficulty),
-                WaveCompound = SiegeMode.DefendWaveCompound(_endless), WaveMax = SiegeMode.DefendWaveMax, HeavyEvery = 3,
-                EliteFrom = _endless ? 6 : 99, WaveSeed = seed,
+                WaveCompound = SiegeMode.DefendWaveCompound(_endless), WaveMax = SiegeMode.DefendWaveMax, HeavyEvery = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildHeavyEvery,
+                EliteFrom = _endless ? global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildEndlessTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildEndlessFalse2, WaveSeed = seed,
                 // Prompt 13 H.7-H.8: the waves by the base they face, drawn against it, with siege breakers.
-                ScaleToBase = true, CounterBase = true, BreachWave = true, WaveBreachers = Available(world, Breachers), BreachFrom = 2, BreachEvery = 3,
+                ScaleToBase = true, CounterBase = true, BreachWave = true, WaveBreachers = Available(world, Breachers), BreachFrom = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildBreachFrom, BreachEvery = global::MachineBrigade.Sim.Content.SimTunables.Modes.DefendSession.BuildBreachEvery,
                 // The player's fortress: exactly their own base loadout in its lines' hardpoints (on a long battlefield
                 // the plan laid on its layered base, prompt 17 B.5).
                 FortressLoadout = world.Map.Fortress is { Layered: true } ? PlayerProfile.BaseLoadoutOnLayered(world.Map) : PlayerProfile.BaseLoadout,
@@ -791,10 +791,10 @@ namespace MachineBrigade.Game.Match
             _week = WeeklyFortress.Week;
             _startStage = TestStage ?? PlayerProfile.WeeklyStage(_week);
             var attacker = PlayerSide(26f, 1.5f);
-            attacker.ArmyCap = 34;
+            attacker.ArmyCap = global::MachineBrigade.Sim.Content.SimTunables.Modes.WeeklySession.BuildArmyCap;
             _mode = new SiegeMode(new SiegeRules
             {
-                StartSeconds = 300f, StartStage = _startStage,
+                StartSeconds = global::MachineBrigade.Sim.Content.SimTunables.Modes.WeeklySession.BuildStartSeconds, StartStage = _startStage,
                 Attacker = attacker, Defender = EnemySide(22f, 1.15f, Difficulty, world.Catalog, seed),
                 // Prompt 17 B.7: on a long battlefield the same layered plan (the long table's towers).
                 FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, _week, layered: world.Map.Fortress is { Layered: true },
@@ -861,7 +861,7 @@ namespace MachineBrigade.Game.Match
         {
             // The attacker has the bigger purse (a siege needs numbers); the fortress has its guns.
             var attacker = PlayerSide(38f, 2.4f);
-            attacker.ArmyCap = 44;
+            attacker.ArmyCap = global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.BuildArmyCap;
             attacker.Bank = 40f;
             // The fortress holds its ground with its towers and a modest garrison (its reinforcements come by its line).
             // Its income is one base (0.6) times the difficulty's multiplier (ModeSession.Create; prompt 13 I.1).
@@ -869,16 +869,16 @@ namespace MachineBrigade.Game.Match
             // Prompt 13 H.5: the garrison 12 -> 16 CP (Hard 18 -> 22) and 0.6 -> 0.8 income.
             // The balance pass after prompt 18 (D.1): 16 -> 20 CP on Normal and Easy (the measured side won 13 sieges of 15).
             var defender = EnemySide(hard ? 24f : 20f, 0.8f, Difficulty, world.Catalog, seed);
-            defender.ArmyCap = hard ? 34 : 26;
+            defender.ArmyCap = hard ? global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.BuildHardTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.BuildHardFalse2;
             // The time bank: harder sieges start with less on the clock.
             var start = Difficulty switch { AiDifficulty.VeryHard => 400f, AiDifficulty.Hard => 420f, AiDifficulty.Easy => 540f, _ => 480f };
             _mode = new SiegeMode(new SiegeRules
             {
                 // Prompt 13 H.5: 300 s more a ring broken (360 before), towers 1.2 -> 1.75 as tough, the inner rings
                 // more so, and Normal mans 90 % of the hardpoints.
-                StartSeconds = start, StageBonus = new[] { 300f, 300f }, MaxBank = 900f, SuperGunFirst = 150f, SuperGunSeconds = 90f,
+                StartSeconds = start, StageBonus = new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.StageBonus1, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.StageBonus2 }, MaxBank = global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.BuildMaxBank, SuperGunFirst = global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.BuildSuperGunFirst, SuperGunSeconds = global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.BuildSuperGunSeconds,
                 // The balance pass after prompt 18 (D.1): towers 1.75 -> 2.1 as tough, the inner rings hit harder.
-                Hardening = 2.1f, LineHealth = new[] { 1.1f, 1.25f, 1.4f }, LineDamage = new[] { 1.05f, 1.15f, 1.25f },
+                Hardening = global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.BuildHardening, LineHealth = new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.LineHealth1, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.LineHealth2, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.LineHealth3 }, LineDamage = new[] { global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.LineDamage1, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.LineDamage2, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeSession.LineDamage3 },
                 // An easier fortress leaves some of its outer hardpoints empty.
                 Manning = Difficulty switch { >= AiDifficulty.Normal => 1f, _ => 0.6f },
                 Attacker = attacker, Defender = defender,
@@ -977,7 +977,7 @@ namespace MachineBrigade.Game.Match
             // Round 6: 1.8 -> 2.0 (Hard 1.55 -> 1.75), a 45 CP bank so the start and bounties are not clipped.
             // Play-test 6 (DECISIONS 21G): the economy a little leaner (2 -> 1.8, Hard 1.75 -> 1.6, Very Hard 1.6 -> 1.45).
             var player = PlayerSide(40f, Difficulty switch { AiDifficulty.VeryHard => 1.45f, AiDifficulty.Hard => 1.6f, _ => 1.8f });
-            player.ArmyCap = 36;
+            player.ArmyCap = global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushSession.BuildArmyCap;
             player.Bank = 45f;
             // Prompt 20 N: the week's hunt (3 main and 7 mini bosses drawn by the week, stronger down the run, 45 minutes)
             // or the full hunt (every boss in story order, no clock); a 20 s rest that repairs 30 % of the army, a support
@@ -997,7 +997,7 @@ namespace MachineBrigade.Game.Match
                 // Prompt 26 E.2/E.3: P sets the health (bosses 66 s / 2.8 min in the week, 1 min / 2.5 min in the full hunt), a 15 s rest, the
                 // week's half of the CP kept, the full hunt's every boss a fresh battle.
                 Power = power, MiniSeconds = _full ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.FullMiniSeconds : global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.MiniSeconds,
-                MainSeconds = _full ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.FullMainSeconds : global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.MainSeconds, Breather = 15f,
+                MainSeconds = _full ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.FullMainSeconds : global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossRushRules.MainSeconds, Breather = global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushSession.BuildBreather,
                 CpKept = _full ? 1f : 0.5f, Fresh = _full,
                 TimeLimit = _full ? float.MaxValue : BossHunts.WeeklyMinutes * 60f,
                 // Play-test 6 (DECISIONS 21G): the endless run after the last boss, and the bosses' strength by difficulty.
@@ -1251,14 +1251,14 @@ namespace MachineBrigade.Game.Match
             {
                 if (!v.IsAlive || v.Flying) continue;
                 var distance = Vector2.Distance(v.Position, home);
-                if (v.Team == EnemyTeam && distance < 18f) attackers++;
-                else if (v.Team == PlayerTeam && distance < 26f) defenders++;
+                if (v.Team == EnemyTeam && distance < global::MachineBrigade.Sim.Content.SimTunables.Modes.SurvivalSession.LostDistanceMax) attackers++;
+                else if (v.Team == PlayerTeam && distance < global::MachineBrigade.Sim.Content.SimTunables.Modes.SurvivalSession.LostDistanceMax2) defenders++;
             }
             // Prompt 13 H.9: overrun when the enemy holds the rally two to one (not only when nobody is left
             // there: new vehicles come in at the rally, and a beaten army could feed them in for ever).
             var overrun = attackers > 0 && (defenders == 0 || attackers >= 4 && attackers >= defenders * 2);
             _overrunSince = overrun ? (_overrunSince < 0 ? now : _overrunSince) : -1;
-            return (_wipedSince >= 0 && now - _wipedSince > 10.0) || (_overrunSince >= 0 && now - _overrunSince > 15.0);
+            return (_wipedSince >= 0 && now - _wipedSince > global::MachineBrigade.Sim.Content.SimTunables.Modes.SurvivalSession.LostNowMin) || (_overrunSince >= 0 && now - _overrunSince > global::MachineBrigade.Sim.Content.SimTunables.Modes.SurvivalSession.LostNowMin2);
         }
     }
 
@@ -1548,7 +1548,7 @@ namespace MachineBrigade.Game.Match
             // duel: there the general's army must be beaten in the field first, and the siege mix lost it.)
             player.RoleMix = def.Goal == MissionGoal.Destroy && def.Variant == "siege" ? ConquestAi.SiegeMix : null;
             // Holding a point (or an outpost on one): fight whatever comes at it, but never wander off and leave it open.
-            player.Leash = def.Goal is MissionGoal.Hold or MissionGoal.Outpost ? 32f : null;
+            player.Leash = def.Goal is MissionGoal.Hold or MissionGoal.Outpost ? global::MachineBrigade.Sim.Content.SimTunables.Modes.MissionSession.ConfigureTrue : null;
             player.DefendPoint = null;
             if (def.Goal is MissionGoal.Survive or MissionGoal.ShootDown)
             {

@@ -186,7 +186,7 @@ namespace MachineBrigade.Sim.Content
         public bool On(ChapterDef chapter) => Acts.Contains(chapter.Act) && !ChaptersOff.Contains(chapter.Number);
 
         /// <summary>Every act on (the internal and test builds).</summary>
-        public static CampaignRelease Everything() => UpTo(4);
+        public static CampaignRelease Everything() => UpTo(global::MachineBrigade.Sim.Content.SimTunables.Campaign.CampaignRelease.EverythingLastAct);
 
         /// <summary>Acts I to <paramref name="lastAct"/> on.</summary>
         public static CampaignRelease UpTo(int lastAct, bool comingSoon = true)

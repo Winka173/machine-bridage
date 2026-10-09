@@ -40,7 +40,7 @@ namespace MachineBrigade.Sim.Modes
         private sealed class StormPlan
         {
             public Vector2 Origin, Normal;
-            public float Inside = 0.6f, Outside = 1f, Seconds = 25f, Hold = 150f;
+            public float Inside = global::MachineBrigade.Sim.Content.SimTunables.Campaign.StormPlan.Inside, Outside = 1f, Seconds = global::MachineBrigade.Sim.Content.SimTunables.Campaign.StormPlan.Seconds, Hold = global::MachineBrigade.Sim.Content.SimTunables.Campaign.StormPlan.Hold;
             public double ClearFrom = -1;
         }
 
@@ -62,7 +62,7 @@ namespace MachineBrigade.Sim.Modes
         private sealed class IcePlan
         {
             public Vector2 Centre;
-            public float Radius = 30f, Seconds = 10f, Slow = 0.4f, SlowFor = 8f;
+            public float Radius = global::MachineBrigade.Sim.Content.SimTunables.Campaign.IcePlan.Radius, Seconds = global::MachineBrigade.Sim.Content.SimTunables.Campaign.IcePlan.Seconds, Slow = global::MachineBrigade.Sim.Content.SimTunables.Campaign.IcePlan.Slow, SlowFor = global::MachineBrigade.Sim.Content.SimTunables.Campaign.IcePlan.SlowFor;
 
             /// <summary>When each ice-breaking vehicle on the ice came onto it (or its ice last gave): looked up, never walked.</summary>
             public readonly Dictionary<EntityId, double> Since = new();
@@ -80,7 +80,7 @@ namespace MachineBrigade.Sim.Modes
             public int Next;
             public double NextAt;
             public bool Warned;
-            public float Every = 30f, Dps = 40f, Burn = 6f;
+            public float Every = global::MachineBrigade.Sim.Content.SimTunables.Campaign.FirePlan.Every, Dps = global::MachineBrigade.Sim.Content.SimTunables.Campaign.FirePlan.Dps, Burn = global::MachineBrigade.Sim.Content.SimTunables.Campaign.FirePlan.Burn;
             public Vector2 Wind = Vector2.UnitY;
         }
 
@@ -135,13 +135,13 @@ namespace MachineBrigade.Sim.Modes
                     // Prompt 31 L5: "text" picks the notice and line by the state coming in ("event.groundChange.<text>.<state>.warn").
                     s.Variant = e.Word("text") is { } text ? text + "." + state : null;
                     // The ground it closes, and (prompt 31 L5) the ground it opens: the state in force's blocks the new one has not.
-                    foreach (var b in to.Blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
+                    foreach (var b in to.Blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31MaxScale + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31MaxAdd));
                     foreach (var b in held.Def.States[held.Active].Blocks)
                     {
                         var kept = false;
                         foreach (var k in to.Blocks)
                             if (k.Center == b.Center && k.Width == b.Width && k.Depth == b.Depth) kept = true;
-                        if (!kept) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
+                        if (!kept) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31MaxScale + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31MaxAdd));
                     }
                     s.Where = s.Marks.Count > 0 ? s.Marks[0].at : world.Map.Centre;
                     s.Plan = new GroundPlan { Site = site, State = state };
@@ -153,10 +153,10 @@ namespace MachineBrigade.Sim.Modes
                     {
                         Origin = world.Map.Centre,
                         Normal = StormSide(world, e.Word("half") ?? "player"),
-                        Inside = e.Number("sight", 0.6f),
+                        Inside = e.Number("sight", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback),
                         Outside = e.Number("clear", 1f),
-                        Seconds = Math.Clamp(e.Number("seconds", 25f), 20f, 30f),
-                        Hold = MathF.Max(0f, e.Number("hold", 150f)),
+                        Seconds = Math.Clamp(e.Number("seconds", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback3), global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberMin, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberMax),
+                        Hold = MathF.Max(0f, e.Number("hold", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback4)),
                     };
                     var quarter = world.Map.HalfSize * 0.5f;
                     var across = new Vector2(-plan.Normal.Y, plan.Normal.X);
@@ -167,8 +167,8 @@ namespace MachineBrigade.Sim.Modes
                 }
                 case MissionEventKind.CityBlackout:
                 {
-                    var plan = new PowerPlan { Outage = MathF.Max(30f, e.Number("outage", 90f)) };
-                    plan.Weather.Seconds = Math.Clamp(e.Number("seconds", 25f), 20f, 30f);
+                    var plan = new PowerPlan { Outage = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberFloor, e.Number("outage", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback5)) };
+                    plan.Weather.Seconds = Math.Clamp(e.Number("seconds", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback3), global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberMin, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberMax);
                     plan.Night = (_weatherNow ?? _host.Def.Weather) != "Night";
                     plan.Outage = MathF.Max(plan.Outage, plan.Weather.Seconds + 1f);
                     var towers = new HashSet<string>(e.Words("towers").Count > 0 ? e.Words("towers") : GridTowers);
@@ -176,7 +176,7 @@ namespace MachineBrigade.Sim.Modes
                     {
                         if (!v.IsAlive || !v.Def.Static || v.Def.Boss || !towers.Contains(v.Def.Id)) continue;
                         plan.Towers.Add(v.Id);
-                        if (s.Marks.Count < 8) s.Marks.Add((v.Position, 8f));
+                        if (s.Marks.Count < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31CountMax) s.Marks.Add((v.Position, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Gioi));
                     }
                     if (!plan.Night && plan.Towers.Count == 0) return false;
                     s.Where = s.Marks.Count > 0 ? s.Marks[0].at : world.Map.Centre;
@@ -190,8 +190,8 @@ namespace MachineBrigade.Sim.Modes
                         if (!v.IsAlive || !v.Ally || v.Team != Player) continue;
                         var near = false;
                         foreach (var (at, _) in s.Marks)
-                            if (Vector2.DistanceSquared(at, v.Position) < 20f * 20f) near = true;
-                        if (!near && s.Marks.Count < 6) s.Marks.Add((v.Position, 12f));
+                            if (Vector2.DistanceSquared(at, v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Scale * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Scale) near = true;
+                        if (!near && s.Marks.Count < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31CountMax2) s.Marks.Add((v.Position, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Gioi2));
                     }
                     if (s.Marks.Count == 0) return false;
                     s.Where = s.Marks[0].at;
@@ -202,10 +202,10 @@ namespace MachineBrigade.Sim.Modes
                     var plan = new IcePlan
                     {
                         Centre = new Vector2(e.Number("x", 0f), e.Number("z", 0f)),
-                        Radius = MathF.Max(4f, e.Number("radius", 30f)),
-                        Seconds = MathF.Max(1f, e.Number("seconds", 10f)),
-                        Slow = Math.Clamp(e.Number("slow", 0.4f), 0.05f, 0.9f),
-                        SlowFor = MathF.Max(1f, e.Number("slowFor", 8f)),
+                        Radius = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberFloor2, e.Number("radius", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback7)),
+                        Seconds = MathF.Max(1f, e.Number("seconds", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback8)),
+                        Slow = Math.Clamp(e.Number("slow", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback9), global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberMin2, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberMax2),
+                        SlowFor = MathF.Max(1f, e.Number("slowFor", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback10)),
                     };
                     s.Marks.Add((plan.Centre, plan.Radius));
                     s.Where = plan.Centre;
@@ -219,9 +219,9 @@ namespace MachineBrigade.Sim.Modes
                     var plan = new FirePlan
                     {
                         Site = site,
-                        Every = Math.Clamp(e.Number("every", 30f), 12f, 90f),
-                        Dps = MathF.Max(0f, e.Number("dps", 40f)),
-                        Burn = MathF.Max(1f, e.Number("burn", 6f)),
+                        Every = Math.Clamp(e.Number("every", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback7), global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberMin3, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31NumberMax3),
+                        Dps = MathF.Max(0f, e.Number("dps", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback11)),
+                        Burn = MathF.Max(1f, e.Number("burn", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareP31Fallback12)),
                     };
                     var wind = new Vector2(e.Number("windX", 0f), e.Number("windZ", 1f));
                     plan.Wind = wind.LengthSquared() > 0.01f ? Vector2.Normalize(wind) : Vector2.UnitY;
@@ -320,9 +320,9 @@ namespace MachineBrigade.Sim.Modes
                     {
                         var sight = Rules.WeatherSight;
                         var from = _weatherNow ?? _host.Def.Weather;
-                        var ratio = (sight.TryGetValue("Night", out var to) ? to : 0.75f) / MathF.Max(0.1f, sight.TryGetValue(from, out var was) ? was : 1f);
+                        var ratio = (sight.TryGetValue("Night", out var to) ? to : global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenP31TryGetValueFalse) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenP31Floor, sight.TryGetValue(from, out var was) ? was : 1f);
                         plan.Weather.From = world.WeatherSight;
-                        plan.Weather.Target = Math.Clamp(world.WeatherSight * ratio, 0.5f, 1.3f);
+                        plan.Weather.Target = Math.Clamp(world.WeatherSight * ratio, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenP31WeatherSightMin, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenP31WeatherSightMax);
                         _weatherNow = "Night";
                         world.Emit(SimEvent.WeatherShifting("Night", plan.Weather.Seconds));
                     }
@@ -344,13 +344,13 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.OrbitalPods:
                 {
                     var plan = (PodPlan)s.Plan!;
-                    var fall = MathF.Max(2f, s.Def.Number("fall", 6f));
+                    var fall = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenP31NumberFloor, s.Def.Number("fall", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenP31Fallback));
                     world.Catalog.TryGetSupport("pod_drop", out var pod);
                     for (var k = 0; k < plan.Drops.Count; k++)
                     {
                         var at = plan.Drops[k].at;
                         if (pod != null) world.Emit(SimEvent.StrikeWarning(Enemy, pod, at, at, fall));
-                        plan.Falling.Add((world.Time + fall + k * 0.6, k));
+                        plan.Falling.Add((world.Time + fall + k * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenP31KScale, k));
                     }
                     Notice(world, s, "start", fall);
                     return Outcome.Running;
@@ -370,7 +370,7 @@ namespace MachineBrigade.Sim.Modes
                     var plan = (StormPlan)s.Plan!;
                     if (plan.ClearFrom < 0)
                     {
-                        var t = (float)Math.Clamp((world.Time - s.StartAt) / Math.Max(0.1, plan.Seconds), 0.0, 1.0);
+                        var t = (float)Math.Clamp((world.Time - s.StartAt) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.UpdateP31SecondsFloor, plan.Seconds), 0.0, 1.0);
                         world.SetStorm(plan.Origin, plan.Normal, 1f + (plan.Inside - 1f) * t, 1f + (plan.Outside - 1f) * t);
                         if (s.EndsAt >= 0 && world.Time >= s.EndsAt)
                         {
@@ -379,7 +379,7 @@ namespace MachineBrigade.Sim.Modes
                         }
                         break;
                     }
-                    var c = (float)Math.Clamp((world.Time - plan.ClearFrom) / Math.Max(0.1, plan.Seconds), 0.0, 1.0);
+                    var c = (float)Math.Clamp((world.Time - plan.ClearFrom) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.UpdateP31SecondsFloor, plan.Seconds), 0.0, 1.0);
                     world.SetStorm(plan.Origin, plan.Normal, plan.Inside + (1f - plan.Inside) * c, plan.Outside + (1f - plan.Outside) * c);
                     if (c >= 1f) Finish(world, s, true, "end");
                     break;
@@ -389,7 +389,7 @@ namespace MachineBrigade.Sim.Modes
                     var plan = (PowerPlan)s.Plan!;
                     if (plan.Night)
                     {
-                        var t = (float)Math.Clamp((world.Time - s.StartAt) / Math.Max(0.1, plan.Weather.Seconds), 0.0, 1.0);
+                        var t = (float)Math.Clamp((world.Time - s.StartAt) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.UpdateP31SecondsFloor, plan.Weather.Seconds), 0.0, 1.0);
                         world.WeatherSight = plan.Weather.From + (plan.Weather.Target - plan.Weather.From) * t;
                     }
                     if (world.Time < s.EndsAt) break;
@@ -436,7 +436,7 @@ namespace MachineBrigade.Sim.Modes
                 plan.Since[v.Id] = world.Time;
                 // The notice when the ice gives under one of ours, not more than once in 20 s.
                 if (v.Team != Player || world.Time < plan.QuietUntil) continue;
-                plan.QuietUntil = world.Time + 20.0;
+                plan.QuietUntil = world.Time + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepIceTimeAdd;
                 Notice(world, s, "start", 0f, v.Id);
             }
         }
@@ -445,7 +445,7 @@ namespace MachineBrigade.Sim.Modes
         private static void MarkStrip(Navigation.NavSite site, string state, EventState s, bool alone)
         {
             if (alone) s.Marks.Clear();
-            foreach (var b in site.Def.States[site.Def.IndexOf(state)].Blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 4f));
+            foreach (var b in site.Def.States[site.Def.IndexOf(state)].Blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.MarkStripMaxScale + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.MarkStripMaxAdd));
         }
 
         /// <summary>
@@ -463,7 +463,7 @@ namespace MachineBrigade.Sim.Modes
                 return;
             }
             var next = plan.Next < plan.Fronts.Count ? held.Def.States[held.Def.IndexOf(plan.Fronts[plan.Next])] : null;
-            if (next != null && next.Blocks.Count > 0 && plan.Next > 0 && !plan.Warned && world.Time >= plan.NextAt - 10.0)
+            if (next != null && next.Blocks.Count > 0 && plan.Next > 0 && !plan.Warned && world.Time >= plan.NextAt - global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireNextAtSub)
             {
                 plan.Warned = true;
                 MarkStrip(held, next.Name, s, false);
@@ -485,18 +485,18 @@ namespace MachineBrigade.Sim.Modes
                 var hx = b.Width * 0.5f;
                 var hz = b.Depth * 0.5f;
                 for (var x = -hx + 4f; x <= hx; x += 8f)
-                    for (var z = -hz + 4f; z <= hz; z += 8f)
-                        world.Emit(SimEvent.GroundFire(b.Center + new Vector2(x, z), plan.Every * 1.2f, 5f));
-                var across = new Vector2(-plan.Wind.Y, plan.Wind.X) * (MathF.Max(b.Width, b.Depth) * 0.25f);
-                var downwind = b.Center + plan.Wind * (MathF.Min(b.Width, b.Depth) * 0.5f + 8f);
-                var cloud = MathF.Max(6f, MathF.Max(b.Width, b.Depth) * 0.25f);
-                world.Strikes.AddSmoke(Teams.Environment, downwind + across, cloud, plan.Every * 1.5f);
-                world.Strikes.AddSmoke(Teams.Environment, downwind - across, cloud, plan.Every * 1.5f);
+                    for (var z = -hz + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireHzAdd; z <= hz; z += global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireZ)
+                        world.Emit(SimEvent.GroundFire(b.Center + new Vector2(x, z), plan.Every * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireEveryScale, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireRadius));
+                var across = new Vector2(-plan.Wind.Y, plan.Wind.X) * (MathF.Max(b.Width, b.Depth) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireMaxScale);
+                var downwind = b.Center + plan.Wind * (MathF.Min(b.Width, b.Depth) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireMinScale + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireMinAdd);
+                var cloud = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireMaxFloor, MathF.Max(b.Width, b.Depth) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireMaxScale);
+                world.Strikes.AddSmoke(Teams.Environment, downwind + across, cloud, plan.Every * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireEveryScale2);
+                world.Strikes.AddSmoke(Teams.Environment, downwind - across, cloud, plan.Every * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireEveryScale2);
                 foreach (var v in world.VehicleList)
                 {
                     if (!v.IsAlive || v.Flying || v.Def.Static) continue;
                     var d = v.Position - b.Center;
-                    if (MathF.Abs(d.X) > hx + 2f || MathF.Abs(d.Y) > hz + 2f) continue;
+                    if (MathF.Abs(d.X) > hx + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireHxAdd2 || MathF.Abs(d.Y) > hz + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepFireHzAdd2) continue;
                     world.Status.Burn(v, plan.Dps, plan.Burn, Teams.Environment, EntityId.None);
                 }
             }

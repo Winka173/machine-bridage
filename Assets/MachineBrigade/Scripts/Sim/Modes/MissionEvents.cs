@@ -257,13 +257,13 @@ namespace MachineBrigade.Sim.Modes
         {
             var table = Difficulty.Warning;
             // Prompt 31 L3: the events that change the battlefield warn 8-12 s ahead at every difficulty.
-            if (ChangesGround(s.Def.Kind)) return Math.Clamp(s.Def.Lead ?? table, 8f, 12f);
+            if (ChangesGround(s.Def.Kind)) return Math.Clamp(s.Def.Lead ?? table, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.LeadLeadMin, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.LeadLeadMax);
             if (s.Def.Lead is { } own) return MathF.Max(0f, own);
             return s.Def.Kind switch
             {
                 MissionEventKind.EnemyWave or MissionEventKind.GeneralField or MissionEventKind.MiniBoss or MissionEventKind.SupplyRaid
                     or MissionEventKind.Barrage or MissionEventKind.Blackout or MissionEventKind.WeatherShift or MissionEventKind.OrbitalStrike => table,
-                MissionEventKind.AirRaid => MathF.Min(table, 6f),
+                MissionEventKind.AirRaid => MathF.Min(table, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.LeadTableCap),
                 _ => 0f,
             };
         }
@@ -274,7 +274,7 @@ namespace MachineBrigade.Sim.Modes
             if (result == Outcome.Retry)
             {
                 // B.3: every point in its direction has the player's units on it: it waits a little (at most 15 s).
-                s.NextTry = world.Time + 3.0;
+                s.NextTry = world.Time + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartTimeAdd;
                 s.Tries++;
                 if (s.Phase == EventPhase.Waiting) s.Phase = EventPhase.Warned;
                 return;
@@ -318,7 +318,7 @@ namespace MachineBrigade.Sim.Modes
             if (r.Cp > 0 && world.TryGetEconomy(MissionMode.PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + r.Cp);
             if (r.Repair > 0f)
                 foreach (var v in world.VehicleList)
-                    if (v.IsAlive && v.Team == MissionMode.PlayerTeam && !v.Def.Boss && Vector2.Distance(v.Position, s.Where) < 30f)
+                    if (v.IsAlive && v.Team == MissionMode.PlayerTeam && !v.Def.Boss && Vector2.Distance(v.Position, s.Where) < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PayDistanceMax)
                     {
                         var amount = world.Gear.Heal(v, v.MaxHp * r.Repair);
                         if (amount > 0f) world.Emit(SimEvent.RepairedBy(v, amount));
@@ -476,7 +476,7 @@ namespace MachineBrigade.Sim.Modes
         /// C.3: a vehicle's strength: its price (an elite's dearer one) times prompt 13's measured combat value per CP. A wave's is
         /// the sum over its vehicles.
         /// </summary>
-        public static float Strength(VehicleDef def) => MathF.Max(1f, def.ArmyCost > 0 ? def.ArmyCost : def.CpCost) * MathF.Max(0.1f, def.CombatValue);
+        public static float Strength(VehicleDef def) => MathF.Max(1f, def.ArmyCost > 0 ? def.ArmyCost : def.CpCost) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StrengthCombatValueFloor, def.CombatValue);
 
         public static float Strength(Catalog catalog, IEnumerable<string> units)
         {
@@ -498,7 +498,7 @@ namespace MachineBrigade.Sim.Modes
                 var n = 0;
                 var sum = Vector2.Zero;
                 foreach (var b in world.VehicleList)
-                    if (b.IsAlive && b.Team == team && !b.Flying && !b.Def.Static && Vector2.DistanceSquared(a.Position, b.Position) < 14f * 14f)
+                    if (b.IsAlive && b.Team == team && !b.Flying && !b.Def.Static && Vector2.DistanceSquared(a.Position, b.Position) < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.GroupScale * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.GroupScale)
                     {
                         n++;
                         sum += b.Position;
@@ -619,21 +619,21 @@ namespace MachineBrigade.Sim.Modes
             var drives = DrivesIn(kind) && !pods;
             for (var i = 0; i < units.Count; i++)
             {
-                var spot = drives ? GateSpot(world, at, inward, i) : world.ClampToMap(at + across * ((i % 4) - 1.5f) * 5f - inward * (i / 4) * 6f);
+                var spot = drives ? GateSpot(world, at, inward, i) : world.ClampToMap(at + across * ((i % global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverIMod) - global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverISub) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverAcrossScale - inward * (i / global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverIDivisor) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverInwardScale);
                 var def = world.Catalog.Vehicle(units[i]);
                 // Aircraft fly in over the edge of an air path or a landing zone, not out of the middle of it.
-                if (def.Flying && from is { } edge && kind is SpawnKind.Landing or SpawnKind.Air) spot = world.ClampToMap(edge + across * ((i % 4) - 1.5f) * 6f);
+                if (def.Flying && from is { } edge && kind is SpawnKind.Landing or SpawnKind.Air) spot = world.ClampToMap(edge + across * ((i % global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverIMod) - global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverISub) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverAcrossScale2);
                 if (pods && !def.Flying)
                 {
-                    if (world.Catalog.TryGetSupport("pod_drop", out var pod)) world.Emit(SimEvent.StrikeWarning(team, pod, spot, spot, 6f));
-                    _drops.Add((world.Time + 6.0, units[i], team, spot, inward, s.Index, ally));
+                    if (world.Catalog.TryGetSupport("pod_drop", out var pod)) world.Emit(SimEvent.StrikeWarning(team, pod, spot, spot, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverSeconds));
+                    _drops.Add((world.Time + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverTimeAdd, units[i], team, spot, inward, s.Index, ally));
                 }
                 else if (!def.Flying && kind is SpawnKind.Landing or SpawnKind.Air or SpawnKind.Drop)
                 {
                     world.Emit(SimEvent.DeploymentQueued(team, units[i], spot, inward, EconomySystemDelivery));
                     _drops.Add((world.Time + EconomySystemDelivery, units[i], team, spot, inward, s.Index, ally));
                 }
-                else if (drives && !def.Flying && i >= 4) Enter(world, s, units[i], team, spot, inward, ally, i / 4);
+                else if (drives && !def.Flying && i >= global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverIMin) Enter(world, s, units[i], team, spot, inward, ally, i / global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.DeliverIDivisor);
                 else Arrive(world, s, units[i], team, spot, inward, ally);
             }
         }

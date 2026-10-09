@@ -69,7 +69,7 @@ namespace MachineBrigade.Sim.Sandbox
         public bool Elite;
 
         /// <summary>Health and ammunition at the start, in per cent (1-100 and 0-100).</summary>
-        public int Hp = 100, Ammo = 100;
+        public int Hp = global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxUnit.Hp, Ammo = global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxUnit.Ammo;
 
         /// <summary>An altitude-tier boss's starting tier ("low", "high"; empty: its own opening).</summary>
         public string Tier = "";
@@ -148,7 +148,7 @@ namespace MachineBrigade.Sim.Sandbox
         public string Kind = "win";
 
         public int Team;
-        public float Seconds = 60f;
+        public float Seconds = global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxCheck.Seconds;
 
         public SandboxCheck Clone() => new() { Kind = Kind, Team = Team, Seconds = Seconds };
     }

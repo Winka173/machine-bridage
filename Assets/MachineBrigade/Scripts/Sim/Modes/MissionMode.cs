@@ -516,9 +516,9 @@ namespace MachineBrigade.Sim.Modes
             else
                 foreach (var point in _points) PointCapture.Tick(world, point, dt, CaptureSeconds);
             DriveHunted(world);
-            if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = 0.25f * PointCapture.Held(_points, PlayerTeam);
+            if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.TickHeldScale * PointCapture.Held(_points, PlayerTeam);
             SpawnWaves(world, dt);
-            if (world.Tick % 20 == 0) CallReinforcements(world);
+            if (world.Tick % global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.TickTickMod == 0) CallReinforcements(world);
             Events?.Tick(world, dt);
             DriveConvoy(world, dt);
             DriveBoss(world);
@@ -620,7 +620,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 var enemyHolds = _points[0].Owner == EnemyTeam;
                 _heldByEnemySince = enemyHolds ? (_heldByEnemySince < 0 ? world.Time : _heldByEnemySince) : -1;
-                if (_heldByEnemySince >= 0 && world.Time - _heldByEnemySince > 25.0) return true;
+                if (_heldByEnemySince >= 0 && world.Time - _heldByEnemySince > global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.LostTimeMin) return true;
             }
             if ((_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate) && _convoySpawned >= _def.ConvoyCount &&
                 _arrived + ConvoyAlive(world) < _def.ConvoyNeeded)
@@ -646,9 +646,9 @@ namespace MachineBrigade.Sim.Modes
                 if (train.Charge >= 1f) return true;
             }
             // The army wiped out for a while (nothing alive or on the way).
-            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && Now(world) > 5.0;
+            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && Now(world) > global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.LostNowMin;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
-            return _wipedSince >= 0 && world.Time - _wipedSince > 12.0;
+            return _wipedSince >= 0 && world.Time - _wipedSince > global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.LostTimeMin2;
         }
 
         private void Finish(SimWorld world, int winner)
@@ -672,10 +672,10 @@ namespace MachineBrigade.Sim.Modes
             else if (!world.TryGetRally(EnemyTeam, out origin)) return;
             for (var i = 0; i < count; i++)
             {
-                var def = world.Economy.ForWave(EnemyTeam, waves.Roster[(_wave * 3 + i) % waves.Roster.Count]);
+                var def = world.Economy.ForWave(EnemyTeam, waves.Roster[(_wave * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.SpawnWavesWaveScale + i) % waves.Roster.Count]);
                 var angle = i * SimMath.Tau / Math.Max(1, count);
-                var at = world.ClampToMap(origin + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 8f);
-                world.SpawnVehicle(def, EnemyTeam, at, SimMath.DegToRad(225f));
+                var at = world.ClampToMap(origin + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.SpawnWavesScale);
+                world.SpawnVehicle(def, EnemyTeam, at, SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.SpawnWavesDegrees));
             }
         }
 
@@ -696,11 +696,11 @@ namespace MachineBrigade.Sim.Modes
             if (!world.TryGetRally(EnemyTeam, out var camp)) return;
             var roster = Roster(world);
             if (roster.Count == 0) return;
-            var count = Math.Min(8, _def.ReinforceSize + _reinforced);
-            var answerAir = PlayerAirShare(world) > 0.25f;
+            var count = Math.Min(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.CallReinforcementsReinforceSizeCap, _def.ReinforceSize + _reinforced);
+            var answerAir = PlayerAirShare(world) > global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.CallReinforcementsPlayerAirShareMin;
             for (var i = 0; i < count; i++)
             {
-                var id = roster[(_reinforced * 5 + i * 3) % roster.Count];
+                var id = roster[(_reinforced * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.CallReinforcementsReinforcedScale2 + i * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.CallReinforcementsIScale) % roster.Count];
                 if (i == 0 && answerAir && FirstAntiAir(world, roster) is { } aa) id = aa;
                 world.Economy.Airlift(EnemyTeam, world.Economy.ForWave(EnemyTeam, id), camp);
             }
@@ -876,7 +876,7 @@ namespace MachineBrigade.Sim.Modes
                 ConvoyAlive(world) > 0 && _arrived + ConvoyAlive(world) <= _def.ConvoyNeeded) return true;
             if (_def.Goal == MissionGoal.Protect && _targets.Count > 0 && AliveTargets(world) <= Math.Min(_def.ProtectNeeded, _targets.Count)) return true;
             return world.Bases.Of(PlayerTeam) is { } home && world.TryGetVehicle(home.Hq, out var hq) && hq.IsAlive && !hq.Invulnerable &&
-                   hq.Hp < hq.MaxHp * 0.25f;
+                   hq.Hp < hq.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.CriticalFailureMaxHpScale;
         }
 
         /// <summary>Protect: the building the enemy goes for (the one nearest its army), or none.</summary>
@@ -926,7 +926,7 @@ namespace MachineBrigade.Sim.Modes
                         break;
                     }
                 _scouting.TryGetValue(point.Def.Id, out var seconds);
-                seconds = there ? seconds + dt : MathF.Max(0f, seconds - dt * 0.5f);
+                seconds = there ? seconds + dt : MathF.Max(0f, seconds - dt * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.ScoutDtScale);
                 _scouting[point.Def.Id] = seconds;
                 point.Progress = MathF.Min(1f, seconds / ScoutSeconds);
                 if (seconds < ScoutSeconds) continue;
@@ -1006,7 +1006,7 @@ namespace MachineBrigade.Sim.Modes
             v.ExpiresAt = world.Time + FleeSeconds;
             var away = world.TryGetRally(EnemyTeam, out var camp) ? camp : v.Position;
             var outward = away.LengthSquared() > 1f ? Vector2.Normalize(away) : Vector2.UnitY;
-            world.Submit(new Command(CommandType.Move, v.Team, new[] { v.Id }, world.ClampToMap(away + outward * world.Map.Size * 0.5f)));
+            world.Submit(new Command(CommandType.Move, v.Team, new[] { v.Id }, world.ClampToMap(away + outward * world.Map.Size * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.CheckFleeOutwardScale)));
             world.Emit(SimEvent.RadioMessage("radio.bossFled", PlayerTeam));
         }
 
@@ -1086,7 +1086,7 @@ namespace MachineBrigade.Sim.Modes
                 if (waypoint >= _def.Convoy.Route.Count) continue;
                 var next = _def.Convoy.Route[waypoint];
                 var ahead = next - truck.Position;
-                return ahead.LengthSquared() > 1f ? truck.Position + Vector2.Normalize(ahead) * 8f : truck.Position;
+                return ahead.LengthSquared() > 1f ? truck.Position + Vector2.Normalize(ahead) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionMode.ConvoyFrontNormalizeScale : truck.Position;
             }
             return null;
         }

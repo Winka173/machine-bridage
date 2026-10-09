@@ -9,10 +9,957 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Modes
         {
+            public static partial class AssaultMode
+            {
+                /// <summary>modes.assaultMode.tickSectorScale (x; thoi_gian, was Sim/Modes/QuickModes.cs:390).</summary>
+                public static float TickSectorScale = 0.25f;
+                /// <summary>modes.assaultMode.tickProgressMax (ticks; thoi_gian, was Sim/Modes/QuickModes.cs:399).</summary>
+                public static float TickProgressMax = 0.999f;
+                /// <summary>modes.assaultMode.advanceAxisScale (x; sat_thuong, was Sim/Modes/QuickModes.cs:430).</summary>
+                public static float AdvanceAxisScale = 14f;
+                /// <summary>modes.assaultMode.advanceSearch (x; sat_thuong, was Sim/Modes/QuickModes.cs:430).</summary>
+                public static float AdvanceSearch = 10f;
+                /// <summary>modes.assaultMode.buildSectorsLengthFloor (m; ban_kinh, was Sim/Modes/QuickModes.cs:450).</summary>
+                public static float BuildSectorsLengthFloor = 52f;
+                /// <summary>modes.assaultMode.buildSectorsLengthScale (x; ban_kinh, was Sim/Modes/QuickModes.cs:450).</summary>
+                public static float BuildSectorsLengthScale = 0.26f;
+                /// <summary>modes.assaultMode.buildSectorsLengthScale2 (x; ban_kinh, was Sim/Modes/QuickModes.cs:453).</summary>
+                public static float BuildSectorsLengthScale2 = 0.36f;
+                /// <summary>modes.assaultMode.buildSectorsLengthScale3 (x; ban_kinh, was Sim/Modes/QuickModes.cs:454).</summary>
+                public static float BuildSectorsLengthScale3 = 0.56f;
+                /// <summary>modes.assaultMode.buildSectorsAcrossScale (x; ban_kinh, was Sim/Modes/QuickModes.cs:454).</summary>
+                public static float BuildSectorsAcrossScale = 24f;
+                /// <summary>modes.assaultMode.buildSectorsSearch (x; sat_thuong, was Sim/Modes/QuickModes.cs:462).</summary>
+                public static float BuildSectorsSearch = 14f;
+                /// <summary>modes.assaultMode.buildSectorsSIs (x; sat_thuong, was Sim/Modes/QuickModes.cs:462).</summary>
+                public static int BuildSectorsSIs = 2;
+                /// <summary>modes.assaultMode.buildSectorsSTrue (x; sat_thuong, was Sim/Modes/QuickModes.cs:462).</summary>
+                public static float BuildSectorsSTrue = 13f;
+                /// <summary>modes.assaultMode.buildSectorsSFalse (x; sat_thuong, was Sim/Modes/QuickModes.cs:462).</summary>
+                public static float BuildSectorsSFalse = 12f;
+                /// <summary>modes.assaultMode.fortifyCountTrue (count; gioi_han_thuc_the, was Sim/Modes/QuickModes.cs:491).</summary>
+                public static float FortifyCountTrue = 6f;
+                /// <summary>modes.assaultMode.fortifyCountFalse (count; gioi_han_thuc_the, was Sim/Modes/QuickModes.cs:491).</summary>
+                public static float FortifyCountFalse = 9f;
+                /// <summary>modes.assaultMode.fortifyRadiusAdd (m; ban_kinh, was Sim/Modes/QuickModes.cs:492).</summary>
+                public static float FortifyRadiusAdd = 4f;
+                /// <summary>modes.assaultMode.fortifySearch (x; sat_thuong, was Sim/Modes/QuickModes.cs:493).</summary>
+                public static float FortifySearch = 6f;
+                /// <summary>modes.assaultMode.openDx (x; sat_thuong, was Sim/Modes/QuickModes.cs:505).</summary>
+                public static float OpenDx = 2f;
+                /// <summary>modes.assaultMode.openDy (x; sat_thuong, was Sim/Modes/QuickModes.cs:506).</summary>
+                public static float OpenDy = 2f;
+                /// <summary>modes.assaultMode.openOx (x; sat_thuong, was Sim/Modes/QuickModes.cs:511).</summary>
+                public static float OpenOx = -6f;
+                /// <summary>modes.assaultMode.openOxMax (x; sat_thuong, was Sim/Modes/QuickModes.cs:511).</summary>
+                public static float OpenOxMax = 6f;
+                /// <summary>modes.assaultMode.openOx2 (x; sat_thuong, was Sim/Modes/QuickModes.cs:511).</summary>
+                public static float OpenOx2 = 3f;
+                /// <summary>modes.assaultMode.openOy (x; sat_thuong, was Sim/Modes/QuickModes.cs:512).</summary>
+                public static float OpenOy = -6f;
+                /// <summary>modes.assaultMode.openOyMax (x; sat_thuong, was Sim/Modes/QuickModes.cs:512).</summary>
+                public static float OpenOyMax = 6f;
+                /// <summary>modes.assaultMode.openOy2 (x; sat_thuong, was Sim/Modes/QuickModes.cs:512).</summary>
+                public static float OpenOy2 = 3f;
+                /// <summary>modes.assaultMode.openOpenScale (x; sat_thuong, was Sim/Modes/QuickModes.cs:515).</summary>
+                public static int OpenOpenScale = 100;
+            }
+
+            public static partial class AssaultRules
+            {
+                /// <summary>modes.assaultRules.applyFallback (s; thoi_gian, was Sim/Modes/QuickModes.cs:301).</summary>
+                public static float ApplyFallback = 300f;
+                /// <summary>modes.assaultRules.applyStartSecondsDivisor (x; thoi_gian, was Sim/Modes/QuickModes.cs:301).</summary>
+                public static float ApplyStartSecondsDivisor = 300f;
+            }
+
+            public static partial class AssaultSession
+            {
+                /// <summary>modes.assaultSession.buildCp (s; thoi_gian, was Game/Match/ModeSessions.cs:606).</summary>
+                public static float BuildCp = 20f;
+                /// <summary>modes.assaultSession.buildIncome (s; thoi_gian, was Game/Match/ModeSessions.cs:606).</summary>
+                public static float BuildIncome = 1.45f;
+                /// <summary>modes.assaultSession.buildCp2 (s; thoi_gian, was Game/Match/ModeSessions.cs:606).</summary>
+                public static float BuildCp2 = 32f;
+                /// <summary>modes.assaultSession.buildIncome2 (s; thoi_gian, was Game/Match/ModeSessions.cs:606).</summary>
+                public static float BuildIncome2 = 1.3f;
+                /// <summary>modes.assaultSession.buildSectorCp (CP; thoi_gian, was Game/Match/ModeSessions.cs:606).</summary>
+                public static float BuildSectorCp = 8f;
+            }
+
+            public static partial class BattleEvents
+            {
+                /// <summary>modes.battleEvents.maxTierStallValue (count; nguong, was Sim/Modes/BattleEvents.P28.cs:73).</summary>
+                public static int MaxTierStallValue = 4;
+                /// <summary>modes.battleEvents.ctorNextDoubleAdd (share; xac_suat, was Sim/Modes/BattleEvents.cs:37).</summary>
+                public static int CtorNextDoubleAdd = 45;
+                /// <summary>modes.battleEvents.ctorNextDoubleScale (x; xac_suat, was Sim/Modes/BattleEvents.cs:37).</summary>
+                public static int CtorNextDoubleScale = 30;
+                /// <summary>modes.battleEvents.ctorNextDoubleAdd2 (share; xac_suat, was Sim/Modes/BattleEvents.cs:38).</summary>
+                public static int CtorNextDoubleAdd2 = 80;
+                /// <summary>modes.battleEvents.ctorNextDoubleScale2 (x; xac_suat, was Sim/Modes/BattleEvents.cs:38).</summary>
+                public static int CtorNextDoubleScale2 = 45;
+                /// <summary>modes.battleEvents.tickNowAdd (ticks; thoi_gian, was Sim/Modes/BattleEvents.cs:47).</summary>
+                public static int TickNowAdd = 70;
+                /// <summary>modes.battleEvents.tickNextDoubleScale (x; thoi_gian, was Sim/Modes/BattleEvents.cs:47).</summary>
+                public static int TickNextDoubleScale = 40;
+                /// <summary>modes.battleEvents.tickNowAdd2 (ticks; thoi_gian, was Sim/Modes/BattleEvents.cs:53).</summary>
+                public static int TickNowAdd2 = 120;
+                /// <summary>modes.battleEvents.tickNextDoubleScale2 (x; thoi_gian, was Sim/Modes/BattleEvents.cs:53).</summary>
+                public static int TickNextDoubleScale2 = 70;
+                /// <summary>modes.battleEvents.tickNowAdd3 (ticks; thoi_gian, was Sim/Modes/BattleEvents.cs:53).</summary>
+                public static int TickNowAdd3 = 20;
+                /// <summary>modes.battleEvents.dropCrateAttemptMax (x; tan_suat, was Sim/Modes/BattleEvents.cs:66).</summary>
+                public static int DropCrateAttemptMax = 20;
+                /// <summary>modes.battleEvents.dropCrateAttemptMax2 (x; tan_suat, was Sim/Modes/BattleEvents.cs:69, Sim/Modes/BattleEvents.cs:70).</summary>
+                public static int DropCrateAttemptMax2 = 10;
+                /// <summary>modes.battleEvents.dropCrateAttemptTrue (x; tan_suat, was Sim/Modes/BattleEvents.cs:69).</summary>
+                public static float DropCrateAttemptTrue = 0.1f;
+                /// <summary>modes.battleEvents.dropCrateAttemptFalse (x; tan_suat, was Sim/Modes/BattleEvents.cs:69).</summary>
+                public static float DropCrateAttemptFalse = 0.225f;
+                /// <summary>modes.battleEvents.dropCrateDistanceMax (m; ban_kinh, was Sim/Modes/BattleEvents.cs:75).</summary>
+                public static float DropCrateDistanceMax = 40f;
+                /// <summary>modes.battleEvents.updateCratesDistanceMin (m; ban_kinh, was Sim/Modes/BattleEvents.cs:122).</summary>
+                public static float UpdateCratesDistanceMin = 25f;
+                /// <summary>modes.battleEvents.raidDistanceMax (m; ban_kinh, was Sim/Modes/BattleEvents.cs:142).</summary>
+                public static float RaidDistanceMax = 35f;
+                /// <summary>modes.battleEvents.raidDistanceMax2 (m; ban_kinh, was Sim/Modes/BattleEvents.cs:156).</summary>
+                public static float RaidDistanceMax2 = 25f;
+            }
+
+            public static partial class BossRushMode
+            {
+                /// <summary>modes.bossRushMode.setupHealthMin (x; sat_thuong, was Sim/Modes/SiegeModes.cs:1590).</summary>
+                public static float SetupHealthMin = 0.05f;
+                /// <summary>modes.bossRushMode.tickFloorCap (ticks; sat_thuong, was Sim/Modes/SiegeModes.cs:1649).</summary>
+                public static int TickFloorCap = 3;
+                /// <summary>modes.bossRushMode.tickHpScale (x; sat_thuong, was Sim/Modes/SiegeModes.cs:1649).</summary>
+                public static float TickHpScale = 4f;
+                /// <summary>modes.bossRushMode.tickIMax (ticks; thoi_gian, was Sim/Modes/SiegeModes.cs:1654).</summary>
+                public static int TickIMax = 64;
+                /// <summary>modes.bossRushMode.tickTimeMin (ticks; thoi_gian, was Sim/Modes/SiegeModes.cs:1714).</summary>
+                public static double TickTimeMin = 5.0;
+                /// <summary>modes.bossRushMode.tickTimeMin2 (ticks; thoi_gian, was Sim/Modes/SiegeModes.cs:1716).</summary>
+                public static double TickTimeMin2 = 12.0;
+            }
+
+            public static partial class BossRushRules
+            {
+                /// <summary>modes.bossRushRules.playerStartCp (CP; tran, was Sim/Modes/SiegeModes.cs:1487).</summary>
+                public static float PlayerStartCp = 30f;
+                /// <summary>modes.bossRushRules.playerIncome (count; tran, was Sim/Modes/SiegeModes.cs:1487).</summary>
+                public static float PlayerIncome = 1.5f;
+                /// <summary>modes.bossRushRules.playerArmyCap (count; tran, was Sim/Modes/SiegeModes.cs:1487).</summary>
+                public static int PlayerArmyCap = 36;
+            }
+
+            public static partial class BossRushSession
+            {
+                /// <summary>modes.bossRushSession.buildArmyCap (count; tran, was Game/Match/ModeSessions.cs:980).</summary>
+                public static int BuildArmyCap = 36;
+                /// <summary>modes.bossRushSession.buildBreather (s; thoi_gian, was Game/Match/ModeSessions.cs:1000).</summary>
+                public static float BuildBreather = 15f;
+            }
+
+            public static partial class BranchChoice
+            {
+                /// <summary>modes.branchChoice.scoreDpsDivisor (x; gioi_han_thuc_the, was Sim/Modes/BranchChoice.cs:64).</summary>
+                public static float ScoreDpsDivisor = 100f;
+                /// <summary>modes.branchChoice.scoreArmorTrue (x; sat_thuong, was Sim/Modes/BranchChoice.cs:70).</summary>
+                public static float ScoreArmorTrue = 0.6f;
+                /// <summary>modes.branchChoice.scoreHitDivisor (x; gioi_han_thuc_the, was Sim/Modes/BranchChoice.cs:71).</summary>
+                public static float ScoreHitDivisor = 100f;
+                /// <summary>modes.branchChoice.scoreHeavyScale (x; nguong, was Sim/Modes/BranchChoice.cs:77).</summary>
+                public static float ScoreHeavyScale = 1.5f;
+                /// <summary>modes.branchChoice.scoreTowersDivisor (x; nguong, was Sim/Modes/BranchChoice.cs:77).</summary>
+                public static float ScoreTowersDivisor = 10f;
+                /// <summary>modes.branchChoice.scoreArtilleryScale2 (x; gioi_han_thuc_the, was Sim/Modes/BranchChoice.cs:81).</summary>
+                public static float ScoreArtilleryScale2 = 2f;
+                /// <summary>modes.branchChoice.scoreStealthAdd (m; ban_kinh, was Sim/Modes/BranchChoice.cs:84).</summary>
+                public static float ScoreStealthAdd = 0.3f;
+                /// <summary>modes.branchChoice.scoreStealthScale (x; ban_kinh, was Sim/Modes/BranchChoice.cs:84).</summary>
+                public static float ScoreStealthScale = 2f;
+                /// <summary>modes.branchChoice.scoreTowersMin (m; ban_kinh, was Sim/Modes/BranchChoice.cs:84).</summary>
+                public static int ScoreTowersMin = 6;
+                /// <summary>modes.branchChoice.scoreTowersTrue (m; ban_kinh, was Sim/Modes/BranchChoice.cs:84).</summary>
+                public static float ScoreTowersTrue = 0.3f;
+            }
+
+            public static partial class ConquestMode
+            {
+                /// <summary>modes.conquestMode.finalPhaseBleedFloor (x; nguong, was Sim/Modes/ConquestMode.cs:149).</summary>
+                public static float FinalPhaseBleedFloor = 0.01f;
+            }
+
+            public static partial class DefendSession
+            {
+                /// <summary>modes.defendSession.buildArmyCap (count; tran, was Game/Match/ModeSessions.cs:683).</summary>
+                public static int BuildArmyCap = 38;
+                /// <summary>modes.defendSession.buildArmyCap2 (count; tran, was Game/Match/ModeSessions.cs:686).</summary>
+                public static int BuildArmyCap2 = 40;
+                /// <summary>modes.defendSession.buildHardTrue (s; thoi_gian, was Game/Match/ModeSessions.cs:691).</summary>
+                public static float BuildHardTrue = 540f;
+                /// <summary>modes.defendSession.buildEasyTrue (s; thoi_gian, was Game/Match/ModeSessions.cs:691).</summary>
+                public static float BuildEasyTrue = 420f;
+                /// <summary>modes.defendSession.buildEasyFalse (s; thoi_gian, was Game/Match/ModeSessions.cs:691).</summary>
+                public static float BuildEasyFalse = 480f;
+                /// <summary>modes.defendSession.stageBonus1 (s; thoi_gian, was Game/Match/ModeSessions.cs:691).</summary>
+                public static float StageBonus1 = 60f;
+                /// <summary>modes.defendSession.stageBonus2 (s; thoi_gian, was Game/Match/ModeSessions.cs:691).</summary>
+                public static float StageBonus2 = 90f;
+                /// <summary>modes.defendSession.buildMaxBank (count; thoi_gian, was Game/Match/ModeSessions.cs:691).</summary>
+                public static float BuildMaxBank = 900f;
+                /// <summary>modes.defendSession.buildNormalStartSeconds (s; thoi_gian, was Game/Match/ModeSessions.cs:694).</summary>
+                public static float BuildNormalStartSeconds = 480f;
+                /// <summary>modes.defendSession.buildEndlessTrue (s; thoi_gian, was Game/Match/ModeSessions.cs:695).</summary>
+                public static float BuildEndlessTrue = 55f;
+                /// <summary>modes.defendSession.buildEndlessFalse (s; thoi_gian, was Game/Match/ModeSessions.cs:695).</summary>
+                public static float BuildEndlessFalse = 70f;
+                /// <summary>modes.defendSession.buildStageCp (CP; thoi_gian, was Game/Match/ModeSessions.cs:695).</summary>
+                public static float BuildStageCp = 12f;
+                /// <summary>modes.defendSession.buildHardening (s; thoi_gian, was Game/Match/ModeSessions.cs:695).</summary>
+                public static float BuildHardening = 4.5f;
+                /// <summary>modes.defendSession.buildLineHardening (s; thoi_gian, was Game/Match/ModeSessions.cs:695).</summary>
+                public static float BuildLineHardening = 2f;
+                /// <summary>modes.defendSession.retreatCp1 (s; thoi_gian, was Game/Match/ModeSessions.cs:695).</summary>
+                public static float RetreatCp1 = 24f;
+                /// <summary>modes.defendSession.retreatCp2 (s; thoi_gian, was Game/Match/ModeSessions.cs:695).</summary>
+                public static float RetreatCp2 = 32f;
+                /// <summary>modes.defendSession.lineHealthEndless1 (x; sat_thuong, was Game/Match/ModeSessions.cs:701).</summary>
+                public static float LineHealthEndless1 = 1.2f;
+                /// <summary>modes.defendSession.lineHealthEndless2 (x; sat_thuong, was Game/Match/ModeSessions.cs:701).</summary>
+                public static float LineHealthEndless2 = 1.3f;
+                /// <summary>modes.defendSession.lineHealthEndless3 (x; sat_thuong, was Game/Match/ModeSessions.cs:701).</summary>
+                public static float LineHealthEndless3 = 1.5f;
+                /// <summary>modes.defendSession.lineHealthNotEndless1 (x; sat_thuong, was Game/Match/ModeSessions.cs:701).</summary>
+                public static float LineHealthNotEndless1 = 2.0f;
+                /// <summary>modes.defendSession.lineHealthNotEndless2 (x; sat_thuong, was Game/Match/ModeSessions.cs:701).</summary>
+                public static float LineHealthNotEndless2 = 1.25f;
+                /// <summary>modes.defendSession.lineHealthNotEndless3 (x; sat_thuong, was Game/Match/ModeSessions.cs:701).</summary>
+                public static float LineHealthNotEndless3 = 1.4f;
+                /// <summary>modes.defendSession.lineDamageEndless1 (x; sat_thuong, was Game/Match/ModeSessions.cs:702).</summary>
+                public static float LineDamageEndless1 = 1.05f;
+                /// <summary>modes.defendSession.lineDamageEndless2 (x; sat_thuong, was Game/Match/ModeSessions.cs:702).</summary>
+                public static float LineDamageEndless2 = 1.15f;
+                /// <summary>modes.defendSession.lineDamageEndless3 (x; sat_thuong, was Game/Match/ModeSessions.cs:702).</summary>
+                public static float LineDamageEndless3 = 1.25f;
+                /// <summary>modes.defendSession.lineDamageNotEndless1 (x; sat_thuong, was Game/Match/ModeSessions.cs:702).</summary>
+                public static float LineDamageNotEndless1 = 1.3f;
+                /// <summary>modes.defendSession.lineDamageNotEndless2 (x; sat_thuong, was Game/Match/ModeSessions.cs:702).</summary>
+                public static float LineDamageNotEndless2 = 1.1f;
+                /// <summary>modes.defendSession.lineDamageNotEndless3 (x; sat_thuong, was Game/Match/ModeSessions.cs:702).</summary>
+                public static float LineDamageNotEndless3 = 1.2f;
+                /// <summary>modes.defendSession.buildHeavyEvery (x; tan_suat, was Game/Match/ModeSessions.cs:707).</summary>
+                public static int BuildHeavyEvery = 3;
+                /// <summary>modes.defendSession.buildEndlessTrue2 (count; gioi_han_thuc_the, was Game/Match/ModeSessions.cs:708).</summary>
+                public static int BuildEndlessTrue2 = 6;
+                /// <summary>modes.defendSession.buildEndlessFalse2 (count; gioi_han_thuc_the, was Game/Match/ModeSessions.cs:708).</summary>
+                public static int BuildEndlessFalse2 = 99;
+                /// <summary>modes.defendSession.buildBreachFrom (m; ban_kinh, was Game/Match/ModeSessions.cs:710).</summary>
+                public static int BuildBreachFrom = 2;
+                /// <summary>modes.defendSession.buildBreachEvery (m; ban_kinh, was Game/Match/ModeSessions.cs:710).</summary>
+                public static int BuildBreachEvery = 3;
+            }
+
+            public static partial class EconomySystem
+            {
+                /// <summary>modes.economySystem.stepUnderdogAverageMax (count; gioi_han_thuc_the, was Sim/Economy/EconomySystem.Assist.cs:75).</summary>
+                public static float StepUnderdogAverageMax = 6f;
+                /// <summary>modes.economySystem.stepUnderdogAverageTrue (count; gioi_han_thuc_the, was Sim/Economy/EconomySystem.Assist.cs:75).</summary>
+                public static int StepUnderdogAverageTrue = 3;
+                /// <summary>modes.economySystem.stepUnderdogAverageFalse (count; gioi_han_thuc_the, was Sim/Economy/EconomySystem.Assist.cs:75).</summary>
+                public static int StepUnderdogAverageFalse = 2;
+                /// <summary>modes.economySystem.forWaveMinShareScale (x; tran, was Sim/Economy/EconomySystem.Elites.cs:101).</summary>
+                public static float ForWaveMinShareScale = 10f;
+                /// <summary>modes.economySystem.airliftIndexAdd (x; khac, was Sim/Economy/EconomySystem.cs:357).</summary>
+                public static float AirliftIndexAdd = 3f;
+                /// <summary>modes.economySystem.airliftIndexMod (x; khac, was Sim/Economy/EconomySystem.cs:357).</summary>
+                public static int AirliftIndexMod = 5;
+                /// <summary>modes.economySystem.airliftIndexScale2 (x; khac, was Sim/Economy/EconomySystem.cs:357).</summary>
+                public static float AirliftIndexScale2 = 2f;
+                /// <summary>modes.economySystem.edgeBehindStepMax (m; ban_kinh, was Sim/Economy/EconomySystem.cs:550).</summary>
+                public static int EdgeBehindStepMax = 40;
+                /// <summary>modes.economySystem.edgeBehindInwardScale (x; ban_kinh, was Sim/Economy/EconomySystem.cs:550).</summary>
+                public static float EdgeBehindInwardScale = 4f;
+                /// <summary>modes.economySystem.edgeBehindEdgeDistanceMin (m; ban_kinh, was Sim/Economy/EconomySystem.cs:550).</summary>
+                public static float EdgeBehindEdgeDistanceMin = 2f;
+            }
+
+            public static partial class EndlessRules
+            {
+                /// <summary>modes.endlessRules.bossOfWaveWaveTrue (count; tan_suat, was Sim/Modes/Endless.cs:73).</summary>
+                public static int BossOfWaveWaveTrue = 2;
+            }
+
+            public static partial class KingOfTheHillMode
+            {
+                /// <summary>modes.kingOfTheHillMode.tickOwnerTrue (ticks; thoi_gian, was Sim/Modes/QuickModes.cs:251, Sim/Modes/QuickModes.cs:252).</summary>
+                public static float TickOwnerTrue = 0.35f;
+            }
+
+            public static partial class MatchEnd
+            {
+                /// <summary>modes.matchEnd.durationForKindValue (s; thoi_gian, was Sim/SimWorld.MatchEnd.cs:69).</summary>
+                public static double DurationForKindValue = 7.0;
+                /// <summary>modes.matchEnd.durationForKindValue2 (s; thoi_gian, was Sim/SimWorld.MatchEnd.cs:70).</summary>
+                public static double DurationForKindValue2 = 4.5;
+                /// <summary>modes.matchEnd.durationForKindValue3 (s; thoi_gian, was Sim/SimWorld.MatchEnd.cs:71).</summary>
+                public static double DurationForKindValue3 = 3.0;
+                /// <summary>modes.matchEnd.durationForKindValue4 (s; thoi_gian, was Sim/SimWorld.MatchEnd.cs:72).</summary>
+                public static double DurationForKindValue4 = 3.5;
+            }
+
+            public static partial class MissionSession
+            {
+                /// <summary>modes.missionSession.configureTrue (m; ban_kinh, was Game/Match/ModeSessions.cs:1551).</summary>
+                public static float ConfigureTrue = 32f;
+            }
+
+            public static partial class NeutralSystem
+            {
+                /// <summary>modes.neutralSystem.captureRadiusFallback (m; ban_kinh, was Sim/Modes/Neutrals.cs:66).</summary>
+                public static float CaptureRadiusFallback = 10f;
+                /// <summary>modes.neutralSystem.stepFallback (s; thoi_gian, was Sim/Modes/Neutrals.cs:126).</summary>
+                public static float StepFallback = 45f;
+                /// <summary>modes.neutralSystem.stepIntervalScale (x; thoi_gian, was Sim/Modes/Neutrals.cs:126).</summary>
+                public static float StepIntervalScale = 2f;
+                /// <summary>modes.neutralSystem.captureFallback (s; thoi_gian, was Sim/Modes/Neutrals.cs:160).</summary>
+                public static float CaptureFallback = 60f;
+                /// <summary>modes.neutralSystem.captureFallback2 (m; ban_kinh, was Sim/Modes/Neutrals.cs:163).</summary>
+                public static float CaptureFallback2 = 10f;
+                /// <summary>modes.neutralSystem.captureFallback3 (s; thoi_gian, was Sim/Modes/Neutrals.cs:169).</summary>
+                public static float CaptureFallback3 = 8f;
+                /// <summary>modes.neutralSystem.mendFallback (m; ban_kinh, was Sim/Modes/Neutrals.cs:189).</summary>
+                public static float MendFallback = 14f;
+                /// <summary>modes.neutralSystem.mendFallback2 (x; tan_suat, was Sim/Modes/Neutrals.cs:190).</summary>
+                public static float MendFallback2 = 0.015f;
+                /// <summary>modes.neutralSystem.resupplyFallback (m; ban_kinh, was Sim/Modes/Neutrals.cs:203).</summary>
+                public static float ResupplyFallback = 14f;
+                /// <summary>modes.neutralSystem.resupplyFallback2 (s; thoi_gian, was Sim/Modes/Neutrals.cs:204).</summary>
+                public static float ResupplyFallback2 = 6f;
+                /// <summary>modes.neutralSystem.blowFallback (x; sat_thuong, was Sim/Modes/Neutrals.cs:219).</summary>
+                public static float BlowFallback = 14f;
+                /// <summary>modes.neutralSystem.blowFallback2 (x; sat_thuong, was Sim/Modes/Neutrals.cs:219).</summary>
+                public static float BlowFallback2 = 300f;
+            }
+
+            public static partial class Outposts
+            {
+                /// <summary>modes.outposts.tickNeutralDistanceSquaredMax (ticks; thoi_gian, was Sim/Modes/ModeSupport.cs:216).</summary>
+                public static float TickNeutralDistanceSquaredMax = 36f;
+                /// <summary>modes.outposts.spotForRadiusAdd (m; ban_kinh, was Sim/Modes/ModeSupport.cs:281).</summary>
+                public static float SpotForRadiusAdd = 3f;
+                /// <summary>modes.outposts.spotForRingScale (x; ban_kinh, was Sim/Modes/ModeSupport.cs:289).</summary>
+                public static float SpotForRingScale = 3f;
+                /// <summary>modes.outposts.spotForRoom (x; sat_thuong, was Sim/Modes/ModeSupport.cs:290).</summary>
+                public static float SpotForRoom = 3f;
+            }
+
+            public static partial class PointCapture
+            {
+                /// <summary>modes.pointCapture.tickCaptureSecondsScale (x; thoi_gian, was Sim/Modes/ModeSupport.cs:55).</summary>
+                public static float TickCaptureSecondsScale = 3f;
+            }
+
+            public static partial class SandboxBattle
+            {
+                /// <summary>modes.sandboxBattle.setupCpFloor (CP; tran, was Sim/Sandbox/SandboxBattle.cs:189).</summary>
+                public static float SetupCpFloor = 30f;
+                /// <summary>modes.sandboxBattle.placeHpMax (x; sat_thuong, was Sim/Sandbox/SandboxBattle.cs:282).</summary>
+                public static int PlaceHpMax = 100;
+                /// <summary>modes.sandboxBattle.placeMaxHpDivisor (x; sat_thuong, was Sim/Sandbox/SandboxBattle.cs:282).</summary>
+                public static float PlaceMaxHpDivisor = 100f;
+            }
+
+            public static partial class SandboxCheck
+            {
+                /// <summary>modes.sandboxCheck.seconds (s; thoi_gian, was Sim/Sandbox/SandboxScenario.cs:151).</summary>
+                public static float Seconds = 60f;
+            }
+
+            public static partial class SandboxEditor
+            {
+                /// <summary>modes.sandboxEditor.placeFormationCountMax (count; gioi_han_thuc_the, was Sim/Sandbox/SandboxEditor.cs:139).</summary>
+                public static int PlaceFormationCountMax = 32;
+            }
+
+            public static partial class SandboxMode
+            {
+                /// <summary>modes.sandboxMode.continueEndlessIntensityFloor (s; thoi_gian, was Sim/Modes/SandboxMode.cs:43).</summary>
+                public static float ContinueEndlessIntensityFloor = 0.5f;
+                /// <summary>modes.sandboxMode.nextWaveInIntensityFloor (count; thoi_gian, was Sim/Modes/SandboxMode.cs:80).</summary>
+                public static float NextWaveInIntensityFloor = 0.5f;
+                /// <summary>modes.sandboxMode.maxEnemiesWaveCap (count; tran, was Sim/Modes/SandboxMode.cs:83).</summary>
+                public static int MaxEnemiesWaveCap = 48;
+                /// <summary>modes.sandboxMode.maxEnemiesWaveAdd (count; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:83).</summary>
+                public static int MaxEnemiesWaveAdd = 14;
+                /// <summary>modes.sandboxMode.maxEnemiesWaveScale (x; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:83).</summary>
+                public static int MaxEnemiesWaveScale = 3;
+                /// <summary>modes.sandboxMode.maxEnemiesWaveDivisor (x; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:83).</summary>
+                public static int MaxEnemiesWaveDivisor = 2;
+                /// <summary>modes.sandboxMode.tryReinforceCount (m; ban_kinh, was Sim/Modes/SandboxMode.cs:142).</summary>
+                public static int TryReinforceCount = 2;
+                /// <summary>modes.sandboxMode.tryReinforceRadius (m; ban_kinh, was Sim/Modes/SandboxMode.cs:142).</summary>
+                public static float TryReinforceRadius = 7f;
+                /// <summary>modes.sandboxMode.tryReinforceDegrees (m; ban_kinh, was Sim/Modes/SandboxMode.cs:142).</summary>
+                public static float TryReinforceDegrees = 45f;
+                /// <summary>modes.sandboxMode.spawnWaveWaveAdd (count; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:164).</summary>
+                public static float SpawnWaveWaveAdd = 3f;
+                /// <summary>modes.sandboxMode.spawnWaveWaveScale (x; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:164).</summary>
+                public static float SpawnWaveWaveScale = 0.9f;
+                /// <summary>modes.sandboxMode.spawnWaveWaveAdd2 (count; ban_kinh, was Sim/Modes/SandboxMode.cs:167).</summary>
+                public static int SpawnWaveWaveAdd2 = 4;
+                /// <summary>modes.sandboxMode.spawnWaveWaveMin (count; ban_kinh, was Sim/Modes/SandboxMode.cs:167).</summary>
+                public static int SpawnWaveWaveMin = 4;
+                /// <summary>modes.sandboxMode.spawnWaveWaveSub (count; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:168).</summary>
+                public static int SpawnWaveWaveSub = 7;
+                /// <summary>modes.sandboxMode.spawnWaveWaveScale2 (x; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:168).</summary>
+                public static float SpawnWaveWaveScale2 = 0.06f;
+                /// <summary>modes.sandboxMode.spawnWaveWaveScale3 (x; ban_kinh, was Sim/Modes/SandboxMode.cs:171).</summary>
+                public static int SpawnWaveWaveScale3 = 3;
+                /// <summary>modes.sandboxMode.spawnWaveWaveMod (count; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:172).</summary>
+                public static int SpawnWaveWaveMod = 10;
+                /// <summary>modes.sandboxMode.spawnWaveEliteScale (x; gioi_han_thuc_the, was Sim/Modes/SandboxMode.cs:172).</summary>
+                public static float SpawnWaveEliteScale = 10f;
+                /// <summary>modes.sandboxMode.spawnWaveRadius (count; ban_kinh, was Sim/Modes/SandboxMode.cs:173).</summary>
+                public static float SpawnWaveRadius = 9f;
+                /// <summary>modes.sandboxMode.spawnWaveDegrees (count; ban_kinh, was Sim/Modes/SandboxMode.cs:173).</summary>
+                public static float SpawnWaveDegrees = 225f;
+            }
+
+            public static partial class SandboxRules
+            {
+                /// <summary>modes.sandboxRules.formationCountTrue (count; gioi_han_thuc_the, was Sim/Sandbox/SandboxRules.cs:245).</summary>
+                public static float FormationCountTrue = 0.5f;
+                /// <summary>modes.sandboxRules.formationCosSub (m; ban_kinh, was Sim/Sandbox/SandboxRules.cs:247).</summary>
+                public static float FormationCosSub = 0.5f;
+                /// <summary>modes.sandboxRules.spacingHullBoundFloor (m; ban_kinh, was Sim/Sandbox/SandboxRules.cs:257).</summary>
+                public static float SpacingHullBoundFloor = 4f;
+                /// <summary>modes.sandboxRules.spacingHullBoundScale (x; ban_kinh, was Sim/Sandbox/SandboxRules.cs:257).</summary>
+                public static float SpacingHullBoundScale = 2f;
+                /// <summary>modes.sandboxRules.spacingHullBoundAdd (m; ban_kinh, was Sim/Sandbox/SandboxRules.cs:257).</summary>
+                public static float SpacingHullBoundAdd = 2.5f;
+            }
+
+            public static partial class SandboxUnit
+            {
+                /// <summary>modes.sandboxUnit.hp (x; sat_thuong, was Sim/Sandbox/SandboxScenario.cs:72).</summary>
+                public static int Hp = 100;
+                /// <summary>modes.sandboxUnit.ammo (x; sat_thuong, was Sim/Sandbox/SandboxScenario.cs:72).</summary>
+                public static int Ammo = 100;
+            }
+
+            public static partial class ShowdownMode
+            {
+                /// <summary>modes.showdownMode.tickNowAdd (ticks; thoi_gian, was Sim/Modes/ShowdownMode.cs:186).</summary>
+                public static double TickNowAdd = 0.5;
+                /// <summary>modes.showdownMode.tickAbsMax (ticks; thoi_gian, was Sim/Modes/ShowdownMode.cs:213).</summary>
+                public static float TickAbsMax = 0.5f;
+            }
+
+            public static partial class SiegeMode
+            {
+                /// <summary>modes.siegeMode.setupRingMax (x; nguong, was Sim/Modes/SiegeModes.cs:509).</summary>
+                public static int SetupRingMax = 3;
+                /// <summary>modes.siegeMode.setupCountTrue (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:537).</summary>
+                public static int SetupCountTrue = 2;
+                /// <summary>modes.siegeMode.setupCountFalse (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:537).</summary>
+                public static int SetupCountFalse = 3;
+                /// <summary>modes.siegeMode.setupWaveSecondsScale (x; thoi_gian, was Sim/Modes/SiegeModes.cs:556).</summary>
+                public static float SetupWaveSecondsScale = 0.75f;
+                /// <summary>modes.siegeMode.setupStageMax (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:558).</summary>
+                public static int SetupStageMax = 2;
+                /// <summary>modes.siegeMode.setupProgressScaleFloor (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:581).</summary>
+                public static float SetupProgressScaleFloor = 0.1f;
+                /// <summary>modes.siegeMode.counterRosterRoundMax (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:628).</summary>
+                public static int CounterRosterRoundMax = 4;
+                /// <summary>modes.siegeMode.counterRosterGunsScale (x; sat_thuong, was Sim/Modes/SiegeModes.cs:635).</summary>
+                public static float CounterRosterGunsScale = 2f;
+                /// <summary>modes.siegeMode.counterRosterSpeedMin (m/s; sat_thuong, was Sim/Modes/SiegeModes.cs:636).</summary>
+                public static float CounterRosterSpeedMin = 11f;
+                /// <summary>modes.siegeMode.counterRosterAntiArmourScale (x; sat_thuong, was Sim/Modes/SiegeModes.cs:636).</summary>
+                public static float CounterRosterAntiArmourScale = 2f;
+                /// <summary>modes.siegeMode.counterRosterArtilleryScale (x; sat_thuong, was Sim/Modes/SiegeModes.cs:636).</summary>
+                public static float CounterRosterArtilleryScale = 1.5f;
+                /// <summary>modes.siegeMode.counterRosterAntiArmourScale2 (x; sat_thuong, was Sim/Modes/SiegeModes.cs:637).</summary>
+                public static float CounterRosterAntiArmourScale2 = 1.5f;
+                /// <summary>modes.siegeMode.counterRosterAaScale (x; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:638).</summary>
+                public static float CounterRosterAaScale = 2.5f;
+                /// <summary>modes.siegeMode.classifyWorksCountMin (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:658, Sim/Modes/SiegeModes.cs:692).</summary>
+                public static int ClassifyWorksCountMin = 2;
+                /// <summary>modes.siegeMode.classifyWorksRingOfFloor (x; nguong, was Sim/Modes/SiegeModes.cs:665).</summary>
+                public static int ClassifyWorksRingOfFloor = 2;
+                /// <summary>modes.siegeMode.classifyWorksChebyshevTrue (x; nguong, was Sim/Modes/SiegeModes.cs:665).</summary>
+                public static int ClassifyWorksChebyshevTrue = 2;
+                /// <summary>modes.siegeMode.classifyWorksChebyshevFalse (x; nguong, was Sim/Modes/SiegeModes.cs:665).</summary>
+                public static int ClassifyWorksChebyshevFalse = 3;
+                /// <summary>modes.siegeMode.classifyWorksDistanceScale (x; ban_kinh, was Sim/Modes/SiegeModes.cs:687).</summary>
+                public static float ClassifyWorksDistanceScale = 0.5f;
+                /// <summary>modes.siegeMode.classifyWorksDistanceAdd (m; ban_kinh, was Sim/Modes/SiegeModes.cs:687).</summary>
+                public static float ClassifyWorksDistanceAdd = 2f;
+                /// <summary>modes.siegeMode.classifyWorksRingsAdd (m; ban_kinh, was Sim/Modes/SiegeModes.cs:692).</summary>
+                public static float ClassifyWorksRingsAdd = 4f;
+                /// <summary>modes.siegeMode.classifyWorksCountFalse (count; ban_kinh, was Sim/Modes/SiegeModes.cs:692).</summary>
+                public static float ClassifyWorksCountFalse = 30f;
+                /// <summary>modes.siegeMode.ringOfCountMax (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:700).</summary>
+                public static int RingOfCountMax = 2;
+                /// <summary>modes.siegeMode.progressStageDivisor (x; nguong, was Sim/Modes/SiegeModes.cs:774).</summary>
+                public static float ProgressStageDivisor = 3f;
+                /// <summary>modes.siegeMode.insideRingCountMax (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:818).</summary>
+                public static int InsideRingCountMax = 2;
+                /// <summary>modes.siegeMode.tickTimeMin (ticks; thoi_gian, was Sim/Modes/SiegeModes.cs:874).</summary>
+                public static double TickTimeMin = 240.0;
+                /// <summary>modes.siegeMode.tickProgressMin (ticks; thoi_gian, was Sim/Modes/SiegeModes.cs:885).</summary>
+                public static float TickProgressMin = 0.999f;
+                /// <summary>modes.siegeMode.tickTimeMin2 (ticks; thoi_gian, was Sim/Modes/SiegeModes.cs:897).</summary>
+                public static double TickTimeMin2 = 5.0;
+                /// <summary>modes.siegeMode.tickTimeMin3 (ticks; thoi_gian, was Sim/Modes/SiegeModes.cs:899).</summary>
+                public static double TickTimeMin3 = 12.0;
+                /// <summary>modes.siegeMode.payBountiesMaxHpDivisor (x; nguong, was Sim/Modes/SiegeModes.cs:914).</summary>
+                public static float PayBountiesMaxHpDivisor = 400f;
+                /// <summary>modes.siegeMode.payBountiesRoundMin (x; nguong, was Sim/Modes/SiegeModes.cs:914).</summary>
+                public static float PayBountiesRoundMin = 2f;
+                /// <summary>modes.siegeMode.payBountiesRoundMax (x; nguong, was Sim/Modes/SiegeModes.cs:914).</summary>
+                public static float PayBountiesRoundMax = 6f;
+                /// <summary>modes.siegeMode.contestedDistanceMax (m; ban_kinh, was Sim/Modes/SiegeModes.cs:926).</summary>
+                public static float ContestedDistanceMax = 25f;
+                /// <summary>modes.siegeMode.roomForCeilingFloor (m; ban_kinh, was Sim/Modes/SiegeModes.cs:972).</summary>
+                public static int RoomForCeilingFloor = 2;
+                /// <summary>modes.siegeMode.keepEventsHealthMax (x; sat_thuong, was Sim/Modes/SiegeModes.cs:1005).</summary>
+                public static float KeepEventsHealthMax = 0.75f;
+                /// <summary>modes.siegeMode.keepEventsHealthMax2 (x; sat_thuong, was Sim/Modes/SiegeModes.cs:1012).</summary>
+                public static float KeepEventsHealthMax2 = 0.5f;
+                /// <summary>modes.siegeMode.keepEventsTimeAdd (s; thoi_gian, was Sim/Modes/SiegeModes.cs:1015).</summary>
+                public static double KeepEventsTimeAdd = 6.0;
+                /// <summary>modes.siegeMode.keepEventsHealthMax3 (x; sat_thuong, was Sim/Modes/SiegeModes.cs:1023).</summary>
+                public static float KeepEventsHealthMax3 = 0.25f;
+                /// <summary>modes.siegeMode.brownoutHqPhaseMin (x; nguong, was Sim/Modes/SiegeModes.cs:1052).</summary>
+                public static int BrownoutHqPhaseMin = 3;
+                /// <summary>modes.siegeMode.brownoutHqPhaseTrue (x; nguong, was Sim/Modes/SiegeModes.cs:1052).</summary>
+                public static float BrownoutHqPhaseTrue = 1.3f;
+                /// <summary>modes.siegeMode.brownoutDownFloor (x; nguong, was Sim/Modes/SiegeModes.cs:1052).</summary>
+                public static float BrownoutDownFloor = 0.5f;
+                /// <summary>modes.siegeMode.brownoutDownDivisor (x; nguong, was Sim/Modes/SiegeModes.cs:1052).</summary>
+                public static float BrownoutDownDivisor = 6f;
+                /// <summary>modes.siegeMode.fallTimeAdd (s; thoi_gian, was Sim/Modes/SiegeModes.cs:1068).</summary>
+                public static double FallTimeAdd = 4.5;
+                /// <summary>modes.siegeMode.watchTimeMax (s; thoi_gian, was Sim/Modes/SiegeModes.cs:1095).</summary>
+                public static double WatchTimeMax = 60.0;
+                /// <summary>modes.siegeMode.runSuperGunStageMin (s; thoi_gian, was Sim/Modes/SiegeModes.cs:1155).</summary>
+                public static int RunSuperGunStageMin = 4;
+                /// <summary>modes.siegeMode.superGunAimDistanceSquaredMax (m; ban_kinh, was Sim/Modes/SiegeModes.cs:1175).</summary>
+                public static float SuperGunAimDistanceSquaredMax = 144f;
+                /// <summary>modes.siegeMode.nextArrivalStageMin (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:1194).</summary>
+                public static int NextArrivalStageMin = 3;
+                /// <summary>modes.siegeMode.nextArrivalCountMax (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:1194).</summary>
+                public static int NextArrivalCountMax = 2;
+                /// <summary>modes.siegeMode.nextArrivalCountSub (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:1196).</summary>
+                public static int NextArrivalCountSub = 2;
+                /// <summary>modes.siegeMode.nextArrivalArrivalAtMin (s; thoi_gian, was Sim/Modes/SiegeModes.cs:1198).</summary>
+                public static double NextArrivalArrivalAtMin = 2.5;
+                /// <summary>modes.siegeMode.planWaveCountDivisor (x; tan_suat, was Sim/Modes/SiegeModes.cs:1224, Sim/Modes/SiegeModes.cs:1226).</summary>
+                public static int PlanWaveCountDivisor = 4;
+                /// <summary>modes.siegeMode.planWaveWaveCap (count; tran, was Sim/Modes/SiegeModes.cs:1231).</summary>
+                public static float PlanWaveWaveCap = 0.6f;
+                /// <summary>modes.siegeMode.planWaveWaveScale (x; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:1231).</summary>
+                public static float PlanWaveWaveScale = 0.08f;
+                /// <summary>modes.siegeMode.sendBreachArmyCpMax (CP; ban_kinh, was Sim/Modes/SiegeModes.cs:1274).</summary>
+                public static int SendBreachArmyCpMax = 14;
+                /// <summary>modes.siegeMode.sendBreachMaxScale (x; ban_kinh, was Sim/Modes/SiegeModes.cs:1274).</summary>
+                public static float SendBreachMaxScale = 1.6f;
+                /// <summary>modes.siegeMode.sendBreachKMax (m; ban_kinh, was Sim/Modes/SiegeModes.cs:1279).</summary>
+                public static int SendBreachKMax = 2;
+                /// <summary>modes.siegeMode.forwardDropStageMax (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:1293).</summary>
+                public static int ForwardDropStageMax = 2;
+                /// <summary>modes.siegeMode.forwardDropStageSub (count; gioi_han_thuc_the, was Sim/Modes/SiegeModes.cs:1294).</summary>
+                public static int ForwardDropStageSub = 2;
+                /// <summary>modes.siegeMode.releaseWavesTimeAdd (s; thoi_gian, was Sim/Modes/SiegeModes.cs:1309).</summary>
+                public static double ReleaseWavesTimeAdd = 0.5;
+                /// <summary>modes.siegeMode.collapseTimeAdd (s; thoi_gian, was Sim/Modes/SiegeModes.cs:1339).</summary>
+                public static double CollapseTimeAdd = 0.4;
+                /// <summary>modes.siegeMode.runChainHpScale (x; sat_thuong, was Sim/Modes/SiegeModes.cs:1355, Sim/Modes/SiegeModes.cs:1361).</summary>
+                public static float RunChainHpScale = 10f;
+                /// <summary>modes.siegeMode.runChainHpAdd (x; sat_thuong, was Sim/Modes/SiegeModes.cs:1355, Sim/Modes/SiegeModes.cs:1361).</summary>
+                public static float RunChainHpAdd = 100000f;
+            }
+
+            public static partial class SiegeRules
+            {
+                /// <summary>modes.siegeRules.applyValueFloor (s; thoi_gian, was Sim/Modes/SiegeModes.cs:36).</summary>
+                public static float ApplyValueFloor = 60f;
+                /// <summary>modes.siegeRules.attackerStartCp (CP; tran, was Sim/Modes/SiegeModes.cs:106).</summary>
+                public static float AttackerStartCp = 34f;
+                /// <summary>modes.siegeRules.attackerIncome (count; tran, was Sim/Modes/SiegeModes.cs:106).</summary>
+                public static float AttackerIncome = 1.8f;
+                /// <summary>modes.siegeRules.attackerArmyCap (count; tran, was Sim/Modes/SiegeModes.cs:106).</summary>
+                public static int AttackerArmyCap = 40;
+                /// <summary>modes.siegeRules.n23 (x; sat_thuong, was Sim/Modes/SiegeModes.cs:194).</summary>
+                public static float N23 = 1.25f;
+                /// <summary>modes.siegeRules.n3 (x; sat_thuong, was Sim/Modes/SiegeModes.cs:194).</summary>
+                public static float N3 = 1.5f;
+                /// <summary>modes.siegeRules.n24 (x; sat_thuong, was Sim/Modes/SiegeModes.cs:196).</summary>
+                public static float N24 = 1.1f;
+                /// <summary>modes.siegeRules.n32 (x; sat_thuong, was Sim/Modes/SiegeModes.cs:196).</summary>
+                public static float N32 = 1.2f;
+            }
+
+            public static partial class SiegeSession
+            {
+                /// <summary>modes.siegeSession.buildArmyCap (count; tran, was Game/Match/ModeSessions.cs:864).</summary>
+                public static int BuildArmyCap = 44;
+                /// <summary>modes.siegeSession.buildHardTrue2 (count; tran, was Game/Match/ModeSessions.cs:872).</summary>
+                public static int BuildHardTrue2 = 34;
+                /// <summary>modes.siegeSession.buildHardFalse2 (count; tran, was Game/Match/ModeSessions.cs:872).</summary>
+                public static int BuildHardFalse2 = 26;
+                /// <summary>modes.siegeSession.stageBonus1 (s; thoi_gian, was Game/Match/ModeSessions.cs:879).</summary>
+                public static float StageBonus1 = 300f;
+                /// <summary>modes.siegeSession.stageBonus2 (s; thoi_gian, was Game/Match/ModeSessions.cs:879).</summary>
+                public static float StageBonus2 = 300f;
+                /// <summary>modes.siegeSession.buildMaxBank (count; thoi_gian, was Game/Match/ModeSessions.cs:879).</summary>
+                public static float BuildMaxBank = 900f;
+                /// <summary>modes.siegeSession.buildSuperGunFirst (s; thoi_gian, was Game/Match/ModeSessions.cs:879).</summary>
+                public static float BuildSuperGunFirst = 150f;
+                /// <summary>modes.siegeSession.buildSuperGunSeconds (s; thoi_gian, was Game/Match/ModeSessions.cs:879).</summary>
+                public static float BuildSuperGunSeconds = 90f;
+                /// <summary>modes.siegeSession.buildHardening (x; sat_thuong, was Game/Match/ModeSessions.cs:881).</summary>
+                public static float BuildHardening = 2.1f;
+                /// <summary>modes.siegeSession.lineHealth1 (x; sat_thuong, was Game/Match/ModeSessions.cs:881).</summary>
+                public static float LineHealth1 = 1.1f;
+                /// <summary>modes.siegeSession.lineHealth2 (x; sat_thuong, was Game/Match/ModeSessions.cs:881).</summary>
+                public static float LineHealth2 = 1.25f;
+                /// <summary>modes.siegeSession.lineHealth3 (x; sat_thuong, was Game/Match/ModeSessions.cs:881).</summary>
+                public static float LineHealth3 = 1.4f;
+                /// <summary>modes.siegeSession.lineDamage1 (x; sat_thuong, was Game/Match/ModeSessions.cs:881).</summary>
+                public static float LineDamage1 = 1.05f;
+                /// <summary>modes.siegeSession.lineDamage2 (x; sat_thuong, was Game/Match/ModeSessions.cs:881).</summary>
+                public static float LineDamage2 = 1.15f;
+                /// <summary>modes.siegeSession.lineDamage3 (x; sat_thuong, was Game/Match/ModeSessions.cs:881).</summary>
+                public static float LineDamage3 = 1.25f;
+            }
+
+            public static partial class SimEvent
+            {
+                /// <summary>modes.simEvent.priorityValueMin (x; nguong, was Sim/Events/SimEvent.cs:483).</summary>
+                public static float PriorityValueMin = 0.5f;
+                /// <summary>modes.simEvent.priorityRoundMax (x; nguong, was Sim/Events/SimEvent.cs:483).</summary>
+                public static int PriorityRoundMax = 3;
+            }
+
+            public static partial class SimWorld
+            {
+                /// <summary>modes.simWorld.setStormInsideMin (x; nguong, was Sim/SimWorld.Storm.cs:31).</summary>
+                public static float SetStormInsideMin = 0.3f;
+                /// <summary>modes.simWorld.setStormInsideMax (x; nguong, was Sim/SimWorld.Storm.cs:31).</summary>
+                public static float SetStormInsideMax = 1.5f;
+                /// <summary>modes.simWorld.setStormOutsideMin (x; nguong, was Sim/SimWorld.Storm.cs:32).</summary>
+                public static float SetStormOutsideMin = 0.3f;
+                /// <summary>modes.simWorld.setStormOutsideMax (x; nguong, was Sim/SimWorld.Storm.cs:32).</summary>
+                public static float SetStormOutsideMax = 1.5f;
+            }
+
+            public static partial class SurvivalSession
+            {
+                /// <summary>modes.survivalSession.lostDistanceMax (m; ban_kinh, was Game/Match/ModeSessions.cs:1254).</summary>
+                public static float LostDistanceMax = 18f;
+                /// <summary>modes.survivalSession.lostDistanceMax2 (m; ban_kinh, was Game/Match/ModeSessions.cs:1255).</summary>
+                public static float LostDistanceMax2 = 26f;
+                /// <summary>modes.survivalSession.lostNowMin (s; thoi_gian, was Game/Match/ModeSessions.cs:1261).</summary>
+                public static double LostNowMin = 10.0;
+                /// <summary>modes.survivalSession.lostNowMin2 (s; thoi_gian, was Game/Match/ModeSessions.cs:1261).</summary>
+                public static double LostNowMin2 = 15.0;
+            }
+
+            public static partial class TeamEconomy
+            {
+                /// <summary>modes.teamEconomy.ctorStartCp (CP; tran, was Sim/Economy/EconomySystem.cs:27).</summary>
+                public static float CtorStartCp = 12f;
+                /// <summary>modes.teamEconomy.ctorBank (count; tran, was Sim/Economy/EconomySystem.cs:27).</summary>
+                public static float CtorBank = 30f;
+            }
+
+            public static partial class WeeklySession
+            {
+                /// <summary>modes.weeklySession.buildArmyCap (count; tran, was Game/Match/ModeSessions.cs:794).</summary>
+                public static int BuildArmyCap = 34;
+                /// <summary>modes.weeklySession.buildStartSeconds (s; thoi_gian, was Game/Match/ModeSessions.cs:797).</summary>
+                public static float BuildStartSeconds = 300f;
+            }
         }
 
         private static readonly Entry[] Pass2Modes =
         {
+            new Entry("modes.assaultMode.tickSectorScale", "x", () => Modes.AssaultMode.TickSectorScale, v => Modes.AssaultMode.TickSectorScale = (float)v),
+            new Entry("modes.assaultMode.tickProgressMax", "ticks", () => Modes.AssaultMode.TickProgressMax, v => Modes.AssaultMode.TickProgressMax = (float)v),
+            new Entry("modes.assaultMode.advanceAxisScale", "x", () => Modes.AssaultMode.AdvanceAxisScale, v => Modes.AssaultMode.AdvanceAxisScale = (float)v),
+            new Entry("modes.assaultMode.advanceSearch", "x", () => Modes.AssaultMode.AdvanceSearch, v => Modes.AssaultMode.AdvanceSearch = (float)v),
+            new Entry("modes.assaultMode.buildSectorsLengthFloor", "m", () => Modes.AssaultMode.BuildSectorsLengthFloor, v => Modes.AssaultMode.BuildSectorsLengthFloor = (float)v),
+            new Entry("modes.assaultMode.buildSectorsLengthScale", "x", () => Modes.AssaultMode.BuildSectorsLengthScale, v => Modes.AssaultMode.BuildSectorsLengthScale = (float)v),
+            new Entry("modes.assaultMode.buildSectorsLengthScale2", "x", () => Modes.AssaultMode.BuildSectorsLengthScale2, v => Modes.AssaultMode.BuildSectorsLengthScale2 = (float)v),
+            new Entry("modes.assaultMode.buildSectorsLengthScale3", "x", () => Modes.AssaultMode.BuildSectorsLengthScale3, v => Modes.AssaultMode.BuildSectorsLengthScale3 = (float)v),
+            new Entry("modes.assaultMode.buildSectorsAcrossScale", "x", () => Modes.AssaultMode.BuildSectorsAcrossScale, v => Modes.AssaultMode.BuildSectorsAcrossScale = (float)v),
+            new Entry("modes.assaultMode.buildSectorsSearch", "x", () => Modes.AssaultMode.BuildSectorsSearch, v => Modes.AssaultMode.BuildSectorsSearch = (float)v),
+            new Entry("modes.assaultMode.buildSectorsSIs", "x", () => Modes.AssaultMode.BuildSectorsSIs, v => Modes.AssaultMode.BuildSectorsSIs = (int)System.Math.Round(v)),
+            new Entry("modes.assaultMode.buildSectorsSTrue", "x", () => Modes.AssaultMode.BuildSectorsSTrue, v => Modes.AssaultMode.BuildSectorsSTrue = (float)v),
+            new Entry("modes.assaultMode.buildSectorsSFalse", "x", () => Modes.AssaultMode.BuildSectorsSFalse, v => Modes.AssaultMode.BuildSectorsSFalse = (float)v),
+            new Entry("modes.assaultMode.fortifyCountTrue", "count", () => Modes.AssaultMode.FortifyCountTrue, v => Modes.AssaultMode.FortifyCountTrue = (float)v),
+            new Entry("modes.assaultMode.fortifyCountFalse", "count", () => Modes.AssaultMode.FortifyCountFalse, v => Modes.AssaultMode.FortifyCountFalse = (float)v),
+            new Entry("modes.assaultMode.fortifyRadiusAdd", "m", () => Modes.AssaultMode.FortifyRadiusAdd, v => Modes.AssaultMode.FortifyRadiusAdd = (float)v),
+            new Entry("modes.assaultMode.fortifySearch", "x", () => Modes.AssaultMode.FortifySearch, v => Modes.AssaultMode.FortifySearch = (float)v),
+            new Entry("modes.assaultMode.openDx", "x", () => Modes.AssaultMode.OpenDx, v => Modes.AssaultMode.OpenDx = (float)v),
+            new Entry("modes.assaultMode.openDy", "x", () => Modes.AssaultMode.OpenDy, v => Modes.AssaultMode.OpenDy = (float)v),
+            new Entry("modes.assaultMode.openOx", "x", () => Modes.AssaultMode.OpenOx, v => Modes.AssaultMode.OpenOx = (float)v),
+            new Entry("modes.assaultMode.openOxMax", "x", () => Modes.AssaultMode.OpenOxMax, v => Modes.AssaultMode.OpenOxMax = (float)v),
+            new Entry("modes.assaultMode.openOx2", "x", () => Modes.AssaultMode.OpenOx2, v => Modes.AssaultMode.OpenOx2 = (float)v),
+            new Entry("modes.assaultMode.openOy", "x", () => Modes.AssaultMode.OpenOy, v => Modes.AssaultMode.OpenOy = (float)v),
+            new Entry("modes.assaultMode.openOyMax", "x", () => Modes.AssaultMode.OpenOyMax, v => Modes.AssaultMode.OpenOyMax = (float)v),
+            new Entry("modes.assaultMode.openOy2", "x", () => Modes.AssaultMode.OpenOy2, v => Modes.AssaultMode.OpenOy2 = (float)v),
+            new Entry("modes.assaultMode.openOpenScale", "x", () => Modes.AssaultMode.OpenOpenScale, v => Modes.AssaultMode.OpenOpenScale = (int)System.Math.Round(v)),
+            new Entry("modes.assaultRules.applyFallback", "s", () => Modes.AssaultRules.ApplyFallback, v => Modes.AssaultRules.ApplyFallback = (float)v),
+            new Entry("modes.assaultRules.applyStartSecondsDivisor", "x", () => Modes.AssaultRules.ApplyStartSecondsDivisor, v => Modes.AssaultRules.ApplyStartSecondsDivisor = (float)v),
+            new Entry("modes.assaultSession.buildCp", "s", () => Modes.AssaultSession.BuildCp, v => Modes.AssaultSession.BuildCp = (float)v),
+            new Entry("modes.assaultSession.buildIncome", "s", () => Modes.AssaultSession.BuildIncome, v => Modes.AssaultSession.BuildIncome = (float)v),
+            new Entry("modes.assaultSession.buildCp2", "s", () => Modes.AssaultSession.BuildCp2, v => Modes.AssaultSession.BuildCp2 = (float)v),
+            new Entry("modes.assaultSession.buildIncome2", "s", () => Modes.AssaultSession.BuildIncome2, v => Modes.AssaultSession.BuildIncome2 = (float)v),
+            new Entry("modes.assaultSession.buildSectorCp", "CP", () => Modes.AssaultSession.BuildSectorCp, v => Modes.AssaultSession.BuildSectorCp = (float)v),
+            new Entry("modes.battleEvents.maxTierStallValue", "count", () => Modes.BattleEvents.MaxTierStallValue, v => Modes.BattleEvents.MaxTierStallValue = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.ctorNextDoubleAdd", "share", () => Modes.BattleEvents.CtorNextDoubleAdd, v => Modes.BattleEvents.CtorNextDoubleAdd = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.ctorNextDoubleScale", "x", () => Modes.BattleEvents.CtorNextDoubleScale, v => Modes.BattleEvents.CtorNextDoubleScale = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.ctorNextDoubleAdd2", "share", () => Modes.BattleEvents.CtorNextDoubleAdd2, v => Modes.BattleEvents.CtorNextDoubleAdd2 = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.ctorNextDoubleScale2", "x", () => Modes.BattleEvents.CtorNextDoubleScale2, v => Modes.BattleEvents.CtorNextDoubleScale2 = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.tickNowAdd", "ticks", () => Modes.BattleEvents.TickNowAdd, v => Modes.BattleEvents.TickNowAdd = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.tickNextDoubleScale", "x", () => Modes.BattleEvents.TickNextDoubleScale, v => Modes.BattleEvents.TickNextDoubleScale = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.tickNowAdd2", "ticks", () => Modes.BattleEvents.TickNowAdd2, v => Modes.BattleEvents.TickNowAdd2 = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.tickNextDoubleScale2", "x", () => Modes.BattleEvents.TickNextDoubleScale2, v => Modes.BattleEvents.TickNextDoubleScale2 = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.tickNowAdd3", "ticks", () => Modes.BattleEvents.TickNowAdd3, v => Modes.BattleEvents.TickNowAdd3 = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.dropCrateAttemptMax", "x", () => Modes.BattleEvents.DropCrateAttemptMax, v => Modes.BattleEvents.DropCrateAttemptMax = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.dropCrateAttemptMax2", "x", () => Modes.BattleEvents.DropCrateAttemptMax2, v => Modes.BattleEvents.DropCrateAttemptMax2 = (int)System.Math.Round(v)),
+            new Entry("modes.battleEvents.dropCrateAttemptTrue", "x", () => Modes.BattleEvents.DropCrateAttemptTrue, v => Modes.BattleEvents.DropCrateAttemptTrue = (float)v),
+            new Entry("modes.battleEvents.dropCrateAttemptFalse", "x", () => Modes.BattleEvents.DropCrateAttemptFalse, v => Modes.BattleEvents.DropCrateAttemptFalse = (float)v),
+            new Entry("modes.battleEvents.dropCrateDistanceMax", "m", () => Modes.BattleEvents.DropCrateDistanceMax, v => Modes.BattleEvents.DropCrateDistanceMax = (float)v),
+            new Entry("modes.battleEvents.updateCratesDistanceMin", "m", () => Modes.BattleEvents.UpdateCratesDistanceMin, v => Modes.BattleEvents.UpdateCratesDistanceMin = (float)v),
+            new Entry("modes.battleEvents.raidDistanceMax", "m", () => Modes.BattleEvents.RaidDistanceMax, v => Modes.BattleEvents.RaidDistanceMax = (float)v),
+            new Entry("modes.battleEvents.raidDistanceMax2", "m", () => Modes.BattleEvents.RaidDistanceMax2, v => Modes.BattleEvents.RaidDistanceMax2 = (float)v),
+            new Entry("modes.bossRushMode.setupHealthMin", "x", () => Modes.BossRushMode.SetupHealthMin, v => Modes.BossRushMode.SetupHealthMin = (float)v),
+            new Entry("modes.bossRushMode.tickFloorCap", "ticks", () => Modes.BossRushMode.TickFloorCap, v => Modes.BossRushMode.TickFloorCap = (int)System.Math.Round(v)),
+            new Entry("modes.bossRushMode.tickHpScale", "x", () => Modes.BossRushMode.TickHpScale, v => Modes.BossRushMode.TickHpScale = (float)v),
+            new Entry("modes.bossRushMode.tickIMax", "ticks", () => Modes.BossRushMode.TickIMax, v => Modes.BossRushMode.TickIMax = (int)System.Math.Round(v)),
+            new Entry("modes.bossRushMode.tickTimeMin", "ticks", () => Modes.BossRushMode.TickTimeMin, v => Modes.BossRushMode.TickTimeMin = v),
+            new Entry("modes.bossRushMode.tickTimeMin2", "ticks", () => Modes.BossRushMode.TickTimeMin2, v => Modes.BossRushMode.TickTimeMin2 = v),
+            new Entry("modes.bossRushRules.playerStartCp", "CP", () => Modes.BossRushRules.PlayerStartCp, v => Modes.BossRushRules.PlayerStartCp = (float)v),
+            new Entry("modes.bossRushRules.playerIncome", "count", () => Modes.BossRushRules.PlayerIncome, v => Modes.BossRushRules.PlayerIncome = (float)v),
+            new Entry("modes.bossRushRules.playerArmyCap", "count", () => Modes.BossRushRules.PlayerArmyCap, v => Modes.BossRushRules.PlayerArmyCap = (int)System.Math.Round(v)),
+            new Entry("modes.bossRushSession.buildArmyCap", "count", () => Modes.BossRushSession.BuildArmyCap, v => Modes.BossRushSession.BuildArmyCap = (int)System.Math.Round(v)),
+            new Entry("modes.bossRushSession.buildBreather", "s", () => Modes.BossRushSession.BuildBreather, v => Modes.BossRushSession.BuildBreather = (float)v),
+            new Entry("modes.branchChoice.scoreDpsDivisor", "x", () => Modes.BranchChoice.ScoreDpsDivisor, v => Modes.BranchChoice.ScoreDpsDivisor = (float)v),
+            new Entry("modes.branchChoice.scoreArmorTrue", "x", () => Modes.BranchChoice.ScoreArmorTrue, v => Modes.BranchChoice.ScoreArmorTrue = (float)v),
+            new Entry("modes.branchChoice.scoreHitDivisor", "x", () => Modes.BranchChoice.ScoreHitDivisor, v => Modes.BranchChoice.ScoreHitDivisor = (float)v),
+            new Entry("modes.branchChoice.scoreHeavyScale", "x", () => Modes.BranchChoice.ScoreHeavyScale, v => Modes.BranchChoice.ScoreHeavyScale = (float)v),
+            new Entry("modes.branchChoice.scoreTowersDivisor", "x", () => Modes.BranchChoice.ScoreTowersDivisor, v => Modes.BranchChoice.ScoreTowersDivisor = (float)v),
+            new Entry("modes.branchChoice.scoreArtilleryScale2", "x", () => Modes.BranchChoice.ScoreArtilleryScale2, v => Modes.BranchChoice.ScoreArtilleryScale2 = (float)v),
+            new Entry("modes.branchChoice.scoreStealthAdd", "m", () => Modes.BranchChoice.ScoreStealthAdd, v => Modes.BranchChoice.ScoreStealthAdd = (float)v),
+            new Entry("modes.branchChoice.scoreStealthScale", "x", () => Modes.BranchChoice.ScoreStealthScale, v => Modes.BranchChoice.ScoreStealthScale = (float)v),
+            new Entry("modes.branchChoice.scoreTowersMin", "m", () => Modes.BranchChoice.ScoreTowersMin, v => Modes.BranchChoice.ScoreTowersMin = (int)System.Math.Round(v)),
+            new Entry("modes.branchChoice.scoreTowersTrue", "m", () => Modes.BranchChoice.ScoreTowersTrue, v => Modes.BranchChoice.ScoreTowersTrue = (float)v),
+            new Entry("modes.conquestMode.finalPhaseBleedFloor", "x", () => Modes.ConquestMode.FinalPhaseBleedFloor, v => Modes.ConquestMode.FinalPhaseBleedFloor = (float)v),
+            new Entry("modes.defendSession.buildArmyCap", "count", () => Modes.DefendSession.BuildArmyCap, v => Modes.DefendSession.BuildArmyCap = (int)System.Math.Round(v)),
+            new Entry("modes.defendSession.buildArmyCap2", "count", () => Modes.DefendSession.BuildArmyCap2, v => Modes.DefendSession.BuildArmyCap2 = (int)System.Math.Round(v)),
+            new Entry("modes.defendSession.buildHardTrue", "s", () => Modes.DefendSession.BuildHardTrue, v => Modes.DefendSession.BuildHardTrue = (float)v),
+            new Entry("modes.defendSession.buildEasyTrue", "s", () => Modes.DefendSession.BuildEasyTrue, v => Modes.DefendSession.BuildEasyTrue = (float)v),
+            new Entry("modes.defendSession.buildEasyFalse", "s", () => Modes.DefendSession.BuildEasyFalse, v => Modes.DefendSession.BuildEasyFalse = (float)v),
+            new Entry("modes.defendSession.stageBonus1", "s", () => Modes.DefendSession.StageBonus1, v => Modes.DefendSession.StageBonus1 = (float)v),
+            new Entry("modes.defendSession.stageBonus2", "s", () => Modes.DefendSession.StageBonus2, v => Modes.DefendSession.StageBonus2 = (float)v),
+            new Entry("modes.defendSession.buildMaxBank", "count", () => Modes.DefendSession.BuildMaxBank, v => Modes.DefendSession.BuildMaxBank = (float)v),
+            new Entry("modes.defendSession.buildNormalStartSeconds", "s", () => Modes.DefendSession.BuildNormalStartSeconds, v => Modes.DefendSession.BuildNormalStartSeconds = (float)v),
+            new Entry("modes.defendSession.buildEndlessTrue", "s", () => Modes.DefendSession.BuildEndlessTrue, v => Modes.DefendSession.BuildEndlessTrue = (float)v),
+            new Entry("modes.defendSession.buildEndlessFalse", "s", () => Modes.DefendSession.BuildEndlessFalse, v => Modes.DefendSession.BuildEndlessFalse = (float)v),
+            new Entry("modes.defendSession.buildStageCp", "CP", () => Modes.DefendSession.BuildStageCp, v => Modes.DefendSession.BuildStageCp = (float)v),
+            new Entry("modes.defendSession.buildHardening", "s", () => Modes.DefendSession.BuildHardening, v => Modes.DefendSession.BuildHardening = (float)v),
+            new Entry("modes.defendSession.buildLineHardening", "s", () => Modes.DefendSession.BuildLineHardening, v => Modes.DefendSession.BuildLineHardening = (float)v),
+            new Entry("modes.defendSession.retreatCp1", "s", () => Modes.DefendSession.RetreatCp1, v => Modes.DefendSession.RetreatCp1 = (float)v),
+            new Entry("modes.defendSession.retreatCp2", "s", () => Modes.DefendSession.RetreatCp2, v => Modes.DefendSession.RetreatCp2 = (float)v),
+            new Entry("modes.defendSession.lineHealthEndless1", "x", () => Modes.DefendSession.LineHealthEndless1, v => Modes.DefendSession.LineHealthEndless1 = (float)v),
+            new Entry("modes.defendSession.lineHealthEndless2", "x", () => Modes.DefendSession.LineHealthEndless2, v => Modes.DefendSession.LineHealthEndless2 = (float)v),
+            new Entry("modes.defendSession.lineHealthEndless3", "x", () => Modes.DefendSession.LineHealthEndless3, v => Modes.DefendSession.LineHealthEndless3 = (float)v),
+            new Entry("modes.defendSession.lineHealthNotEndless1", "x", () => Modes.DefendSession.LineHealthNotEndless1, v => Modes.DefendSession.LineHealthNotEndless1 = (float)v),
+            new Entry("modes.defendSession.lineHealthNotEndless2", "x", () => Modes.DefendSession.LineHealthNotEndless2, v => Modes.DefendSession.LineHealthNotEndless2 = (float)v),
+            new Entry("modes.defendSession.lineHealthNotEndless3", "x", () => Modes.DefendSession.LineHealthNotEndless3, v => Modes.DefendSession.LineHealthNotEndless3 = (float)v),
+            new Entry("modes.defendSession.lineDamageEndless1", "x", () => Modes.DefendSession.LineDamageEndless1, v => Modes.DefendSession.LineDamageEndless1 = (float)v),
+            new Entry("modes.defendSession.lineDamageEndless2", "x", () => Modes.DefendSession.LineDamageEndless2, v => Modes.DefendSession.LineDamageEndless2 = (float)v),
+            new Entry("modes.defendSession.lineDamageEndless3", "x", () => Modes.DefendSession.LineDamageEndless3, v => Modes.DefendSession.LineDamageEndless3 = (float)v),
+            new Entry("modes.defendSession.lineDamageNotEndless1", "x", () => Modes.DefendSession.LineDamageNotEndless1, v => Modes.DefendSession.LineDamageNotEndless1 = (float)v),
+            new Entry("modes.defendSession.lineDamageNotEndless2", "x", () => Modes.DefendSession.LineDamageNotEndless2, v => Modes.DefendSession.LineDamageNotEndless2 = (float)v),
+            new Entry("modes.defendSession.lineDamageNotEndless3", "x", () => Modes.DefendSession.LineDamageNotEndless3, v => Modes.DefendSession.LineDamageNotEndless3 = (float)v),
+            new Entry("modes.defendSession.buildHeavyEvery", "x", () => Modes.DefendSession.BuildHeavyEvery, v => Modes.DefendSession.BuildHeavyEvery = (int)System.Math.Round(v)),
+            new Entry("modes.defendSession.buildEndlessTrue2", "count", () => Modes.DefendSession.BuildEndlessTrue2, v => Modes.DefendSession.BuildEndlessTrue2 = (int)System.Math.Round(v)),
+            new Entry("modes.defendSession.buildEndlessFalse2", "count", () => Modes.DefendSession.BuildEndlessFalse2, v => Modes.DefendSession.BuildEndlessFalse2 = (int)System.Math.Round(v)),
+            new Entry("modes.defendSession.buildBreachFrom", "m", () => Modes.DefendSession.BuildBreachFrom, v => Modes.DefendSession.BuildBreachFrom = (int)System.Math.Round(v)),
+            new Entry("modes.defendSession.buildBreachEvery", "m", () => Modes.DefendSession.BuildBreachEvery, v => Modes.DefendSession.BuildBreachEvery = (int)System.Math.Round(v)),
+            new Entry("modes.economySystem.stepUnderdogAverageMax", "count", () => Modes.EconomySystem.StepUnderdogAverageMax, v => Modes.EconomySystem.StepUnderdogAverageMax = (float)v),
+            new Entry("modes.economySystem.stepUnderdogAverageTrue", "count", () => Modes.EconomySystem.StepUnderdogAverageTrue, v => Modes.EconomySystem.StepUnderdogAverageTrue = (int)System.Math.Round(v)),
+            new Entry("modes.economySystem.stepUnderdogAverageFalse", "count", () => Modes.EconomySystem.StepUnderdogAverageFalse, v => Modes.EconomySystem.StepUnderdogAverageFalse = (int)System.Math.Round(v)),
+            new Entry("modes.economySystem.forWaveMinShareScale", "x", () => Modes.EconomySystem.ForWaveMinShareScale, v => Modes.EconomySystem.ForWaveMinShareScale = (float)v),
+            new Entry("modes.economySystem.airliftIndexAdd", "x", () => Modes.EconomySystem.AirliftIndexAdd, v => Modes.EconomySystem.AirliftIndexAdd = (float)v),
+            new Entry("modes.economySystem.airliftIndexMod", "x", () => Modes.EconomySystem.AirliftIndexMod, v => Modes.EconomySystem.AirliftIndexMod = (int)System.Math.Round(v)),
+            new Entry("modes.economySystem.airliftIndexScale2", "x", () => Modes.EconomySystem.AirliftIndexScale2, v => Modes.EconomySystem.AirliftIndexScale2 = (float)v),
+            new Entry("modes.economySystem.edgeBehindStepMax", "m", () => Modes.EconomySystem.EdgeBehindStepMax, v => Modes.EconomySystem.EdgeBehindStepMax = (int)System.Math.Round(v)),
+            new Entry("modes.economySystem.edgeBehindInwardScale", "x", () => Modes.EconomySystem.EdgeBehindInwardScale, v => Modes.EconomySystem.EdgeBehindInwardScale = (float)v),
+            new Entry("modes.economySystem.edgeBehindEdgeDistanceMin", "m", () => Modes.EconomySystem.EdgeBehindEdgeDistanceMin, v => Modes.EconomySystem.EdgeBehindEdgeDistanceMin = (float)v),
+            new Entry("modes.endlessRules.bossOfWaveWaveTrue", "count", () => Modes.EndlessRules.BossOfWaveWaveTrue, v => Modes.EndlessRules.BossOfWaveWaveTrue = (int)System.Math.Round(v)),
+            new Entry("modes.kingOfTheHillMode.tickOwnerTrue", "ticks", () => Modes.KingOfTheHillMode.TickOwnerTrue, v => Modes.KingOfTheHillMode.TickOwnerTrue = (float)v),
+            new Entry("modes.matchEnd.durationForKindValue", "s", () => Modes.MatchEnd.DurationForKindValue, v => Modes.MatchEnd.DurationForKindValue = v),
+            new Entry("modes.matchEnd.durationForKindValue2", "s", () => Modes.MatchEnd.DurationForKindValue2, v => Modes.MatchEnd.DurationForKindValue2 = v),
+            new Entry("modes.matchEnd.durationForKindValue3", "s", () => Modes.MatchEnd.DurationForKindValue3, v => Modes.MatchEnd.DurationForKindValue3 = v),
+            new Entry("modes.matchEnd.durationForKindValue4", "s", () => Modes.MatchEnd.DurationForKindValue4, v => Modes.MatchEnd.DurationForKindValue4 = v),
+            new Entry("modes.missionSession.configureTrue", "m", () => Modes.MissionSession.ConfigureTrue, v => Modes.MissionSession.ConfigureTrue = (float)v),
+            new Entry("modes.neutralSystem.captureRadiusFallback", "m", () => Modes.NeutralSystem.CaptureRadiusFallback, v => Modes.NeutralSystem.CaptureRadiusFallback = (float)v),
+            new Entry("modes.neutralSystem.stepFallback", "s", () => Modes.NeutralSystem.StepFallback, v => Modes.NeutralSystem.StepFallback = (float)v),
+            new Entry("modes.neutralSystem.stepIntervalScale", "x", () => Modes.NeutralSystem.StepIntervalScale, v => Modes.NeutralSystem.StepIntervalScale = (float)v),
+            new Entry("modes.neutralSystem.captureFallback", "s", () => Modes.NeutralSystem.CaptureFallback, v => Modes.NeutralSystem.CaptureFallback = (float)v),
+            new Entry("modes.neutralSystem.captureFallback2", "m", () => Modes.NeutralSystem.CaptureFallback2, v => Modes.NeutralSystem.CaptureFallback2 = (float)v),
+            new Entry("modes.neutralSystem.captureFallback3", "s", () => Modes.NeutralSystem.CaptureFallback3, v => Modes.NeutralSystem.CaptureFallback3 = (float)v),
+            new Entry("modes.neutralSystem.mendFallback", "m", () => Modes.NeutralSystem.MendFallback, v => Modes.NeutralSystem.MendFallback = (float)v),
+            new Entry("modes.neutralSystem.mendFallback2", "x", () => Modes.NeutralSystem.MendFallback2, v => Modes.NeutralSystem.MendFallback2 = (float)v),
+            new Entry("modes.neutralSystem.resupplyFallback", "m", () => Modes.NeutralSystem.ResupplyFallback, v => Modes.NeutralSystem.ResupplyFallback = (float)v),
+            new Entry("modes.neutralSystem.resupplyFallback2", "s", () => Modes.NeutralSystem.ResupplyFallback2, v => Modes.NeutralSystem.ResupplyFallback2 = (float)v),
+            new Entry("modes.neutralSystem.blowFallback", "x", () => Modes.NeutralSystem.BlowFallback, v => Modes.NeutralSystem.BlowFallback = (float)v),
+            new Entry("modes.neutralSystem.blowFallback2", "x", () => Modes.NeutralSystem.BlowFallback2, v => Modes.NeutralSystem.BlowFallback2 = (float)v),
+            new Entry("modes.outposts.tickNeutralDistanceSquaredMax", "ticks", () => Modes.Outposts.TickNeutralDistanceSquaredMax, v => Modes.Outposts.TickNeutralDistanceSquaredMax = (float)v),
+            new Entry("modes.outposts.spotForRadiusAdd", "m", () => Modes.Outposts.SpotForRadiusAdd, v => Modes.Outposts.SpotForRadiusAdd = (float)v),
+            new Entry("modes.outposts.spotForRingScale", "x", () => Modes.Outposts.SpotForRingScale, v => Modes.Outposts.SpotForRingScale = (float)v),
+            new Entry("modes.outposts.spotForRoom", "x", () => Modes.Outposts.SpotForRoom, v => Modes.Outposts.SpotForRoom = (float)v),
+            new Entry("modes.pointCapture.tickCaptureSecondsScale", "x", () => Modes.PointCapture.TickCaptureSecondsScale, v => Modes.PointCapture.TickCaptureSecondsScale = (float)v),
+            new Entry("modes.sandboxBattle.setupCpFloor", "CP", () => Modes.SandboxBattle.SetupCpFloor, v => Modes.SandboxBattle.SetupCpFloor = (float)v),
+            new Entry("modes.sandboxBattle.placeHpMax", "x", () => Modes.SandboxBattle.PlaceHpMax, v => Modes.SandboxBattle.PlaceHpMax = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxBattle.placeMaxHpDivisor", "x", () => Modes.SandboxBattle.PlaceMaxHpDivisor, v => Modes.SandboxBattle.PlaceMaxHpDivisor = (float)v),
+            new Entry("modes.sandboxCheck.seconds", "s", () => Modes.SandboxCheck.Seconds, v => Modes.SandboxCheck.Seconds = (float)v),
+            new Entry("modes.sandboxEditor.placeFormationCountMax", "count", () => Modes.SandboxEditor.PlaceFormationCountMax, v => Modes.SandboxEditor.PlaceFormationCountMax = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.continueEndlessIntensityFloor", "s", () => Modes.SandboxMode.ContinueEndlessIntensityFloor, v => Modes.SandboxMode.ContinueEndlessIntensityFloor = (float)v),
+            new Entry("modes.sandboxMode.nextWaveInIntensityFloor", "count", () => Modes.SandboxMode.NextWaveInIntensityFloor, v => Modes.SandboxMode.NextWaveInIntensityFloor = (float)v),
+            new Entry("modes.sandboxMode.maxEnemiesWaveCap", "count", () => Modes.SandboxMode.MaxEnemiesWaveCap, v => Modes.SandboxMode.MaxEnemiesWaveCap = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.maxEnemiesWaveAdd", "count", () => Modes.SandboxMode.MaxEnemiesWaveAdd, v => Modes.SandboxMode.MaxEnemiesWaveAdd = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.maxEnemiesWaveScale", "x", () => Modes.SandboxMode.MaxEnemiesWaveScale, v => Modes.SandboxMode.MaxEnemiesWaveScale = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.maxEnemiesWaveDivisor", "x", () => Modes.SandboxMode.MaxEnemiesWaveDivisor, v => Modes.SandboxMode.MaxEnemiesWaveDivisor = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.tryReinforceCount", "m", () => Modes.SandboxMode.TryReinforceCount, v => Modes.SandboxMode.TryReinforceCount = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.tryReinforceRadius", "m", () => Modes.SandboxMode.TryReinforceRadius, v => Modes.SandboxMode.TryReinforceRadius = (float)v),
+            new Entry("modes.sandboxMode.tryReinforceDegrees", "m", () => Modes.SandboxMode.TryReinforceDegrees, v => Modes.SandboxMode.TryReinforceDegrees = (float)v),
+            new Entry("modes.sandboxMode.spawnWaveWaveAdd", "count", () => Modes.SandboxMode.SpawnWaveWaveAdd, v => Modes.SandboxMode.SpawnWaveWaveAdd = (float)v),
+            new Entry("modes.sandboxMode.spawnWaveWaveScale", "x", () => Modes.SandboxMode.SpawnWaveWaveScale, v => Modes.SandboxMode.SpawnWaveWaveScale = (float)v),
+            new Entry("modes.sandboxMode.spawnWaveWaveAdd2", "count", () => Modes.SandboxMode.SpawnWaveWaveAdd2, v => Modes.SandboxMode.SpawnWaveWaveAdd2 = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.spawnWaveWaveMin", "count", () => Modes.SandboxMode.SpawnWaveWaveMin, v => Modes.SandboxMode.SpawnWaveWaveMin = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.spawnWaveWaveSub", "count", () => Modes.SandboxMode.SpawnWaveWaveSub, v => Modes.SandboxMode.SpawnWaveWaveSub = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.spawnWaveWaveScale2", "x", () => Modes.SandboxMode.SpawnWaveWaveScale2, v => Modes.SandboxMode.SpawnWaveWaveScale2 = (float)v),
+            new Entry("modes.sandboxMode.spawnWaveWaveScale3", "x", () => Modes.SandboxMode.SpawnWaveWaveScale3, v => Modes.SandboxMode.SpawnWaveWaveScale3 = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.spawnWaveWaveMod", "count", () => Modes.SandboxMode.SpawnWaveWaveMod, v => Modes.SandboxMode.SpawnWaveWaveMod = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxMode.spawnWaveEliteScale", "x", () => Modes.SandboxMode.SpawnWaveEliteScale, v => Modes.SandboxMode.SpawnWaveEliteScale = (float)v),
+            new Entry("modes.sandboxMode.spawnWaveRadius", "count", () => Modes.SandboxMode.SpawnWaveRadius, v => Modes.SandboxMode.SpawnWaveRadius = (float)v),
+            new Entry("modes.sandboxMode.spawnWaveDegrees", "count", () => Modes.SandboxMode.SpawnWaveDegrees, v => Modes.SandboxMode.SpawnWaveDegrees = (float)v),
+            new Entry("modes.sandboxRules.formationCountTrue", "count", () => Modes.SandboxRules.FormationCountTrue, v => Modes.SandboxRules.FormationCountTrue = (float)v),
+            new Entry("modes.sandboxRules.formationCosSub", "m", () => Modes.SandboxRules.FormationCosSub, v => Modes.SandboxRules.FormationCosSub = (float)v),
+            new Entry("modes.sandboxRules.spacingHullBoundFloor", "m", () => Modes.SandboxRules.SpacingHullBoundFloor, v => Modes.SandboxRules.SpacingHullBoundFloor = (float)v),
+            new Entry("modes.sandboxRules.spacingHullBoundScale", "x", () => Modes.SandboxRules.SpacingHullBoundScale, v => Modes.SandboxRules.SpacingHullBoundScale = (float)v),
+            new Entry("modes.sandboxRules.spacingHullBoundAdd", "m", () => Modes.SandboxRules.SpacingHullBoundAdd, v => Modes.SandboxRules.SpacingHullBoundAdd = (float)v),
+            new Entry("modes.sandboxUnit.hp", "x", () => Modes.SandboxUnit.Hp, v => Modes.SandboxUnit.Hp = (int)System.Math.Round(v)),
+            new Entry("modes.sandboxUnit.ammo", "x", () => Modes.SandboxUnit.Ammo, v => Modes.SandboxUnit.Ammo = (int)System.Math.Round(v)),
+            new Entry("modes.showdownMode.tickNowAdd", "ticks", () => Modes.ShowdownMode.TickNowAdd, v => Modes.ShowdownMode.TickNowAdd = v),
+            new Entry("modes.showdownMode.tickAbsMax", "ticks", () => Modes.ShowdownMode.TickAbsMax, v => Modes.ShowdownMode.TickAbsMax = (float)v),
+            new Entry("modes.siegeMode.setupRingMax", "x", () => Modes.SiegeMode.SetupRingMax, v => Modes.SiegeMode.SetupRingMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.setupCountTrue", "count", () => Modes.SiegeMode.SetupCountTrue, v => Modes.SiegeMode.SetupCountTrue = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.setupCountFalse", "count", () => Modes.SiegeMode.SetupCountFalse, v => Modes.SiegeMode.SetupCountFalse = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.setupWaveSecondsScale", "x", () => Modes.SiegeMode.SetupWaveSecondsScale, v => Modes.SiegeMode.SetupWaveSecondsScale = (float)v),
+            new Entry("modes.siegeMode.setupStageMax", "count", () => Modes.SiegeMode.SetupStageMax, v => Modes.SiegeMode.SetupStageMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.setupProgressScaleFloor", "count", () => Modes.SiegeMode.SetupProgressScaleFloor, v => Modes.SiegeMode.SetupProgressScaleFloor = (float)v),
+            new Entry("modes.siegeMode.counterRosterRoundMax", "count", () => Modes.SiegeMode.CounterRosterRoundMax, v => Modes.SiegeMode.CounterRosterRoundMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.counterRosterGunsScale", "x", () => Modes.SiegeMode.CounterRosterGunsScale, v => Modes.SiegeMode.CounterRosterGunsScale = (float)v),
+            new Entry("modes.siegeMode.counterRosterSpeedMin", "m/s", () => Modes.SiegeMode.CounterRosterSpeedMin, v => Modes.SiegeMode.CounterRosterSpeedMin = (float)v),
+            new Entry("modes.siegeMode.counterRosterAntiArmourScale", "x", () => Modes.SiegeMode.CounterRosterAntiArmourScale, v => Modes.SiegeMode.CounterRosterAntiArmourScale = (float)v),
+            new Entry("modes.siegeMode.counterRosterArtilleryScale", "x", () => Modes.SiegeMode.CounterRosterArtilleryScale, v => Modes.SiegeMode.CounterRosterArtilleryScale = (float)v),
+            new Entry("modes.siegeMode.counterRosterAntiArmourScale2", "x", () => Modes.SiegeMode.CounterRosterAntiArmourScale2, v => Modes.SiegeMode.CounterRosterAntiArmourScale2 = (float)v),
+            new Entry("modes.siegeMode.counterRosterAaScale", "x", () => Modes.SiegeMode.CounterRosterAaScale, v => Modes.SiegeMode.CounterRosterAaScale = (float)v),
+            new Entry("modes.siegeMode.classifyWorksCountMin", "count", () => Modes.SiegeMode.ClassifyWorksCountMin, v => Modes.SiegeMode.ClassifyWorksCountMin = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.classifyWorksRingOfFloor", "x", () => Modes.SiegeMode.ClassifyWorksRingOfFloor, v => Modes.SiegeMode.ClassifyWorksRingOfFloor = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.classifyWorksChebyshevTrue", "x", () => Modes.SiegeMode.ClassifyWorksChebyshevTrue, v => Modes.SiegeMode.ClassifyWorksChebyshevTrue = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.classifyWorksChebyshevFalse", "x", () => Modes.SiegeMode.ClassifyWorksChebyshevFalse, v => Modes.SiegeMode.ClassifyWorksChebyshevFalse = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.classifyWorksDistanceScale", "x", () => Modes.SiegeMode.ClassifyWorksDistanceScale, v => Modes.SiegeMode.ClassifyWorksDistanceScale = (float)v),
+            new Entry("modes.siegeMode.classifyWorksDistanceAdd", "m", () => Modes.SiegeMode.ClassifyWorksDistanceAdd, v => Modes.SiegeMode.ClassifyWorksDistanceAdd = (float)v),
+            new Entry("modes.siegeMode.classifyWorksRingsAdd", "m", () => Modes.SiegeMode.ClassifyWorksRingsAdd, v => Modes.SiegeMode.ClassifyWorksRingsAdd = (float)v),
+            new Entry("modes.siegeMode.classifyWorksCountFalse", "count", () => Modes.SiegeMode.ClassifyWorksCountFalse, v => Modes.SiegeMode.ClassifyWorksCountFalse = (float)v),
+            new Entry("modes.siegeMode.ringOfCountMax", "count", () => Modes.SiegeMode.RingOfCountMax, v => Modes.SiegeMode.RingOfCountMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.progressStageDivisor", "x", () => Modes.SiegeMode.ProgressStageDivisor, v => Modes.SiegeMode.ProgressStageDivisor = (float)v),
+            new Entry("modes.siegeMode.insideRingCountMax", "count", () => Modes.SiegeMode.InsideRingCountMax, v => Modes.SiegeMode.InsideRingCountMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.tickTimeMin", "ticks", () => Modes.SiegeMode.TickTimeMin, v => Modes.SiegeMode.TickTimeMin = v),
+            new Entry("modes.siegeMode.tickProgressMin", "ticks", () => Modes.SiegeMode.TickProgressMin, v => Modes.SiegeMode.TickProgressMin = (float)v),
+            new Entry("modes.siegeMode.tickTimeMin2", "ticks", () => Modes.SiegeMode.TickTimeMin2, v => Modes.SiegeMode.TickTimeMin2 = v),
+            new Entry("modes.siegeMode.tickTimeMin3", "ticks", () => Modes.SiegeMode.TickTimeMin3, v => Modes.SiegeMode.TickTimeMin3 = v),
+            new Entry("modes.siegeMode.payBountiesMaxHpDivisor", "x", () => Modes.SiegeMode.PayBountiesMaxHpDivisor, v => Modes.SiegeMode.PayBountiesMaxHpDivisor = (float)v),
+            new Entry("modes.siegeMode.payBountiesRoundMin", "x", () => Modes.SiegeMode.PayBountiesRoundMin, v => Modes.SiegeMode.PayBountiesRoundMin = (float)v),
+            new Entry("modes.siegeMode.payBountiesRoundMax", "x", () => Modes.SiegeMode.PayBountiesRoundMax, v => Modes.SiegeMode.PayBountiesRoundMax = (float)v),
+            new Entry("modes.siegeMode.contestedDistanceMax", "m", () => Modes.SiegeMode.ContestedDistanceMax, v => Modes.SiegeMode.ContestedDistanceMax = (float)v),
+            new Entry("modes.siegeMode.roomForCeilingFloor", "m", () => Modes.SiegeMode.RoomForCeilingFloor, v => Modes.SiegeMode.RoomForCeilingFloor = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.keepEventsHealthMax", "x", () => Modes.SiegeMode.KeepEventsHealthMax, v => Modes.SiegeMode.KeepEventsHealthMax = (float)v),
+            new Entry("modes.siegeMode.keepEventsHealthMax2", "x", () => Modes.SiegeMode.KeepEventsHealthMax2, v => Modes.SiegeMode.KeepEventsHealthMax2 = (float)v),
+            new Entry("modes.siegeMode.keepEventsTimeAdd", "s", () => Modes.SiegeMode.KeepEventsTimeAdd, v => Modes.SiegeMode.KeepEventsTimeAdd = v),
+            new Entry("modes.siegeMode.keepEventsHealthMax3", "x", () => Modes.SiegeMode.KeepEventsHealthMax3, v => Modes.SiegeMode.KeepEventsHealthMax3 = (float)v),
+            new Entry("modes.siegeMode.brownoutHqPhaseMin", "x", () => Modes.SiegeMode.BrownoutHqPhaseMin, v => Modes.SiegeMode.BrownoutHqPhaseMin = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.brownoutHqPhaseTrue", "x", () => Modes.SiegeMode.BrownoutHqPhaseTrue, v => Modes.SiegeMode.BrownoutHqPhaseTrue = (float)v),
+            new Entry("modes.siegeMode.brownoutDownFloor", "x", () => Modes.SiegeMode.BrownoutDownFloor, v => Modes.SiegeMode.BrownoutDownFloor = (float)v),
+            new Entry("modes.siegeMode.brownoutDownDivisor", "x", () => Modes.SiegeMode.BrownoutDownDivisor, v => Modes.SiegeMode.BrownoutDownDivisor = (float)v),
+            new Entry("modes.siegeMode.fallTimeAdd", "s", () => Modes.SiegeMode.FallTimeAdd, v => Modes.SiegeMode.FallTimeAdd = v),
+            new Entry("modes.siegeMode.watchTimeMax", "s", () => Modes.SiegeMode.WatchTimeMax, v => Modes.SiegeMode.WatchTimeMax = v),
+            new Entry("modes.siegeMode.runSuperGunStageMin", "s", () => Modes.SiegeMode.RunSuperGunStageMin, v => Modes.SiegeMode.RunSuperGunStageMin = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.superGunAimDistanceSquaredMax", "m", () => Modes.SiegeMode.SuperGunAimDistanceSquaredMax, v => Modes.SiegeMode.SuperGunAimDistanceSquaredMax = (float)v),
+            new Entry("modes.siegeMode.nextArrivalStageMin", "count", () => Modes.SiegeMode.NextArrivalStageMin, v => Modes.SiegeMode.NextArrivalStageMin = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.nextArrivalCountMax", "count", () => Modes.SiegeMode.NextArrivalCountMax, v => Modes.SiegeMode.NextArrivalCountMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.nextArrivalCountSub", "count", () => Modes.SiegeMode.NextArrivalCountSub, v => Modes.SiegeMode.NextArrivalCountSub = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.nextArrivalArrivalAtMin", "s", () => Modes.SiegeMode.NextArrivalArrivalAtMin, v => Modes.SiegeMode.NextArrivalArrivalAtMin = v),
+            new Entry("modes.siegeMode.planWaveCountDivisor", "x", () => Modes.SiegeMode.PlanWaveCountDivisor, v => Modes.SiegeMode.PlanWaveCountDivisor = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.planWaveWaveCap", "count", () => Modes.SiegeMode.PlanWaveWaveCap, v => Modes.SiegeMode.PlanWaveWaveCap = (float)v),
+            new Entry("modes.siegeMode.planWaveWaveScale", "x", () => Modes.SiegeMode.PlanWaveWaveScale, v => Modes.SiegeMode.PlanWaveWaveScale = (float)v),
+            new Entry("modes.siegeMode.sendBreachArmyCpMax", "CP", () => Modes.SiegeMode.SendBreachArmyCpMax, v => Modes.SiegeMode.SendBreachArmyCpMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.sendBreachMaxScale", "x", () => Modes.SiegeMode.SendBreachMaxScale, v => Modes.SiegeMode.SendBreachMaxScale = (float)v),
+            new Entry("modes.siegeMode.sendBreachKMax", "m", () => Modes.SiegeMode.SendBreachKMax, v => Modes.SiegeMode.SendBreachKMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.forwardDropStageMax", "count", () => Modes.SiegeMode.ForwardDropStageMax, v => Modes.SiegeMode.ForwardDropStageMax = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.forwardDropStageSub", "count", () => Modes.SiegeMode.ForwardDropStageSub, v => Modes.SiegeMode.ForwardDropStageSub = (int)System.Math.Round(v)),
+            new Entry("modes.siegeMode.releaseWavesTimeAdd", "s", () => Modes.SiegeMode.ReleaseWavesTimeAdd, v => Modes.SiegeMode.ReleaseWavesTimeAdd = v),
+            new Entry("modes.siegeMode.collapseTimeAdd", "s", () => Modes.SiegeMode.CollapseTimeAdd, v => Modes.SiegeMode.CollapseTimeAdd = v),
+            new Entry("modes.siegeMode.runChainHpScale", "x", () => Modes.SiegeMode.RunChainHpScale, v => Modes.SiegeMode.RunChainHpScale = (float)v),
+            new Entry("modes.siegeMode.runChainHpAdd", "x", () => Modes.SiegeMode.RunChainHpAdd, v => Modes.SiegeMode.RunChainHpAdd = (float)v),
+            new Entry("modes.siegeRules.applyValueFloor", "s", () => Modes.SiegeRules.ApplyValueFloor, v => Modes.SiegeRules.ApplyValueFloor = (float)v),
+            new Entry("modes.siegeRules.attackerStartCp", "CP", () => Modes.SiegeRules.AttackerStartCp, v => Modes.SiegeRules.AttackerStartCp = (float)v),
+            new Entry("modes.siegeRules.attackerIncome", "count", () => Modes.SiegeRules.AttackerIncome, v => Modes.SiegeRules.AttackerIncome = (float)v),
+            new Entry("modes.siegeRules.attackerArmyCap", "count", () => Modes.SiegeRules.AttackerArmyCap, v => Modes.SiegeRules.AttackerArmyCap = (int)System.Math.Round(v)),
+            new Entry("modes.siegeRules.n23", "x", () => Modes.SiegeRules.N23, v => Modes.SiegeRules.N23 = (float)v),
+            new Entry("modes.siegeRules.n3", "x", () => Modes.SiegeRules.N3, v => Modes.SiegeRules.N3 = (float)v),
+            new Entry("modes.siegeRules.n24", "x", () => Modes.SiegeRules.N24, v => Modes.SiegeRules.N24 = (float)v),
+            new Entry("modes.siegeRules.n32", "x", () => Modes.SiegeRules.N32, v => Modes.SiegeRules.N32 = (float)v),
+            new Entry("modes.siegeSession.buildArmyCap", "count", () => Modes.SiegeSession.BuildArmyCap, v => Modes.SiegeSession.BuildArmyCap = (int)System.Math.Round(v)),
+            new Entry("modes.siegeSession.buildHardTrue2", "count", () => Modes.SiegeSession.BuildHardTrue2, v => Modes.SiegeSession.BuildHardTrue2 = (int)System.Math.Round(v)),
+            new Entry("modes.siegeSession.buildHardFalse2", "count", () => Modes.SiegeSession.BuildHardFalse2, v => Modes.SiegeSession.BuildHardFalse2 = (int)System.Math.Round(v)),
+            new Entry("modes.siegeSession.stageBonus1", "s", () => Modes.SiegeSession.StageBonus1, v => Modes.SiegeSession.StageBonus1 = (float)v),
+            new Entry("modes.siegeSession.stageBonus2", "s", () => Modes.SiegeSession.StageBonus2, v => Modes.SiegeSession.StageBonus2 = (float)v),
+            new Entry("modes.siegeSession.buildMaxBank", "count", () => Modes.SiegeSession.BuildMaxBank, v => Modes.SiegeSession.BuildMaxBank = (float)v),
+            new Entry("modes.siegeSession.buildSuperGunFirst", "s", () => Modes.SiegeSession.BuildSuperGunFirst, v => Modes.SiegeSession.BuildSuperGunFirst = (float)v),
+            new Entry("modes.siegeSession.buildSuperGunSeconds", "s", () => Modes.SiegeSession.BuildSuperGunSeconds, v => Modes.SiegeSession.BuildSuperGunSeconds = (float)v),
+            new Entry("modes.siegeSession.buildHardening", "x", () => Modes.SiegeSession.BuildHardening, v => Modes.SiegeSession.BuildHardening = (float)v),
+            new Entry("modes.siegeSession.lineHealth1", "x", () => Modes.SiegeSession.LineHealth1, v => Modes.SiegeSession.LineHealth1 = (float)v),
+            new Entry("modes.siegeSession.lineHealth2", "x", () => Modes.SiegeSession.LineHealth2, v => Modes.SiegeSession.LineHealth2 = (float)v),
+            new Entry("modes.siegeSession.lineHealth3", "x", () => Modes.SiegeSession.LineHealth3, v => Modes.SiegeSession.LineHealth3 = (float)v),
+            new Entry("modes.siegeSession.lineDamage1", "x", () => Modes.SiegeSession.LineDamage1, v => Modes.SiegeSession.LineDamage1 = (float)v),
+            new Entry("modes.siegeSession.lineDamage2", "x", () => Modes.SiegeSession.LineDamage2, v => Modes.SiegeSession.LineDamage2 = (float)v),
+            new Entry("modes.siegeSession.lineDamage3", "x", () => Modes.SiegeSession.LineDamage3, v => Modes.SiegeSession.LineDamage3 = (float)v),
+            new Entry("modes.simEvent.priorityValueMin", "x", () => Modes.SimEvent.PriorityValueMin, v => Modes.SimEvent.PriorityValueMin = (float)v),
+            new Entry("modes.simEvent.priorityRoundMax", "x", () => Modes.SimEvent.PriorityRoundMax, v => Modes.SimEvent.PriorityRoundMax = (int)System.Math.Round(v)),
+            new Entry("modes.simWorld.setStormInsideMin", "x", () => Modes.SimWorld.SetStormInsideMin, v => Modes.SimWorld.SetStormInsideMin = (float)v),
+            new Entry("modes.simWorld.setStormInsideMax", "x", () => Modes.SimWorld.SetStormInsideMax, v => Modes.SimWorld.SetStormInsideMax = (float)v),
+            new Entry("modes.simWorld.setStormOutsideMin", "x", () => Modes.SimWorld.SetStormOutsideMin, v => Modes.SimWorld.SetStormOutsideMin = (float)v),
+            new Entry("modes.simWorld.setStormOutsideMax", "x", () => Modes.SimWorld.SetStormOutsideMax, v => Modes.SimWorld.SetStormOutsideMax = (float)v),
+            new Entry("modes.survivalSession.lostDistanceMax", "m", () => Modes.SurvivalSession.LostDistanceMax, v => Modes.SurvivalSession.LostDistanceMax = (float)v),
+            new Entry("modes.survivalSession.lostDistanceMax2", "m", () => Modes.SurvivalSession.LostDistanceMax2, v => Modes.SurvivalSession.LostDistanceMax2 = (float)v),
+            new Entry("modes.survivalSession.lostNowMin", "s", () => Modes.SurvivalSession.LostNowMin, v => Modes.SurvivalSession.LostNowMin = v),
+            new Entry("modes.survivalSession.lostNowMin2", "s", () => Modes.SurvivalSession.LostNowMin2, v => Modes.SurvivalSession.LostNowMin2 = v),
+            new Entry("modes.teamEconomy.ctorStartCp", "CP", () => Modes.TeamEconomy.CtorStartCp, v => Modes.TeamEconomy.CtorStartCp = (float)v),
+            new Entry("modes.teamEconomy.ctorBank", "count", () => Modes.TeamEconomy.CtorBank, v => Modes.TeamEconomy.CtorBank = (float)v),
+            new Entry("modes.weeklySession.buildArmyCap", "count", () => Modes.WeeklySession.BuildArmyCap, v => Modes.WeeklySession.BuildArmyCap = (int)System.Math.Round(v)),
+            new Entry("modes.weeklySession.buildStartSeconds", "s", () => Modes.WeeklySession.BuildStartSeconds, v => Modes.WeeklySession.BuildStartSeconds = (float)v),
         };
     }
 }

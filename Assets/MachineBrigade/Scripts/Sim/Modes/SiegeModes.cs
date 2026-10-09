@@ -33,7 +33,7 @@ namespace MachineBrigade.Sim.Modes
                 _codeStartSeconds ??= StartSeconds;
                 var bonusTotal = 0f;
                 foreach (var stageBonus in StageBonus) bonusTotal += stageBonus;
-                StartSeconds = MathF.Max(60f, _codeStartSeconds.Value + limit - (NormalStartSeconds + bonusTotal));
+                StartSeconds = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeRules.ApplyValueFloor, _codeStartSeconds.Value + limit - (NormalStartSeconds + bonusTotal));
             }
         }
 
@@ -103,7 +103,7 @@ namespace MachineBrigade.Sim.Modes
             "cottage", "log_cabin", "shop", "factory", "hangar", "control_tower",
         };
 
-        public SideSetup Attacker { get; set; } = new() { StartCp = 34f, Income = 1.8f, ArmyCap = 40 };
+        public SideSetup Attacker { get; set; } = new() { StartCp = global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeRules.AttackerStartCp, Income = global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeRules.AttackerIncome, ArmyCap = global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeRules.AttackerArmyCap };
         public SideSetup Defender { get; set; } = new() { StartCp = 20f, Income = 1f };
 
         /// <summary>
@@ -191,9 +191,9 @@ namespace MachineBrigade.Sim.Modes
         public BaseLoadout? FortressLoadout { get; set; }
 
         /// <summary>The fortress's towers by ring (outer line, walls, keep): health and damage times the usual.</summary>
-        public float[] LineHealth { get; set; } = { 1f, 1.25f, 1.5f };
+        public float[] LineHealth { get; set; } = { 1f, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeRules.N23, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeRules.N3 };
 
-        public float[] LineDamage { get; set; } = { 1f, 1.1f, 1.2f };
+        public float[] LineDamage { get; set; } = { 1f, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeRules.N24, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeRules.N32 };
 
         /// <summary>The share of the outer line's and the walls' tower hardpoints that are manned (an easier fortress leaves some empty).</summary>
         public float Manning { get; set; } = 1f;
@@ -506,7 +506,7 @@ namespace MachineBrigade.Sim.Modes
                 var rebuild = _rules.Rebuild ?? _rules.PlayerDefends;
                 foreach (var slot in fortressBase.Slots)
                 {
-                    if (slot.Structure.IsValid) _defences[Math.Clamp(slot.Ring, 1, 3) - 1].Add(slot.Structure);
+                    if (slot.Structure.IsValid) _defences[Math.Clamp(slot.Ring, 1, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SetupRingMax) - 1].Add(slot.Structure);
                     if (slot.Structure.IsValid && world.TryGetVehicle(slot.Structure, out var module) && module.Def.Utility is { AirRepair: > 0f })
                         _pads.Add((slot.Structure, module.Position));
                     if (!rebuild) slot.Lost = true;
@@ -534,7 +534,7 @@ namespace MachineBrigade.Sim.Modes
                         if (_rules.BountyBuildings.Contains(prop.Def.Id)) _bounty.Add(prop.Id);
                     }
             // A map without relays (or generators) starts at the stage it has, with the time those stages would have earned.
-            Stage = _relays.Count > 0 ? 1 : _generators.Count > 0 ? 2 : 3;
+            Stage = _relays.Count > 0 ? 1 : _generators.Count > 0 ? global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SetupCountTrue : global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SetupCountFalse;
             // Rings already broken (the weekly fortress): their objectives and guns are gone.
             while (Stage < Math.Min(3, _rules.StartStage))
             {
@@ -553,9 +553,9 @@ namespace MachineBrigade.Sim.Modes
                 if (Stage == 3) SpawnGuardian(world);
             }
             _deadline = _rules.Endless ? double.MaxValue : _rules.StartSeconds;
-            _nextWave = _rules.WaveSeconds > 0f ? _rules.WaveSeconds * 0.75f : double.MaxValue;
+            _nextWave = _rules.WaveSeconds > 0f ? _rules.WaveSeconds * global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SetupWaveSecondsScale : double.MaxValue;
             for (var skipped = 1; skipped < Stage && skipped <= _rules.StageBonus.Length; skipped++) _deadline += _rules.StageBonus[skipped - 1];
-            DomeUp = Stage <= 2 && _generators.Count > 0;
+            DomeUp = Stage <= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SetupStageMax && _generators.Count > 0;
             Shield(world);
             // Prompt 17 B.2: on a long battlefield the attack's reinforcements land further forward once a ring has fallen.
             if (_fortress is { Layered: true } && _fortress.ForwardDrops.Count > 0)
@@ -578,7 +578,7 @@ namespace MachineBrigade.Sim.Modes
                     BaseScore = BaseStrength.Score(world, Defender);
                     ReferenceLevel = Math.Clamp(world.Bases.Of(Defender)?.Loadout.HqLevel ?? 1, 1, world.Catalog.Base.MaxLevel);
                     ReferenceScore = BaseStrength.ReferenceScore(world.Catalog, ReferenceLevel);
-                    _waveScale = BaseStrength.WaveScale(ReferenceScore) * MathF.Max(0.1f, _rules.ProgressScale);
+                    _waveScale = BaseStrength.WaveScale(ReferenceScore) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SetupProgressScaleFloor, _rules.ProgressScale);
                     if (world.TryGetEconomy(Attacker, out var attacking)) attacking.IncomeScale *= MathF.Sqrt(_waveScale);
                 }
                 if (_rules.CounterBase) _counterRoster = CounterRoster(world);
@@ -625,17 +625,17 @@ namespace MachineBrigade.Sim.Modes
             void Add(string id, float weight)
             {
                 if (!world.Catalog.Vehicles.TryGetValue(id, out var def)) return;
-                var n = Math.Clamp((int)MathF.Round(weight), 0, 4);
+                var n = Math.Clamp((int)MathF.Round(weight), 0, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.CounterRosterRoundMax);
                 for (var i = 0; i < n; i++) list.Add(id);
             }
             foreach (var id in _rules.WaveRoster)
             {
                 if (!world.Catalog.Vehicles.TryGetValue(id, out var def)) continue;
                 var weight = 1f;
-                if (def.Armor == ArmorClass.Heavy && !def.Flying) weight += 2f * guns / total - 1f * antiArmour / total;
-                if (def.Armor == ArmorClass.Light && def.Speed >= 11f) weight += 2f * antiArmour / total + 1.5f * artillery / total;
-                if (def.Weapon.Projectile == ProjectileKind.Drone || def.Weapon.MinRange > 0f) weight += 1.5f * antiArmour / total;
-                if (def.Flying) weight -= 2.5f * aa / total;
+                if (def.Armor == ArmorClass.Heavy && !def.Flying) weight += global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.CounterRosterGunsScale * guns / total - 1f * antiArmour / total;
+                if (def.Armor == ArmorClass.Light && def.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.CounterRosterSpeedMin) weight += global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.CounterRosterAntiArmourScale * antiArmour / total + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.CounterRosterArtilleryScale * artillery / total;
+                if (def.Weapon.Projectile == ProjectileKind.Drone || def.Weapon.MinRange > 0f) weight += global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.CounterRosterAntiArmourScale2 * antiArmour / total;
+                if (def.Flying) weight -= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.CounterRosterAaScale * aa / total;
                 Add(id, weight);
             }
             return list.Count > 0 ? list : new List<string>(_rules.WaveRoster);
@@ -655,14 +655,14 @@ namespace MachineBrigade.Sim.Modes
         private void ClassifyWorks(SimWorld world, IReadOnlyList<float> rings)
         {
             if (Fortress is not { } hq) return;
-            var split = rings.Count >= 2 ? (rings[0] + rings[1]) * 0.5f : float.MaxValue;
+            var split = rings.Count >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksCountMin ? (rings[0] + rings[1]) * 0.5f : float.MaxValue;
             Vector2 min = new(float.MaxValue), max = new(float.MinValue);
             foreach (var prop in world.Props)
             {
                 if (!prop.IsAlive) continue;
                 var gate = prop.Def.Id == _rules.Gate;
                 if (!gate && prop.Def.Id != _rules.Wall) continue;
-                var ring = _fortress is { Layered: true } f ? Math.Max(2, f.RingOf(prop.Position)) : Chebyshev(prop.Position, hq) >= split ? 2 : 3;
+                var ring = _fortress is { Layered: true } f ? Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksRingOfFloor, f.RingOf(prop.Position)) : Chebyshev(prop.Position, hq) >= split ? global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksChebyshevTrue : global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksChebyshevFalse;
                 if (ring == 3)
                 {
                     min = Vector2.Min(min, prop.Position);
@@ -684,12 +684,12 @@ namespace MachineBrigade.Sim.Modes
             if (min.X <= max.X)
             {
                 DomeCentre = (min + max) * 0.5f;
-                DomeRadius = Vector2.Distance(min, max) * 0.5f + 2f;
+                DomeRadius = Vector2.Distance(min, max) * global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksDistanceScale + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksDistanceAdd;
             }
             else
             {
                 DomeCentre = hq;
-                DomeRadius = rings.Count >= 2 ? rings[1] + 4f : 30f;
+                DomeRadius = rings.Count >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksCountMin ? rings[1] + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksRingsAdd : global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ClassifyWorksCountFalse;
             }
         }
 
@@ -697,7 +697,7 @@ namespace MachineBrigade.Sim.Modes
         private int RingOf(Vector2 p, IReadOnlyList<float> rings)
         {
             if (_fortress is { Layered: true } layered) return layered.RingOf(p);
-            if (Fortress is not { } centre || rings.Count < 2) return 1;
+            if (Fortress is not { } centre || rings.Count < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.RingOfCountMax) return 1;
             var d = Chebyshev(p, centre);
             return d > rings[0] ? 1 : d > rings[1] ? 2 : 3;
         }
@@ -771,7 +771,7 @@ namespace MachineBrigade.Sim.Modes
                     part = max > 0f ? 1f - hp / max : 1f;
                     break;
             }
-            return MathF.Min(1f, (Stage - 1 + part) / 3f);
+            return MathF.Min(1f, (Stage - 1 + part) / global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ProgressStageDivisor);
         }
 
         /// <summary>
@@ -815,7 +815,7 @@ namespace MachineBrigade.Sim.Modes
         {
             if (_fortress is { Layered: true } layered) return layered.RingOf(p) >= (ring == 2 ? 2 : 3);
             var rings = world.Map.SiegeRings;
-            if (Fortress is not { } hq || rings.Count < 2) return true;
+            if (Fortress is not { } hq || rings.Count < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.InsideRingCountMax) return true;
             return Chebyshev(p, hq) <= rings[ring == 2 ? 0 : 1];
         }
 
@@ -871,7 +871,7 @@ namespace MachineBrigade.Sim.Modes
                 return;
             }
             if (world.Time >= _nextWave) SendWave(world);
-            if (_rules.BreachWave && !BreachSent && _rules.WaveBreachers.Count > 0 && world.Time >= 240.0) SendBreach(world);
+            if (_rules.BreachWave && !BreachSent && _rules.WaveBreachers.Count > 0 && world.Time >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.TickTimeMin) SendBreach(world);
             ReleaseWaves(world);
             if (Stage == 1 && Alive(world, _relays) == 0) Advance(world, 2);
             if (Stage == 2 && Alive(world, _generators) == 0) Advance(world, 3);
@@ -882,7 +882,7 @@ namespace MachineBrigade.Sim.Modes
             Watch(world);
             PayBounties(world);
             Brownout(world);
-            if (Stage == 3 && (_targets.Count > 0 ? Alive(world, _targets) == 0 : Progress(world) >= 0.999f))
+            if (Stage == 3 && (_targets.Count > 0 ? Alive(world, _targets) == 0 : Progress(world) >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.TickProgressMin))
             {
                 Fall(world);
                 return;
@@ -894,9 +894,9 @@ namespace MachineBrigade.Sim.Modes
             }
             // An attacking player wiped out has lost; an attacking AI always buys more.
             if (_rules.PlayerDefends || !_rules.WipeLoses) return;
-            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
+            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.TickTimeMin2;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
-            if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, EnemyTeam);
+            if (_wipedSince >= 0 && world.Time - _wipedSince > global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.TickTimeMin3) Finish(world, EnemyTeam);
         }
 
         /// <summary>
@@ -911,7 +911,7 @@ namespace MachineBrigade.Sim.Modes
                 if (world.TryGetProp(_bounty[i], out var building) && building.IsAlive) continue;
                 _bounty.RemoveAt(i);
                 if (building == null) continue;
-                var cp = Math.Clamp(MathF.Round(building.Def.MaxHp / 400f), 2f, 6f);
+                var cp = Math.Clamp(MathF.Round(building.Def.MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.PayBountiesMaxHpDivisor), global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.PayBountiesRoundMin, global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.PayBountiesRoundMax);
                 if (world.TryGetEconomy(Attacker, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + cp);
                 BuildingsRazed++;
                 world.Emit(SimEvent.BountyPaid(Attacker, building.Def.Id, building.Position, cp));
@@ -923,7 +923,7 @@ namespace MachineBrigade.Sim.Modes
         {
             if (!world.TryGetProp(Target(world), out var objective)) return false;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Team == Attacker && Vector2.Distance(v.Position, objective.Position) < 25f) return true;
+                if (v.IsAlive && v.Team == Attacker && Vector2.Distance(v.Position, objective.Position) < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ContestedDistanceMax) return true;
             return false;
         }
 
@@ -969,7 +969,7 @@ namespace MachineBrigade.Sim.Modes
         {
             var grid = world.Grid;
             var lanes = world.Lanes;
-            var room = Math.Max(2, (int)MathF.Ceiling((def.HullRadius - SimWorld.ObstacleClearance) / grid.CellSize) + 1);
+            var room = Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.RoomForCeilingFloor, (int)MathF.Ceiling((def.HullRadius - SimWorld.ObstacleClearance) / grid.CellSize) + 1);
             var (cx, cy) = grid.CellOf(at);
             var main = grid.MainRegion;
             for (var ring = 0; ring <= 12; ring++)
@@ -1002,17 +1002,17 @@ namespace MachineBrigade.Sim.Modes
         {
             if (!world.TryGetProp(Target(world), out var hq)) return;
             var health = hq.Hp / hq.MaxHp;
-            if (_hqPhase == 0 && health < 0.75f)
+            if (_hqPhase == 0 && health < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.KeepEventsHealthMax)
             {
                 _hqPhase = 1;
                 if (world.Catalog.TryGetSupport("scripted_barrage", out var barrage) /* balance final: scripted, not the card */ && TryAttackerCentre(world, out var at))
                     world.Strikes.Launch(barrage, Defender, at, at);
                 world.Emit(SimEvent.Alert(hq.Position, Key("barrage")));
             }
-            else if (_hqPhase == 1 && health < 0.5f)
+            else if (_hqPhase == 1 && health < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.KeepEventsHealthMax2)
             {
                 _hqPhase = 2;
-                _glyphUntil = world.Time + 6.0;
+                _glyphUntil = world.Time + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.KeepEventsTimeAdd;
                 foreach (var elite in new[] { "elite_mbt", "elite_heavy_tank" })
                     if (world.Catalog.Vehicles.ContainsKey(elite))
                         // (Where it has room: beside the HQ they came down in a pocket and never got out; prompt 12.)
@@ -1020,7 +1020,7 @@ namespace MachineBrigade.Sim.Modes
                             SimMath.DegToRad(225f));
                 world.Emit(SimEvent.Alert(hq.Position, Key("glyph")));
             }
-            else if (_hqPhase == 2 && health < 0.25f)
+            else if (_hqPhase == 2 && health < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.KeepEventsHealthMax3)
             {
                 _hqPhase = 3;
                 world.Emit(SimEvent.Alert(hq.Position, Key("laststand")));
@@ -1049,7 +1049,7 @@ namespace MachineBrigade.Sim.Modes
         private void Brownout(SimWorld world)
         {
             var down = _generators.Count - Alive(world, _generators);
-            var boost = _hqPhase >= 3 ? 1.3f : MathF.Max(0.5f, 1f - down / 6f);
+            var boost = _hqPhase >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.BrownoutHqPhaseMin ? global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.BrownoutHqPhaseTrue : MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.BrownoutDownFloor, 1f - down / global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.BrownoutDownDivisor);
             for (var ring = 1; ring < 3; ring++)
                 foreach (var id in _defences[ring])
                     if (world.TryGetVehicle(id, out var v)) v.FireBoost = boost;
@@ -1065,7 +1065,7 @@ namespace MachineBrigade.Sim.Modes
             if (SuperGun.IsValid) remaining.Add(SuperGun);
             Collapse(world, remaining, 0.12, props: false);
             Collapse(world, _fortressProps, 0.08, props: true);
-            _finishAt = world.Time + 4.5;
+            _finishAt = world.Time + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.FallTimeAdd;
             world.Emit(SimEvent.Stage(4, Fortress ?? Vector2.Zero, Key("fallen")));
         }
 
@@ -1092,7 +1092,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>At night the fortress's sirens sound when it spots attackers on its ground (at most once a minute).</summary>
         private void Watch(SimWorld world)
         {
-            if (!_rules.Night || _fortress == null || world.Time < _spotCheck || world.Time - _spottedAt < 60.0) return;
+            if (!_rules.Night || _fortress == null || world.Time < _spotCheck || world.Time - _spottedAt < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.WatchTimeMax) return;
             _spotCheck = world.Time + 1.0;
             foreach (var v in world.VehicleList)
             {
@@ -1152,7 +1152,7 @@ namespace MachineBrigade.Sim.Modes
                 world.Emit(SimEvent.Alert(_superGunAt, Key("gunDown"), bad: _rules.PlayerDefends));
                 return;
             }
-            if (world.Time < _superGunFireAt || Stage >= 4) return;
+            if (world.Time < _superGunFireAt || Stage >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.RunSuperGunStageMin) return;
             _superGunFireAt = world.Time + _rules.SuperGunSeconds;
             if (!world.Catalog.TryGetSupport(_rules.SuperGunShell, out var shell)) return;
             var target = SuperGunAim(world);
@@ -1172,7 +1172,7 @@ namespace MachineBrigade.Sim.Modes
                 if (!v.IsAlive || v.Team != Attacker || v.Flying || v.Def.Static) continue;
                 var value = 0f;
                 foreach (var o in world.VehicleList)
-                    if (o.IsAlive && o.Team == Attacker && !o.Flying && !o.Def.Static && Vector2.DistanceSquared(o.Position, v.Position) < 144f)
+                    if (o.IsAlive && o.Team == Attacker && !o.Flying && !o.Def.Static && Vector2.DistanceSquared(o.Position, v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SuperGunAimDistanceSquaredMax)
                         value += MathF.Max(1f, o.Def.CpCost);
                 if (value <= bestValue) continue;
                 bestValue = value;
@@ -1191,11 +1191,11 @@ namespace MachineBrigade.Sim.Modes
         /// </summary>
         private (double due, Vector2 at, Vector2 along)? NextArrival(SimWorld world)
         {
-            if (_fortress?.Arrival is not { } line || Stage >= 3 || line.Path.Count < 2) return null;
+            if (_fortress?.Arrival is not { } line || Stage >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.NextArrivalStageMin || line.Path.Count < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.NextArrivalCountMax) return null;
             var now = world.Time;
-            var along = line.Path[line.Path.Count - 1] - line.Path[line.Path.Count - 2];
+            var along = line.Path[line.Path.Count - 1] - line.Path[line.Path.Count - global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.NextArrivalCountSub];
             along = along.LengthSquared() > 0.01f ? Vector2.Normalize(along) : Vector2.UnitX;
-            if (!double.IsNaN(_arrivalAt) && _arrivalAt - now >= 2.5) return (_arrivalAt, line.Stop, along);
+            if (!double.IsNaN(_arrivalAt) && _arrivalAt - now >= global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.NextArrivalArrivalAtMin) return (_arrivalAt, line.Stop, along);
             _arrivalAt = Math.Max(now + _rules.ArrivalLead, _lastArrival + _rules.ArrivalGap);
             _lastArrival = _arrivalAt;
             Arrivals++;
@@ -1221,14 +1221,14 @@ namespace MachineBrigade.Sim.Modes
             var count = SizeAt(wave);
             // Prompt 30 L5: the endless part grows in stats only, never in numbers past the finite part's last wave.
             if (InEndless) count = Math.Min(count, SizeAt(_finiteWaves > 0 ? _finiteWaves : EndlessRules.DefendFiniteWaves));
-            var heavies = _rules.WaveHeavy.Count > 0 && _rules.HeavyEvery > 0 ? Math.Min(count / 4, wave / _rules.HeavyEvery) : 0;
+            var heavies = _rules.WaveHeavy.Count > 0 && _rules.HeavyEvery > 0 ? Math.Min(count / global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.PlanWaveCountDivisor, wave / _rules.HeavyEvery) : 0;
             // Siege breakers: bulldozers for the gates and walls, siege guns and long guns that outrange the towers.
-            var breakers = _rules.WaveBreachers.Count > 0 && wave >= _rules.BreachFrom ? Math.Min(count / 4, 1 + (wave - _rules.BreachFrom) / Math.Max(1, _rules.BreachEvery)) : 0;
+            var breakers = _rules.WaveBreachers.Count > 0 && wave >= _rules.BreachFrom ? Math.Min(count / global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.PlanWaveCountDivisor, 1 + (wave - _rules.BreachFrom) / Math.Max(1, _rules.BreachEvery)) : 0;
             var offset = _waveRandom.Next(swarm.Count);
             for (var i = 0; i < count - heavies - breakers; i++) _plan.Add(swarm[(offset + i) % swarm.Count]);
             for (var i = 0; i < heavies; i++) _plan.Add(_rules.WaveHeavy[(wave + i) % _rules.WaveHeavy.Count]);
             for (var i = 0; i < breakers; i++) _plan.Add(_rules.WaveBreachers[(wave + i) % _rules.WaveBreachers.Count]);
-            var elite = MathF.Min(0.6f, (wave - _rules.EliteFrom + 1) * 0.08f);
+            var elite = MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.PlanWaveWaveCap, (wave - _rules.EliteFrom + 1) * global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.PlanWaveWaveScale);
             for (var i = 0; i < _plan.Count; i++)
                 if (elite > 0f && world.Catalog.EliteVariant(_plan[i]) is { } better && _waveRandom.NextDouble() < elite)
                     _plan[i] = better;
@@ -1271,12 +1271,12 @@ namespace MachineBrigade.Sim.Modes
         private void SendBreach(SimWorld world)
         {
             if (!world.TryGetEconomy(Defender, out var ours) || !world.TryGetEconomy(Attacker, out var theirs)) return;
-            if (ours.ArmyCp < 14 || ours.ArmyCp < 1.6f * Math.Max(1, theirs.ArmyCp)) return;
+            if (ours.ArmyCp < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SendBreachArmyCpMax || ours.ArmyCp < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SendBreachMaxScale * Math.Max(1, theirs.ArmyCp)) return;
             if (!world.TryGetRally(Attacker, out var camp)) return;
             BreachSent = true;
             // Two of every breaker, elite where there is one: a hammer blow at the line.
             foreach (var id in _rules.WaveBreachers)
-                for (var k = 0; k < 2; k++) _reserve.Enqueue((Wave, world.Catalog.EliteVariant(id) ?? id));
+                for (var k = 0; k < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.SendBreachKMax; k++) _reserve.Enqueue((Wave, world.Catalog.EliteVariant(id) ?? id));
             ReleaseWaves(world);
             world.Emit(SimEvent.Alert(camp, "assist.breach"));
         }
@@ -1290,8 +1290,8 @@ namespace MachineBrigade.Sim.Modes
         {
             get
             {
-                if (_fortress is not { Layered: true } f || f.ForwardDrops.Count == 0 || Stage < 2) return null;
-                return f.ForwardDrops[Math.Min(Stage - 2, f.ForwardDrops.Count - 1)];
+                if (_fortress is not { Layered: true } f || f.ForwardDrops.Count == 0 || Stage < global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ForwardDropStageMax) return null;
+                return f.ForwardDrops[Math.Min(Stage - global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ForwardDropStageSub, f.ForwardDrops.Count - 1)];
             }
         }
 
@@ -1306,7 +1306,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 var (wave, id) = _reserve.Dequeue();
                 world.Economy.Airlift(Attacker, id, camp);
-                _inbound.Add(world.Time + Economy.EconomySystem.DeliverySeconds + 0.5);
+                _inbound.Add(world.Time + Economy.EconomySystem.DeliverySeconds + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.ReleaseWavesTimeAdd);
                 if (_landed.TryGetValue(wave, out var list)) list.Add(id);
                 alive++;
             }
@@ -1336,7 +1336,7 @@ namespace MachineBrigade.Sim.Modes
                 }
             }
             order.Sort((a, b) => a.d.CompareTo(b.d));
-            var start = world.Time + 0.4;
+            var start = world.Time + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.CollapseTimeAdd;
             for (var i = 0; i < order.Count; i++) _chain.Add((start + i * interval, order[i].id, props));
         }
 
@@ -1352,13 +1352,13 @@ namespace MachineBrigade.Sim.Modes
                     if (world.TryGetProp(id, out var p) && p.IsAlive)
                     {
                         p.Invulnerable = false;
-                        world.Damage.Apply(p, p.Hp * 10f + 100000f, DamageType.HighExplosive);
+                        world.Damage.Apply(p, p.Hp * global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.RunChainHpScale + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.RunChainHpAdd, DamageType.HighExplosive);
                     }
                 }
                 else if (world.TryGetVehicle(id, out var v) && v.IsAlive)
                 {
                     v.Invulnerable = false;
-                    world.Damage.Apply(v, v.Hp * 10f + 100000f, DamageType.HighExplosive);
+                    world.Damage.Apply(v, v.Hp * global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.RunChainHpScale + global::MachineBrigade.Sim.Content.SimTunables.Modes.SiegeMode.RunChainHpAdd, DamageType.HighExplosive);
                 }
             }
         }
@@ -1484,7 +1484,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>CP handed out for each part of the boss broken (prompt 9).</summary>
         public float PartBounty { get; set; } = 2f;
 
-        public SideSetup Player { get; set; } = new() { StartCp = 30f, Income = 1.5f, ArmyCap = 36 };
+        public SideSetup Player { get; set; } = new() { StartCp = global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushRules.PlayerStartCp, Income = global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushRules.PlayerIncome, ArmyCap = global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushRules.PlayerArmyCap };
 
         /// <summary>
         /// Prompt 32 L6: the player's opening squad (its commander's roles), dropped again as each boss after the first
@@ -1587,7 +1587,7 @@ namespace MachineBrigade.Sim.Modes
                     if (!world.Catalog.Vehicles.ContainsKey(def)) continue;
                     var angle = i * 2.4f;
                     var v = world.SpawnVehicle(def, PlayerTeam, rally + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (4f + 1.2f * i), SimMath.DegToRad(45f));
-                    v.Hp = MathF.Max(1f, v.MaxHp * Math.Clamp(health, 0.05f, 1f));
+                    v.Hp = MathF.Max(1f, v.MaxHp * Math.Clamp(health, global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushMode.SetupHealthMin, 1f));
                 }
                 _nextBossAt = 6.0;
                 HuntSetup(world);
@@ -1646,12 +1646,12 @@ namespace MachineBrigade.Sim.Modes
             HuntTick(world);
             if (_rules.StepBounty > 0f && Boss.IsValid && world.TryGetVehicle(Boss, out var hurt) && hurt.IsAlive)
             {
-                var steps = Math.Min(3, (int)MathF.Floor((1f - hurt.Hp / hurt.MaxHp) * 4f));
+                var steps = Math.Min(global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushMode.TickFloorCap, (int)MathF.Floor((1f - hurt.Hp / hurt.MaxHp) * global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushMode.TickHpScale));
                 for (; _stepsPaid < steps; _stepsPaid++)
                     if (world.TryGetEconomy(PlayerTeam, out var paid)) paid.Cp = MathF.Min(paid.Bank, paid.Cp + _rules.StepBounty * _bountyScale);
             }
             if (_rules.PartBounty > 0f && Boss.IsValid && world.TryGetVehicle(Boss, out var parted) && parted.IsAlive)
-                for (var i = 0; i < parted.PartCount && i < 64; i++)
+                for (var i = 0; i < parted.PartCount && i < global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushMode.TickIMax; i++)
                 {
                     if (!parted.IsPartBroken(i) || (_partsPaid & (1UL << i)) != 0) continue;
                     _partsPaid |= 1UL << i;
@@ -1711,9 +1711,9 @@ namespace MachineBrigade.Sim.Modes
                 return;
             }
             // A fresh battle's army is bought after the boss arrives; it is only lost once the boss is out.
-            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0 && (!_rules.Fresh || Boss.IsValid);
+            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushMode.TickTimeMin && (!_rules.Fresh || Boss.IsValid);
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
-            if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, Endless ? PlayerTeam : EnemyTeam);
+            if (_wipedSince >= 0 && world.Time - _wipedSince > global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushMode.TickTimeMin2) Finish(world, Endless ? PlayerTeam : EnemyTeam);
         }
 
         private void Spawn(SimWorld world)

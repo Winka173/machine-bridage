@@ -146,7 +146,7 @@ namespace MachineBrigade.Sim.Modes
             if (!InFinalPhase && held0 != held1)
             {
                 var low = held0 < held1 ? _tickets[PlayerTeam] : _tickets[EnemyTeam];
-                var eta = low / MathF.Max(0.01f, _rules.Bleed * world.PointScale * Math.Abs(held0 - held1));
+                var eta = low / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.ConquestMode.FinalPhaseBleedFloor, _rules.Bleed * world.PointScale * Math.Abs(held0 - held1));
                 if (eta <= ai.Get("economy.finalPhase", 120f)) InFinalPhase = true;
             }
             return InFinalPhase ? ai.Get("economy.finalPhaseScale", 2f) : 1f;

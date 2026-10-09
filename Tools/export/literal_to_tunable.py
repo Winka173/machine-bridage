@@ -185,6 +185,10 @@ STRUCTURE_LINES = {
     ("Sim/Content/DamageTable.cs", 258): "structure: the overpenetration row starts 2 columns past the penetration row (one convention, three uses)",
     ("Sim/Content/DamageTable.cs", 259): "structure: the overpenetration row starts 2 columns past the penetration row (one convention, three uses)",
 }
+STRUCTURE_LINES.update({
+    ("Sim/Modes/MissionEvents.Kinds.cs", 488): "index: the act number of a campaign chapter",
+    ("Sim/Modes/SiegeModes.cs", 539): "index: a siege has stages 1-3 (the start stage is capped to the last one)",
+})
 STRUCTURE_RESULTS = {
     # (file, line): the integer results of these lines are step indexes (the thresholds on them stay data)
     ("Sim/Content/DamageTable.cs", 229): "index: the splash step number this distance falls in (the thresholds are data)",
@@ -234,6 +238,12 @@ def _math_rule(c, src_line: str):
         return "math: a polygon needs three points"
     if v == 2 and ctx == "compound_assign" and re.search(r"\+=\s*2\)", src_line) and "flat" in src_line:
         return "data format: x, z pairs"
+    if ctx.startswith("arg:SiegeMode.Advance"):
+        return "index: a siege stage number"
+    if v == 2 and ctx == "multiply" and re.search(r"NextDouble\(\)\)?\s*\*\s*2\s*-\s*1", src_line):
+        return "math: a random draw in [-1, 1] (r x 2 - 1)"
+    if ctx in ("multiply", "add") and re.search(r"\[\([^\]]*" + re.escape(lit) + r"[^\]]*\)\s*%\s*[\w.]+\]", src_line):
+        return "index mixing: spreads picks over a list (an arbitrary stride, not a quantity)"
     if ctx == "modulo" and v == 2:
         return "math: parity (even / odd: alternate sides, or x, z pairs in the data)"
     if ctx == "modulo" and v in (90, 180, 360):
@@ -482,6 +492,83 @@ def _export_mapping() -> list[str]:
     return problems
 
 
+UNITY_MANAGED = "C:/Program Files/Unity/Hub/Editor/6000.6.3f1/Editor/Data/Managed/UnityEngine"
+SCRIPT_ASSEMBLIES = "C:/Users/Winka/Projects/MachineBrigade/Library/ScriptAssemblies"
+NUNIT = "C:/Users/Winka/Projects/MachineBrigade/Library/PackageCache/com.unity.ext.nunit@0198eae3b53e/net472/unity-custom/nunit.framework.dll"
+DEFINES = "UNITY_EDITOR;UNITY_6000_0_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_2023_1_OR_NEWER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_INPUT_SYSTEM"
+
+
+def _csproj(name: str, sources: str, refs: list[str], defines: str) -> str:
+    items = "".join(f'<Reference Include="{Path(r).stem}"><HintPath>{r}</HintPath></Reference>' for r in refs)
+    return (f'<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>netstandard2.1</TargetFramework><LangVersion>9.0</LangVersion>'
+            f'<Nullable>disable</Nullable><EnableDefaultCompileItems>false</EnableDefaultCompileItems><AssemblyName>{name}</AssemblyName>'
+            f'<GenerateAssemblyInfo>false</GenerateAssemblyInfo><DefineConstants>{defines}</DefineConstants>'
+            f'<NoWarn>$(NoWarn);CS8632;CS1591;CS0067;CS1574;CS1584;CS1580;CS1572;CS1573;CS1587;CS0618;CS0649;CS0414;CS0169;CS1701;CS1702</NoWarn>'
+            f'</PropertyGroup><ItemGroup><Compile Include="{sources}" /></ItemGroup><ItemGroup>{items}</ItemGroup></Project>')
+
+
+def _unity_compile(root: Path, work: Path) -> dict:
+    """Compiles Sim, Game, Editor and the EditMode tests of a source tree against the Unity 6 DLLs (no Unity run).
+    Returns {assembly: set of error lines without positions}."""
+    import glob
+    work.mkdir(parents=True, exist_ok=True)
+    scripts = (root / SCRIPTS).as_posix()
+    unity = sorted(glob.glob(UNITY_MANAGED + "/*.dll"))
+    pkgs = [p for p in sorted(glob.glob(SCRIPT_ASSEMBLIES + "/*.dll")) if not Path(p).name.startswith("MachineBrigade.")]
+    pkg_runtime = [p for p in pkgs if "Editor" not in Path(p).name and "Tests" not in Path(p).name and "CodeGen" not in Path(p).name
+                   and Path(p).name.startswith(("Unity.", "UnityEngine."))]
+    out = {}
+    built = {}
+    plan = [
+        ("MachineBrigade.Sim", f"{scripts}/Sim/**/*.cs", [], ""),
+        ("MachineBrigade.Game", f"{scripts}/Game/**/*.cs", ["MachineBrigade.Sim"], DEFINES),
+        ("MachineBrigade.Editor", f"{scripts}/Editor/**/*.cs", ["MachineBrigade.Sim", "MachineBrigade.Game"], DEFINES + ";MB_UI_TEST_FRAMEWORK"),
+        ("MachineBrigade.Tests.EditMode", f"{(root / 'Assets/MachineBrigade/Tests/EditMode').as_posix()}/**/*.cs",
+         ["MachineBrigade.Sim", "MachineBrigade.Game", "MachineBrigade.Editor"], DEFINES + ";MB_UI_TEST_FRAMEWORK;UNITY_INCLUDE_TESTS"),
+    ]
+    for name, src, deps, defines in plan:
+        d = work / name
+        d.mkdir(exist_ok=True)
+        refs = [built[x] for x in deps if x in built]
+        if name != "MachineBrigade.Sim":
+            refs += unity + (pkgs if name != "MachineBrigade.Game" else pkg_runtime)
+        if name == "MachineBrigade.Tests.EditMode":
+            refs.append(NUNIT)
+        (d / f"{name}.csproj").write_text(_csproj(name, src, refs, defines), "utf-8")
+        r = _run(["dotnet", "build", str(d / f"{name}.csproj"), "-nologo", "-v", "q", "-clp:NoSummary", "-o", str(d / "bin")], capture_output=True)
+        log = r.stdout + r.stderr
+        errs = set()
+        for m in re.finditer(r"([^\s(]+\.cs)\(\d+,\d+\): error (CS\d+): ([^\[\n]*)", log):
+            errs.add(f"{Path(m.group(1)).name}: {m.group(2)} {m.group(3).strip()}")
+        out[name] = errs
+        dll = d / "bin" / f"{name}.dll"
+        if dll.exists():
+            built[name] = str(dll)
+    return out
+
+
+def _editor_tests(base: str) -> list[str]:
+    """Editor + EditMode tests compile with no error the base tree did not have (Unity compiles them; we cannot run Unity)."""
+    import shutil
+    import tarfile
+    import io
+    tmp = ROOT / "Temp/literal_to_tunable/compile"
+    head = _unity_compile(ROOT, tmp / "head")
+    bdir = tmp / "base_tree"
+    if bdir.exists():
+        shutil.rmtree(bdir)
+    bdir.mkdir(parents=True)
+    tar = subprocess.run(["git", "archive", base, "Assets/MachineBrigade/Scripts", "Assets/MachineBrigade/Tests"], cwd=ROOT, capture_output=True).stdout
+    tarfile.open(fileobj=io.BytesIO(tar)).extractall(bdir)
+    old = _unity_compile(bdir, tmp / "base")
+    lines = []
+    for name in head:
+        new = sorted(head[name] - old.get(name, set()))
+        lines.append(f"- {name}: {len(head[name])} error(s) now, {len(old.get(name, set()))} at {base}; new: {len(new)}")
+        lines += [f"  - {e}" for e in new[:15]]
+    return lines
+
+
 def check(args) -> int:
     out = Path(args.out) if args.out else ROOT / "Docs/export/current/_qa/equivalence.md"
     r = _tool("check", "--base", args.base, "--out", str(out), "--dotnet", capture=True)
@@ -491,7 +578,11 @@ def check(args) -> int:
     errs = sorted(set(re.findall(r"error CS\d+[^\r\n]*", log)))
     warns = sorted(set(re.findall(r"warning (CS\d+)", log)))
     mapping = _export_mapping()
+    unity = _editor_tests(args.base) if not args.no_unity_compile else ["- skipped (--no-unity-compile)"]
+    unity_new = sum(int(re.search(r"new: (\d+)", l).group(1)) for l in unity if "new: " in l)
     with open(out, "a", encoding="utf-8") as fh:
+        fh.write("\n## Unity assemblies compiled with dotnet (Sim, Game, Editor, EditMode tests; Unity 6 DLLs; no Unity run)\n\n")
+        fh.write(("PASS" if unity_new == 0 else "FAIL") + ": errors the base did not have\n\n" + "\n".join(unity) + "\n")
         fh.write("\n## dotnet build Tools/simbuild/Sim.csproj (working tree)\n\n")
         fh.write(f"exit {sim.returncode}; {len(errs)} error(s); warning ids: {', '.join(warns) or 'none'}\n\n")
         for e in errs[:20]:
@@ -501,8 +592,11 @@ def check(args) -> int:
     for d in (ROOT / "Temp/simbuild",):
         pass  # the build output stays under Temp/ (git-ignored)
     print("\n".join(tail))
-    print(f"dotnet build Sim.csproj: exit {sim.returncode}, {len(errs)} error(s); export mapping: {'PASS' if not mapping else 'FAIL ' + str(len(mapping))}")
-    return 0 if r.returncode == 0 and sim.returncode == 0 and not errs and not mapping else 1
+    print(f"dotnet build Sim.csproj: exit {sim.returncode}, {len(errs)} error(s); export mapping: {'PASS' if not mapping else 'FAIL ' + str(len(mapping))}; "
+          f"Unity assemblies: {unity_new} new error(s)")
+    for l in unity:
+        print(l)
+    return 0 if r.returncode == 0 and sim.returncode == 0 and not errs and not mapping and unity_new == 0 else 1
 
 
 # ------------------------------------------------------------------------------------------------ status
@@ -533,6 +627,7 @@ def main(argv=None) -> int:
     p = sub.add_parser("check")
     p.add_argument("--base", required=True)
     p.add_argument("--out")
+    p.add_argument("--no-unity-compile", action="store_true", help="skip the Editor / EditMode-tests compile")
     sub.add_parser("status")
     a = ap.parse_args(argv)
     return {"build": build, "plan": plan, "move": move, "check": check, "status": status}[a.cmd](a)

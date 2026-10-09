@@ -9,10 +9,607 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Campaign
         {
+            public static partial class CampaignRelease
+            {
+                /// <summary>campaign.campaignRelease.everythingLastAct (x; tan_suat, was Sim/Content/CampaignDefs.cs:189).</summary>
+                public static int EverythingLastAct = 4;
+            }
+
+            public static partial class FirePlan
+            {
+                /// <summary>campaign.firePlan.every (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:83).</summary>
+                public static float Every = 30f;
+                /// <summary>campaign.firePlan.dps (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:83).</summary>
+                public static float Dps = 40f;
+                /// <summary>campaign.firePlan.burn (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:83).</summary>
+                public static float Burn = 6f;
+            }
+
+            public static partial class IcePlan
+            {
+                /// <summary>campaign.icePlan.radius (m; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:65).</summary>
+                public static float Radius = 30f;
+                /// <summary>campaign.icePlan.seconds (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:65).</summary>
+                public static float Seconds = 10f;
+                /// <summary>campaign.icePlan.slow (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:65).</summary>
+                public static float Slow = 0.4f;
+                /// <summary>campaign.icePlan.slowFor (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:65).</summary>
+                public static float SlowFor = 8f;
+            }
+
+            public static partial class MissionEventSystem
+            {
+                /// <summary>campaign.missionEventSystem.halfTick (ticks; thoi_gian, was Sim/Modes/MissionEvents.Ingress.cs:24).</summary>
+                public static double HalfTick = 0.025;
+                /// <summary>campaign.missionEventSystem.gateSpotIndexMod (x; khac, was Sim/Modes/MissionEvents.Ingress.cs:33).</summary>
+                public static int GateSpotIndexMod = 4;
+                /// <summary>campaign.missionEventSystem.gateSpotIndexSub (x; khac, was Sim/Modes/MissionEvents.Ingress.cs:33).</summary>
+                public static float GateSpotIndexSub = 1.5f;
+                /// <summary>campaign.missionEventSystem.gateSpotAcrossScale (x; khac, was Sim/Modes/MissionEvents.Ingress.cs:33).</summary>
+                public static float GateSpotAcrossScale = 5f;
+                /// <summary>campaign.missionEventSystem.ingressLengthScale (x; ban_kinh, was Sim/Modes/MissionEvents.Ingress.cs:48).</summary>
+                public static float IngressLengthScale = 12f;
+                /// <summary>campaign.missionEventSystem.announceIngressIMax (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Ingress.cs:68).</summary>
+                public static int AnnounceIngressIMax = 4;
+                /// <summary>campaign.missionEventSystem.prepareFallback (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:153).</summary>
+                public static float PrepareFallback = 25f;
+                /// <summary>campaign.missionEventSystem.prepareNumberMin (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:153).</summary>
+                public static float PrepareNumberMin = 20f;
+                /// <summary>campaign.missionEventSystem.prepareNumberMax (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:153).</summary>
+                public static float PrepareNumberMax = 30f;
+                /// <summary>campaign.missionEventSystem.composeIndexScale (x; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:197).</summary>
+                public static int ComposeIndexScale = 3;
+                /// <summary>campaign.missionEventSystem.composeFiredScale (x; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:197).</summary>
+                public static int ComposeFiredScale = 5;
+                /// <summary>campaign.missionEventSystem.prepareWaveFallback (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:210).</summary>
+                public static float PrepareWaveFallback = 6f;
+                /// <summary>campaign.missionEventSystem.prepareWaveFallback2 (count; xac_suat, was Sim/Modes/MissionEvents.Kinds.cs:213).</summary>
+                public static int PrepareWaveFallback2 = 2;
+                /// <summary>campaign.missionEventSystem.prepareWaveMaxValue (count; xac_suat, was Sim/Modes/MissionEvents.Kinds.cs:219).</summary>
+                public static int PrepareWaveMaxValue = 2;
+                /// <summary>campaign.missionEventSystem.prepareRaidFallback (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:290).</summary>
+                public static float PrepareRaidFallback = 4f;
+                /// <summary>campaign.missionEventSystem.prepareAlliesFallback (count; tran, was Sim/Modes/MissionEvents.Kinds.cs:319).</summary>
+                public static int PrepareAlliesFallback = 12;
+                /// <summary>campaign.missionEventSystem.prepareLineFallback (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:426).</summary>
+                public static float PrepareLineFallback = 16f;
+                /// <summary>campaign.missionEventSystem.prepareLineFallback2 (m; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:428).</summary>
+                public static float PrepareLineFallback2 = 10f;
+                /// <summary>campaign.missionEventSystem.estimateFallback (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:450).</summary>
+                public static float EstimateFallback = 6f;
+                /// <summary>campaign.missionEventSystem.prepareCeasefireFallback (x; nguong, was Sim/Modes/MissionEvents.Kinds.cs:597).</summary>
+                public static int PrepareCeasefireFallback = 4;
+                /// <summary>campaign.missionEventSystem.prepareCrossingMaxValue (share; xac_suat, was Sim/Modes/MissionEvents.Kinds.cs:640).</summary>
+                public static int PrepareCrossingMaxValue = 2;
+                /// <summary>campaign.missionEventSystem.prepareCrateAttemptMax (x; tan_suat, was Sim/Modes/MissionEvents.Kinds.cs:651).</summary>
+                public static int PrepareCrateAttemptMax = 24;
+                /// <summary>campaign.missionEventSystem.prepareCrateNextDoubleScale2 (x; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:653).</summary>
+                public static float PrepareCrateNextDoubleScale2 = 0.2f;
+                /// <summary>campaign.missionEventSystem.prepareCrateDistanceMax (m; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:657).</summary>
+                public static float PrepareCrateDistanceMax = 40f;
+                /// <summary>campaign.missionEventSystem.happenTriesMax (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:674, Sim/Modes/MissionEvents.Kinds.cs:687).</summary>
+                public static int HappenTriesMax = 5;
+                /// <summary>campaign.missionEventSystem.happenFallback (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:726).</summary>
+                public static int HappenFallback = 3;
+                /// <summary>campaign.missionEventSystem.happenFallback2 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:727).</summary>
+                public static float HappenFallback2 = 18f;
+                /// <summary>campaign.missionEventSystem.happenKScale (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:732).</summary>
+                public static double HappenKScale = 1.5;
+                /// <summary>campaign.missionEventSystem.happenAirFalse (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:756).</summary>
+                public static int HappenAirFalse = 3;
+                /// <summary>campaign.missionEventSystem.happenKScale2 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:759).</summary>
+                public static float HappenKScale2 = 6f;
+                /// <summary>campaign.missionEventSystem.happenKSub (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:759).</summary>
+                public static float HappenKSub = 3f;
+                /// <summary>campaign.missionEventSystem.happenKDivisor (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:759).</summary>
+                public static int HappenKDivisor = 2;
+                /// <summary>campaign.missionEventSystem.happenAirTrue (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:760).</summary>
+                public static double HappenAirTrue = 3.0;
+                /// <summary>campaign.missionEventSystem.happenAirFalse2 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:760).</summary>
+                public static double HappenAirFalse2 = 1.5;
+                /// <summary>campaign.missionEventSystem.happenAdd (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:776).</summary>
+                public static int HappenAdd = 900000;
+                /// <summary>campaign.missionEventSystem.happenTimeAdd (s; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:776).</summary>
+                public static double HappenTimeAdd = 5.0;
+                /// <summary>campaign.missionEventSystem.happenTimeAdd2 (s; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:776).</summary>
+                public static double HappenTimeAdd2 = 55.0;
+                /// <summary>campaign.missionEventSystem.happenSeconds (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:779, Sim/Modes/MissionEvents.Kinds.cs:780).</summary>
+                public static float HappenSeconds = 5f;
+                /// <summary>campaign.missionEventSystem.happenTimeAdd3 (s; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:789).</summary>
+                public static double HappenTimeAdd3 = 0.5;
+                /// <summary>campaign.missionEventSystem.happenFallback4 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:798).</summary>
+                public static float HappenFallback4 = 8f;
+                /// <summary>campaign.missionEventSystem.happenFallback5 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:799).</summary>
+                public static float HappenFallback5 = 30f;
+                /// <summary>campaign.missionEventSystem.happenFallback6 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:806).</summary>
+                public static float HappenFallback6 = 20f;
+                /// <summary>campaign.missionEventSystem.happenNumberFloor (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:825).</summary>
+                public static float HappenNumberFloor = 0.5f;
+                /// <summary>campaign.missionEventSystem.happenFallback7 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:825).</summary>
+                public static float HappenFallback7 = 4f;
+                /// <summary>campaign.missionEventSystem.happenFallback8 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:827).</summary>
+                public static float HappenFallback8 = 6f;
+                /// <summary>campaign.missionEventSystem.happenFallback9 (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:827).</summary>
+                public static float HappenFallback9 = 900f;
+                /// <summary>campaign.missionEventSystem.happenFloor (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:835).</summary>
+                public static float HappenFloor = 0.1f;
+                /// <summary>campaign.missionEventSystem.happenWeatherSightMin (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:837).</summary>
+                public static float HappenWeatherSightMin = 0.5f;
+                /// <summary>campaign.missionEventSystem.happenWeatherSightMax (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:837).</summary>
+                public static float HappenWeatherSightMax = 1.3f;
+                /// <summary>campaign.missionEventSystem.fieldGeneralTriesMax (m; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:859).</summary>
+                public static int FieldGeneralTriesMax = 5;
+                /// <summary>campaign.missionEventSystem.fieldGeneralKAdd (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:873).</summary>
+                public static float FieldGeneralKAdd = 6f;
+                /// <summary>campaign.missionEventSystem.fieldGeneralKScale (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:873).</summary>
+                public static float FieldGeneralKScale = 4f;
+                /// <summary>campaign.missionEventSystem.fieldGeneralKDivisor (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:873).</summary>
+                public static int FieldGeneralKDivisor = 2;
+                /// <summary>campaign.missionEventSystem.fieldGeneralInwardScale (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:873).</summary>
+                public static float FieldGeneralInwardScale = 4f;
+                /// <summary>campaign.missionEventSystem.startConvoyFallback (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:887).</summary>
+                public static int StartConvoyFallback = 3;
+                /// <summary>campaign.missionEventSystem.startConvoyFallback3 (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:888).</summary>
+                public static float StartConvoyFallback3 = 120f;
+                /// <summary>campaign.missionEventSystem.startConvoyKMod (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:904).</summary>
+                public static int StartConvoyKMod = 3;
+                /// <summary>campaign.missionEventSystem.startConvoyKScale (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:904).</summary>
+                public static float StartConvoyKScale = 5f;
+                /// <summary>campaign.missionEventSystem.startConvoyKDivisor (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:904).</summary>
+                public static int StartConvoyKDivisor = 3;
+                /// <summary>campaign.missionEventSystem.startConvoyFallback2 (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:909).</summary>
+                public static float StartConvoyFallback2 = 4f;
+                /// <summary>campaign.missionEventSystem.startConvoyKScale2 (x; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:915).</summary>
+                public static float StartConvoyKScale2 = 0.45f;
+                /// <summary>campaign.missionEventSystem.startConvoyOffScale (x; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:917).</summary>
+                public static float StartConvoyOffScale = 24f;
+                /// <summary>campaign.missionEventSystem.startConvoyKScale3 (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:933).</summary>
+                public static float StartConvoyKScale3 = 9f;
+                /// <summary>campaign.missionEventSystem.updateFallback (m; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:992).</summary>
+                public static float UpdateFallback = 16f;
+                /// <summary>campaign.missionEventSystem.updateSecondsFloor (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1004).</summary>
+                public static double UpdateSecondsFloor = 0.1;
+                /// <summary>campaign.missionEventSystem.counterBatteryFallback (count; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1044).</summary>
+                public static int CounterBatteryFallback = 2;
+                /// <summary>campaign.missionEventSystem.counterBatteryKScale (x; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1044).</summary>
+                public static double CounterBatteryKScale = 1.2;
+                /// <summary>campaign.missionEventSystem.counterBatteryFallback2 (count; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1046).</summary>
+                public static float CounterBatteryFallback2 = 45f;
+                /// <summary>campaign.missionEventSystem.counterBatteryTickMod (ticks; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1049).</summary>
+                public static int CounterBatteryTickMod = 10;
+                /// <summary>campaign.missionEventSystem.counterBatteryFallback3 (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:1050).</summary>
+                public static float CounterBatteryFallback3 = 20f;
+                /// <summary>campaign.missionEventSystem.counterBatteryTimeMin (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1054).</summary>
+                public static double CounterBatteryTimeMin = 3.0;
+                /// <summary>campaign.missionEventSystem.counterBatteryFallback4 (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.Kinds.cs:1055).</summary>
+                public static float CounterBatteryFallback4 = 5f;
+                /// <summary>campaign.missionEventSystem.watchGeneralTimeAdd (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1084).</summary>
+                public static double WatchGeneralTimeAdd = 8.0;
+                /// <summary>campaign.missionEventSystem.watchConvoyNowAdd (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1121).</summary>
+                public static double WatchConvoyNowAdd = 0.1;
+                /// <summary>campaign.missionEventSystem.watchConvoyDistanceMin (m; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:1133).</summary>
+                public static float WatchConvoyDistanceMin = 8f;
+                /// <summary>campaign.missionEventSystem.watchCratesHullRadiusAdd (m; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:1219).</summary>
+                public static float WatchCratesHullRadiusAdd = 6f;
+                /// <summary>campaign.missionEventSystem.watchCratesDtDivisor (x; tan_suat, was Sim/Modes/MissionEvents.Kinds.cs:1225, Sim/Modes/MissionEvents.Kinds.cs:1230).</summary>
+                public static float WatchCratesDtDivisor = 2f;
+                /// <summary>campaign.missionEventSystem.watchCratesDistanceMax (m; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:1240).</summary>
+                public static float WatchCratesDistanceMax = 25f;
+                /// <summary>campaign.missionEventSystem.watchCratesFallback (x; tan_suat, was Sim/Modes/MissionEvents.Kinds.cs:1246).</summary>
+                public static int WatchCratesFallback = 12;
+                /// <summary>campaign.missionEventSystem.stepRodsPen (x; sat_thuong, was Sim/Modes/MissionEvents.Kinds.cs:1280).</summary>
+                public static float StepRodsPen = 4f;
+                /// <summary>campaign.missionEventSystem.startCeasefireTriesMax (m; ban_kinh, was Sim/Modes/MissionEvents.Kinds.cs:1291).</summary>
+                public static int StartCeasefireTriesMax = 5;
+                /// <summary>campaign.missionEventSystem.startCeasefireKMod (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:1296).</summary>
+                public static int StartCeasefireKMod = 3;
+                /// <summary>campaign.missionEventSystem.startCeasefireAcrossScale (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:1296).</summary>
+                public static float StartCeasefireAcrossScale = 7f;
+                /// <summary>campaign.missionEventSystem.startCeasefireKDivisor (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:1296).</summary>
+                public static int StartCeasefireKDivisor = 3;
+                /// <summary>campaign.missionEventSystem.startCeasefireInwardScale (x; khac, was Sim/Modes/MissionEvents.Kinds.cs:1296).</summary>
+                public static float StartCeasefireInwardScale = 7f;
+                /// <summary>campaign.missionEventSystem.startCeasefireFallback (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:1305).</summary>
+                public static float StartCeasefireFallback = 150f;
+                /// <summary>campaign.missionEventSystem.payEnemyFallback (x; nguong, was Sim/Modes/MissionEvents.Kinds.cs:1359).</summary>
+                public static int PayEnemyFallback = 20;
+                /// <summary>campaign.missionEventSystem.prepareP31MaxScale (x; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:138, Sim/Modes/MissionEvents.P31.cs:144).</summary>
+                public static float PrepareP31MaxScale = 0.5f;
+                /// <summary>campaign.missionEventSystem.prepareP31MaxAdd (count; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:138, Sim/Modes/MissionEvents.P31.cs:144).</summary>
+                public static float PrepareP31MaxAdd = 6f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:156).</summary>
+                public static float PrepareP31Fallback = 0.6f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback3 (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:158, Sim/Modes/MissionEvents.P31.cs:171).</summary>
+                public static float PrepareP31Fallback3 = 25f;
+                /// <summary>campaign.missionEventSystem.prepareP31NumberMin (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:158, Sim/Modes/MissionEvents.P31.cs:171).</summary>
+                public static float PrepareP31NumberMin = 20f;
+                /// <summary>campaign.missionEventSystem.prepareP31NumberMax (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:158, Sim/Modes/MissionEvents.P31.cs:171).</summary>
+                public static float PrepareP31NumberMax = 30f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback4 (x; nguong, was Sim/Modes/MissionEvents.P31.cs:159).</summary>
+                public static float PrepareP31Fallback4 = 150f;
+                /// <summary>campaign.missionEventSystem.prepareP31NumberFloor (x; nguong, was Sim/Modes/MissionEvents.P31.cs:170).</summary>
+                public static float PrepareP31NumberFloor = 30f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback5 (x; nguong, was Sim/Modes/MissionEvents.P31.cs:170).</summary>
+                public static float PrepareP31Fallback5 = 90f;
+                /// <summary>campaign.missionEventSystem.prepareP31CountMax (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.P31.cs:179).</summary>
+                public static int PrepareP31CountMax = 8;
+                /// <summary>campaign.missionEventSystem.prepareP31Gioi (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.P31.cs:179).</summary>
+                public static float PrepareP31Gioi = 8f;
+                /// <summary>campaign.missionEventSystem.prepareP31Scale (x; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:193).</summary>
+                public static float PrepareP31Scale = 20f;
+                /// <summary>campaign.missionEventSystem.prepareP31CountMax2 (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.P31.cs:194).</summary>
+                public static int PrepareP31CountMax2 = 6;
+                /// <summary>campaign.missionEventSystem.prepareP31Gioi2 (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.P31.cs:194).</summary>
+                public static float PrepareP31Gioi2 = 12f;
+                /// <summary>campaign.missionEventSystem.prepareP31NumberFloor2 (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:205).</summary>
+                public static float PrepareP31NumberFloor2 = 4f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback7 (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:205, Sim/Modes/MissionEvents.P31.cs:222).</summary>
+                public static float PrepareP31Fallback7 = 30f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback8 (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:206).</summary>
+                public static float PrepareP31Fallback8 = 10f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback9 (x; khac, was Sim/Modes/MissionEvents.P31.cs:207).</summary>
+                public static float PrepareP31Fallback9 = 0.4f;
+                /// <summary>campaign.missionEventSystem.prepareP31NumberMin2 (x; nguong, was Sim/Modes/MissionEvents.P31.cs:207).</summary>
+                public static float PrepareP31NumberMin2 = 0.05f;
+                /// <summary>campaign.missionEventSystem.prepareP31NumberMax2 (x; nguong, was Sim/Modes/MissionEvents.P31.cs:207).</summary>
+                public static float PrepareP31NumberMax2 = 0.9f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback10 (x; nguong, was Sim/Modes/MissionEvents.P31.cs:208).</summary>
+                public static float PrepareP31Fallback10 = 8f;
+                /// <summary>campaign.missionEventSystem.prepareP31NumberMin3 (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:222).</summary>
+                public static float PrepareP31NumberMin3 = 12f;
+                /// <summary>campaign.missionEventSystem.prepareP31NumberMax3 (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:222).</summary>
+                public static float PrepareP31NumberMax3 = 90f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback11 (x; nguong, was Sim/Modes/MissionEvents.P31.cs:223).</summary>
+                public static float PrepareP31Fallback11 = 40f;
+                /// <summary>campaign.missionEventSystem.prepareP31Fallback12 (x; nguong, was Sim/Modes/MissionEvents.P31.cs:224).</summary>
+                public static float PrepareP31Fallback12 = 6f;
+                /// <summary>campaign.missionEventSystem.happenP31TryGetValueFalse (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:323).</summary>
+                public static float HappenP31TryGetValueFalse = 0.75f;
+                /// <summary>campaign.missionEventSystem.happenP31Floor (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:323).</summary>
+                public static float HappenP31Floor = 0.1f;
+                /// <summary>campaign.missionEventSystem.happenP31WeatherSightMin (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:325).</summary>
+                public static float HappenP31WeatherSightMin = 0.5f;
+                /// <summary>campaign.missionEventSystem.happenP31WeatherSightMax (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:325).</summary>
+                public static float HappenP31WeatherSightMax = 1.3f;
+                /// <summary>campaign.missionEventSystem.happenP31NumberFloor (x; nguong, was Sim/Modes/MissionEvents.P31.cs:347).</summary>
+                public static float HappenP31NumberFloor = 2f;
+                /// <summary>campaign.missionEventSystem.happenP31Fallback (x; nguong, was Sim/Modes/MissionEvents.P31.cs:347).</summary>
+                public static float HappenP31Fallback = 6f;
+                /// <summary>campaign.missionEventSystem.happenP31KScale (x; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:353).</summary>
+                public static double HappenP31KScale = 0.6;
+                /// <summary>campaign.missionEventSystem.updateP31SecondsFloor (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:373, Sim/Modes/MissionEvents.P31.cs:382, Sim/Modes/MissionEvents.P31.cs:392).</summary>
+                public static double UpdateP31SecondsFloor = 0.1;
+                /// <summary>campaign.missionEventSystem.stepIceTimeAdd (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:439).</summary>
+                public static double StepIceTimeAdd = 20.0;
+                /// <summary>campaign.missionEventSystem.markStripMaxScale (x; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:448).</summary>
+                public static float MarkStripMaxScale = 0.5f;
+                /// <summary>campaign.missionEventSystem.markStripMaxAdd (count; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:448).</summary>
+                public static float MarkStripMaxAdd = 4f;
+                /// <summary>campaign.missionEventSystem.stepFireNextAtSub (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:466).</summary>
+                public static double StepFireNextAtSub = 10.0;
+                /// <summary>campaign.missionEventSystem.stepFireHzAdd (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:488).</summary>
+                public static float StepFireHzAdd = 4f;
+                /// <summary>campaign.missionEventSystem.stepFireZ (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:488).</summary>
+                public static float StepFireZ = 8f;
+                /// <summary>campaign.missionEventSystem.stepFireEveryScale (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:489).</summary>
+                public static float StepFireEveryScale = 1.2f;
+                /// <summary>campaign.missionEventSystem.stepFireRadius (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:489).</summary>
+                public static float StepFireRadius = 5f;
+                /// <summary>campaign.missionEventSystem.stepFireMaxScale (x; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:490, Sim/Modes/MissionEvents.P31.cs:492).</summary>
+                public static float StepFireMaxScale = 0.25f;
+                /// <summary>campaign.missionEventSystem.stepFireMinScale (x; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:491).</summary>
+                public static float StepFireMinScale = 0.5f;
+                /// <summary>campaign.missionEventSystem.stepFireMinAdd (m; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:491).</summary>
+                public static float StepFireMinAdd = 8f;
+                /// <summary>campaign.missionEventSystem.stepFireMaxFloor (count; ban_kinh, was Sim/Modes/MissionEvents.P31.cs:492).</summary>
+                public static float StepFireMaxFloor = 6f;
+                /// <summary>campaign.missionEventSystem.stepFireEveryScale2 (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:493, Sim/Modes/MissionEvents.P31.cs:494).</summary>
+                public static float StepFireEveryScale2 = 1.5f;
+                /// <summary>campaign.missionEventSystem.stepFireHxAdd2 (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:499).</summary>
+                public static float StepFireHxAdd2 = 2f;
+                /// <summary>campaign.missionEventSystem.stepFireHzAdd2 (x; tan_suat, was Sim/Modes/MissionEvents.P31.cs:499).</summary>
+                public static float StepFireHzAdd2 = 2f;
+                /// <summary>campaign.missionEventSystem.leadLeadMin (x; nguong, was Sim/Modes/MissionEvents.cs:260).</summary>
+                public static float LeadLeadMin = 8f;
+                /// <summary>campaign.missionEventSystem.leadLeadMax (x; nguong, was Sim/Modes/MissionEvents.cs:260).</summary>
+                public static float LeadLeadMax = 12f;
+                /// <summary>campaign.missionEventSystem.leadTableCap (count; tran, was Sim/Modes/MissionEvents.cs:266).</summary>
+                public static float LeadTableCap = 6f;
+                /// <summary>campaign.missionEventSystem.startTimeAdd (s; thoi_gian, was Sim/Modes/MissionEvents.cs:277).</summary>
+                public static double StartTimeAdd = 3.0;
+                /// <summary>campaign.missionEventSystem.payDistanceMax (m; ban_kinh, was Sim/Modes/MissionEvents.cs:321).</summary>
+                public static float PayDistanceMax = 30f;
+                /// <summary>campaign.missionEventSystem.strengthCombatValueFloor (x; nguong, was Sim/Modes/MissionEvents.cs:479).</summary>
+                public static float StrengthCombatValueFloor = 0.1f;
+                /// <summary>campaign.missionEventSystem.groupScale (x; ban_kinh, was Sim/Modes/MissionEvents.cs:501).</summary>
+                public static float GroupScale = 14f;
+                /// <summary>campaign.missionEventSystem.deliverIMod (x; khac, was Sim/Modes/MissionEvents.cs:622, Sim/Modes/MissionEvents.cs:625).</summary>
+                public static int DeliverIMod = 4;
+                /// <summary>campaign.missionEventSystem.deliverISub (x; khac, was Sim/Modes/MissionEvents.cs:622, Sim/Modes/MissionEvents.cs:625).</summary>
+                public static float DeliverISub = 1.5f;
+                /// <summary>campaign.missionEventSystem.deliverAcrossScale (x; khac, was Sim/Modes/MissionEvents.cs:622).</summary>
+                public static float DeliverAcrossScale = 5f;
+                /// <summary>campaign.missionEventSystem.deliverIDivisor (x; khac, was Sim/Modes/MissionEvents.cs:622, Sim/Modes/MissionEvents.cs:636).</summary>
+                public static int DeliverIDivisor = 4;
+                /// <summary>campaign.missionEventSystem.deliverInwardScale (x; khac, was Sim/Modes/MissionEvents.cs:622).</summary>
+                public static float DeliverInwardScale = 6f;
+                /// <summary>campaign.missionEventSystem.deliverAcrossScale2 (x; khac, was Sim/Modes/MissionEvents.cs:625).</summary>
+                public static float DeliverAcrossScale2 = 6f;
+                /// <summary>campaign.missionEventSystem.deliverSeconds (s; thoi_gian, was Sim/Modes/MissionEvents.cs:628).</summary>
+                public static float DeliverSeconds = 6f;
+                /// <summary>campaign.missionEventSystem.deliverTimeAdd (s; thoi_gian, was Sim/Modes/MissionEvents.cs:629).</summary>
+                public static double DeliverTimeAdd = 6.0;
+                /// <summary>campaign.missionEventSystem.deliverIMin (count; gioi_han_thuc_the, was Sim/Modes/MissionEvents.cs:636).</summary>
+                public static int DeliverIMin = 4;
+            }
+
+            public static partial class MissionMode
+            {
+                /// <summary>campaign.missionMode.tickHeldScale (x; thoi_gian, was Sim/Modes/MissionMode.cs:519).</summary>
+                public static float TickHeldScale = 0.25f;
+                /// <summary>campaign.missionMode.tickTickMod (ticks; thoi_gian, was Sim/Modes/MissionMode.cs:521).</summary>
+                public static int TickTickMod = 20;
+                /// <summary>campaign.missionMode.lostTimeMin (s; thoi_gian, was Sim/Modes/MissionMode.cs:623).</summary>
+                public static double LostTimeMin = 25.0;
+                /// <summary>campaign.missionMode.lostNowMin (s; thoi_gian, was Sim/Modes/MissionMode.cs:649).</summary>
+                public static double LostNowMin = 5.0;
+                /// <summary>campaign.missionMode.lostTimeMin2 (s; thoi_gian, was Sim/Modes/MissionMode.cs:651).</summary>
+                public static double LostTimeMin2 = 12.0;
+                /// <summary>campaign.missionMode.spawnWavesWaveScale (x; gioi_han_thuc_the, was Sim/Modes/MissionMode.cs:675).</summary>
+                public static int SpawnWavesWaveScale = 3;
+                /// <summary>campaign.missionMode.spawnWavesScale (x; gioi_han_thuc_the, was Sim/Modes/MissionMode.cs:677).</summary>
+                public static float SpawnWavesScale = 8f;
+                /// <summary>campaign.missionMode.spawnWavesDegrees (count; gioi_han_thuc_the, was Sim/Modes/MissionMode.cs:678).</summary>
+                public static float SpawnWavesDegrees = 225f;
+                /// <summary>campaign.missionMode.callReinforcementsReinforceSizeCap (count; tran, was Sim/Modes/MissionMode.cs:699).</summary>
+                public static int CallReinforcementsReinforceSizeCap = 8;
+                /// <summary>campaign.missionMode.callReinforcementsPlayerAirShareMin (share; nguong, was Sim/Modes/MissionMode.cs:700).</summary>
+                public static float CallReinforcementsPlayerAirShareMin = 0.25f;
+                /// <summary>campaign.missionMode.callReinforcementsReinforcedScale2 (x; gioi_han_thuc_the, was Sim/Modes/MissionMode.cs:703).</summary>
+                public static int CallReinforcementsReinforcedScale2 = 5;
+                /// <summary>campaign.missionMode.callReinforcementsIScale (x; gioi_han_thuc_the, was Sim/Modes/MissionMode.cs:703).</summary>
+                public static int CallReinforcementsIScale = 3;
+                /// <summary>campaign.missionMode.criticalFailureMaxHpScale (x; sat_thuong, was Sim/Modes/MissionMode.cs:879).</summary>
+                public static float CriticalFailureMaxHpScale = 0.25f;
+                /// <summary>campaign.missionMode.scoutDtScale (x; thoi_gian, was Sim/Modes/MissionMode.cs:929).</summary>
+                public static float ScoutDtScale = 0.5f;
+                /// <summary>campaign.missionMode.checkFleeOutwardScale (x; khac, was Sim/Modes/MissionMode.cs:1009).</summary>
+                public static float CheckFleeOutwardScale = 0.5f;
+                /// <summary>campaign.missionMode.convoyFrontNormalizeScale (x; ban_kinh, was Sim/Modes/MissionMode.cs:1089).</summary>
+                public static float ConvoyFrontNormalizeScale = 8f;
+            }
+
+            public static partial class Mutators
+            {
+                /// <summary>campaign.mutators.applyTimeLimitFalse (s; thoi_gian, was Sim/Content/OperationsData.cs:321).</summary>
+                public static float ApplyTimeLimitFalse = 1500f;
+                /// <summary>campaign.mutators.applyCountMax (count; gioi_han_thuc_the, was Sim/Content/OperationsData.cs:362).</summary>
+                public static int ApplyCountMax = 4;
+                /// <summary>campaign.mutators.applyCountMax2 (count; gioi_han_thuc_the, was Sim/Content/OperationsData.cs:366).</summary>
+                public static int ApplyCountMax2 = 8;
+            }
+
+            public static partial class OperationMode
+            {
+                /// <summary>campaign.operationMode.strikeTargetScale (x; gioi_han_thuc_the, was Sim/Modes/OperationMode.cs:380).</summary>
+                public static float StrikeTargetScale = 12f;
+                /// <summary>campaign.operationMode.strikeTargetReachAdd (m; ban_kinh, was Sim/Modes/OperationMode.cs:381).</summary>
+                public static float StrikeTargetReachAdd = 4f;
+            }
+
+            public static partial class OperationsData
+            {
+                /// <summary>campaign.operationsData.rotationCapMax (count; tran, was Sim/Content/OperationsData.cs:184).</summary>
+                public static int RotationCapMax = 100;
+                /// <summary>campaign.operationsData.weeklyCountMax (count; gioi_han_thuc_the, was Sim/Content/OperationsData.cs:213).</summary>
+                public static int WeeklyCountMax = 2;
+            }
+
+            public static partial class StormPlan
+            {
+                /// <summary>campaign.stormPlan.inside (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:43).</summary>
+                public static float Inside = 0.6f;
+                /// <summary>campaign.stormPlan.seconds (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:43).</summary>
+                public static float Seconds = 25f;
+                /// <summary>campaign.stormPlan.hold (s; thoi_gian, was Sim/Modes/MissionEvents.P31.cs:43).</summary>
+                public static float Hold = 150f;
+            }
+
+            public static partial class WeatherPlan
+            {
+                /// <summary>campaign.weatherPlan.seconds (s; thoi_gian, was Sim/Modes/MissionEvents.Kinds.cs:67).</summary>
+                public static float Seconds = 25f;
+            }
         }
 
         private static readonly Entry[] Pass2Campaign =
         {
+            new Entry("campaign.campaignRelease.everythingLastAct", "x", () => Campaign.CampaignRelease.EverythingLastAct, v => Campaign.CampaignRelease.EverythingLastAct = (int)System.Math.Round(v)),
+            new Entry("campaign.firePlan.every", "x", () => Campaign.FirePlan.Every, v => Campaign.FirePlan.Every = (float)v),
+            new Entry("campaign.firePlan.dps", "x", () => Campaign.FirePlan.Dps, v => Campaign.FirePlan.Dps = (float)v),
+            new Entry("campaign.firePlan.burn", "x", () => Campaign.FirePlan.Burn, v => Campaign.FirePlan.Burn = (float)v),
+            new Entry("campaign.icePlan.radius", "m", () => Campaign.IcePlan.Radius, v => Campaign.IcePlan.Radius = (float)v),
+            new Entry("campaign.icePlan.seconds", "s", () => Campaign.IcePlan.Seconds, v => Campaign.IcePlan.Seconds = (float)v),
+            new Entry("campaign.icePlan.slow", "s", () => Campaign.IcePlan.Slow, v => Campaign.IcePlan.Slow = (float)v),
+            new Entry("campaign.icePlan.slowFor", "s", () => Campaign.IcePlan.SlowFor, v => Campaign.IcePlan.SlowFor = (float)v),
+            new Entry("campaign.missionEventSystem.halfTick", "ticks", () => Campaign.MissionEventSystem.HalfTick, v => Campaign.MissionEventSystem.HalfTick = v),
+            new Entry("campaign.missionEventSystem.gateSpotIndexMod", "x", () => Campaign.MissionEventSystem.GateSpotIndexMod, v => Campaign.MissionEventSystem.GateSpotIndexMod = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.gateSpotIndexSub", "x", () => Campaign.MissionEventSystem.GateSpotIndexSub, v => Campaign.MissionEventSystem.GateSpotIndexSub = (float)v),
+            new Entry("campaign.missionEventSystem.gateSpotAcrossScale", "x", () => Campaign.MissionEventSystem.GateSpotAcrossScale, v => Campaign.MissionEventSystem.GateSpotAcrossScale = (float)v),
+            new Entry("campaign.missionEventSystem.ingressLengthScale", "x", () => Campaign.MissionEventSystem.IngressLengthScale, v => Campaign.MissionEventSystem.IngressLengthScale = (float)v),
+            new Entry("campaign.missionEventSystem.announceIngressIMax", "count", () => Campaign.MissionEventSystem.AnnounceIngressIMax, v => Campaign.MissionEventSystem.AnnounceIngressIMax = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareFallback", "s", () => Campaign.MissionEventSystem.PrepareFallback, v => Campaign.MissionEventSystem.PrepareFallback = (float)v),
+            new Entry("campaign.missionEventSystem.prepareNumberMin", "s", () => Campaign.MissionEventSystem.PrepareNumberMin, v => Campaign.MissionEventSystem.PrepareNumberMin = (float)v),
+            new Entry("campaign.missionEventSystem.prepareNumberMax", "s", () => Campaign.MissionEventSystem.PrepareNumberMax, v => Campaign.MissionEventSystem.PrepareNumberMax = (float)v),
+            new Entry("campaign.missionEventSystem.composeIndexScale", "x", () => Campaign.MissionEventSystem.ComposeIndexScale, v => Campaign.MissionEventSystem.ComposeIndexScale = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.composeFiredScale", "x", () => Campaign.MissionEventSystem.ComposeFiredScale, v => Campaign.MissionEventSystem.ComposeFiredScale = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareWaveFallback", "count", () => Campaign.MissionEventSystem.PrepareWaveFallback, v => Campaign.MissionEventSystem.PrepareWaveFallback = (float)v),
+            new Entry("campaign.missionEventSystem.prepareWaveFallback2", "count", () => Campaign.MissionEventSystem.PrepareWaveFallback2, v => Campaign.MissionEventSystem.PrepareWaveFallback2 = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareWaveMaxValue", "count", () => Campaign.MissionEventSystem.PrepareWaveMaxValue, v => Campaign.MissionEventSystem.PrepareWaveMaxValue = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareRaidFallback", "count", () => Campaign.MissionEventSystem.PrepareRaidFallback, v => Campaign.MissionEventSystem.PrepareRaidFallback = (float)v),
+            new Entry("campaign.missionEventSystem.prepareAlliesFallback", "count", () => Campaign.MissionEventSystem.PrepareAlliesFallback, v => Campaign.MissionEventSystem.PrepareAlliesFallback = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareLineFallback", "x", () => Campaign.MissionEventSystem.PrepareLineFallback, v => Campaign.MissionEventSystem.PrepareLineFallback = (float)v),
+            new Entry("campaign.missionEventSystem.prepareLineFallback2", "m", () => Campaign.MissionEventSystem.PrepareLineFallback2, v => Campaign.MissionEventSystem.PrepareLineFallback2 = (float)v),
+            new Entry("campaign.missionEventSystem.estimateFallback", "count", () => Campaign.MissionEventSystem.EstimateFallback, v => Campaign.MissionEventSystem.EstimateFallback = (float)v),
+            new Entry("campaign.missionEventSystem.prepareCeasefireFallback", "x", () => Campaign.MissionEventSystem.PrepareCeasefireFallback, v => Campaign.MissionEventSystem.PrepareCeasefireFallback = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareCrossingMaxValue", "share", () => Campaign.MissionEventSystem.PrepareCrossingMaxValue, v => Campaign.MissionEventSystem.PrepareCrossingMaxValue = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareCrateAttemptMax", "x", () => Campaign.MissionEventSystem.PrepareCrateAttemptMax, v => Campaign.MissionEventSystem.PrepareCrateAttemptMax = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareCrateNextDoubleScale2", "x", () => Campaign.MissionEventSystem.PrepareCrateNextDoubleScale2, v => Campaign.MissionEventSystem.PrepareCrateNextDoubleScale2 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareCrateDistanceMax", "m", () => Campaign.MissionEventSystem.PrepareCrateDistanceMax, v => Campaign.MissionEventSystem.PrepareCrateDistanceMax = (float)v),
+            new Entry("campaign.missionEventSystem.happenTriesMax", "x", () => Campaign.MissionEventSystem.HappenTriesMax, v => Campaign.MissionEventSystem.HappenTriesMax = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.happenFallback", "x", () => Campaign.MissionEventSystem.HappenFallback, v => Campaign.MissionEventSystem.HappenFallback = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.happenFallback2", "x", () => Campaign.MissionEventSystem.HappenFallback2, v => Campaign.MissionEventSystem.HappenFallback2 = (float)v),
+            new Entry("campaign.missionEventSystem.happenKScale", "x", () => Campaign.MissionEventSystem.HappenKScale, v => Campaign.MissionEventSystem.HappenKScale = v),
+            new Entry("campaign.missionEventSystem.happenAirFalse", "x", () => Campaign.MissionEventSystem.HappenAirFalse, v => Campaign.MissionEventSystem.HappenAirFalse = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.happenKScale2", "x", () => Campaign.MissionEventSystem.HappenKScale2, v => Campaign.MissionEventSystem.HappenKScale2 = (float)v),
+            new Entry("campaign.missionEventSystem.happenKSub", "x", () => Campaign.MissionEventSystem.HappenKSub, v => Campaign.MissionEventSystem.HappenKSub = (float)v),
+            new Entry("campaign.missionEventSystem.happenKDivisor", "x", () => Campaign.MissionEventSystem.HappenKDivisor, v => Campaign.MissionEventSystem.HappenKDivisor = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.happenAirTrue", "x", () => Campaign.MissionEventSystem.HappenAirTrue, v => Campaign.MissionEventSystem.HappenAirTrue = v),
+            new Entry("campaign.missionEventSystem.happenAirFalse2", "x", () => Campaign.MissionEventSystem.HappenAirFalse2, v => Campaign.MissionEventSystem.HappenAirFalse2 = v),
+            new Entry("campaign.missionEventSystem.happenAdd", "x", () => Campaign.MissionEventSystem.HappenAdd, v => Campaign.MissionEventSystem.HappenAdd = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.happenTimeAdd", "s", () => Campaign.MissionEventSystem.HappenTimeAdd, v => Campaign.MissionEventSystem.HappenTimeAdd = v),
+            new Entry("campaign.missionEventSystem.happenTimeAdd2", "s", () => Campaign.MissionEventSystem.HappenTimeAdd2, v => Campaign.MissionEventSystem.HappenTimeAdd2 = v),
+            new Entry("campaign.missionEventSystem.happenSeconds", "x", () => Campaign.MissionEventSystem.HappenSeconds, v => Campaign.MissionEventSystem.HappenSeconds = (float)v),
+            new Entry("campaign.missionEventSystem.happenTimeAdd3", "s", () => Campaign.MissionEventSystem.HappenTimeAdd3, v => Campaign.MissionEventSystem.HappenTimeAdd3 = v),
+            new Entry("campaign.missionEventSystem.happenFallback4", "x", () => Campaign.MissionEventSystem.HappenFallback4, v => Campaign.MissionEventSystem.HappenFallback4 = (float)v),
+            new Entry("campaign.missionEventSystem.happenFallback5", "x", () => Campaign.MissionEventSystem.HappenFallback5, v => Campaign.MissionEventSystem.HappenFallback5 = (float)v),
+            new Entry("campaign.missionEventSystem.happenFallback6", "x", () => Campaign.MissionEventSystem.HappenFallback6, v => Campaign.MissionEventSystem.HappenFallback6 = (float)v),
+            new Entry("campaign.missionEventSystem.happenNumberFloor", "x", () => Campaign.MissionEventSystem.HappenNumberFloor, v => Campaign.MissionEventSystem.HappenNumberFloor = (float)v),
+            new Entry("campaign.missionEventSystem.happenFallback7", "x", () => Campaign.MissionEventSystem.HappenFallback7, v => Campaign.MissionEventSystem.HappenFallback7 = (float)v),
+            new Entry("campaign.missionEventSystem.happenFallback8", "x", () => Campaign.MissionEventSystem.HappenFallback8, v => Campaign.MissionEventSystem.HappenFallback8 = (float)v),
+            new Entry("campaign.missionEventSystem.happenFallback9", "x", () => Campaign.MissionEventSystem.HappenFallback9, v => Campaign.MissionEventSystem.HappenFallback9 = (float)v),
+            new Entry("campaign.missionEventSystem.happenFloor", "x", () => Campaign.MissionEventSystem.HappenFloor, v => Campaign.MissionEventSystem.HappenFloor = (float)v),
+            new Entry("campaign.missionEventSystem.happenWeatherSightMin", "x", () => Campaign.MissionEventSystem.HappenWeatherSightMin, v => Campaign.MissionEventSystem.HappenWeatherSightMin = (float)v),
+            new Entry("campaign.missionEventSystem.happenWeatherSightMax", "x", () => Campaign.MissionEventSystem.HappenWeatherSightMax, v => Campaign.MissionEventSystem.HappenWeatherSightMax = (float)v),
+            new Entry("campaign.missionEventSystem.fieldGeneralTriesMax", "m", () => Campaign.MissionEventSystem.FieldGeneralTriesMax, v => Campaign.MissionEventSystem.FieldGeneralTriesMax = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.fieldGeneralKAdd", "x", () => Campaign.MissionEventSystem.FieldGeneralKAdd, v => Campaign.MissionEventSystem.FieldGeneralKAdd = (float)v),
+            new Entry("campaign.missionEventSystem.fieldGeneralKScale", "x", () => Campaign.MissionEventSystem.FieldGeneralKScale, v => Campaign.MissionEventSystem.FieldGeneralKScale = (float)v),
+            new Entry("campaign.missionEventSystem.fieldGeneralKDivisor", "x", () => Campaign.MissionEventSystem.FieldGeneralKDivisor, v => Campaign.MissionEventSystem.FieldGeneralKDivisor = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.fieldGeneralInwardScale", "x", () => Campaign.MissionEventSystem.FieldGeneralInwardScale, v => Campaign.MissionEventSystem.FieldGeneralInwardScale = (float)v),
+            new Entry("campaign.missionEventSystem.startConvoyFallback", "count", () => Campaign.MissionEventSystem.StartConvoyFallback, v => Campaign.MissionEventSystem.StartConvoyFallback = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.startConvoyFallback3", "s", () => Campaign.MissionEventSystem.StartConvoyFallback3, v => Campaign.MissionEventSystem.StartConvoyFallback3 = (float)v),
+            new Entry("campaign.missionEventSystem.startConvoyKMod", "x", () => Campaign.MissionEventSystem.StartConvoyKMod, v => Campaign.MissionEventSystem.StartConvoyKMod = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.startConvoyKScale", "x", () => Campaign.MissionEventSystem.StartConvoyKScale, v => Campaign.MissionEventSystem.StartConvoyKScale = (float)v),
+            new Entry("campaign.missionEventSystem.startConvoyKDivisor", "x", () => Campaign.MissionEventSystem.StartConvoyKDivisor, v => Campaign.MissionEventSystem.StartConvoyKDivisor = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.startConvoyFallback2", "count", () => Campaign.MissionEventSystem.StartConvoyFallback2, v => Campaign.MissionEventSystem.StartConvoyFallback2 = (float)v),
+            new Entry("campaign.missionEventSystem.startConvoyKScale2", "x", () => Campaign.MissionEventSystem.StartConvoyKScale2, v => Campaign.MissionEventSystem.StartConvoyKScale2 = (float)v),
+            new Entry("campaign.missionEventSystem.startConvoyOffScale", "x", () => Campaign.MissionEventSystem.StartConvoyOffScale, v => Campaign.MissionEventSystem.StartConvoyOffScale = (float)v),
+            new Entry("campaign.missionEventSystem.startConvoyKScale3", "x", () => Campaign.MissionEventSystem.StartConvoyKScale3, v => Campaign.MissionEventSystem.StartConvoyKScale3 = (float)v),
+            new Entry("campaign.missionEventSystem.updateFallback", "m", () => Campaign.MissionEventSystem.UpdateFallback, v => Campaign.MissionEventSystem.UpdateFallback = (float)v),
+            new Entry("campaign.missionEventSystem.updateSecondsFloor", "s", () => Campaign.MissionEventSystem.UpdateSecondsFloor, v => Campaign.MissionEventSystem.UpdateSecondsFloor = v),
+            new Entry("campaign.missionEventSystem.counterBatteryFallback", "count", () => Campaign.MissionEventSystem.CounterBatteryFallback, v => Campaign.MissionEventSystem.CounterBatteryFallback = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.counterBatteryKScale", "x", () => Campaign.MissionEventSystem.CounterBatteryKScale, v => Campaign.MissionEventSystem.CounterBatteryKScale = v),
+            new Entry("campaign.missionEventSystem.counterBatteryFallback2", "count", () => Campaign.MissionEventSystem.CounterBatteryFallback2, v => Campaign.MissionEventSystem.CounterBatteryFallback2 = (float)v),
+            new Entry("campaign.missionEventSystem.counterBatteryTickMod", "ticks", () => Campaign.MissionEventSystem.CounterBatteryTickMod, v => Campaign.MissionEventSystem.CounterBatteryTickMod = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.counterBatteryFallback3", "count", () => Campaign.MissionEventSystem.CounterBatteryFallback3, v => Campaign.MissionEventSystem.CounterBatteryFallback3 = (float)v),
+            new Entry("campaign.missionEventSystem.counterBatteryTimeMin", "s", () => Campaign.MissionEventSystem.CounterBatteryTimeMin, v => Campaign.MissionEventSystem.CounterBatteryTimeMin = v),
+            new Entry("campaign.missionEventSystem.counterBatteryFallback4", "count", () => Campaign.MissionEventSystem.CounterBatteryFallback4, v => Campaign.MissionEventSystem.CounterBatteryFallback4 = (float)v),
+            new Entry("campaign.missionEventSystem.watchGeneralTimeAdd", "s", () => Campaign.MissionEventSystem.WatchGeneralTimeAdd, v => Campaign.MissionEventSystem.WatchGeneralTimeAdd = v),
+            new Entry("campaign.missionEventSystem.watchConvoyNowAdd", "s", () => Campaign.MissionEventSystem.WatchConvoyNowAdd, v => Campaign.MissionEventSystem.WatchConvoyNowAdd = v),
+            new Entry("campaign.missionEventSystem.watchConvoyDistanceMin", "m", () => Campaign.MissionEventSystem.WatchConvoyDistanceMin, v => Campaign.MissionEventSystem.WatchConvoyDistanceMin = (float)v),
+            new Entry("campaign.missionEventSystem.watchCratesHullRadiusAdd", "m", () => Campaign.MissionEventSystem.WatchCratesHullRadiusAdd, v => Campaign.MissionEventSystem.WatchCratesHullRadiusAdd = (float)v),
+            new Entry("campaign.missionEventSystem.watchCratesDtDivisor", "x", () => Campaign.MissionEventSystem.WatchCratesDtDivisor, v => Campaign.MissionEventSystem.WatchCratesDtDivisor = (float)v),
+            new Entry("campaign.missionEventSystem.watchCratesDistanceMax", "m", () => Campaign.MissionEventSystem.WatchCratesDistanceMax, v => Campaign.MissionEventSystem.WatchCratesDistanceMax = (float)v),
+            new Entry("campaign.missionEventSystem.watchCratesFallback", "x", () => Campaign.MissionEventSystem.WatchCratesFallback, v => Campaign.MissionEventSystem.WatchCratesFallback = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.stepRodsPen", "x", () => Campaign.MissionEventSystem.StepRodsPen, v => Campaign.MissionEventSystem.StepRodsPen = (float)v),
+            new Entry("campaign.missionEventSystem.startCeasefireTriesMax", "m", () => Campaign.MissionEventSystem.StartCeasefireTriesMax, v => Campaign.MissionEventSystem.StartCeasefireTriesMax = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.startCeasefireKMod", "x", () => Campaign.MissionEventSystem.StartCeasefireKMod, v => Campaign.MissionEventSystem.StartCeasefireKMod = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.startCeasefireAcrossScale", "x", () => Campaign.MissionEventSystem.StartCeasefireAcrossScale, v => Campaign.MissionEventSystem.StartCeasefireAcrossScale = (float)v),
+            new Entry("campaign.missionEventSystem.startCeasefireKDivisor", "x", () => Campaign.MissionEventSystem.StartCeasefireKDivisor, v => Campaign.MissionEventSystem.StartCeasefireKDivisor = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.startCeasefireInwardScale", "x", () => Campaign.MissionEventSystem.StartCeasefireInwardScale, v => Campaign.MissionEventSystem.StartCeasefireInwardScale = (float)v),
+            new Entry("campaign.missionEventSystem.startCeasefireFallback", "s", () => Campaign.MissionEventSystem.StartCeasefireFallback, v => Campaign.MissionEventSystem.StartCeasefireFallback = (float)v),
+            new Entry("campaign.missionEventSystem.payEnemyFallback", "x", () => Campaign.MissionEventSystem.PayEnemyFallback, v => Campaign.MissionEventSystem.PayEnemyFallback = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareP31MaxScale", "x", () => Campaign.MissionEventSystem.PrepareP31MaxScale, v => Campaign.MissionEventSystem.PrepareP31MaxScale = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31MaxAdd", "count", () => Campaign.MissionEventSystem.PrepareP31MaxAdd, v => Campaign.MissionEventSystem.PrepareP31MaxAdd = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback", "m", () => Campaign.MissionEventSystem.PrepareP31Fallback, v => Campaign.MissionEventSystem.PrepareP31Fallback = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback3", "s", () => Campaign.MissionEventSystem.PrepareP31Fallback3, v => Campaign.MissionEventSystem.PrepareP31Fallback3 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31NumberMin", "s", () => Campaign.MissionEventSystem.PrepareP31NumberMin, v => Campaign.MissionEventSystem.PrepareP31NumberMin = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31NumberMax", "s", () => Campaign.MissionEventSystem.PrepareP31NumberMax, v => Campaign.MissionEventSystem.PrepareP31NumberMax = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback4", "x", () => Campaign.MissionEventSystem.PrepareP31Fallback4, v => Campaign.MissionEventSystem.PrepareP31Fallback4 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31NumberFloor", "x", () => Campaign.MissionEventSystem.PrepareP31NumberFloor, v => Campaign.MissionEventSystem.PrepareP31NumberFloor = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback5", "x", () => Campaign.MissionEventSystem.PrepareP31Fallback5, v => Campaign.MissionEventSystem.PrepareP31Fallback5 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31CountMax", "count", () => Campaign.MissionEventSystem.PrepareP31CountMax, v => Campaign.MissionEventSystem.PrepareP31CountMax = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareP31Gioi", "count", () => Campaign.MissionEventSystem.PrepareP31Gioi, v => Campaign.MissionEventSystem.PrepareP31Gioi = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Scale", "x", () => Campaign.MissionEventSystem.PrepareP31Scale, v => Campaign.MissionEventSystem.PrepareP31Scale = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31CountMax2", "count", () => Campaign.MissionEventSystem.PrepareP31CountMax2, v => Campaign.MissionEventSystem.PrepareP31CountMax2 = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.prepareP31Gioi2", "count", () => Campaign.MissionEventSystem.PrepareP31Gioi2, v => Campaign.MissionEventSystem.PrepareP31Gioi2 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31NumberFloor2", "m", () => Campaign.MissionEventSystem.PrepareP31NumberFloor2, v => Campaign.MissionEventSystem.PrepareP31NumberFloor2 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback7", "m", () => Campaign.MissionEventSystem.PrepareP31Fallback7, v => Campaign.MissionEventSystem.PrepareP31Fallback7 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback8", "s", () => Campaign.MissionEventSystem.PrepareP31Fallback8, v => Campaign.MissionEventSystem.PrepareP31Fallback8 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback9", "x", () => Campaign.MissionEventSystem.PrepareP31Fallback9, v => Campaign.MissionEventSystem.PrepareP31Fallback9 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31NumberMin2", "x", () => Campaign.MissionEventSystem.PrepareP31NumberMin2, v => Campaign.MissionEventSystem.PrepareP31NumberMin2 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31NumberMax2", "x", () => Campaign.MissionEventSystem.PrepareP31NumberMax2, v => Campaign.MissionEventSystem.PrepareP31NumberMax2 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback10", "x", () => Campaign.MissionEventSystem.PrepareP31Fallback10, v => Campaign.MissionEventSystem.PrepareP31Fallback10 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31NumberMin3", "x", () => Campaign.MissionEventSystem.PrepareP31NumberMin3, v => Campaign.MissionEventSystem.PrepareP31NumberMin3 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31NumberMax3", "x", () => Campaign.MissionEventSystem.PrepareP31NumberMax3, v => Campaign.MissionEventSystem.PrepareP31NumberMax3 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback11", "x", () => Campaign.MissionEventSystem.PrepareP31Fallback11, v => Campaign.MissionEventSystem.PrepareP31Fallback11 = (float)v),
+            new Entry("campaign.missionEventSystem.prepareP31Fallback12", "x", () => Campaign.MissionEventSystem.PrepareP31Fallback12, v => Campaign.MissionEventSystem.PrepareP31Fallback12 = (float)v),
+            new Entry("campaign.missionEventSystem.happenP31TryGetValueFalse", "m", () => Campaign.MissionEventSystem.HappenP31TryGetValueFalse, v => Campaign.MissionEventSystem.HappenP31TryGetValueFalse = (float)v),
+            new Entry("campaign.missionEventSystem.happenP31Floor", "m", () => Campaign.MissionEventSystem.HappenP31Floor, v => Campaign.MissionEventSystem.HappenP31Floor = (float)v),
+            new Entry("campaign.missionEventSystem.happenP31WeatherSightMin", "m", () => Campaign.MissionEventSystem.HappenP31WeatherSightMin, v => Campaign.MissionEventSystem.HappenP31WeatherSightMin = (float)v),
+            new Entry("campaign.missionEventSystem.happenP31WeatherSightMax", "m", () => Campaign.MissionEventSystem.HappenP31WeatherSightMax, v => Campaign.MissionEventSystem.HappenP31WeatherSightMax = (float)v),
+            new Entry("campaign.missionEventSystem.happenP31NumberFloor", "x", () => Campaign.MissionEventSystem.HappenP31NumberFloor, v => Campaign.MissionEventSystem.HappenP31NumberFloor = (float)v),
+            new Entry("campaign.missionEventSystem.happenP31Fallback", "x", () => Campaign.MissionEventSystem.HappenP31Fallback, v => Campaign.MissionEventSystem.HappenP31Fallback = (float)v),
+            new Entry("campaign.missionEventSystem.happenP31KScale", "x", () => Campaign.MissionEventSystem.HappenP31KScale, v => Campaign.MissionEventSystem.HappenP31KScale = v),
+            new Entry("campaign.missionEventSystem.updateP31SecondsFloor", "s", () => Campaign.MissionEventSystem.UpdateP31SecondsFloor, v => Campaign.MissionEventSystem.UpdateP31SecondsFloor = v),
+            new Entry("campaign.missionEventSystem.stepIceTimeAdd", "s", () => Campaign.MissionEventSystem.StepIceTimeAdd, v => Campaign.MissionEventSystem.StepIceTimeAdd = v),
+            new Entry("campaign.missionEventSystem.markStripMaxScale", "x", () => Campaign.MissionEventSystem.MarkStripMaxScale, v => Campaign.MissionEventSystem.MarkStripMaxScale = (float)v),
+            new Entry("campaign.missionEventSystem.markStripMaxAdd", "count", () => Campaign.MissionEventSystem.MarkStripMaxAdd, v => Campaign.MissionEventSystem.MarkStripMaxAdd = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireNextAtSub", "s", () => Campaign.MissionEventSystem.StepFireNextAtSub, v => Campaign.MissionEventSystem.StepFireNextAtSub = v),
+            new Entry("campaign.missionEventSystem.stepFireHzAdd", "x", () => Campaign.MissionEventSystem.StepFireHzAdd, v => Campaign.MissionEventSystem.StepFireHzAdd = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireZ", "x", () => Campaign.MissionEventSystem.StepFireZ, v => Campaign.MissionEventSystem.StepFireZ = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireEveryScale", "x", () => Campaign.MissionEventSystem.StepFireEveryScale, v => Campaign.MissionEventSystem.StepFireEveryScale = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireRadius", "m", () => Campaign.MissionEventSystem.StepFireRadius, v => Campaign.MissionEventSystem.StepFireRadius = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireMaxScale", "x", () => Campaign.MissionEventSystem.StepFireMaxScale, v => Campaign.MissionEventSystem.StepFireMaxScale = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireMinScale", "x", () => Campaign.MissionEventSystem.StepFireMinScale, v => Campaign.MissionEventSystem.StepFireMinScale = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireMinAdd", "m", () => Campaign.MissionEventSystem.StepFireMinAdd, v => Campaign.MissionEventSystem.StepFireMinAdd = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireMaxFloor", "count", () => Campaign.MissionEventSystem.StepFireMaxFloor, v => Campaign.MissionEventSystem.StepFireMaxFloor = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireEveryScale2", "x", () => Campaign.MissionEventSystem.StepFireEveryScale2, v => Campaign.MissionEventSystem.StepFireEveryScale2 = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireHxAdd2", "x", () => Campaign.MissionEventSystem.StepFireHxAdd2, v => Campaign.MissionEventSystem.StepFireHxAdd2 = (float)v),
+            new Entry("campaign.missionEventSystem.stepFireHzAdd2", "x", () => Campaign.MissionEventSystem.StepFireHzAdd2, v => Campaign.MissionEventSystem.StepFireHzAdd2 = (float)v),
+            new Entry("campaign.missionEventSystem.leadLeadMin", "x", () => Campaign.MissionEventSystem.LeadLeadMin, v => Campaign.MissionEventSystem.LeadLeadMin = (float)v),
+            new Entry("campaign.missionEventSystem.leadLeadMax", "x", () => Campaign.MissionEventSystem.LeadLeadMax, v => Campaign.MissionEventSystem.LeadLeadMax = (float)v),
+            new Entry("campaign.missionEventSystem.leadTableCap", "count", () => Campaign.MissionEventSystem.LeadTableCap, v => Campaign.MissionEventSystem.LeadTableCap = (float)v),
+            new Entry("campaign.missionEventSystem.startTimeAdd", "s", () => Campaign.MissionEventSystem.StartTimeAdd, v => Campaign.MissionEventSystem.StartTimeAdd = v),
+            new Entry("campaign.missionEventSystem.payDistanceMax", "m", () => Campaign.MissionEventSystem.PayDistanceMax, v => Campaign.MissionEventSystem.PayDistanceMax = (float)v),
+            new Entry("campaign.missionEventSystem.strengthCombatValueFloor", "x", () => Campaign.MissionEventSystem.StrengthCombatValueFloor, v => Campaign.MissionEventSystem.StrengthCombatValueFloor = (float)v),
+            new Entry("campaign.missionEventSystem.groupScale", "x", () => Campaign.MissionEventSystem.GroupScale, v => Campaign.MissionEventSystem.GroupScale = (float)v),
+            new Entry("campaign.missionEventSystem.deliverIMod", "x", () => Campaign.MissionEventSystem.DeliverIMod, v => Campaign.MissionEventSystem.DeliverIMod = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.deliverISub", "x", () => Campaign.MissionEventSystem.DeliverISub, v => Campaign.MissionEventSystem.DeliverISub = (float)v),
+            new Entry("campaign.missionEventSystem.deliverAcrossScale", "x", () => Campaign.MissionEventSystem.DeliverAcrossScale, v => Campaign.MissionEventSystem.DeliverAcrossScale = (float)v),
+            new Entry("campaign.missionEventSystem.deliverIDivisor", "x", () => Campaign.MissionEventSystem.DeliverIDivisor, v => Campaign.MissionEventSystem.DeliverIDivisor = (int)System.Math.Round(v)),
+            new Entry("campaign.missionEventSystem.deliverInwardScale", "x", () => Campaign.MissionEventSystem.DeliverInwardScale, v => Campaign.MissionEventSystem.DeliverInwardScale = (float)v),
+            new Entry("campaign.missionEventSystem.deliverAcrossScale2", "x", () => Campaign.MissionEventSystem.DeliverAcrossScale2, v => Campaign.MissionEventSystem.DeliverAcrossScale2 = (float)v),
+            new Entry("campaign.missionEventSystem.deliverSeconds", "s", () => Campaign.MissionEventSystem.DeliverSeconds, v => Campaign.MissionEventSystem.DeliverSeconds = (float)v),
+            new Entry("campaign.missionEventSystem.deliverTimeAdd", "s", () => Campaign.MissionEventSystem.DeliverTimeAdd, v => Campaign.MissionEventSystem.DeliverTimeAdd = v),
+            new Entry("campaign.missionEventSystem.deliverIMin", "count", () => Campaign.MissionEventSystem.DeliverIMin, v => Campaign.MissionEventSystem.DeliverIMin = (int)System.Math.Round(v)),
+            new Entry("campaign.missionMode.tickHeldScale", "x", () => Campaign.MissionMode.TickHeldScale, v => Campaign.MissionMode.TickHeldScale = (float)v),
+            new Entry("campaign.missionMode.tickTickMod", "ticks", () => Campaign.MissionMode.TickTickMod, v => Campaign.MissionMode.TickTickMod = (int)System.Math.Round(v)),
+            new Entry("campaign.missionMode.lostTimeMin", "s", () => Campaign.MissionMode.LostTimeMin, v => Campaign.MissionMode.LostTimeMin = v),
+            new Entry("campaign.missionMode.lostNowMin", "s", () => Campaign.MissionMode.LostNowMin, v => Campaign.MissionMode.LostNowMin = v),
+            new Entry("campaign.missionMode.lostTimeMin2", "s", () => Campaign.MissionMode.LostTimeMin2, v => Campaign.MissionMode.LostTimeMin2 = v),
+            new Entry("campaign.missionMode.spawnWavesWaveScale", "x", () => Campaign.MissionMode.SpawnWavesWaveScale, v => Campaign.MissionMode.SpawnWavesWaveScale = (int)System.Math.Round(v)),
+            new Entry("campaign.missionMode.spawnWavesScale", "x", () => Campaign.MissionMode.SpawnWavesScale, v => Campaign.MissionMode.SpawnWavesScale = (float)v),
+            new Entry("campaign.missionMode.spawnWavesDegrees", "count", () => Campaign.MissionMode.SpawnWavesDegrees, v => Campaign.MissionMode.SpawnWavesDegrees = (float)v),
+            new Entry("campaign.missionMode.callReinforcementsReinforceSizeCap", "count", () => Campaign.MissionMode.CallReinforcementsReinforceSizeCap, v => Campaign.MissionMode.CallReinforcementsReinforceSizeCap = (int)System.Math.Round(v)),
+            new Entry("campaign.missionMode.callReinforcementsPlayerAirShareMin", "share", () => Campaign.MissionMode.CallReinforcementsPlayerAirShareMin, v => Campaign.MissionMode.CallReinforcementsPlayerAirShareMin = (float)v),
+            new Entry("campaign.missionMode.callReinforcementsReinforcedScale2", "x", () => Campaign.MissionMode.CallReinforcementsReinforcedScale2, v => Campaign.MissionMode.CallReinforcementsReinforcedScale2 = (int)System.Math.Round(v)),
+            new Entry("campaign.missionMode.callReinforcementsIScale", "x", () => Campaign.MissionMode.CallReinforcementsIScale, v => Campaign.MissionMode.CallReinforcementsIScale = (int)System.Math.Round(v)),
+            new Entry("campaign.missionMode.criticalFailureMaxHpScale", "x", () => Campaign.MissionMode.CriticalFailureMaxHpScale, v => Campaign.MissionMode.CriticalFailureMaxHpScale = (float)v),
+            new Entry("campaign.missionMode.scoutDtScale", "x", () => Campaign.MissionMode.ScoutDtScale, v => Campaign.MissionMode.ScoutDtScale = (float)v),
+            new Entry("campaign.missionMode.checkFleeOutwardScale", "x", () => Campaign.MissionMode.CheckFleeOutwardScale, v => Campaign.MissionMode.CheckFleeOutwardScale = (float)v),
+            new Entry("campaign.missionMode.convoyFrontNormalizeScale", "x", () => Campaign.MissionMode.ConvoyFrontNormalizeScale, v => Campaign.MissionMode.ConvoyFrontNormalizeScale = (float)v),
+            new Entry("campaign.mutators.applyTimeLimitFalse", "s", () => Campaign.Mutators.ApplyTimeLimitFalse, v => Campaign.Mutators.ApplyTimeLimitFalse = (float)v),
+            new Entry("campaign.mutators.applyCountMax", "count", () => Campaign.Mutators.ApplyCountMax, v => Campaign.Mutators.ApplyCountMax = (int)System.Math.Round(v)),
+            new Entry("campaign.mutators.applyCountMax2", "count", () => Campaign.Mutators.ApplyCountMax2, v => Campaign.Mutators.ApplyCountMax2 = (int)System.Math.Round(v)),
+            new Entry("campaign.operationMode.strikeTargetScale", "x", () => Campaign.OperationMode.StrikeTargetScale, v => Campaign.OperationMode.StrikeTargetScale = (float)v),
+            new Entry("campaign.operationMode.strikeTargetReachAdd", "m", () => Campaign.OperationMode.StrikeTargetReachAdd, v => Campaign.OperationMode.StrikeTargetReachAdd = (float)v),
+            new Entry("campaign.operationsData.rotationCapMax", "count", () => Campaign.OperationsData.RotationCapMax, v => Campaign.OperationsData.RotationCapMax = (int)System.Math.Round(v)),
+            new Entry("campaign.operationsData.weeklyCountMax", "count", () => Campaign.OperationsData.WeeklyCountMax, v => Campaign.OperationsData.WeeklyCountMax = (int)System.Math.Round(v)),
+            new Entry("campaign.stormPlan.inside", "s", () => Campaign.StormPlan.Inside, v => Campaign.StormPlan.Inside = (float)v),
+            new Entry("campaign.stormPlan.seconds", "s", () => Campaign.StormPlan.Seconds, v => Campaign.StormPlan.Seconds = (float)v),
+            new Entry("campaign.stormPlan.hold", "s", () => Campaign.StormPlan.Hold, v => Campaign.StormPlan.Hold = (float)v),
+            new Entry("campaign.weatherPlan.seconds", "s", () => Campaign.WeatherPlan.Seconds, v => Campaign.WeatherPlan.Seconds = (float)v),
         };
     }
 }

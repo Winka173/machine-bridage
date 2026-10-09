@@ -136,7 +136,7 @@ namespace MachineBrigade.Sim.Sandbox
         {
             placed = new List<int>();
             if (!_catalog.Vehicles.TryGetValue(defId, out var def)) return SandboxRefusal.Unknown;
-            count = Math.Clamp(count, 1, 32);
+            count = Math.Clamp(count, 1, global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxEditor.PlaceFormationCountMax);
             var refusal = Check(def, count);
             if (refusal != SandboxRefusal.None) return refusal;
             heading = SandboxRules.Snap(heading, FreeRotation);
