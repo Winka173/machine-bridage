@@ -230,7 +230,7 @@ namespace MachineBrigade.Sim.Bosses
             s.Stage = BigStage.Charging;
             s.LastStart = s.WarnStart = now;
             s.FireAt = now + warn;
-            s.Next = now + MathF.Max(warn + 1f, def.CooldownIn(AttackPhase(v)) * scale.Cooldown);
+            s.Next = now + MathF.Max(warn + 1f, def.CooldownIn(AttackPhase(v)) * scale.Cooldown * v.PhaseBigCooldown);
             s.Next = PressureNextP4(s, now, warn);
             s.Aim = aim;
             s.Origin = v.Position;

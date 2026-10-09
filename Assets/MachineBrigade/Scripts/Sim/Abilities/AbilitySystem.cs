@@ -67,6 +67,9 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (!v.IsAlive) continue;
                 if (v.Transforming && now >= v.TransformUntil) CompletePhase(v, now);
+                // Boss design 09/10: the one phase starts however the health got under its mark (a part's break damage, a burn, a heal-back
+                // and a new blow); it can never start twice: the phase counter only goes up.
+                else if (!v.Transforming && v.Hp > 0f && v.Phase < v.Def.Phases.Count && v.Hp <= v.Def.Phases[v.Phase].At * v.MaxHp) BeginPhase(v);
                 if (v.FlareChargesMax > 0) RechargeFlares(v, now);
                 v.RefreshEffects(now);
                 // A boss's jamming aura stops with its jammer part (prompt 16).
@@ -574,6 +577,18 @@ namespace MachineBrigade.Sim.Abilities
             if (phase.Transform <= 0f) CompletePhase(v, now);
         }
 
+        /// <summary>
+        /// Boss design 09/10 (sheet 13, 50 % phase): the boss opens its hangar, deck or gate: every summon of it that is ready to
+        /// be called is called now (the cap, the module standing and the safe-arrival check still apply), and its pod bays drop.
+        /// </summary>
+        internal void CallSummons(Vehicle v, double now)
+        {
+            var skills = v.Def.Skills;
+            for (var i = 0; i < skills.Count; i++)
+                if (skills[i].Kind == SkillKind.Summon) v.SkillReadyAt[i] = Math.Min(v.SkillReadyAt[i], now);
+            v.PodNext = Math.Min(v.PodNext, now);
+        }
+
         private void CompletePhase(Vehicle v, double now)
         {
             var phase = v.Def.Phases[v.Phase];
@@ -584,6 +599,8 @@ namespace MachineBrigade.Sim.Abilities
             v.DamageTaken *= phase.Armor;
             // Prompt 26 B.5: its last phase fires faster.
             v.FireBoost *= phase.FireRate;
+            v.PhaseBigCooldown *= phase.BigCooldown;
+            if (phase.CallSummons) CallSummons(v, now);
             if (phase.Heal > 0f) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * phase.Heal);
             if (phase.Model != null) v.Form = phase.Model;
             foreach (var skill in phase.Skills) Fire(v, skill, now);

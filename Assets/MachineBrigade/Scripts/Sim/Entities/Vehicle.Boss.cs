@@ -14,6 +14,9 @@ namespace MachineBrigade.Sim.Entities
     public sealed partial class Vehicle
     {
         /// <summary>Play-test 6 (DECISIONS 21G): a boss's rank cycles its weapons faster (1 for anything else).</summary>
+        /// <summary>Boss design 09/10: its big attack's cooldown multiplier from its phase (sheet 13: a sparser rhythm).</summary>
+        internal float PhaseBigCooldown = 1f;
+
         internal float RankFire => (Def.RankDef?.FireRate ?? 1f) * Def.FireScale;
 
         /// <summary>Play-test 6: when the boss's strike window began and what strikes and bombs took from it since (its rank's cap).</summary>

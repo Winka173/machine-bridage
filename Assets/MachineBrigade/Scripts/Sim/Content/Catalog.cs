@@ -365,6 +365,7 @@ namespace MachineBrigade.Sim.Content
                                 At = p.Float("at"), Transform = p.Float("transform", 3f), Heal = p.Float("heal", 0f),
                                 Damage = p.Float("damage", 1f), Speed = p.Float("speed", 1f), Armor = p.Float("armor", 1f), FireRate = p.Float("fireRate", 1f),
                                 Skills = phaseSkills, Model = p.Has("model") ? p.String("model") : null, Radio = p.Has("radio") ? p.String("radio") : null,
+                                BigCooldown = Math.Clamp(p.Float("bigCooldown", 1f), 0.2f, 5f), CallSummons = p.Bool("summons", false),
                             });
                         }
                         phases.Sort((a, b) => b.At.CompareTo(a.At));

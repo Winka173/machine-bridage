@@ -508,6 +508,12 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Its general's radio line when the phase begins (a text key), or null.</summary>
         public string? Radio { get; set; }
+
+        /// <summary>Boss design 09/10 (sheet 13): its big attack's cooldown is multiplied by this from the phase on (1.4: a sparser rhythm); multiplied in.</summary>
+        public float BigCooldown { get; set; } = 1f;
+
+        /// <summary>Boss design 09/10: the phase calls its summons at once (the hangar, deck or gate opens), within their caps and only while their module stands.</summary>
+        public bool CallSummons { get; set; }
     }
 
     public sealed partial class VehicleDef
