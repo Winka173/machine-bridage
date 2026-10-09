@@ -56,8 +56,8 @@ static class NavalSuite
     static readonly Row[] Matrix =
     {
         // ---- duels (prompt H, spec 9): both sides on their own patrol lanes, fighting AI
-        new() { Set = "duel", Name = "hover_gunboat x2 vs torpedo_boat x2", A = N("hover_gunboat", 2), B = N("torpedo_boat", 2), Expect = "A", Note = "torpedo boat loses to the gunboat" },
-        new() { Set = "duel", Name = "river_patrol_boat x2 vs torpedo_boat x2", A = N("river_patrol_boat", 2), B = N("torpedo_boat", 2), Expect = "A" },
+        new() { Set = "duel", Name = "hover_gunboat x2 vs torpedo_boat x2", A = N("hover_gunboat", 2), B = N("torpedo_boat", 2), Expect = "A", Note = "OWNER DECISION: hover_gunboat is not a sea unit (no naval block; the sea's water blocks it, it is pushed ashore) and the torpedo boat is navalOnly" },
+        new() { Set = "duel", Name = "river_patrol_boat x2 vs torpedo_boat x2", A = N("river_patrol_boat", 2), B = N("torpedo_boat", 2), Expect = "A", Note = "OWNER DECISION: river_patrol_boat is a ground-domain river craft (no naval block), it cannot enter the sea" },
         new() { Set = "duel", Name = "sea_corvette vs ashm_corvette (close 40 m)", A = N("sea_corvette", 1), B = N("ashm_corvette", 1), Gap = 40f, Expect = "A", Note = "AShM corvette loses close" },
         new() { Set = "duel", Name = "sea_corvette vs ashm_corvette (long 130 m)", A = N("sea_corvette", 1), B = N("ashm_corvette", 1), Gap = 130f, Expect = "B", Note = "AShM corvette wins at standoff" },
         new() { Set = "duel", Name = "ashm_corvette vs sea_corvette + ciws_escort_craft", A = N("ashm_corvette", 1), B = L("sea_corvette", "ciws_escort_craft"), Gap = 120f, Expect = "B", Note = "a lone AShM corvette loses to a CIWS-protected group" },
