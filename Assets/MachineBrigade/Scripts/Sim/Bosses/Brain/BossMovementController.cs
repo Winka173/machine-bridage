@@ -38,7 +38,7 @@ namespace MachineBrigade.Sim.Bosses
             if (def.Naval != null || move is BossMove.Ship or BossMove.Submarine) return BossCraft.Naval;
             if (move == BossMove.Rail) return BossCraft.Rail;
             if (def.FixedWing) return BossCraft.FixedWing;
-            if (def.Flying) return def.HoldsToFire || def.TurnRate <= SimMath.DegToRad(12f) ? BossCraft.Airship : BossCraft.Rotor;
+            if (def.Flying) return def.HoldsToFire || def.TurnRate <= SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossMovementController.CraftOfDegrees) ? BossCraft.Airship : BossCraft.Rotor;
             return BossCraft.Ground;
         }
 
@@ -121,7 +121,7 @@ namespace MachineBrigade.Sim.Bosses
             var dir = SimMath.Forward(v.Heading);
             var to = v.Path[v.PathIndex] - v.Position;
             if (to.LengthSquared() > 1f) dir = Vector2.Normalize(to);
-            var reach = Math.Clamp(Tun.CorridorClearMin + 2f * v.Def.Speed, Tun.CorridorClearMin, MathF.Max(Tun.CorridorClearMin, Tun.CorridorClearMax));
+            var reach = Math.Clamp(Tun.CorridorClearMin + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossMovementController.UpdateCorridorSpeedScale * v.Def.Speed, Tun.CorridorClearMin, MathF.Max(Tun.CorridorClearMin, Tun.CorridorClearMax));
             b.Corridor = new BossCorridor(v.Id, v.Team, v.Position, v.Position + dir * (v.Def.HullHalf + reach), v.Def.Width * 0.5f + Tun.CorridorMargin);
             b.HasCorridor = true;
         }

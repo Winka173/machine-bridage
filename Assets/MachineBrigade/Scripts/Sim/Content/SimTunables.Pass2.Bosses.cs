@@ -9,10 +9,887 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Bosses
         {
+            public static partial class BigZone
+            {
+                /// <summary>bosses.bigZone.exitsLengthSquaredMin (m; ban_kinh, was Sim/Entities/BigAttackState.cs:93).</summary>
+                public static float ExitsLengthSquaredMin = 0.01f;
+            }
+
+            public static partial class BossBrains
+            {
+                /// <summary>bosses.bossBrains.landNowMax (s; thoi_gian, was Sim/Bosses/Brain/BossBrains.cs:122).</summary>
+                public static double LandNowMax = 0.25;
+            }
+
+            public static partial class BossEscortCoordinator
+            {
+                /// <summary>bosses.bossEscortCoordinator.ringRankDivisor (x; khac, was Sim/Bosses/Brain/BossWeaponDirector.cs:159).</summary>
+                public static float RingRankDivisor = 2f;
+                /// <summary>bosses.bossEscortCoordinator.ringRepairReachSub (m; ban_kinh, was Sim/Bosses/Brain/BossWeaponDirector.cs:161).</summary>
+                public static float RingRepairReachSub = 2f;
+            }
+
+            public static partial class BossMissionController
+            {
+                /// <summary>bosses.bossMissionController.updatePatrolScale (x; khac, was Sim/Bosses/Brain/BossMissionController.cs:39).</summary>
+                public static float UpdatePatrolScale = 2f;
+            }
+
+            public static partial class BossMovementController
+            {
+                /// <summary>bosses.bossMovementController.craftOfDegrees (x; tan_suat, was Sim/Bosses/Brain/BossMovementController.cs:41).</summary>
+                public static float CraftOfDegrees = 12f;
+                /// <summary>bosses.bossMovementController.updateCorridorSpeedScale (x; ban_kinh, was Sim/Bosses/Brain/BossMovementController.cs:124).</summary>
+                public static float UpdateCorridorSpeedScale = 2f;
+            }
+
+            public static partial class BossPartDef
+            {
+                /// <summary>bosses.bossPartDef.ctorHpMax (x; sat_thuong, was Sim/Content/BossDefs.cs:20).</summary>
+                public static float CtorHpMax = 10f;
+            }
+
+            public static partial class BossSystem
+            {
+                /// <summary>bosses.bossSystem.tryBeginNowAdd (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:195).</summary>
+                public static double TryBeginNowAdd = 2.0;
+                /// <summary>bosses.bossSystem.tryBeginNowAdd2 (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:225).</summary>
+                public static double TryBeginNowAdd2 = 3.0;
+                /// <summary>bosses.bossSystem.tryBeginWarnFloor (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:229).</summary>
+                public static float TryBeginWarnFloor = 0.5f;
+                /// <summary>bosses.bossSystem.tryBeginLengthSquaredMin (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:239).</summary>
+                public static float TryBeginLengthSquaredMin = 0.01f;
+                /// <summary>bosses.bossSystem.tryBeginShare (share; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:247).</summary>
+                public static float TryBeginShare = 0.95f;
+                /// <summary>bosses.bossSystem.heldInFlightNowSub (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:265, Sim/Bosses/BossSystem.BigAttacks.cs:266).</summary>
+                public static double HeldInFlightNowSub = 0.5;
+                /// <summary>bosses.bossSystem.aimAtRadiusAdd (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:280).</summary>
+                public static float AimAtRadiusAdd = 2f;
+                /// <summary>bosses.bossSystem.spotScale (x; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:341).</summary>
+                public static float SpotScale = 15f;
+                /// <summary>bosses.bossSystem.spotStaticTrue (x; nguong, was Sim/Bosses/BossSystem.BigAttacks.cs:342).</summary>
+                public static float SpotStaticTrue = 4f;
+                /// <summary>bosses.bossSystem.rodSpotsRadiusScale (x; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:381).</summary>
+                public static float RodSpotsRadiusScale = 1.6f;
+                /// <summary>bosses.bossSystem.rodSpotsNScale (x; gioi_han_thuc_the, was Sim/Bosses/BossSystem.BigAttacks.cs:392).</summary>
+                public static int RodSpotsNScale = 2;
+                /// <summary>bosses.bossSystem.rodSpotsRadiusScale2 (x; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:395).</summary>
+                public static float RodSpotsRadiusScale2 = 1.7f;
+                /// <summary>bosses.bossSystem.rodWeightStaticTrue (x; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:401).</summary>
+                public static float RodWeightStaticTrue = 3f;
+                /// <summary>bosses.bossSystem.rodWeightMaxScale (x; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:401).</summary>
+                public static float RodWeightMaxScale = 0.5f;
+                /// <summary>bosses.bossSystem.planKAdd (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:505).</summary>
+                public static float PlanKAdd = 0.5f;
+                /// <summary>bosses.bossSystem.planAreaFloor (x; nguong, was Sim/Bosses/BossSystem.BigAttacks.cs:521).</summary>
+                public static float PlanAreaFloor = 8f;
+                /// <summary>bosses.bossSystem.planKScale (x; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:531).</summary>
+                public static double PlanKScale = 0.35;
+                /// <summary>bosses.bossSystem.planRadius (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:539).</summary>
+                public static float PlanRadius = 8f;
+                /// <summary>bosses.bossSystem.planDirScale (x; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:567).</summary>
+                public static float PlanDirScale = 0.55f;
+                /// <summary>bosses.bossSystem.planRadiusScale (x; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:567).</summary>
+                public static float PlanRadiusScale = 0.5f;
+                /// <summary>bosses.bossSystem.planDistanceScale (x; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:575).</summary>
+                public static float PlanDistanceScale = 0.5f;
+                /// <summary>bosses.bossSystem.chargeStage (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:640).</summary>
+                public static int ChargeStage = 4;
+                /// <summary>bosses.bossSystem.finishNowAdd (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:663).</summary>
+                public static double FinishNowAdd = 0.5;
+                /// <summary>bosses.bossSystem.fireKScale (x; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:707).</summary>
+                public static double FireKScale = 0.08;
+                /// <summary>bosses.bossSystem.fireKAdd (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:717).</summary>
+                public static float FireKAdd = 0.5f;
+                /// <summary>bosses.bossSystem.fireNextDoubleScale (x; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:718).</summary>
+                public static float FireNextDoubleScale = 0.7f;
+                /// <summary>bosses.bossSystem.fireDurationFloor (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:723).</summary>
+                public static float FireDurationFloor = 0.5f;
+                /// <summary>bosses.bossSystem.fireKScale2 (x; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:743).</summary>
+                public static double FireKScale2 = 0.35;
+                /// <summary>bosses.bossSystem.fireLaunchAdd (x; nguong, was Sim/Bosses/BossSystem.BigAttacks.cs:744).</summary>
+                public static double FireLaunchAdd = 0.5;
+                /// <summary>bosses.bossSystem.circleDelayKScale (x; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:777).</summary>
+                public static double CircleDelayKScale = 0.08;
+                /// <summary>bosses.bossSystem.stepBlastsDueFloor (x; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:814).</summary>
+                public static double StepBlastsDueFloor = 0.05;
+                /// <summary>bosses.bossSystem.maxLead (count; nguong, was Sim/Bosses/BossSystem.BigAttacks.cs:845).</summary>
+                public static double MaxLead = 2.5;
+                /// <summary>bosses.bossSystem.leadDistanceMin (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:851).</summary>
+                public static double LeadDistanceMin = 0.1;
+                /// <summary>bosses.bossSystem.blastAtLengthSquaredMin (m; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:868).</summary>
+                public static float BlastAtLengthSquaredMin = 0.01f;
+                /// <summary>bosses.bossSystem.blastAtDamageMin (x; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:897).</summary>
+                public static float BlastAtDamageMin = 800f;
+                /// <summary>bosses.bossSystem.blastAtDamageMin2 (x; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:897).</summary>
+                public static float BlastAtDamageMin2 = 200f;
+                /// <summary>bosses.bossSystem.blastAtDamageMin3 (x; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:897).</summary>
+                public static float BlastAtDamageMin3 = 50f;
+                /// <summary>bosses.bossSystem.shareRadiusFloor (m; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:910).</summary>
+                public static float ShareRadiusFloor = 0.01f;
+                /// <summary>bosses.bossSystem.shareShareScale (x; nguong, was Sim/Bosses/BossSystem.BigAttacks.cs:912).</summary>
+                public static float ShareShareScale = 0.5f;
+                /// <summary>bosses.bossSystem.pierceSeconds (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:961).</summary>
+                public static float PierceSeconds = 0.12f;
+                /// <summary>bosses.bossSystem.sweepDurationFloor (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1004).</summary>
+                public static double SweepDurationFloor = 0.1;
+                /// <summary>bosses.bossSystem.sweepHalfLengthScale (x; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:1005).</summary>
+                public static float SweepHalfLengthScale = 2f;
+                /// <summary>bosses.bossSystem.swarmAreaFloor (x; nguong, was Sim/Bosses/BossSystem.BigAttacks.cs:1074).</summary>
+                public static float SwarmAreaFloor = 8f;
+                /// <summary>bosses.bossSystem.swarmFrontScale (x; sat_thuong, was Sim/Bosses/BossSystem.BigAttacks.cs:1082, Sim/Bosses/BossSystem.BigAttacks.cs:1083).</summary>
+                public static int SwarmFrontScale = 100;
+                /// <summary>bosses.bossSystem.swarmKScale (x; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1094).</summary>
+                public static double SwarmKScale = 0.12;
+                /// <summary>bosses.bossSystem.stepFlyersArriveFloor (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1123, Sim/Bosses/BossSystem.BigAttacks.cs:1132).</summary>
+                public static double StepFlyersArriveFloor = 0.1;
+                /// <summary>bosses.bossSystem.interceptedFlyerTicksScale (x; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1149).</summary>
+                public static float InterceptedFlyerTicksScale = 0.05f;
+                /// <summary>bosses.bossSystem.arrivedDistanceMax (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:1189).</summary>
+                public static float ArrivedDistanceMax = 8f;
+                /// <summary>bosses.bossSystem.arrivedRadius (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:1203).</summary>
+                public static float ArrivedRadius = 7f;
+                /// <summary>bosses.bossSystem.burnRadiusMax (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:1215).</summary>
+                public static float BurnRadiusMax = 9f;
+                /// <summary>bosses.bossSystem.burnRadiusScale (x; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1220, Sim/Bosses/BossSystem.BigAttacks.cs:1226).</summary>
+                public static float BurnRadiusScale = 0.35f;
+                /// <summary>bosses.bossSystem.burnLengthSquaredMin (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:1225).</summary>
+                public static float BurnLengthSquaredMin = 0.01f;
+                /// <summary>bosses.bossSystem.burnDirScale (x; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1226).</summary>
+                public static float BurnDirScale = 0.65f;
+                /// <summary>bosses.bossSystem.stepFiresTickMod (ticks; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1233).</summary>
+                public static int StepFiresTickMod = 10;
+                /// <summary>bosses.bossSystem.stepFiresTickIs (ticks; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1233).</summary>
+                public static int StepFiresTickIs = 5;
+                /// <summary>bosses.bossSystem.stepFiresLengthSquaredMin (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:1242).</summary>
+                public static float StepFiresLengthSquaredMin = 0.01f;
+                /// <summary>bosses.bossSystem.quakeWarnedWarnFloor (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1261).</summary>
+                public static float QuakeWarnedWarnFloor = 0.5f;
+                /// <summary>bosses.bossSystem.dodgeSpeedMax (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1318).</summary>
+                public static float DodgeSpeedMax = 0.1f;
+                /// <summary>bosses.bossSystem.dodgeDueSub (s; thoi_gian, was Sim/Bosses/BossSystem.BigAttacks.cs:1318).</summary>
+                public static double DodgeDueSub = 0.2;
+                /// <summary>bosses.bossSystem.stepDodgesDistanceMax (m; ban_kinh, was Sim/Bosses/BossSystem.BigAttacks.cs:1347).</summary>
+                public static float StepDodgesDistanceMax = 2f;
+                /// <summary>bosses.bossSystem.escortSecondsEscortTicksScale (x; thoi_gian, was Sim/Bosses/BossSystem.Escorts.cs:36).</summary>
+                public static float EscortSecondsEscortTicksScale = 0.05f;
+                /// <summary>bosses.bossSystem.sendShare (share; gioi_han_thuc_the, was Sim/Bosses/BossSystem.Escorts.cs:196).</summary>
+                public static float SendShare = 0.95f;
+                /// <summary>bosses.bossSystem.threatDirectionLengthSquaredMin (m; ban_kinh, was Sim/Bosses/BossSystem.Escorts.cs:289).</summary>
+                public static float ThreatDirectionLengthSquaredMin = 0.01f;
+                /// <summary>bosses.bossSystem.edgePointHalfSizeSub (count; tran, was Sim/Bosses/BossSystem.Escorts.cs:295).</summary>
+                public static float EdgePointHalfSizeSub = 4f;
+                /// <summary>bosses.bossSystem.guideLeashScale (x; ban_kinh, was Sim/Bosses/BossSystem.Escorts.cs:345).</summary>
+                public static float GuideLeashScale = 1.6f;
+                /// <summary>bosses.bossSystem.guideDistanceAdd (m; ban_kinh, was Sim/Bosses/BossSystem.Escorts.cs:348).</summary>
+                public static float GuideDistanceAdd = 6f;
+                /// <summary>bosses.bossSystem.guideDistanceMin (m; ban_kinh, was Sim/Bosses/BossSystem.Escorts.cs:362).</summary>
+                public static float GuideDistanceMin = 6f;
+                /// <summary>bosses.bossSystem.guideDistanceMin2 (m; ban_kinh, was Sim/Bosses/BossSystem.Escorts.cs:363).</summary>
+                public static float GuideDistanceMin2 = 4f;
+                /// <summary>bosses.bossSystem.threatDistanceScale (x; ban_kinh, was Sim/Bosses/BossSystem.Escorts.cs:386).</summary>
+                public static float ThreatDistanceScale = 0.5f;
+                /// <summary>bosses.bossSystem.threatAttackingTrue (m; ban_kinh, was Sim/Bosses/BossSystem.Escorts.cs:386).</summary>
+                public static float ThreatAttackingTrue = 30f;
+                /// <summary>bosses.bossSystem.helpEscortSecondsScale (x; thoi_gian, was Sim/Bosses/BossSystem.Escorts.cs:416).</summary>
+                public static float HelpEscortSecondsScale = 2.5f;
+                /// <summary>bosses.bossSystem.paidTimeMin (s; thoi_gian, was Sim/Bosses/BossSystem.Escorts.cs:437).</summary>
+                public static double PaidTimeMin = 10.0;
+                /// <summary>bosses.bossSystem.guardNowAdd (s; thoi_gian, was Sim/Bosses/BossSystem.P20.cs:102).</summary>
+                public static double GuardNowAdd = 0.5;
+                /// <summary>bosses.bossSystem.factoryMaxRings (x; sat_thuong, was Sim/Bosses/BossSystem.P20.cs:140).</summary>
+                public static int FactoryMaxRings = 8;
+                /// <summary>bosses.bossSystem.crushRadiusScale (x; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:185).</summary>
+                public static float CrushRadiusScale = 0.6f;
+                /// <summary>bosses.bossSystem.crushRadiusScale2 (x; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:186).</summary>
+                public static float CrushRadiusScale2 = 0.5f;
+                /// <summary>bosses.bossSystem.crushFrontSub (m; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:194, Sim/Bosses/BossSystem.P20.cs:209).</summary>
+                public static float CrushFrontSub = 2.5f;
+                /// <summary>bosses.bossSystem.crushMaxHpScale (x; sat_thuong, was Sim/Bosses/BossSystem.P20.cs:198).</summary>
+                public static float CrushMaxHpScale = 50f;
+                /// <summary>bosses.bossSystem.crushArmourCutFloor (x; sat_thuong, was Sim/Bosses/BossSystem.P20.cs:201).</summary>
+                public static float CrushArmourCutFloor = 0.1f;
+                /// <summary>bosses.bossSystem.debrisRadius (x; sat_thuong, was Sim/Bosses/BossSystem.P20.cs:221).</summary>
+                public static float DebrisRadius = 4f;
+                /// <summary>bosses.bossSystem.debrisKAdd (x; sat_thuong, was Sim/Bosses/BossSystem.P20.cs:221).</summary>
+                public static double DebrisKAdd = 0.8;
+                /// <summary>bosses.bossSystem.debrisKScale (x; sat_thuong, was Sim/Bosses/BossSystem.P20.cs:221).</summary>
+                public static double DebrisKScale = 0.3;
+                /// <summary>bosses.bossSystem.followRouteRadiusFloor (m; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:231).</summary>
+                public static float FollowRouteRadiusFloor = 6f;
+                /// <summary>bosses.bossSystem.followRouteRadiusScale (x; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:231).</summary>
+                public static float FollowRouteRadiusScale = 0.8f;
+                /// <summary>bosses.bossSystem.followRouteNowMax (s; thoi_gian, was Sim/Bosses/BossSystem.P20.cs:249).</summary>
+                public static double FollowRouteNowMax = 6.0;
+                /// <summary>bosses.bossSystem.riseTimeAdd (s; thoi_gian, was Sim/Bosses/BossSystem.P20.cs:267).</summary>
+                public static double RiseTimeAdd = 6.0;
+                /// <summary>bosses.bossSystem.swingLengthMax (m; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:285).</summary>
+                public static float SwingLengthMax = 2f;
+                /// <summary>bosses.bossSystem.swingLengthFloor (m; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:285).</summary>
+                public static float SwingLengthFloor = 0.01f;
+                /// <summary>bosses.bossSystem.swingDirScale (x; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:304).</summary>
+                public static float SwingDirScale = 0.7f;
+                /// <summary>bosses.bossSystem.swingRadius (m; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:304).</summary>
+                public static float SwingRadius = 6f;
+                /// <summary>bosses.bossSystem.swingCentreLengthSub (m; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:309).</summary>
+                public static float SwingCentreLengthSub = 4f;
+                /// <summary>bosses.bossSystem.stepChargeChargeEndFloor (s; thoi_gian, was Sim/Bosses/BossSystem.P20.cs:337).</summary>
+                public static double StepChargeChargeEndFloor = 0.1;
+                /// <summary>bosses.bossSystem.stepChargeRadiusScale (x; ban_kinh, was Sim/Bosses/BossSystem.P20.cs:343).</summary>
+                public static float StepChargeRadiusScale = 0.3f;
+                /// <summary>bosses.bossSystem.seatKScale (x; khac, was Sim/Bosses/BossSystem.P20.cs:369).</summary>
+                public static float SeatKScale = 4.5f;
+                /// <summary>bosses.bossSystem.seatForwardScale (x; khac, was Sim/Bosses/BossSystem.P20.cs:369).</summary>
+                public static float SeatForwardScale = 2f;
+                /// <summary>bosses.bossSystem.seatMaxRings (x; sat_thuong, was Sim/Bosses/BossSystem.P20.cs:370).</summary>
+                public static int SeatMaxRings = 8;
+                /// <summary>bosses.bossSystem.stepDuelsNowAdd (s; thoi_gian, was Sim/Bosses/BossSystem.P22.cs:61).</summary>
+                public static double StepDuelsNowAdd = 1.5;
+                /// <summary>bosses.bossSystem.firepowerLengthSquaredMin (m; ban_kinh, was Sim/Bosses/BossSystem.P28.cs:61).</summary>
+                public static float FirepowerLengthSquaredMin = 0.01f;
+                /// <summary>bosses.bossSystem.escortSpreadNowAdd (s; thoi_gian, was Sim/Bosses/BossSystem.P28.cs:82).</summary>
+                public static double EscortSpreadNowAdd = 8.0;
+                /// <summary>bosses.bossSystem.escortSpreadTryGetValueTrue (s; thoi_gian, was Sim/Bosses/BossSystem.P28.cs:84).</summary>
+                public static float EscortSpreadTryGetValueTrue = 0.5f;
+                /// <summary>bosses.bossSystem.behaviourAimMinRangeTrue (m; ban_kinh, was Sim/Bosses/BossSystem.P28.cs:103).</summary>
+                public static float BehaviourAimMinRangeTrue = 3f;
+                /// <summary>bosses.bossSystem.behaviourAimDistanceMax (m; ban_kinh, was Sim/Bosses/BossSystem.P28.cs:106).</summary>
+                public static float BehaviourAimDistanceMax = 30f;
+                /// <summary>bosses.bossSystem.behaviourAimDistanceTrue (m; ban_kinh, was Sim/Bosses/BossSystem.P28.cs:106).</summary>
+                public static float BehaviourAimDistanceTrue = 2f;
+                /// <summary>bosses.bossSystem.behindLengthSquaredMax (m; ban_kinh, was Sim/Bosses/BossSystem.P28.cs:133).</summary>
+                public static float BehindLengthSquaredMax = 0.01f;
+                /// <summary>bosses.bossSystem.weakpointP4DangerScale (x; ban_kinh, was Sim/Bosses/BossSystem.P4.cs:27).</summary>
+                public static float WeakpointP4DangerScale = 0.25f;
+                /// <summary>bosses.bossSystem.weakpointBasePhase2 (x; sat_thuong, was Sim/Bosses/BossSystem.P4.cs:43).</summary>
+                public static float WeakpointBasePhase2 = 0.2f;
+                /// <summary>bosses.bossSystem.choosePartDistanceSub (m; ban_kinh, was Sim/Bosses/BossSystem.Parts.cs:65).</summary>
+                public static float ChoosePartDistanceSub = 1000f;
+                /// <summary>bosses.bossSystem.choosePartDistanceSub2 (m; ban_kinh, was Sim/Bosses/BossSystem.Parts.cs:65).</summary>
+                public static float ChoosePartDistanceSub2 = -500f;
+                /// <summary>bosses.bossSystem.choosePartDistanceScale (x; ban_kinh, was Sim/Bosses/BossSystem.Parts.cs:66).</summary>
+                public static float ChoosePartDistanceScale = 0.01f;
+                /// <summary>bosses.bossSystem.dangerPartHealthScale (x; sat_thuong, was Sim/Bosses/BossSystem.Parts.cs:89).</summary>
+                public static float DangerPartHealthScale = 100f;
+                /// <summary>bosses.bossSystem.dangerScore (x; sat_thuong, was Sim/Bosses/BossSystem.Parts.cs:106).</summary>
+                public static float DangerScore = 8f;
+                /// <summary>bosses.bossSystem.groundFirepowerArmour (x; sat_thuong, was Sim/Bosses/BossSystem.Parts.cs:119).</summary>
+                public static int GroundFirepowerArmour = 3;
+                /// <summary>bosses.bossSystem.firepowerCycleSecondsFloor (s; sat_thuong, was Sim/Bosses/BossSystem.Parts.cs:123).</summary>
+                public static float FirepowerCycleSecondsFloor = 0.1f;
+                /// <summary>bosses.bossSystem.damagePartPartFracMax (x; sat_thuong, was Sim/Bosses/BossSystem.Parts.cs:189).</summary>
+                public static float DamagePartPartFracMax = 0.01f;
+                /// <summary>bosses.bossSystem.breakRadiusFloor (m; ban_kinh, was Sim/Bosses/BossSystem.Parts.cs:208).</summary>
+                public static float BreakRadiusFloor = 3f;
+                /// <summary>bosses.bossSystem.breakRadiusScale (x; ban_kinh, was Sim/Bosses/BossSystem.Parts.cs:208).</summary>
+                public static float BreakRadiusScale = 1.4f;
+                /// <summary>bosses.bossSystem.patchScore (x; sat_thuong, was Sim/Bosses/BossSystem.Parts.cs:239).</summary>
+                public static float PatchScore = 0.5f;
+                /// <summary>bosses.bossSystem.patchShareMin (x; nguong, was Sim/Bosses/BossSystem.Parts.cs:247).</summary>
+                public static float PatchShareMin = 0.05f;
+                /// <summary>bosses.bossSystem.recomputeMountFailCap (count; tran, was Sim/Bosses/BossSystem.Parts.cs:329).</summary>
+                public static float RecomputeMountFailCap = 0.9f;
+                /// <summary>bosses.bossSystem.changePartSpeedFloor (m/s; thoi_gian, was Sim/Bosses/BossSystem.Tiers.cs:232).</summary>
+                public static float ChangePartSpeedFloor = 0.4f;
+                /// <summary>bosses.bossSystem.heightShiftEndsFloor (m; thoi_gian, was Sim/Bosses/BossSystem.Tiers.cs:257).</summary>
+                public static double HeightShiftEndsFloor = 0.1;
+                /// <summary>bosses.bossSystem.podsDuePodShareFloor (share; thoi_gian, was Sim/Bosses/BossSystem.Tiers.cs:269).</summary>
+                public static float PodsDuePodShareFloor = 0.34f;
+                /// <summary>bosses.bossSystem.podsDueDistanceMin (m; ban_kinh, was Sim/Bosses/BossSystem.Tiers.cs:278).</summary>
+                public static float PodsDueDistanceMin = 0.5f;
+                /// <summary>bosses.bossSystem.podsDuePodsSentScale (x; gioi_han_thuc_the, was Sim/Bosses/BossSystem.Tiers.cs:285).</summary>
+                public static int PodsDuePodsSentScale = 2;
+                /// <summary>bosses.bossSystem.podsDueMaxRings (x; sat_thuong, was Sim/Bosses/BossSystem.Tiers.cs:288).</summary>
+                public static int PodsDueMaxRings = 8;
+                /// <summary>bosses.bossSystem.podsDueHeightFloor (m; ban_kinh, was Sim/Bosses/BossSystem.Tiers.cs:289).</summary>
+                public static float PodsDueHeightFloor = 8f;
+                /// <summary>bosses.bossSystem.stepPodsPodLandsFloor (s; thoi_gian, was Sim/Bosses/BossSystem.Tiers.cs:323).</summary>
+                public static double StepPodsPodLandsFloor = 0.1;
+                /// <summary>bosses.bossSystem.stepPodsKScale (x; ban_kinh, was Sim/Bosses/BossSystem.Tiers.cs:331).</summary>
+                public static float StepPodsKScale = 5f;
+                /// <summary>bosses.bossSystem.stepPodsForwardScale (x; ban_kinh, was Sim/Bosses/BossSystem.Tiers.cs:331).</summary>
+                public static float StepPodsForwardScale = 3f;
+                /// <summary>bosses.bossSystem.crashSiteMaxRings (x; sat_thuong, was Sim/Bosses/BossSystem.Tiers.cs:388).</summary>
+                public static int CrashSiteMaxRings = 12;
+                /// <summary>bosses.bossSystem.stepCrashCrashAtFloor (s; thoi_gian, was Sim/Bosses/BossSystem.Tiers.cs:393).</summary>
+                public static double StepCrashCrashAtFloor = 0.1;
+                /// <summary>bosses.bossSystem.trailRadiusScale (x; ban_kinh, was Sim/Bosses/BossSystem.Trail.cs:35).</summary>
+                public static float TrailRadiusScale = 0.5f;
+                /// <summary>bosses.bossSystem.stepTrailsTickMod (ticks; thoi_gian, was Sim/Bosses/BossSystem.Trail.cs:52).</summary>
+                public static int StepTrailsTickMod = 10;
+                /// <summary>bosses.bossSystem.stepTrailsTickIs (ticks; thoi_gian, was Sim/Bosses/BossSystem.Trail.cs:52).</summary>
+                public static int StepTrailsTickIs = 5;
+                /// <summary>bosses.bossSystem.boreNowAdd (s; thoi_gian, was Sim/Bosses/BossSystem.cs:107).</summary>
+                public static double BoreNowAdd = 3.0;
+                /// <summary>bosses.bossSystem.boreTickMod (ticks; thoi_gian, was Sim/Bosses/BossSystem.cs:129).</summary>
+                public static int BoreTickMod = 10;
+                /// <summary>bosses.bossSystem.seaGoalKMax (share; xac_suat, was Sim/Bosses/BossSystem.cs:167).</summary>
+                public static int SeaGoalKMax = 6;
+                /// <summary>bosses.bossSystem.seaGoalPatrolScale (x; xac_suat, was Sim/Bosses/BossSystem.cs:167).</summary>
+                public static float SeaGoalPatrolScale = 0.5f;
+                /// <summary>bosses.bossSystem.seaGoalNextDoubleScale (x; xac_suat, was Sim/Bosses/BossSystem.cs:167).</summary>
+                public static float SeaGoalNextDoubleScale = 2f;
+                /// <summary>bosses.bossSystem.biggestGroupScale (x; ban_kinh, was Sim/Bosses/BossSystem.cs:186).</summary>
+                public static float BiggestGroupScale = 15f;
+                /// <summary>bosses.bossSystem.quakeDamageScale (x; sat_thuong, was Sim/Bosses/BossSystem.cs:219).</summary>
+                public static float QuakeDamageScale = 0.4f;
+                /// <summary>bosses.bossSystem.landLandingsScale (x; gioi_han_thuc_the, was Sim/Bosses/BossSystem.cs:246).</summary>
+                public static int LandLandingsScale = 3;
+                /// <summary>bosses.bossSystem.pierceLineLengthAdd (m; ban_kinh, was Sim/Bosses/BossSystem.cs:304).</summary>
+                public static float PierceLineLengthAdd = 6f;
+                /// <summary>bosses.bossSystem.pierceLineRadiusAdd (m; ban_kinh, was Sim/Bosses/BossSystem.cs:305).</summary>
+                public static float PierceLineRadiusAdd = 1.2f;
+                /// <summary>bosses.bossSystem.pierceLineRadius (x; sat_thuong, was Sim/Bosses/BossSystem.cs:315).</summary>
+                public static float PierceLineRadius = 2.5f;
+            }
+
+            public static partial class BossTargetDirector
+            {
+                /// <summary>bosses.bossTargetDirector.worthWorth (m; ban_kinh, was Sim/Bosses/Brain/BossWeaponDirector.cs:116).</summary>
+                public static float WorthWorth = 1.15f;
+                /// <summary>bosses.bossTargetDirector.worthDistanceMax (m; ban_kinh, was Sim/Bosses/Brain/BossWeaponDirector.cs:120).</summary>
+                public static float WorthDistanceMax = 25f;
+                /// <summary>bosses.bossTargetDirector.worthWorth2 (m; ban_kinh, was Sim/Bosses/Brain/BossWeaponDirector.cs:120).</summary>
+                public static float WorthWorth2 = 1.1f;
+                /// <summary>bosses.bossTargetDirector.worthTurretTurnRateFloor (x; tan_suat, was Sim/Bosses/Brain/BossWeaponDirector.cs:133).</summary>
+                public static float WorthTurretTurnRateFloor = 0.2f;
+                /// <summary>bosses.bossTargetDirector.worthDegrees (x; tan_suat, was Sim/Bosses/Brain/BossWeaponDirector.cs:133).</summary>
+                public static float WorthDegrees = 60f;
+                /// <summary>bosses.bossTargetDirector.worthMinScale (x; nguong, was Sim/Bosses/Brain/BossWeaponDirector.cs:138).</summary>
+                public static float WorthMinScale = 0.15f;
+                /// <summary>bosses.bossTargetDirector.worthAimCap (count; tran, was Sim/Bosses/Brain/BossWeaponDirector.cs:138).</summary>
+                public static float WorthAimCap = 4f;
+                /// <summary>bosses.bossTargetDirector.worthWorthMin (x; nguong, was Sim/Bosses/Brain/BossWeaponDirector.cs:141).</summary>
+                public static float WorthWorthMin = 0.4f;
+                /// <summary>bosses.bossTargetDirector.worthWorthMax (x; nguong, was Sim/Bosses/Brain/BossWeaponDirector.cs:141).</summary>
+                public static float WorthWorthMax = 2f;
+            }
+
+            public static partial class BossTemplates
+            {
+                /// <summary>bosses.bossTemplates.resizeFallback (m; ban_kinh, was Sim/Content/BossTemplates.cs:248).</summary>
+                public static float ResizeFallback = 2f;
+                /// <summary>bosses.bossTemplates.resizeFallback2 (x; sat_thuong, was Sim/Content/BossTemplates.cs:256).</summary>
+                public static float ResizeFallback2 = 6f;
+                /// <summary>bosses.bossTemplates.rankPhvFloor (x; sat_thuong, was Sim/Content/BossTemplates.cs:342).</summary>
+                public static double RankPhvFloor = 0.004;
+            }
+
+            public static partial class BossWeaponDirector
+            {
+                /// <summary>bosses.bossWeaponDirector.targetsReach (m; ban_kinh, was Sim/Bosses/Brain/BossWeaponDirector.cs:52).</summary>
+                public static float TargetsReach = 10f;
+                /// <summary>bosses.bossWeaponDirector.targetsIMax (count; gioi_han_thuc_the, was Sim/Bosses/Brain/BossWeaponDirector.cs:61).</summary>
+                public static int TargetsIMax = 16;
+                /// <summary>bosses.bossWeaponDirector.cadenceAllowsHeavyMax (x; tan_suat, was Sim/Bosses/Brain/BossWeaponDirector.cs:90).</summary>
+                public static int CadenceAllowsHeavyMax = 2;
+                /// <summary>bosses.bossWeaponDirector.cadenceAllowsHeavyScale (x; thoi_gian, was Sim/Bosses/Brain/BossWeaponDirector.cs:91).</summary>
+                public static float CadenceAllowsHeavyScale = 2f;
+            }
+
+            public static partial class Catalog
+            {
+                /// <summary>bosses.catalog.parseEscortsFallback11 (m; ban_kinh, was Sim/Content/EscortDefs.cs:247).</summary>
+                public static int ParseEscortsFallback11 = 5;
+            }
+
+            public static partial class EscortRules
+            {
+                /// <summary>bosses.escortRules.capForTryGetValueFalse (count; tran, was Sim/Content/EscortDefs.cs:162).</summary>
+                public static int CapForTryGetValueFalse = 5;
+            }
+
+            public static partial class HuntSupports
+            {
+                /// <summary>bosses.huntSupports.hullValue (x; sat_thuong, was Sim/Modes/BossHunt.cs:225).</summary>
+                public static float HullValue = 0.15f;
+                /// <summary>bosses.huntSupports.hullStrength (x; sat_thuong, was Sim/Modes/BossHunt.cs:225).</summary>
+                public static float HullStrength = 0.15f;
+                /// <summary>bosses.huntSupports.gunneryValue (x; sat_thuong, was Sim/Modes/BossHunt.cs:226).</summary>
+                public static float GunneryValue = 0.10f;
+                /// <summary>bosses.huntSupports.gunneryStrength (x; sat_thuong, was Sim/Modes/BossHunt.cs:226).</summary>
+                public static float GunneryStrength = 0.10f;
+                /// <summary>bosses.huntSupports.loadersValue (x; tan_suat, was Sim/Modes/BossHunt.cs:227).</summary>
+                public static float LoadersValue = 0.12f;
+                /// <summary>bosses.huntSupports.loadersStrength (x; tan_suat, was Sim/Modes/BossHunt.cs:227).</summary>
+                public static float LoadersStrength = 0.12f;
+                /// <summary>bosses.huntSupports.enginesValue (x; tan_suat, was Sim/Modes/BossHunt.cs:228).</summary>
+                public static float EnginesValue = 0.12f;
+                /// <summary>bosses.huntSupports.enginesStrength (x; tan_suat, was Sim/Modes/BossHunt.cs:228).</summary>
+                public static float EnginesStrength = 0.06f;
+                /// <summary>bosses.huntSupports.regenValue (x; sat_thuong, was Sim/Modes/BossHunt.cs:229).</summary>
+                public static float RegenValue = 0.01f;
+                /// <summary>bosses.huntSupports.regenStrength (x; sat_thuong, was Sim/Modes/BossHunt.cs:229).</summary>
+                public static float RegenStrength = 0.08f;
+                /// <summary>bosses.huntSupports.rapidValue (s; thoi_gian, was Sim/Modes/BossHunt.cs:230).</summary>
+                public static float RapidValue = 0.25f;
+                /// <summary>bosses.huntSupports.warchestValue (s; thoi_gian, was Sim/Modes/BossHunt.cs:232).</summary>
+                public static float WarchestValue = 35f;
+                /// <summary>bosses.huntSupports.warchestStrength (s; thoi_gian, was Sim/Modes/BossHunt.cs:232).</summary>
+                public static float WarchestStrength = 0.05f;
+                /// <summary>bosses.huntSupports.supplyValue (count; tran, was Sim/Modes/BossHunt.cs:233).</summary>
+                public static float SupplyValue = 6f;
+                /// <summary>bosses.huntSupports.supplyStrength (count; tran, was Sim/Modes/BossHunt.cs:233).</summary>
+                public static float SupplyStrength = 0.08f;
+            }
+
+            public static partial class NavalBossMovementController
+            {
+                /// <summary>bosses.navalBossMovementController.minTurnRadiusTurnRateFloor (m; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:118).</summary>
+                public static float MinTurnRadiusTurnRateFloor = 0.01f;
+                /// <summary>bosses.navalBossMovementController.cruiseTurnRatePlanningRadiusFloor (m; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:136).</summary>
+                public static float CruiseTurnRatePlanningRadiusFloor = 0.1f;
+                /// <summary>bosses.navalBossMovementController.routePenaltyWScale (x; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:204).</summary>
+                public static float RoutePenaltyWScale = 0.5f;
+                /// <summary>bosses.navalBossMovementController.routePenaltyWScale2 (x; nguong, was Sim/Bosses/Brain/NavalBossMovementController.cs:207, Sim/Bosses/Brain/NavalBossMovementController.cs:208).</summary>
+                public static float RoutePenaltyWScale2 = 4f;
+                /// <summary>bosses.navalBossMovementController.routePenaltyDriftMax (x; nguong, was Sim/Bosses/Brain/NavalBossMovementController.cs:210).</summary>
+                public static float RoutePenaltyDriftMax = -0.05f;
+                /// <summary>bosses.navalBossMovementController.routePenaltyRoomInSub (x; khac, was Sim/Bosses/Brain/NavalBossMovementController.cs:210).</summary>
+                public static float RoutePenaltyRoomInSub = 3f;
+                /// <summary>bosses.navalBossMovementController.routePenaltyWScale3 (x; khac, was Sim/Bosses/Brain/NavalBossMovementController.cs:210).</summary>
+                public static float RoutePenaltyWScale3 = 8f;
+                /// <summary>bosses.navalBossMovementController.chooseOffsetStepsScale (x; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:230).</summary>
+                public static int ChooseOffsetStepsScale = 2;
+                /// <summary>bosses.navalBossMovementController.chooseOffsetStepScale (x; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:237).</summary>
+                public static float ChooseOffsetStepScale = 0.5f;
+                /// <summary>bosses.navalBossMovementController.separationMaxScale (x; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:278).</summary>
+                public static float SeparationMaxScale = 0.5f;
+                /// <summary>bosses.navalBossMovementController.cpaHorizonLengthSub (m; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:293).</summary>
+                public static float CpaHorizonLengthSub = 30f;
+                /// <summary>bosses.navalBossMovementController.cpaHorizonLengthDivisor (x; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:293).</summary>
+                public static float CpaHorizonLengthDivisor = 20f;
+                /// <summary>bosses.navalBossMovementController.collisionCourseDotMin (m; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:320).</summary>
+                public static float CollisionCourseDotMin = 0.866f;
+                /// <summary>bosses.navalBossMovementController.steerTurnRateFloor (x; tan_suat, was Sim/Bosses/Brain/NavalBossMovementController.cs:333, Sim/Bosses/Brain/NavalBossMovementController.cs:334).</summary>
+                public static float SteerTurnRateFloor = 0.01f;
+                /// <summary>bosses.navalBossMovementController.steerDegrees (m; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:349).</summary>
+                public static float SteerDegrees = 0.5f;
+                /// <summary>bosses.navalBossMovementController.steerFullScale (x; tran, was Sim/Bosses/Brain/NavalBossMovementController.cs:384, Sim/Bosses/Brain/NavalBossMovementController.cs:400).</summary>
+                public static float SteerFullScale = 0.5f;
+                /// <summary>bosses.navalBossMovementController.steerDistanceDivisor (x; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:398).</summary>
+                public static float SteerDistanceDivisor = 8f;
+                /// <summary>bosses.navalBossMovementController.steerDistanceAdd (m; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:398).</summary>
+                public static float SteerDistanceAdd = 0.2f;
+                /// <summary>bosses.navalBossMovementController.steerSpeedScale (x; tan_suat, was Sim/Bosses/Brain/NavalBossMovementController.cs:402).</summary>
+                public static float SteerSpeedScale = 0.5f;
+                /// <summary>bosses.navalBossMovementController.cpaThreatLengthExponent (m; ban_kinh, was Sim/Bosses/Brain/NavalBossMovementController.cs:476).</summary>
+                public static float CpaThreatLengthExponent = 2f;
+                /// <summary>bosses.navalBossMovementController.cpaThreatHorizonFloor (x; nguong, was Sim/Bosses/Brain/NavalBossMovementController.cs:485).</summary>
+                public static float CpaThreatHorizonFloor = 0.1f;
+            }
+
+            public static partial class NavalSystem
+            {
+                /// <summary>bosses.navalSystem.layRateMinDegrees (x; tan_suat, was Sim/Bosses/NavalSystem.Lay.cs:20).</summary>
+                public static float LayRateMinDegrees = 20f;
+                /// <summary>bosses.navalSystem.previewSalvoSqrtScale (x; ban_kinh, was Sim/Bosses/NavalSystem.Preview.cs:73).</summary>
+                public static float PreviewSalvoSqrtScale = 2f;
+                /// <summary>bosses.navalSystem.previewSalvoScale (x; sat_thuong, was Sim/Bosses/NavalSystem.Preview.cs:79).</summary>
+                public static double PreviewSalvoScale = 0.15;
+                /// <summary>bosses.navalSystem.routeTrafficSlowBandScale (x; ban_kinh, was Sim/Bosses/NavalSystem.Routes.cs:188).</summary>
+                public static float RouteTrafficSlowBandScale = 3f;
+                /// <summary>bosses.navalSystem.routeTrafficSeaCapMax (s; thoi_gian, was Sim/Bosses/NavalSystem.Routes.cs:191).</summary>
+                public static float RouteTrafficSeaCapMax = 0.05f;
+                /// <summary>bosses.navalSystem.routeTrafficAbsMax (s; thoi_gian, was Sim/Bosses/NavalSystem.Routes.cs:191).</summary>
+                public static float RouteTrafficAbsMax = 0.1f;
+                /// <summary>bosses.navalSystem.startHoldWidthAdd (m; ban_kinh, was Sim/Bosses/NavalSystem.Routes.cs:241).</summary>
+                public static float StartHoldWidthAdd = 2f;
+                /// <summary>bosses.navalSystem.leashLeashFalse (m; ban_kinh, was Sim/Bosses/NavalSystem.Routes.cs:288).</summary>
+                public static float LeashLeashFalse = 28f;
+                /// <summary>bosses.navalSystem.slotValidHalfSizeSub (count; tran, was Sim/Bosses/NavalSystem.Routes.cs:352).</summary>
+                public static float SlotValidHalfSizeSub = 2f;
+                /// <summary>bosses.navalSystem.slotValidWidthAdd (m; ban_kinh, was Sim/Bosses/NavalSystem.Routes.cs:355).</summary>
+                public static float SlotValidWidthAdd = 2f;
+                /// <summary>bosses.navalSystem.turningAbsMin (s; thoi_gian, was Sim/Bosses/NavalSystem.Routes.cs:398).</summary>
+                public static float TurningAbsMin = 3f;
+                /// <summary>bosses.navalSystem.joinedKScale (x; gioi_han_thuc_the, was Sim/Bosses/NavalSystem.cs:126).</summary>
+                public static float JoinedKScale = 8f;
+                /// <summary>bosses.navalSystem.joinedKDivisor (x; gioi_han_thuc_the, was Sim/Bosses/NavalSystem.cs:126).</summary>
+                public static int JoinedKDivisor = 2;
+                /// <summary>bosses.navalSystem.joinedKScale2 (x; gioi_han_thuc_the, was Sim/Bosses/NavalSystem.cs:126).</summary>
+                public static float JoinedKScale2 = 22f;
+                /// <summary>bosses.navalSystem.stepTickMod (ticks; thoi_gian, was Sim/Bosses/NavalSystem.cs:190, Sim/Bosses/NavalSystem.cs:191).</summary>
+                public static int StepTickMod = 5;
+                /// <summary>bosses.navalSystem.stepDtScale (x; thoi_gian, was Sim/Bosses/NavalSystem.cs:190, Sim/Bosses/NavalSystem.cs:191).</summary>
+                public static float StepDtScale = 5f;
+                /// <summary>bosses.navalSystem.sailDistanceMax (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:264).</summary>
+                public static float SailDistanceMax = 0.8f;
+                /// <summary>bosses.navalSystem.sailDotFloor (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:283).</summary>
+                public static float SailDotFloor = 0.25f;
+                /// <summary>bosses.navalSystem.sailDistanceDivisor (x; ban_kinh, was Sim/Bosses/NavalSystem.cs:285).</summary>
+                public static float SailDistanceDivisor = 8f;
+                /// <summary>bosses.navalSystem.sailDistanceAdd (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:285).</summary>
+                public static float SailDistanceAdd = 0.2f;
+                /// <summary>bosses.navalSystem.sailSpeedScale (x; tan_suat, was Sim/Bosses/NavalSystem.cs:288, Sim/Bosses/NavalSystem.cs:289).</summary>
+                public static float SailSpeedScale = 0.5f;
+                /// <summary>bosses.navalSystem.sailHullRadiusScale (x; ban_kinh, was Sim/Bosses/NavalSystem.cs:293).</summary>
+                public static float SailHullRadiusScale = 0.6f;
+                /// <summary>bosses.navalSystem.sailSpeedFloor (m/s; tan_suat, was Sim/Bosses/NavalSystem.cs:302).</summary>
+                public static float SailSpeedFloor = 0.5f;
+                /// <summary>bosses.navalSystem.sailSpeedScale2 (x; tan_suat, was Sim/Bosses/NavalSystem.cs:302).</summary>
+                public static float SailSpeedScale2 = 1.5f;
+                /// <summary>bosses.navalSystem.sailSpeed (m/s; tan_suat, was Sim/Bosses/NavalSystem.cs:303).</summary>
+                public static float SailSpeed = 0.8f;
+                /// <summary>bosses.navalSystem.wreckAheadMaxAdd (count; tan_suat, was Sim/Bosses/NavalSystem.cs:318).</summary>
+                public static float WreckAheadMaxAdd = 4f;
+                /// <summary>bosses.navalSystem.wreckAheadSpeedScale (x; tan_suat, was Sim/Bosses/NavalSystem.cs:318).</summary>
+                public static float WreckAheadSpeedScale = 0.5f;
+                /// <summary>bosses.navalSystem.wreckAheadMaxScale (x; tan_suat, was Sim/Bosses/NavalSystem.cs:318).</summary>
+                public static float WreckAheadMaxScale = 3f;
+                /// <summary>bosses.navalSystem.wreckAheadXTrue (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:321).</summary>
+                public static float WreckAheadXTrue = 0.8f;
+                /// <summary>bosses.navalSystem.wreckAheadXFalse (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:321).</summary>
+                public static float WreckAheadXFalse = -0.8f;
+                /// <summary>bosses.navalSystem.onWaterHalfSizeSub (count; tran, was Sim/Bosses/NavalSystem.cs:333).</summary>
+                public static float OnWaterHalfSizeSub = 2f;
+                /// <summary>bosses.navalSystem.flagshipSpeedFloor (m/s; tan_suat, was Sim/Bosses/NavalSystem.cs:360).</summary>
+                public static float FlagshipSpeedFloor = 0.3f;
+                /// <summary>bosses.navalSystem.flagshipTurnRateFloor (s; thoi_gian, was Sim/Bosses/NavalSystem.cs:364).</summary>
+                public static float FlagshipTurnRateFloor = 0.01f;
+                /// <summary>bosses.navalSystem.flagshipEndSub (s; thoi_gian, was Sim/Bosses/NavalSystem.cs:367).</summary>
+                public static float FlagshipEndSub = 3f;
+                /// <summary>bosses.navalSystem.phaseBeginsChargesAdd (s; thoi_gian, was Sim/Bosses/NavalSystem.cs:425).</summary>
+                public static int PhaseBeginsChargesAdd = 2;
+                /// <summary>bosses.navalSystem.phaseBeginsRechargeScale (x; thoi_gian, was Sim/Bosses/NavalSystem.cs:425).</summary>
+                public static float PhaseBeginsRechargeScale = 0.6f;
+                /// <summary>bosses.navalSystem.phaseBeginsFirstScale (x; thoi_gian, was Sim/Bosses/NavalSystem.cs:431).</summary>
+                public static double PhaseBeginsFirstScale = 0.5;
+                /// <summary>bosses.navalSystem.phaseBeginsKScale (x; gioi_han_thuc_the, was Sim/Bosses/NavalSystem.cs:437).</summary>
+                public static float PhaseBeginsKScale = 18f;
+                /// <summary>bosses.navalSystem.salvoRangeScale (x; ban_kinh, was Sim/Bosses/NavalSystem.cs:470).</summary>
+                public static float SalvoRangeScale = 0.7f;
+                /// <summary>bosses.navalSystem.salvoRadius (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:474).</summary>
+                public static float SalvoRadius = 24f;
+                /// <summary>bosses.navalSystem.fireSalvoScale2 (x; sat_thuong, was Sim/Bosses/NavalSystem.cs:521).</summary>
+                public static double FireSalvoScale2 = 0.15;
+                /// <summary>bosses.navalSystem.escortDistanceMax (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:634).</summary>
+                public static float EscortDistanceMax = 8f;
+                /// <summary>bosses.navalSystem.escortLengthAdd (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:642).</summary>
+                public static float EscortLengthAdd = 2f;
+                /// <summary>bosses.navalSystem.raiderDashStageValue (s; thoi_gian, was Sim/Bosses/NavalSystem.cs:678).</summary>
+                public static double RaiderDashStageValue = 40.0;
+                /// <summary>bosses.navalSystem.raiderNextDoubleMax (share; xac_suat, was Sim/Bosses/NavalSystem.cs:679).</summary>
+                public static double RaiderNextDoubleMax = 0.5;
+                /// <summary>bosses.navalSystem.raiderNavalDirScale (x; khac, was Sim/Bosses/NavalSystem.cs:690).</summary>
+                public static float RaiderNavalDirScale = 20f;
+                /// <summary>bosses.navalSystem.raiderDashWScale (x; nguong, was Sim/Bosses/NavalSystem.cs:698).</summary>
+                public static float RaiderDashWScale = 0.3f;
+                /// <summary>bosses.navalSystem.raiderShoreAtAdd (x; nguong, was Sim/Bosses/NavalSystem.cs:698).</summary>
+                public static float RaiderShoreAtAdd = 8f;
+                /// <summary>bosses.navalSystem.raiderDistanceMax (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:699).</summary>
+                public static float RaiderDistanceMax = 6f;
+                /// <summary>bosses.navalSystem.landerDistanceMax (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:720).</summary>
+                public static float LanderDistanceMax = 5f;
+                /// <summary>bosses.navalSystem.landerNowAdd (s; thoi_gian, was Sim/Bosses/NavalSystem.cs:722).</summary>
+                public static double LanderNowAdd = 3.0;
+                /// <summary>bosses.navalSystem.landerKScale (x; ban_kinh, was Sim/Bosses/NavalSystem.cs:731).</summary>
+                public static float LanderKScale = 6f;
+                /// <summary>bosses.navalSystem.landerHullRadiusAdd (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:739).</summary>
+                public static float LanderHullRadiusAdd = 10f;
+                /// <summary>bosses.navalSystem.sunkKSub (m; ban_kinh, was Sim/Bosses/NavalSystem.cs:755).</summary>
+                public static int SunkKSub = 2;
+                /// <summary>bosses.navalSystem.sunkKScale (x; ban_kinh, was Sim/Bosses/NavalSystem.cs:755).</summary>
+                public static float SunkKScale = 0.55f;
+                /// <summary>bosses.navalSystem.sunkKAdd (x; sat_thuong, was Sim/Bosses/NavalSystem.cs:756).</summary>
+                public static float SunkKAdd = 9f;
+                /// <summary>bosses.navalSystem.sunkKScale2 (x; sat_thuong, was Sim/Bosses/NavalSystem.cs:756).</summary>
+                public static float SunkKScale2 = 2f;
+                /// <summary>bosses.navalSystem.sunkKAdd2 (x; sat_thuong, was Sim/Bosses/NavalSystem.cs:756).</summary>
+                public static double SunkKAdd2 = 0.8;
+                /// <summary>bosses.navalSystem.sunkKScale3 (x; sat_thuong, was Sim/Bosses/NavalSystem.cs:756).</summary>
+                public static double SunkKScale3 = 0.7;
+                /// <summary>bosses.navalSystem.biggestGroupScale (x; ban_kinh, was Sim/Bosses/NavalSystem.cs:882).</summary>
+                public static float BiggestGroupScale = 15f;
+            }
+
+            public static partial class PodDef
+            {
+                /// <summary>bosses.podDef.everyInEveryByPhaseFloor (x; tan_suat, was Sim/Content/TierDefs.cs:206).</summary>
+                public static float EveryInEveryByPhaseFloor = 2f;
+            }
+
+            public static partial class RouteContext
+            {
+                /// <summary>bosses.routeContext.openHalfCorridor (x; sat_thuong, was Sim/Bosses/Brain/NavalBossMovementController.cs:89).</summary>
+                public static float OpenHalfCorridor = 10f;
+                /// <summary>bosses.routeContext.openShoreRoom (x; sat_thuong, was Sim/Bosses/Brain/NavalBossMovementController.cs:89).</summary>
+                public static float OpenShoreRoom = 1000f;
+            }
         }
 
         private static readonly Entry[] Pass2Bosses =
         {
+            new Entry("bosses.bigZone.exitsLengthSquaredMin", "m", () => Bosses.BigZone.ExitsLengthSquaredMin, v => Bosses.BigZone.ExitsLengthSquaredMin = (float)v),
+            new Entry("bosses.bossBrains.landNowMax", "s", () => Bosses.BossBrains.LandNowMax, v => Bosses.BossBrains.LandNowMax = v),
+            new Entry("bosses.bossEscortCoordinator.ringRankDivisor", "x", () => Bosses.BossEscortCoordinator.RingRankDivisor, v => Bosses.BossEscortCoordinator.RingRankDivisor = (float)v),
+            new Entry("bosses.bossEscortCoordinator.ringRepairReachSub", "m", () => Bosses.BossEscortCoordinator.RingRepairReachSub, v => Bosses.BossEscortCoordinator.RingRepairReachSub = (float)v),
+            new Entry("bosses.bossMissionController.updatePatrolScale", "x", () => Bosses.BossMissionController.UpdatePatrolScale, v => Bosses.BossMissionController.UpdatePatrolScale = (float)v),
+            new Entry("bosses.bossMovementController.craftOfDegrees", "x", () => Bosses.BossMovementController.CraftOfDegrees, v => Bosses.BossMovementController.CraftOfDegrees = (float)v),
+            new Entry("bosses.bossMovementController.updateCorridorSpeedScale", "x", () => Bosses.BossMovementController.UpdateCorridorSpeedScale, v => Bosses.BossMovementController.UpdateCorridorSpeedScale = (float)v),
+            new Entry("bosses.bossPartDef.ctorHpMax", "x", () => Bosses.BossPartDef.CtorHpMax, v => Bosses.BossPartDef.CtorHpMax = (float)v),
+            new Entry("bosses.bossSystem.tryBeginNowAdd", "s", () => Bosses.BossSystem.TryBeginNowAdd, v => Bosses.BossSystem.TryBeginNowAdd = v),
+            new Entry("bosses.bossSystem.tryBeginNowAdd2", "s", () => Bosses.BossSystem.TryBeginNowAdd2, v => Bosses.BossSystem.TryBeginNowAdd2 = v),
+            new Entry("bosses.bossSystem.tryBeginWarnFloor", "s", () => Bosses.BossSystem.TryBeginWarnFloor, v => Bosses.BossSystem.TryBeginWarnFloor = (float)v),
+            new Entry("bosses.bossSystem.tryBeginLengthSquaredMin", "m", () => Bosses.BossSystem.TryBeginLengthSquaredMin, v => Bosses.BossSystem.TryBeginLengthSquaredMin = (float)v),
+            new Entry("bosses.bossSystem.tryBeginShare", "share", () => Bosses.BossSystem.TryBeginShare, v => Bosses.BossSystem.TryBeginShare = (float)v),
+            new Entry("bosses.bossSystem.heldInFlightNowSub", "s", () => Bosses.BossSystem.HeldInFlightNowSub, v => Bosses.BossSystem.HeldInFlightNowSub = v),
+            new Entry("bosses.bossSystem.aimAtRadiusAdd", "m", () => Bosses.BossSystem.AimAtRadiusAdd, v => Bosses.BossSystem.AimAtRadiusAdd = (float)v),
+            new Entry("bosses.bossSystem.spotScale", "x", () => Bosses.BossSystem.SpotScale, v => Bosses.BossSystem.SpotScale = (float)v),
+            new Entry("bosses.bossSystem.spotStaticTrue", "x", () => Bosses.BossSystem.SpotStaticTrue, v => Bosses.BossSystem.SpotStaticTrue = (float)v),
+            new Entry("bosses.bossSystem.rodSpotsRadiusScale", "x", () => Bosses.BossSystem.RodSpotsRadiusScale, v => Bosses.BossSystem.RodSpotsRadiusScale = (float)v),
+            new Entry("bosses.bossSystem.rodSpotsNScale", "x", () => Bosses.BossSystem.RodSpotsNScale, v => Bosses.BossSystem.RodSpotsNScale = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.rodSpotsRadiusScale2", "x", () => Bosses.BossSystem.RodSpotsRadiusScale2, v => Bosses.BossSystem.RodSpotsRadiusScale2 = (float)v),
+            new Entry("bosses.bossSystem.rodWeightStaticTrue", "x", () => Bosses.BossSystem.RodWeightStaticTrue, v => Bosses.BossSystem.RodWeightStaticTrue = (float)v),
+            new Entry("bosses.bossSystem.rodWeightMaxScale", "x", () => Bosses.BossSystem.RodWeightMaxScale, v => Bosses.BossSystem.RodWeightMaxScale = (float)v),
+            new Entry("bosses.bossSystem.planKAdd", "m", () => Bosses.BossSystem.PlanKAdd, v => Bosses.BossSystem.PlanKAdd = (float)v),
+            new Entry("bosses.bossSystem.planAreaFloor", "x", () => Bosses.BossSystem.PlanAreaFloor, v => Bosses.BossSystem.PlanAreaFloor = (float)v),
+            new Entry("bosses.bossSystem.planKScale", "x", () => Bosses.BossSystem.PlanKScale, v => Bosses.BossSystem.PlanKScale = v),
+            new Entry("bosses.bossSystem.planRadius", "m", () => Bosses.BossSystem.PlanRadius, v => Bosses.BossSystem.PlanRadius = (float)v),
+            new Entry("bosses.bossSystem.planDirScale", "x", () => Bosses.BossSystem.PlanDirScale, v => Bosses.BossSystem.PlanDirScale = (float)v),
+            new Entry("bosses.bossSystem.planRadiusScale", "x", () => Bosses.BossSystem.PlanRadiusScale, v => Bosses.BossSystem.PlanRadiusScale = (float)v),
+            new Entry("bosses.bossSystem.planDistanceScale", "x", () => Bosses.BossSystem.PlanDistanceScale, v => Bosses.BossSystem.PlanDistanceScale = (float)v),
+            new Entry("bosses.bossSystem.chargeStage", "s", () => Bosses.BossSystem.ChargeStage, v => Bosses.BossSystem.ChargeStage = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.finishNowAdd", "s", () => Bosses.BossSystem.FinishNowAdd, v => Bosses.BossSystem.FinishNowAdd = v),
+            new Entry("bosses.bossSystem.fireKScale", "x", () => Bosses.BossSystem.FireKScale, v => Bosses.BossSystem.FireKScale = v),
+            new Entry("bosses.bossSystem.fireKAdd", "m", () => Bosses.BossSystem.FireKAdd, v => Bosses.BossSystem.FireKAdd = (float)v),
+            new Entry("bosses.bossSystem.fireNextDoubleScale", "x", () => Bosses.BossSystem.FireNextDoubleScale, v => Bosses.BossSystem.FireNextDoubleScale = (float)v),
+            new Entry("bosses.bossSystem.fireDurationFloor", "s", () => Bosses.BossSystem.FireDurationFloor, v => Bosses.BossSystem.FireDurationFloor = (float)v),
+            new Entry("bosses.bossSystem.fireKScale2", "x", () => Bosses.BossSystem.FireKScale2, v => Bosses.BossSystem.FireKScale2 = v),
+            new Entry("bosses.bossSystem.fireLaunchAdd", "x", () => Bosses.BossSystem.FireLaunchAdd, v => Bosses.BossSystem.FireLaunchAdd = v),
+            new Entry("bosses.bossSystem.circleDelayKScale", "x", () => Bosses.BossSystem.CircleDelayKScale, v => Bosses.BossSystem.CircleDelayKScale = v),
+            new Entry("bosses.bossSystem.stepBlastsDueFloor", "x", () => Bosses.BossSystem.StepBlastsDueFloor, v => Bosses.BossSystem.StepBlastsDueFloor = v),
+            new Entry("bosses.bossSystem.maxLead", "count", () => Bosses.BossSystem.MaxLead, v => Bosses.BossSystem.MaxLead = v),
+            new Entry("bosses.bossSystem.leadDistanceMin", "m", () => Bosses.BossSystem.LeadDistanceMin, v => Bosses.BossSystem.LeadDistanceMin = v),
+            new Entry("bosses.bossSystem.blastAtLengthSquaredMin", "m", () => Bosses.BossSystem.BlastAtLengthSquaredMin, v => Bosses.BossSystem.BlastAtLengthSquaredMin = (float)v),
+            new Entry("bosses.bossSystem.blastAtDamageMin", "x", () => Bosses.BossSystem.BlastAtDamageMin, v => Bosses.BossSystem.BlastAtDamageMin = (float)v),
+            new Entry("bosses.bossSystem.blastAtDamageMin2", "x", () => Bosses.BossSystem.BlastAtDamageMin2, v => Bosses.BossSystem.BlastAtDamageMin2 = (float)v),
+            new Entry("bosses.bossSystem.blastAtDamageMin3", "x", () => Bosses.BossSystem.BlastAtDamageMin3, v => Bosses.BossSystem.BlastAtDamageMin3 = (float)v),
+            new Entry("bosses.bossSystem.shareRadiusFloor", "m", () => Bosses.BossSystem.ShareRadiusFloor, v => Bosses.BossSystem.ShareRadiusFloor = (float)v),
+            new Entry("bosses.bossSystem.shareShareScale", "x", () => Bosses.BossSystem.ShareShareScale, v => Bosses.BossSystem.ShareShareScale = (float)v),
+            new Entry("bosses.bossSystem.pierceSeconds", "s", () => Bosses.BossSystem.PierceSeconds, v => Bosses.BossSystem.PierceSeconds = (float)v),
+            new Entry("bosses.bossSystem.sweepDurationFloor", "s", () => Bosses.BossSystem.SweepDurationFloor, v => Bosses.BossSystem.SweepDurationFloor = v),
+            new Entry("bosses.bossSystem.sweepHalfLengthScale", "x", () => Bosses.BossSystem.SweepHalfLengthScale, v => Bosses.BossSystem.SweepHalfLengthScale = (float)v),
+            new Entry("bosses.bossSystem.swarmAreaFloor", "x", () => Bosses.BossSystem.SwarmAreaFloor, v => Bosses.BossSystem.SwarmAreaFloor = (float)v),
+            new Entry("bosses.bossSystem.swarmFrontScale", "x", () => Bosses.BossSystem.SwarmFrontScale, v => Bosses.BossSystem.SwarmFrontScale = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.swarmKScale", "x", () => Bosses.BossSystem.SwarmKScale, v => Bosses.BossSystem.SwarmKScale = v),
+            new Entry("bosses.bossSystem.stepFlyersArriveFloor", "s", () => Bosses.BossSystem.StepFlyersArriveFloor, v => Bosses.BossSystem.StepFlyersArriveFloor = v),
+            new Entry("bosses.bossSystem.interceptedFlyerTicksScale", "x", () => Bosses.BossSystem.InterceptedFlyerTicksScale, v => Bosses.BossSystem.InterceptedFlyerTicksScale = (float)v),
+            new Entry("bosses.bossSystem.arrivedDistanceMax", "m", () => Bosses.BossSystem.ArrivedDistanceMax, v => Bosses.BossSystem.ArrivedDistanceMax = (float)v),
+            new Entry("bosses.bossSystem.arrivedRadius", "m", () => Bosses.BossSystem.ArrivedRadius, v => Bosses.BossSystem.ArrivedRadius = (float)v),
+            new Entry("bosses.bossSystem.burnRadiusMax", "m", () => Bosses.BossSystem.BurnRadiusMax, v => Bosses.BossSystem.BurnRadiusMax = (float)v),
+            new Entry("bosses.bossSystem.burnRadiusScale", "x", () => Bosses.BossSystem.BurnRadiusScale, v => Bosses.BossSystem.BurnRadiusScale = (float)v),
+            new Entry("bosses.bossSystem.burnLengthSquaredMin", "m", () => Bosses.BossSystem.BurnLengthSquaredMin, v => Bosses.BossSystem.BurnLengthSquaredMin = (float)v),
+            new Entry("bosses.bossSystem.burnDirScale", "x", () => Bosses.BossSystem.BurnDirScale, v => Bosses.BossSystem.BurnDirScale = (float)v),
+            new Entry("bosses.bossSystem.stepFiresTickMod", "ticks", () => Bosses.BossSystem.StepFiresTickMod, v => Bosses.BossSystem.StepFiresTickMod = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.stepFiresTickIs", "ticks", () => Bosses.BossSystem.StepFiresTickIs, v => Bosses.BossSystem.StepFiresTickIs = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.stepFiresLengthSquaredMin", "m", () => Bosses.BossSystem.StepFiresLengthSquaredMin, v => Bosses.BossSystem.StepFiresLengthSquaredMin = (float)v),
+            new Entry("bosses.bossSystem.quakeWarnedWarnFloor", "s", () => Bosses.BossSystem.QuakeWarnedWarnFloor, v => Bosses.BossSystem.QuakeWarnedWarnFloor = (float)v),
+            new Entry("bosses.bossSystem.dodgeSpeedMax", "s", () => Bosses.BossSystem.DodgeSpeedMax, v => Bosses.BossSystem.DodgeSpeedMax = (float)v),
+            new Entry("bosses.bossSystem.dodgeDueSub", "s", () => Bosses.BossSystem.DodgeDueSub, v => Bosses.BossSystem.DodgeDueSub = v),
+            new Entry("bosses.bossSystem.stepDodgesDistanceMax", "m", () => Bosses.BossSystem.StepDodgesDistanceMax, v => Bosses.BossSystem.StepDodgesDistanceMax = (float)v),
+            new Entry("bosses.bossSystem.escortSecondsEscortTicksScale", "x", () => Bosses.BossSystem.EscortSecondsEscortTicksScale, v => Bosses.BossSystem.EscortSecondsEscortTicksScale = (float)v),
+            new Entry("bosses.bossSystem.sendShare", "share", () => Bosses.BossSystem.SendShare, v => Bosses.BossSystem.SendShare = (float)v),
+            new Entry("bosses.bossSystem.threatDirectionLengthSquaredMin", "m", () => Bosses.BossSystem.ThreatDirectionLengthSquaredMin, v => Bosses.BossSystem.ThreatDirectionLengthSquaredMin = (float)v),
+            new Entry("bosses.bossSystem.edgePointHalfSizeSub", "count", () => Bosses.BossSystem.EdgePointHalfSizeSub, v => Bosses.BossSystem.EdgePointHalfSizeSub = (float)v),
+            new Entry("bosses.bossSystem.guideLeashScale", "x", () => Bosses.BossSystem.GuideLeashScale, v => Bosses.BossSystem.GuideLeashScale = (float)v),
+            new Entry("bosses.bossSystem.guideDistanceAdd", "m", () => Bosses.BossSystem.GuideDistanceAdd, v => Bosses.BossSystem.GuideDistanceAdd = (float)v),
+            new Entry("bosses.bossSystem.guideDistanceMin", "m", () => Bosses.BossSystem.GuideDistanceMin, v => Bosses.BossSystem.GuideDistanceMin = (float)v),
+            new Entry("bosses.bossSystem.guideDistanceMin2", "m", () => Bosses.BossSystem.GuideDistanceMin2, v => Bosses.BossSystem.GuideDistanceMin2 = (float)v),
+            new Entry("bosses.bossSystem.threatDistanceScale", "x", () => Bosses.BossSystem.ThreatDistanceScale, v => Bosses.BossSystem.ThreatDistanceScale = (float)v),
+            new Entry("bosses.bossSystem.threatAttackingTrue", "m", () => Bosses.BossSystem.ThreatAttackingTrue, v => Bosses.BossSystem.ThreatAttackingTrue = (float)v),
+            new Entry("bosses.bossSystem.helpEscortSecondsScale", "x", () => Bosses.BossSystem.HelpEscortSecondsScale, v => Bosses.BossSystem.HelpEscortSecondsScale = (float)v),
+            new Entry("bosses.bossSystem.paidTimeMin", "s", () => Bosses.BossSystem.PaidTimeMin, v => Bosses.BossSystem.PaidTimeMin = v),
+            new Entry("bosses.bossSystem.guardNowAdd", "s", () => Bosses.BossSystem.GuardNowAdd, v => Bosses.BossSystem.GuardNowAdd = v),
+            new Entry("bosses.bossSystem.factoryMaxRings", "x", () => Bosses.BossSystem.FactoryMaxRings, v => Bosses.BossSystem.FactoryMaxRings = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.crushRadiusScale", "x", () => Bosses.BossSystem.CrushRadiusScale, v => Bosses.BossSystem.CrushRadiusScale = (float)v),
+            new Entry("bosses.bossSystem.crushRadiusScale2", "x", () => Bosses.BossSystem.CrushRadiusScale2, v => Bosses.BossSystem.CrushRadiusScale2 = (float)v),
+            new Entry("bosses.bossSystem.crushFrontSub", "m", () => Bosses.BossSystem.CrushFrontSub, v => Bosses.BossSystem.CrushFrontSub = (float)v),
+            new Entry("bosses.bossSystem.crushMaxHpScale", "x", () => Bosses.BossSystem.CrushMaxHpScale, v => Bosses.BossSystem.CrushMaxHpScale = (float)v),
+            new Entry("bosses.bossSystem.crushArmourCutFloor", "x", () => Bosses.BossSystem.CrushArmourCutFloor, v => Bosses.BossSystem.CrushArmourCutFloor = (float)v),
+            new Entry("bosses.bossSystem.debrisRadius", "x", () => Bosses.BossSystem.DebrisRadius, v => Bosses.BossSystem.DebrisRadius = (float)v),
+            new Entry("bosses.bossSystem.debrisKAdd", "x", () => Bosses.BossSystem.DebrisKAdd, v => Bosses.BossSystem.DebrisKAdd = v),
+            new Entry("bosses.bossSystem.debrisKScale", "x", () => Bosses.BossSystem.DebrisKScale, v => Bosses.BossSystem.DebrisKScale = v),
+            new Entry("bosses.bossSystem.followRouteRadiusFloor", "m", () => Bosses.BossSystem.FollowRouteRadiusFloor, v => Bosses.BossSystem.FollowRouteRadiusFloor = (float)v),
+            new Entry("bosses.bossSystem.followRouteRadiusScale", "x", () => Bosses.BossSystem.FollowRouteRadiusScale, v => Bosses.BossSystem.FollowRouteRadiusScale = (float)v),
+            new Entry("bosses.bossSystem.followRouteNowMax", "s", () => Bosses.BossSystem.FollowRouteNowMax, v => Bosses.BossSystem.FollowRouteNowMax = v),
+            new Entry("bosses.bossSystem.riseTimeAdd", "s", () => Bosses.BossSystem.RiseTimeAdd, v => Bosses.BossSystem.RiseTimeAdd = v),
+            new Entry("bosses.bossSystem.swingLengthMax", "m", () => Bosses.BossSystem.SwingLengthMax, v => Bosses.BossSystem.SwingLengthMax = (float)v),
+            new Entry("bosses.bossSystem.swingLengthFloor", "m", () => Bosses.BossSystem.SwingLengthFloor, v => Bosses.BossSystem.SwingLengthFloor = (float)v),
+            new Entry("bosses.bossSystem.swingDirScale", "x", () => Bosses.BossSystem.SwingDirScale, v => Bosses.BossSystem.SwingDirScale = (float)v),
+            new Entry("bosses.bossSystem.swingRadius", "m", () => Bosses.BossSystem.SwingRadius, v => Bosses.BossSystem.SwingRadius = (float)v),
+            new Entry("bosses.bossSystem.swingCentreLengthSub", "m", () => Bosses.BossSystem.SwingCentreLengthSub, v => Bosses.BossSystem.SwingCentreLengthSub = (float)v),
+            new Entry("bosses.bossSystem.stepChargeChargeEndFloor", "s", () => Bosses.BossSystem.StepChargeChargeEndFloor, v => Bosses.BossSystem.StepChargeChargeEndFloor = v),
+            new Entry("bosses.bossSystem.stepChargeRadiusScale", "x", () => Bosses.BossSystem.StepChargeRadiusScale, v => Bosses.BossSystem.StepChargeRadiusScale = (float)v),
+            new Entry("bosses.bossSystem.seatKScale", "x", () => Bosses.BossSystem.SeatKScale, v => Bosses.BossSystem.SeatKScale = (float)v),
+            new Entry("bosses.bossSystem.seatForwardScale", "x", () => Bosses.BossSystem.SeatForwardScale, v => Bosses.BossSystem.SeatForwardScale = (float)v),
+            new Entry("bosses.bossSystem.seatMaxRings", "x", () => Bosses.BossSystem.SeatMaxRings, v => Bosses.BossSystem.SeatMaxRings = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.stepDuelsNowAdd", "s", () => Bosses.BossSystem.StepDuelsNowAdd, v => Bosses.BossSystem.StepDuelsNowAdd = v),
+            new Entry("bosses.bossSystem.firepowerLengthSquaredMin", "m", () => Bosses.BossSystem.FirepowerLengthSquaredMin, v => Bosses.BossSystem.FirepowerLengthSquaredMin = (float)v),
+            new Entry("bosses.bossSystem.escortSpreadNowAdd", "s", () => Bosses.BossSystem.EscortSpreadNowAdd, v => Bosses.BossSystem.EscortSpreadNowAdd = v),
+            new Entry("bosses.bossSystem.escortSpreadTryGetValueTrue", "s", () => Bosses.BossSystem.EscortSpreadTryGetValueTrue, v => Bosses.BossSystem.EscortSpreadTryGetValueTrue = (float)v),
+            new Entry("bosses.bossSystem.behaviourAimMinRangeTrue", "m", () => Bosses.BossSystem.BehaviourAimMinRangeTrue, v => Bosses.BossSystem.BehaviourAimMinRangeTrue = (float)v),
+            new Entry("bosses.bossSystem.behaviourAimDistanceMax", "m", () => Bosses.BossSystem.BehaviourAimDistanceMax, v => Bosses.BossSystem.BehaviourAimDistanceMax = (float)v),
+            new Entry("bosses.bossSystem.behaviourAimDistanceTrue", "m", () => Bosses.BossSystem.BehaviourAimDistanceTrue, v => Bosses.BossSystem.BehaviourAimDistanceTrue = (float)v),
+            new Entry("bosses.bossSystem.behindLengthSquaredMax", "m", () => Bosses.BossSystem.BehindLengthSquaredMax, v => Bosses.BossSystem.BehindLengthSquaredMax = (float)v),
+            new Entry("bosses.bossSystem.weakpointP4DangerScale", "x", () => Bosses.BossSystem.WeakpointP4DangerScale, v => Bosses.BossSystem.WeakpointP4DangerScale = (float)v),
+            new Entry("bosses.bossSystem.weakpointBasePhase2", "x", () => Bosses.BossSystem.WeakpointBasePhase2, v => Bosses.BossSystem.WeakpointBasePhase2 = (float)v),
+            new Entry("bosses.bossSystem.choosePartDistanceSub", "m", () => Bosses.BossSystem.ChoosePartDistanceSub, v => Bosses.BossSystem.ChoosePartDistanceSub = (float)v),
+            new Entry("bosses.bossSystem.choosePartDistanceSub2", "m", () => Bosses.BossSystem.ChoosePartDistanceSub2, v => Bosses.BossSystem.ChoosePartDistanceSub2 = (float)v),
+            new Entry("bosses.bossSystem.choosePartDistanceScale", "x", () => Bosses.BossSystem.ChoosePartDistanceScale, v => Bosses.BossSystem.ChoosePartDistanceScale = (float)v),
+            new Entry("bosses.bossSystem.dangerPartHealthScale", "x", () => Bosses.BossSystem.DangerPartHealthScale, v => Bosses.BossSystem.DangerPartHealthScale = (float)v),
+            new Entry("bosses.bossSystem.dangerScore", "x", () => Bosses.BossSystem.DangerScore, v => Bosses.BossSystem.DangerScore = (float)v),
+            new Entry("bosses.bossSystem.groundFirepowerArmour", "x", () => Bosses.BossSystem.GroundFirepowerArmour, v => Bosses.BossSystem.GroundFirepowerArmour = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.firepowerCycleSecondsFloor", "s", () => Bosses.BossSystem.FirepowerCycleSecondsFloor, v => Bosses.BossSystem.FirepowerCycleSecondsFloor = (float)v),
+            new Entry("bosses.bossSystem.damagePartPartFracMax", "x", () => Bosses.BossSystem.DamagePartPartFracMax, v => Bosses.BossSystem.DamagePartPartFracMax = (float)v),
+            new Entry("bosses.bossSystem.breakRadiusFloor", "m", () => Bosses.BossSystem.BreakRadiusFloor, v => Bosses.BossSystem.BreakRadiusFloor = (float)v),
+            new Entry("bosses.bossSystem.breakRadiusScale", "x", () => Bosses.BossSystem.BreakRadiusScale, v => Bosses.BossSystem.BreakRadiusScale = (float)v),
+            new Entry("bosses.bossSystem.patchScore", "x", () => Bosses.BossSystem.PatchScore, v => Bosses.BossSystem.PatchScore = (float)v),
+            new Entry("bosses.bossSystem.patchShareMin", "x", () => Bosses.BossSystem.PatchShareMin, v => Bosses.BossSystem.PatchShareMin = (float)v),
+            new Entry("bosses.bossSystem.recomputeMountFailCap", "count", () => Bosses.BossSystem.RecomputeMountFailCap, v => Bosses.BossSystem.RecomputeMountFailCap = (float)v),
+            new Entry("bosses.bossSystem.changePartSpeedFloor", "m/s", () => Bosses.BossSystem.ChangePartSpeedFloor, v => Bosses.BossSystem.ChangePartSpeedFloor = (float)v),
+            new Entry("bosses.bossSystem.heightShiftEndsFloor", "m", () => Bosses.BossSystem.HeightShiftEndsFloor, v => Bosses.BossSystem.HeightShiftEndsFloor = v),
+            new Entry("bosses.bossSystem.podsDuePodShareFloor", "share", () => Bosses.BossSystem.PodsDuePodShareFloor, v => Bosses.BossSystem.PodsDuePodShareFloor = (float)v),
+            new Entry("bosses.bossSystem.podsDueDistanceMin", "m", () => Bosses.BossSystem.PodsDueDistanceMin, v => Bosses.BossSystem.PodsDueDistanceMin = (float)v),
+            new Entry("bosses.bossSystem.podsDuePodsSentScale", "x", () => Bosses.BossSystem.PodsDuePodsSentScale, v => Bosses.BossSystem.PodsDuePodsSentScale = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.podsDueMaxRings", "x", () => Bosses.BossSystem.PodsDueMaxRings, v => Bosses.BossSystem.PodsDueMaxRings = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.podsDueHeightFloor", "m", () => Bosses.BossSystem.PodsDueHeightFloor, v => Bosses.BossSystem.PodsDueHeightFloor = (float)v),
+            new Entry("bosses.bossSystem.stepPodsPodLandsFloor", "s", () => Bosses.BossSystem.StepPodsPodLandsFloor, v => Bosses.BossSystem.StepPodsPodLandsFloor = v),
+            new Entry("bosses.bossSystem.stepPodsKScale", "x", () => Bosses.BossSystem.StepPodsKScale, v => Bosses.BossSystem.StepPodsKScale = (float)v),
+            new Entry("bosses.bossSystem.stepPodsForwardScale", "x", () => Bosses.BossSystem.StepPodsForwardScale, v => Bosses.BossSystem.StepPodsForwardScale = (float)v),
+            new Entry("bosses.bossSystem.crashSiteMaxRings", "x", () => Bosses.BossSystem.CrashSiteMaxRings, v => Bosses.BossSystem.CrashSiteMaxRings = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.stepCrashCrashAtFloor", "s", () => Bosses.BossSystem.StepCrashCrashAtFloor, v => Bosses.BossSystem.StepCrashCrashAtFloor = v),
+            new Entry("bosses.bossSystem.trailRadiusScale", "x", () => Bosses.BossSystem.TrailRadiusScale, v => Bosses.BossSystem.TrailRadiusScale = (float)v),
+            new Entry("bosses.bossSystem.stepTrailsTickMod", "ticks", () => Bosses.BossSystem.StepTrailsTickMod, v => Bosses.BossSystem.StepTrailsTickMod = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.stepTrailsTickIs", "ticks", () => Bosses.BossSystem.StepTrailsTickIs, v => Bosses.BossSystem.StepTrailsTickIs = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.boreNowAdd", "s", () => Bosses.BossSystem.BoreNowAdd, v => Bosses.BossSystem.BoreNowAdd = v),
+            new Entry("bosses.bossSystem.boreTickMod", "ticks", () => Bosses.BossSystem.BoreTickMod, v => Bosses.BossSystem.BoreTickMod = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.seaGoalKMax", "share", () => Bosses.BossSystem.SeaGoalKMax, v => Bosses.BossSystem.SeaGoalKMax = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.seaGoalPatrolScale", "x", () => Bosses.BossSystem.SeaGoalPatrolScale, v => Bosses.BossSystem.SeaGoalPatrolScale = (float)v),
+            new Entry("bosses.bossSystem.seaGoalNextDoubleScale", "x", () => Bosses.BossSystem.SeaGoalNextDoubleScale, v => Bosses.BossSystem.SeaGoalNextDoubleScale = (float)v),
+            new Entry("bosses.bossSystem.biggestGroupScale", "x", () => Bosses.BossSystem.BiggestGroupScale, v => Bosses.BossSystem.BiggestGroupScale = (float)v),
+            new Entry("bosses.bossSystem.quakeDamageScale", "x", () => Bosses.BossSystem.QuakeDamageScale, v => Bosses.BossSystem.QuakeDamageScale = (float)v),
+            new Entry("bosses.bossSystem.landLandingsScale", "x", () => Bosses.BossSystem.LandLandingsScale, v => Bosses.BossSystem.LandLandingsScale = (int)System.Math.Round(v)),
+            new Entry("bosses.bossSystem.pierceLineLengthAdd", "m", () => Bosses.BossSystem.PierceLineLengthAdd, v => Bosses.BossSystem.PierceLineLengthAdd = (float)v),
+            new Entry("bosses.bossSystem.pierceLineRadiusAdd", "m", () => Bosses.BossSystem.PierceLineRadiusAdd, v => Bosses.BossSystem.PierceLineRadiusAdd = (float)v),
+            new Entry("bosses.bossSystem.pierceLineRadius", "x", () => Bosses.BossSystem.PierceLineRadius, v => Bosses.BossSystem.PierceLineRadius = (float)v),
+            new Entry("bosses.bossTargetDirector.worthWorth", "m", () => Bosses.BossTargetDirector.WorthWorth, v => Bosses.BossTargetDirector.WorthWorth = (float)v),
+            new Entry("bosses.bossTargetDirector.worthDistanceMax", "m", () => Bosses.BossTargetDirector.WorthDistanceMax, v => Bosses.BossTargetDirector.WorthDistanceMax = (float)v),
+            new Entry("bosses.bossTargetDirector.worthWorth2", "m", () => Bosses.BossTargetDirector.WorthWorth2, v => Bosses.BossTargetDirector.WorthWorth2 = (float)v),
+            new Entry("bosses.bossTargetDirector.worthTurretTurnRateFloor", "x", () => Bosses.BossTargetDirector.WorthTurretTurnRateFloor, v => Bosses.BossTargetDirector.WorthTurretTurnRateFloor = (float)v),
+            new Entry("bosses.bossTargetDirector.worthDegrees", "x", () => Bosses.BossTargetDirector.WorthDegrees, v => Bosses.BossTargetDirector.WorthDegrees = (float)v),
+            new Entry("bosses.bossTargetDirector.worthMinScale", "x", () => Bosses.BossTargetDirector.WorthMinScale, v => Bosses.BossTargetDirector.WorthMinScale = (float)v),
+            new Entry("bosses.bossTargetDirector.worthAimCap", "count", () => Bosses.BossTargetDirector.WorthAimCap, v => Bosses.BossTargetDirector.WorthAimCap = (float)v),
+            new Entry("bosses.bossTargetDirector.worthWorthMin", "x", () => Bosses.BossTargetDirector.WorthWorthMin, v => Bosses.BossTargetDirector.WorthWorthMin = (float)v),
+            new Entry("bosses.bossTargetDirector.worthWorthMax", "x", () => Bosses.BossTargetDirector.WorthWorthMax, v => Bosses.BossTargetDirector.WorthWorthMax = (float)v),
+            new Entry("bosses.bossTemplates.resizeFallback", "m", () => Bosses.BossTemplates.ResizeFallback, v => Bosses.BossTemplates.ResizeFallback = (float)v),
+            new Entry("bosses.bossTemplates.resizeFallback2", "x", () => Bosses.BossTemplates.ResizeFallback2, v => Bosses.BossTemplates.ResizeFallback2 = (float)v),
+            new Entry("bosses.bossTemplates.rankPhvFloor", "x", () => Bosses.BossTemplates.RankPhvFloor, v => Bosses.BossTemplates.RankPhvFloor = v),
+            new Entry("bosses.bossWeaponDirector.targetsReach", "m", () => Bosses.BossWeaponDirector.TargetsReach, v => Bosses.BossWeaponDirector.TargetsReach = (float)v),
+            new Entry("bosses.bossWeaponDirector.targetsIMax", "count", () => Bosses.BossWeaponDirector.TargetsIMax, v => Bosses.BossWeaponDirector.TargetsIMax = (int)System.Math.Round(v)),
+            new Entry("bosses.bossWeaponDirector.cadenceAllowsHeavyMax", "x", () => Bosses.BossWeaponDirector.CadenceAllowsHeavyMax, v => Bosses.BossWeaponDirector.CadenceAllowsHeavyMax = (int)System.Math.Round(v)),
+            new Entry("bosses.bossWeaponDirector.cadenceAllowsHeavyScale", "x", () => Bosses.BossWeaponDirector.CadenceAllowsHeavyScale, v => Bosses.BossWeaponDirector.CadenceAllowsHeavyScale = (float)v),
+            new Entry("bosses.catalog.parseEscortsFallback11", "m", () => Bosses.Catalog.ParseEscortsFallback11, v => Bosses.Catalog.ParseEscortsFallback11 = (int)System.Math.Round(v)),
+            new Entry("bosses.escortRules.capForTryGetValueFalse", "count", () => Bosses.EscortRules.CapForTryGetValueFalse, v => Bosses.EscortRules.CapForTryGetValueFalse = (int)System.Math.Round(v)),
+            new Entry("bosses.huntSupports.hullValue", "x", () => Bosses.HuntSupports.HullValue, v => Bosses.HuntSupports.HullValue = (float)v),
+            new Entry("bosses.huntSupports.hullStrength", "x", () => Bosses.HuntSupports.HullStrength, v => Bosses.HuntSupports.HullStrength = (float)v),
+            new Entry("bosses.huntSupports.gunneryValue", "x", () => Bosses.HuntSupports.GunneryValue, v => Bosses.HuntSupports.GunneryValue = (float)v),
+            new Entry("bosses.huntSupports.gunneryStrength", "x", () => Bosses.HuntSupports.GunneryStrength, v => Bosses.HuntSupports.GunneryStrength = (float)v),
+            new Entry("bosses.huntSupports.loadersValue", "x", () => Bosses.HuntSupports.LoadersValue, v => Bosses.HuntSupports.LoadersValue = (float)v),
+            new Entry("bosses.huntSupports.loadersStrength", "x", () => Bosses.HuntSupports.LoadersStrength, v => Bosses.HuntSupports.LoadersStrength = (float)v),
+            new Entry("bosses.huntSupports.enginesValue", "x", () => Bosses.HuntSupports.EnginesValue, v => Bosses.HuntSupports.EnginesValue = (float)v),
+            new Entry("bosses.huntSupports.enginesStrength", "x", () => Bosses.HuntSupports.EnginesStrength, v => Bosses.HuntSupports.EnginesStrength = (float)v),
+            new Entry("bosses.huntSupports.regenValue", "x", () => Bosses.HuntSupports.RegenValue, v => Bosses.HuntSupports.RegenValue = (float)v),
+            new Entry("bosses.huntSupports.regenStrength", "x", () => Bosses.HuntSupports.RegenStrength, v => Bosses.HuntSupports.RegenStrength = (float)v),
+            new Entry("bosses.huntSupports.rapidValue", "s", () => Bosses.HuntSupports.RapidValue, v => Bosses.HuntSupports.RapidValue = (float)v),
+            new Entry("bosses.huntSupports.warchestValue", "s", () => Bosses.HuntSupports.WarchestValue, v => Bosses.HuntSupports.WarchestValue = (float)v),
+            new Entry("bosses.huntSupports.warchestStrength", "s", () => Bosses.HuntSupports.WarchestStrength, v => Bosses.HuntSupports.WarchestStrength = (float)v),
+            new Entry("bosses.huntSupports.supplyValue", "count", () => Bosses.HuntSupports.SupplyValue, v => Bosses.HuntSupports.SupplyValue = (float)v),
+            new Entry("bosses.huntSupports.supplyStrength", "count", () => Bosses.HuntSupports.SupplyStrength, v => Bosses.HuntSupports.SupplyStrength = (float)v),
+            new Entry("bosses.navalBossMovementController.minTurnRadiusTurnRateFloor", "m", () => Bosses.NavalBossMovementController.MinTurnRadiusTurnRateFloor, v => Bosses.NavalBossMovementController.MinTurnRadiusTurnRateFloor = (float)v),
+            new Entry("bosses.navalBossMovementController.cruiseTurnRatePlanningRadiusFloor", "m", () => Bosses.NavalBossMovementController.CruiseTurnRatePlanningRadiusFloor, v => Bosses.NavalBossMovementController.CruiseTurnRatePlanningRadiusFloor = (float)v),
+            new Entry("bosses.navalBossMovementController.routePenaltyWScale", "x", () => Bosses.NavalBossMovementController.RoutePenaltyWScale, v => Bosses.NavalBossMovementController.RoutePenaltyWScale = (float)v),
+            new Entry("bosses.navalBossMovementController.routePenaltyWScale2", "x", () => Bosses.NavalBossMovementController.RoutePenaltyWScale2, v => Bosses.NavalBossMovementController.RoutePenaltyWScale2 = (float)v),
+            new Entry("bosses.navalBossMovementController.routePenaltyDriftMax", "x", () => Bosses.NavalBossMovementController.RoutePenaltyDriftMax, v => Bosses.NavalBossMovementController.RoutePenaltyDriftMax = (float)v),
+            new Entry("bosses.navalBossMovementController.routePenaltyRoomInSub", "x", () => Bosses.NavalBossMovementController.RoutePenaltyRoomInSub, v => Bosses.NavalBossMovementController.RoutePenaltyRoomInSub = (float)v),
+            new Entry("bosses.navalBossMovementController.routePenaltyWScale3", "x", () => Bosses.NavalBossMovementController.RoutePenaltyWScale3, v => Bosses.NavalBossMovementController.RoutePenaltyWScale3 = (float)v),
+            new Entry("bosses.navalBossMovementController.chooseOffsetStepsScale", "x", () => Bosses.NavalBossMovementController.ChooseOffsetStepsScale, v => Bosses.NavalBossMovementController.ChooseOffsetStepsScale = (int)System.Math.Round(v)),
+            new Entry("bosses.navalBossMovementController.chooseOffsetStepScale", "x", () => Bosses.NavalBossMovementController.ChooseOffsetStepScale, v => Bosses.NavalBossMovementController.ChooseOffsetStepScale = (float)v),
+            new Entry("bosses.navalBossMovementController.separationMaxScale", "x", () => Bosses.NavalBossMovementController.SeparationMaxScale, v => Bosses.NavalBossMovementController.SeparationMaxScale = (float)v),
+            new Entry("bosses.navalBossMovementController.cpaHorizonLengthSub", "m", () => Bosses.NavalBossMovementController.CpaHorizonLengthSub, v => Bosses.NavalBossMovementController.CpaHorizonLengthSub = (float)v),
+            new Entry("bosses.navalBossMovementController.cpaHorizonLengthDivisor", "x", () => Bosses.NavalBossMovementController.CpaHorizonLengthDivisor, v => Bosses.NavalBossMovementController.CpaHorizonLengthDivisor = (float)v),
+            new Entry("bosses.navalBossMovementController.collisionCourseDotMin", "m", () => Bosses.NavalBossMovementController.CollisionCourseDotMin, v => Bosses.NavalBossMovementController.CollisionCourseDotMin = (float)v),
+            new Entry("bosses.navalBossMovementController.steerTurnRateFloor", "x", () => Bosses.NavalBossMovementController.SteerTurnRateFloor, v => Bosses.NavalBossMovementController.SteerTurnRateFloor = (float)v),
+            new Entry("bosses.navalBossMovementController.steerDegrees", "m", () => Bosses.NavalBossMovementController.SteerDegrees, v => Bosses.NavalBossMovementController.SteerDegrees = (float)v),
+            new Entry("bosses.navalBossMovementController.steerFullScale", "x", () => Bosses.NavalBossMovementController.SteerFullScale, v => Bosses.NavalBossMovementController.SteerFullScale = (float)v),
+            new Entry("bosses.navalBossMovementController.steerDistanceDivisor", "x", () => Bosses.NavalBossMovementController.SteerDistanceDivisor, v => Bosses.NavalBossMovementController.SteerDistanceDivisor = (float)v),
+            new Entry("bosses.navalBossMovementController.steerDistanceAdd", "m", () => Bosses.NavalBossMovementController.SteerDistanceAdd, v => Bosses.NavalBossMovementController.SteerDistanceAdd = (float)v),
+            new Entry("bosses.navalBossMovementController.steerSpeedScale", "x", () => Bosses.NavalBossMovementController.SteerSpeedScale, v => Bosses.NavalBossMovementController.SteerSpeedScale = (float)v),
+            new Entry("bosses.navalBossMovementController.cpaThreatLengthExponent", "m", () => Bosses.NavalBossMovementController.CpaThreatLengthExponent, v => Bosses.NavalBossMovementController.CpaThreatLengthExponent = (float)v),
+            new Entry("bosses.navalBossMovementController.cpaThreatHorizonFloor", "x", () => Bosses.NavalBossMovementController.CpaThreatHorizonFloor, v => Bosses.NavalBossMovementController.CpaThreatHorizonFloor = (float)v),
+            new Entry("bosses.navalSystem.layRateMinDegrees", "x", () => Bosses.NavalSystem.LayRateMinDegrees, v => Bosses.NavalSystem.LayRateMinDegrees = (float)v),
+            new Entry("bosses.navalSystem.previewSalvoSqrtScale", "x", () => Bosses.NavalSystem.PreviewSalvoSqrtScale, v => Bosses.NavalSystem.PreviewSalvoSqrtScale = (float)v),
+            new Entry("bosses.navalSystem.previewSalvoScale", "x", () => Bosses.NavalSystem.PreviewSalvoScale, v => Bosses.NavalSystem.PreviewSalvoScale = v),
+            new Entry("bosses.navalSystem.routeTrafficSlowBandScale", "x", () => Bosses.NavalSystem.RouteTrafficSlowBandScale, v => Bosses.NavalSystem.RouteTrafficSlowBandScale = (float)v),
+            new Entry("bosses.navalSystem.routeTrafficSeaCapMax", "s", () => Bosses.NavalSystem.RouteTrafficSeaCapMax, v => Bosses.NavalSystem.RouteTrafficSeaCapMax = (float)v),
+            new Entry("bosses.navalSystem.routeTrafficAbsMax", "s", () => Bosses.NavalSystem.RouteTrafficAbsMax, v => Bosses.NavalSystem.RouteTrafficAbsMax = (float)v),
+            new Entry("bosses.navalSystem.startHoldWidthAdd", "m", () => Bosses.NavalSystem.StartHoldWidthAdd, v => Bosses.NavalSystem.StartHoldWidthAdd = (float)v),
+            new Entry("bosses.navalSystem.leashLeashFalse", "m", () => Bosses.NavalSystem.LeashLeashFalse, v => Bosses.NavalSystem.LeashLeashFalse = (float)v),
+            new Entry("bosses.navalSystem.slotValidHalfSizeSub", "count", () => Bosses.NavalSystem.SlotValidHalfSizeSub, v => Bosses.NavalSystem.SlotValidHalfSizeSub = (float)v),
+            new Entry("bosses.navalSystem.slotValidWidthAdd", "m", () => Bosses.NavalSystem.SlotValidWidthAdd, v => Bosses.NavalSystem.SlotValidWidthAdd = (float)v),
+            new Entry("bosses.navalSystem.turningAbsMin", "s", () => Bosses.NavalSystem.TurningAbsMin, v => Bosses.NavalSystem.TurningAbsMin = (float)v),
+            new Entry("bosses.navalSystem.joinedKScale", "x", () => Bosses.NavalSystem.JoinedKScale, v => Bosses.NavalSystem.JoinedKScale = (float)v),
+            new Entry("bosses.navalSystem.joinedKDivisor", "x", () => Bosses.NavalSystem.JoinedKDivisor, v => Bosses.NavalSystem.JoinedKDivisor = (int)System.Math.Round(v)),
+            new Entry("bosses.navalSystem.joinedKScale2", "x", () => Bosses.NavalSystem.JoinedKScale2, v => Bosses.NavalSystem.JoinedKScale2 = (float)v),
+            new Entry("bosses.navalSystem.stepTickMod", "ticks", () => Bosses.NavalSystem.StepTickMod, v => Bosses.NavalSystem.StepTickMod = (int)System.Math.Round(v)),
+            new Entry("bosses.navalSystem.stepDtScale", "x", () => Bosses.NavalSystem.StepDtScale, v => Bosses.NavalSystem.StepDtScale = (float)v),
+            new Entry("bosses.navalSystem.sailDistanceMax", "m", () => Bosses.NavalSystem.SailDistanceMax, v => Bosses.NavalSystem.SailDistanceMax = (float)v),
+            new Entry("bosses.navalSystem.sailDotFloor", "m", () => Bosses.NavalSystem.SailDotFloor, v => Bosses.NavalSystem.SailDotFloor = (float)v),
+            new Entry("bosses.navalSystem.sailDistanceDivisor", "x", () => Bosses.NavalSystem.SailDistanceDivisor, v => Bosses.NavalSystem.SailDistanceDivisor = (float)v),
+            new Entry("bosses.navalSystem.sailDistanceAdd", "m", () => Bosses.NavalSystem.SailDistanceAdd, v => Bosses.NavalSystem.SailDistanceAdd = (float)v),
+            new Entry("bosses.navalSystem.sailSpeedScale", "x", () => Bosses.NavalSystem.SailSpeedScale, v => Bosses.NavalSystem.SailSpeedScale = (float)v),
+            new Entry("bosses.navalSystem.sailHullRadiusScale", "x", () => Bosses.NavalSystem.SailHullRadiusScale, v => Bosses.NavalSystem.SailHullRadiusScale = (float)v),
+            new Entry("bosses.navalSystem.sailSpeedFloor", "m/s", () => Bosses.NavalSystem.SailSpeedFloor, v => Bosses.NavalSystem.SailSpeedFloor = (float)v),
+            new Entry("bosses.navalSystem.sailSpeedScale2", "x", () => Bosses.NavalSystem.SailSpeedScale2, v => Bosses.NavalSystem.SailSpeedScale2 = (float)v),
+            new Entry("bosses.navalSystem.sailSpeed", "m/s", () => Bosses.NavalSystem.SailSpeed, v => Bosses.NavalSystem.SailSpeed = (float)v),
+            new Entry("bosses.navalSystem.wreckAheadMaxAdd", "count", () => Bosses.NavalSystem.WreckAheadMaxAdd, v => Bosses.NavalSystem.WreckAheadMaxAdd = (float)v),
+            new Entry("bosses.navalSystem.wreckAheadSpeedScale", "x", () => Bosses.NavalSystem.WreckAheadSpeedScale, v => Bosses.NavalSystem.WreckAheadSpeedScale = (float)v),
+            new Entry("bosses.navalSystem.wreckAheadMaxScale", "x", () => Bosses.NavalSystem.WreckAheadMaxScale, v => Bosses.NavalSystem.WreckAheadMaxScale = (float)v),
+            new Entry("bosses.navalSystem.wreckAheadXTrue", "m", () => Bosses.NavalSystem.WreckAheadXTrue, v => Bosses.NavalSystem.WreckAheadXTrue = (float)v),
+            new Entry("bosses.navalSystem.wreckAheadXFalse", "m", () => Bosses.NavalSystem.WreckAheadXFalse, v => Bosses.NavalSystem.WreckAheadXFalse = (float)v),
+            new Entry("bosses.navalSystem.onWaterHalfSizeSub", "count", () => Bosses.NavalSystem.OnWaterHalfSizeSub, v => Bosses.NavalSystem.OnWaterHalfSizeSub = (float)v),
+            new Entry("bosses.navalSystem.flagshipSpeedFloor", "m/s", () => Bosses.NavalSystem.FlagshipSpeedFloor, v => Bosses.NavalSystem.FlagshipSpeedFloor = (float)v),
+            new Entry("bosses.navalSystem.flagshipTurnRateFloor", "s", () => Bosses.NavalSystem.FlagshipTurnRateFloor, v => Bosses.NavalSystem.FlagshipTurnRateFloor = (float)v),
+            new Entry("bosses.navalSystem.flagshipEndSub", "s", () => Bosses.NavalSystem.FlagshipEndSub, v => Bosses.NavalSystem.FlagshipEndSub = (float)v),
+            new Entry("bosses.navalSystem.phaseBeginsChargesAdd", "s", () => Bosses.NavalSystem.PhaseBeginsChargesAdd, v => Bosses.NavalSystem.PhaseBeginsChargesAdd = (int)System.Math.Round(v)),
+            new Entry("bosses.navalSystem.phaseBeginsRechargeScale", "x", () => Bosses.NavalSystem.PhaseBeginsRechargeScale, v => Bosses.NavalSystem.PhaseBeginsRechargeScale = (float)v),
+            new Entry("bosses.navalSystem.phaseBeginsFirstScale", "x", () => Bosses.NavalSystem.PhaseBeginsFirstScale, v => Bosses.NavalSystem.PhaseBeginsFirstScale = v),
+            new Entry("bosses.navalSystem.phaseBeginsKScale", "x", () => Bosses.NavalSystem.PhaseBeginsKScale, v => Bosses.NavalSystem.PhaseBeginsKScale = (float)v),
+            new Entry("bosses.navalSystem.salvoRangeScale", "x", () => Bosses.NavalSystem.SalvoRangeScale, v => Bosses.NavalSystem.SalvoRangeScale = (float)v),
+            new Entry("bosses.navalSystem.salvoRadius", "m", () => Bosses.NavalSystem.SalvoRadius, v => Bosses.NavalSystem.SalvoRadius = (float)v),
+            new Entry("bosses.navalSystem.fireSalvoScale2", "x", () => Bosses.NavalSystem.FireSalvoScale2, v => Bosses.NavalSystem.FireSalvoScale2 = v),
+            new Entry("bosses.navalSystem.escortDistanceMax", "m", () => Bosses.NavalSystem.EscortDistanceMax, v => Bosses.NavalSystem.EscortDistanceMax = (float)v),
+            new Entry("bosses.navalSystem.escortLengthAdd", "m", () => Bosses.NavalSystem.EscortLengthAdd, v => Bosses.NavalSystem.EscortLengthAdd = (float)v),
+            new Entry("bosses.navalSystem.raiderDashStageValue", "s", () => Bosses.NavalSystem.RaiderDashStageValue, v => Bosses.NavalSystem.RaiderDashStageValue = v),
+            new Entry("bosses.navalSystem.raiderNextDoubleMax", "share", () => Bosses.NavalSystem.RaiderNextDoubleMax, v => Bosses.NavalSystem.RaiderNextDoubleMax = v),
+            new Entry("bosses.navalSystem.raiderNavalDirScale", "x", () => Bosses.NavalSystem.RaiderNavalDirScale, v => Bosses.NavalSystem.RaiderNavalDirScale = (float)v),
+            new Entry("bosses.navalSystem.raiderDashWScale", "x", () => Bosses.NavalSystem.RaiderDashWScale, v => Bosses.NavalSystem.RaiderDashWScale = (float)v),
+            new Entry("bosses.navalSystem.raiderShoreAtAdd", "x", () => Bosses.NavalSystem.RaiderShoreAtAdd, v => Bosses.NavalSystem.RaiderShoreAtAdd = (float)v),
+            new Entry("bosses.navalSystem.raiderDistanceMax", "m", () => Bosses.NavalSystem.RaiderDistanceMax, v => Bosses.NavalSystem.RaiderDistanceMax = (float)v),
+            new Entry("bosses.navalSystem.landerDistanceMax", "m", () => Bosses.NavalSystem.LanderDistanceMax, v => Bosses.NavalSystem.LanderDistanceMax = (float)v),
+            new Entry("bosses.navalSystem.landerNowAdd", "s", () => Bosses.NavalSystem.LanderNowAdd, v => Bosses.NavalSystem.LanderNowAdd = v),
+            new Entry("bosses.navalSystem.landerKScale", "x", () => Bosses.NavalSystem.LanderKScale, v => Bosses.NavalSystem.LanderKScale = (float)v),
+            new Entry("bosses.navalSystem.landerHullRadiusAdd", "m", () => Bosses.NavalSystem.LanderHullRadiusAdd, v => Bosses.NavalSystem.LanderHullRadiusAdd = (float)v),
+            new Entry("bosses.navalSystem.sunkKSub", "m", () => Bosses.NavalSystem.SunkKSub, v => Bosses.NavalSystem.SunkKSub = (int)System.Math.Round(v)),
+            new Entry("bosses.navalSystem.sunkKScale", "x", () => Bosses.NavalSystem.SunkKScale, v => Bosses.NavalSystem.SunkKScale = (float)v),
+            new Entry("bosses.navalSystem.sunkKAdd", "x", () => Bosses.NavalSystem.SunkKAdd, v => Bosses.NavalSystem.SunkKAdd = (float)v),
+            new Entry("bosses.navalSystem.sunkKScale2", "x", () => Bosses.NavalSystem.SunkKScale2, v => Bosses.NavalSystem.SunkKScale2 = (float)v),
+            new Entry("bosses.navalSystem.sunkKAdd2", "x", () => Bosses.NavalSystem.SunkKAdd2, v => Bosses.NavalSystem.SunkKAdd2 = v),
+            new Entry("bosses.navalSystem.sunkKScale3", "x", () => Bosses.NavalSystem.SunkKScale3, v => Bosses.NavalSystem.SunkKScale3 = v),
+            new Entry("bosses.navalSystem.biggestGroupScale", "x", () => Bosses.NavalSystem.BiggestGroupScale, v => Bosses.NavalSystem.BiggestGroupScale = (float)v),
+            new Entry("bosses.podDef.everyInEveryByPhaseFloor", "x", () => Bosses.PodDef.EveryInEveryByPhaseFloor, v => Bosses.PodDef.EveryInEveryByPhaseFloor = (float)v),
+            new Entry("bosses.routeContext.openHalfCorridor", "x", () => Bosses.RouteContext.OpenHalfCorridor, v => Bosses.RouteContext.OpenHalfCorridor = (float)v),
+            new Entry("bosses.routeContext.openShoreRoom", "x", () => Bosses.RouteContext.OpenShoreRoom, v => Bosses.RouteContext.OpenShoreRoom = (float)v),
         };
     }
 }

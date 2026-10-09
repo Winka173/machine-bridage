@@ -17,7 +17,7 @@ namespace MachineBrigade.Sim.Content
         {
             Id = Guard.Id(id);
             Kind = string.IsNullOrWhiteSpace(kind) ? "part" : kind;
-            Hp = hp > 0f && hp < 10f ? hp : throw new ArgumentException($"Boss part '{id}': hp is a share of the body's health (0 to 10).");
+            Hp = hp > 0f && hp < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossPartDef.CtorHpMax ? hp : throw new ArgumentException($"Boss part '{id}': hp is a share of the body's health (0 to 10).");
         }
 
         public string Id { get; }

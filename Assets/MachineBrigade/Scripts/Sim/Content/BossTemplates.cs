@@ -245,7 +245,7 @@ namespace MachineBrigade.Sim.Content
                 {
                     if (o is not Dictionary<string, object?> part) continue;
                     if (part.TryGetValue("at", out var at) && at is List<object?> xyz) part["at"] = Scaled(xyz, size);
-                    part["radius"] = (double)(Number(part, "radius", 2f) * size);
+                    part["radius"] = (double)(Number(part, "radius", global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTemplates.ResizeFallback) * size);
                 }
             if (d.TryGetValue("attach", out var a) && a is List<object?> attach)
                 foreach (var o in attach)
@@ -253,7 +253,7 @@ namespace MachineBrigade.Sim.Content
             if (d.TryGetValue("landing", out var l) && l is Dictionary<string, object?> landing && landing.TryGetValue("ramp", out var r) && r is List<object?> ramp)
                 landing["ramp"] = Scaled(ramp, size);
             if (d.TryGetValue("deathExplosion", out var e) && e is Dictionary<string, object?> blast)
-                blast["radius"] = (double)(Number(blast, "radius", 6f) * MathF.Sqrt(size));
+                blast["radius"] = (double)(Number(blast, "radius", global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTemplates.ResizeFallback2) * MathF.Sqrt(size));
         }
 
         private static List<object?> Scaled(List<object?> xyz, float size)
@@ -339,7 +339,7 @@ namespace MachineBrigade.Sim.Content
                 if (sum > 0.0)
                     foreach (var o in partList)
                         if (o is Dictionary<string, object?> part && part.TryGetValue("hp", out var ph) && ph is double phv)
-                            part["hp"] = Math.Round(Math.Max(0.004, phv * partsShare / sum), 4);
+                            part["hp"] = Math.Round(Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTemplates.RankPhvFloor, phv * partsShare / sum), 4);
             }
             var tiered = d.TryGetValue("tiers", out var t) && t != null;
             if (!d.ContainsKey("phases") && !tiered && rules.TryGetValue("phases", out var phases) && phases != null) d["phases"] = Clone(phases);

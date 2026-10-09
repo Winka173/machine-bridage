@@ -86,7 +86,7 @@ namespace MachineBrigade.Sim.Bosses
 
         public float PlanningRadius { get; }
 
-        public static RouteContext Open => new(new Vector2(0f, 1f), 0f, 10f, 1000f, 0f);
+        public static RouteContext Open => new(new Vector2(0f, 1f), 0f, global::MachineBrigade.Sim.Content.SimTunables.Bosses.RouteContext.OpenHalfCorridor, global::MachineBrigade.Sim.Content.SimTunables.Bosses.RouteContext.OpenShoreRoom, 0f);
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ namespace MachineBrigade.Sim.Bosses
         // ================================================================== pure rules (the tests call these)
 
         /// <summary>Spec 53: Rmin = speed / angular speed (radians a second).</summary>
-        internal static float MinTurnRadius(float speed, float turnRate) => speed / MathF.Max(0.01f, turnRate);
+        internal static float MinTurnRadius(float speed, float turnRate) => speed / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.MinTurnRadiusTurnRateFloor, turnRate);
 
         /// <summary>Spec 53: planningRadius = max(collision radius, Rmin x 1.1).</summary>
         internal static float PlanningRadius(float collisionRadius, float minTurnRadius) => MathF.Max(collisionRadius, minTurnRadius * Tun.PlanningFactor);
@@ -133,7 +133,7 @@ namespace MachineBrigade.Sim.Bosses
         /// radius it turns on (speed / rate) is never under <paramref name="planningRadius"/> while it keeps its cruise share.
         /// </summary>
         internal static float CruiseTurnRate(float turnRate, float speed, float fullSpeed, float planningRadius) =>
-            MathF.Min(turnRate, MathF.Max(speed, fullSpeed * Tun.CruiseThrottleMin) / MathF.Max(0.1f, planningRadius));
+            MathF.Min(turnRate, MathF.Max(speed, fullSpeed * Tun.CruiseThrottleMin) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.CruiseTurnRatePlanningRadiusFloor, planningRadius));
 
         /// <summary>Spec 55: a new value within <paramref name="band"/> of the held one keeps the held one.</summary>
         internal static float Deadband(float held, float wanted, float band) => MathF.Abs(SimMath.WrapAngle(wanted - held)) <= band ? held : wanted;
@@ -201,13 +201,13 @@ namespace MachineBrigade.Sim.Bosses
         internal static float RoutePenalty(float routeHeading, float offset, in RouteContext route)
         {
             var w = Tun.BroadsideRoutePenalty;
-            var penalty = w * 0.5f * MathF.Abs(MathF.Sin(offset));
+            var penalty = w * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.RoutePenaltyWScale * MathF.Abs(MathF.Sin(offset));
             var drift = Vector2.Dot(SimMath.Forward(routeHeading + offset), route.Seaward);
             if (drift * route.LateralError > 0f)
-                penalty += w * 4f * MathF.Abs(drift) * SimMath.Clamp01(MathF.Abs(route.LateralError) / MathF.Max(1f, route.HalfCorridor));
-            if (drift < 0f && route.ShoreRoom < route.PlanningRadius) penalty += w * 4f * -drift;
+                penalty += w * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.RoutePenaltyWScale2 * MathF.Abs(drift) * SimMath.Clamp01(MathF.Abs(route.LateralError) / MathF.Max(1f, route.HalfCorridor));
+            if (drift < 0f && route.ShoreRoom < route.PlanningRadius) penalty += w * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.RoutePenaltyWScale2 * -drift;
             // Its own escorts' slots on that side: no drift past the room they leave (prohibitive).
-            if (drift < -0.05f && -route.LateralError >= route.RoomIn - 3f) penalty += w * 8f * -drift;
+            if (drift < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.RoutePenaltyDriftMax && -route.LateralError >= route.RoomIn - global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.RoutePenaltyRoomInSub) penalty += w * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.RoutePenaltyWScale3 * -drift;
             if (drift > 0.05f && route.LateralError >= route.RoomOut - 3f) penalty += w * 8f * drift;
             return penalty;
         }
@@ -227,14 +227,14 @@ namespace MachineBrigade.Sim.Bosses
             var best = 0f;
             bestScore = float.NegativeInfinity;
             bestShare = 0f;
-            for (var k = 0; k <= steps * 2; k++)
+            for (var k = 0; k <= steps * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.ChooseOffsetStepsScale; k++)
             {
                 // 0, -20, +20, -40, +40 ...
                 var n = (k + 1) / 2;
                 var offset = (k % 2 == 1 ? -1f : 1f) * n * step;
                 var share = BearingShare(mounts, from, routeHeading + offset, targets, out _);
                 var score = share - Tun.BroadsideTurnCost * MathF.Abs(offset) / MathF.Max(step, max) - RoutePenalty(routeHeading, offset, route);
-                if (MathF.Abs(offset - held) < step * 0.5f && share >= Tun.ActiveDpsTarget) score += Tun.HoldBonus;
+                if (MathF.Abs(offset - held) < step * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.ChooseOffsetStepScale && share >= Tun.ActiveDpsTarget) score += Tun.HoldBonus;
                 if (score <= bestScore + 1e-4f) continue;
                 bestScore = score;
                 bestShare = share;
@@ -275,7 +275,7 @@ namespace MachineBrigade.Sim.Bosses
         /// </summary>
         internal static float Separation(VehicleDef a, VehicleDef b)
         {
-            var s = MathF.Max(a.Width * 0.5f + b.Width * 0.5f + Tun.ShipSeparationExtra, 0.5f * MathF.Max(a.Length, b.Length));
+            var s = MathF.Max(a.Width * 0.5f + b.Width * 0.5f + Tun.ShipSeparationExtra, global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SeparationMaxScale * MathF.Max(a.Length, b.Length));
             return a.Boss || b.Boss ? s + Tun.BossSeparationExtra : s;
         }
 
@@ -290,7 +290,7 @@ namespace MachineBrigade.Sim.Bosses
 
         /// <summary>Spec 60: the look-ahead of the closest-approach check, 6 s for a short ship up to 10 s for a long one.</summary>
         internal static float CpaHorizon(float length) =>
-            Math.Clamp(Tun.CpaHorizonMin + (length - 30f) / 20f, Tun.CpaHorizonMin, MathF.Max(Tun.CpaHorizonMin, Tun.CpaHorizonMax));
+            Math.Clamp(Tun.CpaHorizonMin + (length - global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.CpaHorizonLengthSub) / global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.CpaHorizonLengthDivisor, Tun.CpaHorizonMin, MathF.Max(Tun.CpaHorizonMin, Tun.CpaHorizonMax));
 
         /// <summary>
         /// Spec 60: whether two hulls (spines along their headings, half widths round them) on their courses come closer than the
@@ -317,7 +317,7 @@ namespace MachineBrigade.Sim.Bosses
             // In line ahead (within 30 degrees of the bow) inside the spec-59 separation.
             var ahead = qb - qa;
             var l = ahead.Length();
-            return l < Separation(a, b) && l > 1e-3f && Vector2.Dot(ahead / l, fa) > 0.866f && MathF.Abs(across) < (a.Width + b.Width) * 0.5f + Tun.CpaLateralClear;
+            return l < Separation(a, b) && l > 1e-3f && Vector2.Dot(ahead / l, fa) > global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.CollisionCourseDotMin && MathF.Abs(across) < (a.Width + b.Width) * 0.5f + Tun.CpaLateralClear;
         }
 
         // ================================================================== the step
@@ -330,8 +330,8 @@ namespace MachineBrigade.Sim.Bosses
         internal static void Steer(SimWorld world, Vehicle v, SeaDef sea, BossBrain b, Vector2 goal, float distance, float full, bool round, float wreckTurn, float dt)
         {
             var def = v.Def;
-            var omegaData = MathF.Max(0.01f, def.TurnRate);
-            var omega = MathF.Max(0.01f, def.TurnRate * v.TurnFactor);
+            var omegaData = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SteerTurnRateFloor, def.TurnRate);
+            var omega = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SteerTurnRateFloor, def.TurnRate * v.TurnFactor);
             b.MinTurnRadius = MinTurnRadius(def.Speed, omegaData);
             b.PlanningRadius = PlanningRadius(def.HullRadius, b.MinTurnRadius);
             b.LookAhead = LookAhead(def.Speed, def.Length);
@@ -346,7 +346,7 @@ namespace MachineBrigade.Sim.Bosses
             if (OnLane(v, sea) && !v.Escaping && v.SeaHold < 0 && b.TurnSide == 0)
             {
                 desired += b.BroadsideOffset;
-                if (MathF.Abs(b.BroadsideOffset) > SimMath.DegToRad(0.5f) && reason == HullReason.Route) reason = HullReason.Broadside;
+                if (MathF.Abs(b.BroadsideOffset) > SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SteerDegrees) && reason == HullReason.Route) reason = HullReason.Broadside;
             }
 
             // 3. Collisions: a sinking wreck (lane J), then the closest point of approach (spec 60).
@@ -381,7 +381,7 @@ namespace MachineBrigade.Sim.Bosses
             }
             else if (b.TurnSide != 0 && MathF.Abs(delta) < SimMath.DegToRad(60f)) b.TurnSide = 0;
             if (b.TurnSide != 0) ResetBroadside(b);
-            blocked |= v.SeaCap < full * 0.5f;
+            blocked |= v.SeaCap < full * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SteerFullScale;
 
             // 5. The turn law (spec 53): under way no tighter than the planning radius; coming about or held up, slow and hard.
             var rate = turnabout || blocked ? omega : CruiseTurnRate(omega, v.Speed, full, b.PlanningRadius);
@@ -395,11 +395,11 @@ namespace MachineBrigade.Sim.Bosses
             // 6. Speed: never below 0; slower to come about, for the traffic gap, a wreck and a predicted collision.
             var misalign = MathF.Abs(SimMath.WrapAngle(desired - v.Heading));
             var throttle = turnabout ? Tun.TurnaboutThrottle : MathF.Max(Tun.CruiseThrottleMin, MathF.Cos(MathF.Min(misalign, MathF.PI * 0.5f)));
-            var target = full * throttle * MathF.Min(1f, distance / 8f + 0.2f);
+            var target = full * throttle * MathF.Min(1f, distance / global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SteerDistanceDivisor + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SteerDistanceAdd);
             target = MathF.Min(target, v.SeaCap);
-            if (round) target = MathF.Min(target, full * 0.5f);
+            if (round) target = MathF.Min(target, full * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SteerFullScale);
             target = MathF.Min(target, full * cpaThrottle);
-            v.Speed += Math.Clamp(target - v.Speed, -def.Speed * dt, def.Speed * 0.5f * dt);
+            v.Speed += Math.Clamp(target - v.Speed, -def.Speed * dt, def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.SteerSpeedScale * dt);
             if (v.Speed < 0f)
             {
                 // Never: counted so the tests can assert it (spec 52, section 110 "Target behind").
@@ -473,7 +473,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (o == v || !o.IsAlive || o.Def.Naval == null || o.Escaped || o.Burrow != Vehicle.BurrowState.Surface) continue;
                 // Its own fleet keeps its slots (prompt 33 L4); a landing craft coming home is hoisted in alongside.
                 if (o.Flagship == v.Id) continue;
-                if (Vector2.DistanceSquared(o.Position, v.Position) > MathF.Pow(v.Def.Length + o.Def.Length + (v.Def.Speed + o.Def.Speed) * horizon, 2f)) continue;
+                if (Vector2.DistanceSquared(o.Position, v.Position) > MathF.Pow(v.Def.Length + o.Def.Length + (v.Def.Speed + o.Def.Speed) * horizon, global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.CpaThreatLengthExponent)) continue;
                 if (!CollisionCourse(v.Position, v.Heading, v.Speed, v.Def, o.Position, o.Heading, o.Speed, o.Def, horizon, out var t, out var clearance, out var across))
                     continue;
                 if (t >= bestT) continue;
@@ -482,7 +482,7 @@ namespace MachineBrigade.Sim.Bosses
                 b.CpaTime = t;
                 b.CpaDistance = clearance;
                 side = across > 0.5f ? -1 : 1;
-                urgency = SimMath.Clamp01(1f - t / MathF.Max(0.1f, horizon));
+                urgency = SimMath.Clamp01(1f - t / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalBossMovementController.CpaThreatHorizonFloor, horizon));
             }
             return b.CpaThreat.IsValid;
         }

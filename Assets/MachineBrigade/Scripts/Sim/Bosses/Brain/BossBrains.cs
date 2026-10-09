@@ -119,7 +119,7 @@ namespace MachineBrigade.Sim.Bosses
         {
             b.ActualHeading = v.Heading;
             if (b.MissionLocked) b.HullReason = v.Escaping ? HullReason.Escape : HullReason.Phase;
-            else if (now - b.AlignGrantedAt < 0.25) return;
+            else if (now - b.AlignGrantedAt < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossBrains.LandNowMax) return;
             else b.HullReason = v.HasPath ? HullReason.Route : HullReason.Hold;
             b.DesiredHullHeading = v.HasPath ? SimMath.HeadingOf(v.Path[v.PathIndex] - v.Position) : v.Heading;
         }

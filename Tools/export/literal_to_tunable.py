@@ -220,6 +220,12 @@ def _math_rule(c, src_line: str):
         return "infrastructure: a cache's size cap (memory), not gameplay"
     if re.search(r"new\s+(System\.)?Random\(", src_line) and ctx in ("multiply", "add"):
         return "RNG seed salt: an arbitrary constant mixed into a seed"
+    if v in (2, 3) and re.search(r"\(3f?\s*-\s*2f?\s*\*\s*\w+\)", src_line) and ctx in ("subtract", "multiply"):
+        return "math: smoothstep 3u^2 - 2u^3"
+    if ctx == "math_round":
+        return "math: rounding digits"
+    if v == 0.5 and ctx == "subtract" and re.search(r"NextDouble\(\)\)?\s*-\s*$", before):
+        return "math: a random draw centred on 0 (r - 0.5)"
     if ctx == "modulo" and v == 2:
         return "math: parity (even / odd: alternate sides, or x, z pairs in the data)"
     if ctx == "modulo" and v in (90, 180, 360):

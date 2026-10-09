@@ -49,7 +49,7 @@ namespace MachineBrigade.Sim.Bosses
             var reach = 0f;
             foreach (var m in mounts) reach = MathF.Max(reach, m.Range);
             if (reach <= 0f) return;
-            reach += 10f;
+            reach += global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossWeaponDirector.TargetsReach;
             foreach (var e in world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Invulnerable || !e.IsVisibleTo(v.Team)) continue;
@@ -58,7 +58,7 @@ namespace MachineBrigade.Sim.Bosses
                 scratch.Add((d, e.Id.Value, new TargetSample(e.Position, e.Radius, e.Flying)));
             }
             scratch.Sort((a, b) => a.d != b.d ? a.d.CompareTo(b.d) : a.id.CompareTo(b.id));
-            for (var i = 0; i < scratch.Count && i < 16; i++) into.Add(scratch[i].t);
+            for (var i = 0; i < scratch.Count && i < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossWeaponDirector.TargetsIMax; i++) into.Add(scratch[i].t);
         }
 
         /// <summary>Section 96: the main mount's target and every mount's.</summary>
@@ -87,8 +87,8 @@ namespace MachineBrigade.Sim.Bosses
             var heavy = 0;
             for (var j = 0; j < v.Arms.Length; j++)
                 if (Heavy(v.Arms[j])) heavy++;
-            if (heavy < 2) return true;
-            var gap = MathF.Min(Tun.CadenceGap, w.Cooldown / (2f * heavy));
+            if (heavy < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossWeaponDirector.CadenceAllowsHeavyMax) return true;
+            var gap = MathF.Min(Tun.CadenceGap, w.Cooldown / (global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossWeaponDirector.CadenceAllowsHeavyScale * heavy));
             for (var j = 0; j < v.Arms.Length; j++)
             {
                 if (j == index || !Heavy(v.Arms[j])) continue;
@@ -113,11 +113,11 @@ namespace MachineBrigade.Sim.Bosses
             if (v.Brain is not { } b) return 1f;
             var worth = 1f;
             // ThreatToBossPart: it is shooting at the boss (and reaches it).
-            if (other.Target == v.Id && Vector2.Distance(other.Position, v.Position) - v.Radius <= other.Def.Weapon.Range) worth *= 1.15f;
+            if (other.Target == v.Id && Vector2.Distance(other.Position, v.Position) - v.Radius <= other.Def.Weapon.Range) worth *= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthWorth;
             // ThreatToEscort: it is shooting at one of the boss's escorts.
             if (other.Target.IsValid && world.TryGetVehicle(other.Target, out var victim) && victim.EscortOf == v.Id) worth *= 1.15f;
             // ThreatToMission: it stands on the boss's way (near its anchor).
-            if (b.AnchorKind != MissionAnchorKind.None && Vector2.Distance(other.Position, b.Anchor) < 25f) worth *= 1.1f;
+            if (b.AnchorKind != MissionAnchorKind.None && Vector2.Distance(other.Position, b.Anchor) < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthDistanceMax) worth *= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthWorth2;
             // CanWeaponBear / TimeToAim: the mounts carrying this weapon, now, as the hull lies.
             var bears = false;
             var aim = float.MaxValue;
@@ -130,15 +130,15 @@ namespace MachineBrigade.Sim.Bosses
                 var sample = new MountSample(m.Aim, m.ArcCentre, m.ArcHalf, 1f, 0f, float.MaxValue, true, true);
                 if (!NavalBossMovementController.CanBear(sample, v.Position, v.Heading, other.Position)) continue;
                 bears = true;
-                var rate = m.Aim == MountAim.Turret ? MathF.Max(0.2f, v.Def.TurretTurnRate) : SimMath.DegToRad(60f);
+                var rate = m.Aim == MountAim.Turret ? MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthTurretTurnRateFloor, v.Def.TurretTurnRate) : SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthDegrees);
                 var off = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(other.Position - v.Position) - v.MountHeading(i)));
                 aim = MathF.Min(aim, off / rate);
             }
             if (!bears) worth *= 0.6f;
-            else worth /= 1f + 0.15f * MathF.Min(4f, aim);
+            else worth /= 1f + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthMinScale * MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthAimCap, aim);
             // TargetPersistence: what it is already shooting.
             if (other.Id == v.Target) worth *= 1.15f;
-            return Math.Clamp(worth, 0.4f, 2f);
+            return Math.Clamp(worth, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthWorthMin, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossTargetDirector.WorthWorthMax);
         }
     }
 
@@ -156,9 +156,9 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>The distance of a station from the boss's middle (<paramref name="bossRadius"/>: its bound).</summary>
         internal static float Ring(EscortRole role, int rank, float bossRadius, bool close, float repairReach)
         {
-            var t = close ? 0f : SimMath.Clamp01(rank / 2f);
+            var t = close ? 0f : SimMath.Clamp01(rank / global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossEscortCoordinator.RingRankDivisor);
             float extra;
-            if (role == EscortRole.Repair) extra = MathF.Min(Tun.EscortScreenMin, MathF.Max(Tun.EscortInnerGap + 1f, repairReach - 2f));
+            if (role == EscortRole.Repair) extra = MathF.Min(Tun.EscortScreenMin, MathF.Max(Tun.EscortInnerGap + 1f, repairReach - global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossEscortCoordinator.RingRepairReachSub));
             else if (Support(role)) extra = Tun.EscortSupportMin + (Tun.EscortSupportMax - Tun.EscortSupportMin) * t;
             else extra = Tun.EscortScreenMin + (Tun.EscortScreenMax - Tun.EscortScreenMin) * t;
             return bossRadius + MathF.Max(Tun.EscortInnerGap + 1f, extra);

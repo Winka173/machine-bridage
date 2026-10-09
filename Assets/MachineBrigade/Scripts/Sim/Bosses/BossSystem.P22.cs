@@ -58,7 +58,7 @@ namespace MachineBrigade.Sim.Bosses
                 v.DuelDark = true;
                 v.DuelDarkUntil = now + duel.VanishSeconds;
                 v.HoldFire = true;
-                v.FlaresUntil = Math.Max(v.FlaresUntil, now + 1.5);
+                v.FlaresUntil = Math.Max(v.FlaresUntil, now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepDuelsNowAdd);
                 _world.Emit(SimEvent.RadioMessage((v.Def.RadioSpawn ?? "radio.boss") + ".dark", v.Team));
             }
         }

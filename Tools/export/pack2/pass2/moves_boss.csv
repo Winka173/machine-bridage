@@ -26,7 +26,6 @@ Sim/Bosses/BossSystem.BigAttacks.cs,640,53,4,bosses.bossSystem.chargeStage,s,tho
 Sim/Bosses/BossSystem.BigAttacks.cs,663,47,0.5,bosses.bossSystem.finishNowAdd,s,thoi_gian,03,pass2:inline,,"add: if (_dodges[i].back > s.Now + 0.5) _dodges[i] = (_dodges[i].unit, _dodges[i].before, _dodges[i].from, _dodges[i].exit, Math.Min(_dodges[i].back, s.Now"
 Sim/Bosses/BossSystem.BigAttacks.cs,707,94,0.08,bosses.bossSystem.fireKScale,x,thoi_gian,03,pass2:inline,,"multiply: Round(v, s, st, _world.ClampToMap(at), now + (k / salvo) * gap + 0.08 * (k % salvo), scale, k);"
 Sim/Bosses/BossSystem.BigAttacks.cs,717,78,0.5f,bosses.bossSystem.fireKAdd,m,ban_kinh,03,pass2:inline,,add: var along = -st.Length * 0.5f + st.Length * (k + 0.5f) / n;
-Sim/Bosses/BossSystem.BigAttacks.cs,718,107,0.5f,bosses.bossSystem.fireNextDoubleSub,s,thoi_gian,03,pass2:inline,,subtract: var lateral = st.Width > 0f && st.Interval <= 0f ? ((float)rng.NextDouble() - 0.5f) * st.Width * 0.7f : 0f;
 Sim/Bosses/BossSystem.BigAttacks.cs,718,126,0.7f,bosses.bossSystem.fireNextDoubleScale,x,thoi_gian,03,pass2:inline,,multiply: var lateral = st.Width > 0f && st.Interval <= 0f ? ((float)rng.NextDouble() - 0.5f) * st.Width * 0.7f : 0f;
 Sim/Bosses/BossSystem.BigAttacks.cs,723,153,0.5f,bosses.bossSystem.fireDurationFloor,s,thoi_gian,03,pass2:inline,,"math_max: _world.Emit(SimEvent.AircraftPass(v.Team, pass, s.Aim - axis * st.Length * 0.5f, s.Aim + axis * st.Length * 0.5f, MathF.Max(0.5f, st.Duration)));"
 Sim/Bosses/BossSystem.BigAttacks.cs,743,48,0.35,bosses.bossSystem.fireKScale2,x,thoi_gian,03,pass2:inline,,multiply: var launch = now + 0.35 * k;
@@ -127,8 +126,6 @@ Sim/Bosses/BossSystem.Parts.cs,247,53,0.05f,bosses.bossSystem.patchShareMin,x,ng
 Sim/Bosses/BossSystem.Parts.cs,329,51,0.9f,bosses.bossSystem.recomputeMountFailCap,count,tran,03,pass2:inline,,"math_min: boss.MountFail[m] = MathF.Min(0.9f, boss.MountFail[m] + part.Fail);"
 Sim/Bosses/BossSystem.Tiers.cs,232,61,0.4f,bosses.bossSystem.changePartSpeedFloor,m/s,thoi_gian,03,pass2:inline,,"math_max: if (seconds < 0f) seconds = t.Shift / MathF.Max(0.4f, v.PartSpeed);"
 Sim/Bosses/BossSystem.Tiers.cs,257,71,0.1,bosses.bossSystem.heightShiftEndsFloor,m,thoi_gian,03,pass2:inline,,"math_max: var u = (float)Math.Clamp((now - v.ShiftStart) / Math.Max(0.1, v.ShiftEnds - v.ShiftStart), 0.0, 1.0);"
-Sim/Bosses/BossSystem.Tiers.cs,258,26,3f,bosses.bossSystem.heightUSub,m,ban_kinh,03,pass2:inline,,subtract: u = u * u * (3f - 2f * u);
-Sim/Bosses/BossSystem.Tiers.cs,258,31,2f,bosses.bossSystem.heightUScale,x,ban_kinh,03,pass2:inline,,multiply: u = u * u * (3f - 2f * u);
 Sim/Bosses/BossSystem.Tiers.cs,269,90,0.34f,bosses.bossSystem.podsDuePodShareFloor,share,thoi_gian,03,pass2:inline,,"math_max: v.PodNext = now + p.EveryIn(v.TierPhase) * (v.PodShare < 1f ? 1f / MathF.Max(0.34f, v.PodShare) : 1f);"
 Sim/Bosses/BossSystem.Tiers.cs,278,37,0.5f,bosses.bossSystem.podsDueDistanceMin,m,ban_kinh,03,pass2:inline,,"compare: centre = distance > 0.5f ? group + back / distance * MathF.Min(p.Offset, distance) : group;"
 Sim/Bosses/BossSystem.Tiers.cs,285,113,2,bosses.bossSystem.podsDuePodsSentScale,x,gioi_han_thuc_the,03,pass2:inline,,"multiply: for (var j = 0; j < seats; j++) units[j] = _world.Economy.ForWave(v.Team, p.Units[(v.PodsSent * 2 + j) % p.Units.Count]);"
@@ -267,7 +264,6 @@ Sim/Content/BossDefs.cs,20,34,10f,bosses.bossPartDef.ctorHpMax,x,sat_thuong,03,p
 Sim/Content/BossTemplates.cs,248,70,2f,bosses.bossTemplates.resizeFallback,m,ban_kinh,03,pass2:inline,,"arg:BossTemplates.Number: part[""radius""] = (double)(Number(part, ""radius"", 2f) * size);"
 Sim/Content/BossTemplates.cs,256,68,6f,bosses.bossTemplates.resizeFallback2,x,sat_thuong,03,pass2:inline,,"arg:BossTemplates.Number: blast[""radius""] = (double)(Number(blast, ""radius"", 6f) * MathF.Sqrt(size));"
 Sim/Content/BossTemplates.cs,342,62,0.004,bosses.bossTemplates.rankPhvFloor,x,sat_thuong,03,pass2:inline,,"math_max: part[""hp""] = Math.Round(Math.Max(0.004, phv * partsShare / sum), 4);"
-Sim/Content/BossTemplates.cs,342,94,4,bosses.bossTemplates.rankMaxDigits,count,sat_thuong,03,pass2:inline,,"math_round: part[""hp""] = Math.Round(Math.Max(0.004, phv * partsShare / sum), 4);"
 Sim/Content/EscortDefs.cs,162,139,5,bosses.escortRules.capForTryGetValueFalse,count,tran,03,pass2:inline,,"conditional: difficulty != null && Caps.TryGetValue(difficulty, out var cap) ? cap : Caps.TryGetValue(""Normal"", out var normal) ? normal : 5;"
 Sim/Content/EscortDefs.cs,247,96,5,bosses.catalog.parseEscortsFallback11,m,ban_kinh,03,pass2:inline,,"arg:JsonObject.Int: foreach (var key in caps.Keys) rules.Caps[key] = Math.Max(1, caps.Int(key, 5));"
 Sim/Content/TierDefs.cs,206,88,2f,bosses.podDef.everyInEveryByPhaseFloor,x,tan_suat,03,pass2:inline,,"math_max: public float EveryIn(int phase) => EveryByPhase.Count == 0 ? Every : MathF.Max(2f, EveryByPhase[Math.Clamp(phase, 0, EveryByPhase.Count - 1)]);"

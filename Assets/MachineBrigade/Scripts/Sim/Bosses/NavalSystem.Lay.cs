@@ -17,7 +17,7 @@ namespace MachineBrigade.Sim.Bosses
     internal sealed partial class NavalSystem
     {
         /// <summary>Slowest traverse of a laid turret (radians a second; the view drew them at least this fast).</summary>
-        private static readonly float LayRateMin = SimMath.DegToRad(20f);
+        private static readonly float LayRateMin = SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.LayRateMinDegrees);
 
         /// <summary>How far off its aim a turret may still be when the salvo goes (radians).</summary>
         private static readonly float LayTolerance = SimMath.DegToRad(2f);

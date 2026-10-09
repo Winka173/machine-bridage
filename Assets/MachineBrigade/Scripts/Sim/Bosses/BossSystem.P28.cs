@@ -58,7 +58,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (distance < 1f || distance > reach) continue;
                 sum += d / distance * TeamIntel.StrengthOf(e);
             }
-            return sum.LengthSquared() > 0.01f ? SimMath.HeadingOf(sum) : null;
+            return sum.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FirepowerLengthSquaredMin ? SimMath.HeadingOf(sum) : null;
         }
 
         /// <summary>F.5: the bearing escorts screen: the enemy mass round the boss (once a second), else the boss's heading.</summary>
@@ -79,9 +79,9 @@ namespace MachineBrigade.Sim.Bosses
             if (g.Waves > seen)
             {
                 _escortWaves[g.Boss.Id] = g.Waves;
-                _escortsClose[g.Boss.Id] = now + 8.0;
+                _escortsClose[g.Boss.Id] = now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.EscortSpreadNowAdd;
             }
-            return _escortsClose.TryGetValue(g.Boss.Id, out var until) && now < until ? 0.5f : 1f;
+            return _escortsClose.TryGetValue(g.Boss.Id, out var until) && now < until ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.EscortSpreadTryGetValueTrue : 1f;
         }
 
         /// <summary>F.3: a big attack's aim by the boss's type, used where its own aim is the generic densest group.</summary>
@@ -100,10 +100,10 @@ namespace MachineBrigade.Sim.Bosses
                 foreach (var k in kinds)
                     score *= k switch
                     {
-                        BossBehaviour.AntiArtillery => e.Def.Weapon.MinRange > 0f ? 3f : 1f,
+                        BossBehaviour.AntiArtillery => e.Def.Weapon.MinRange > 0f ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BehaviourAimMinRangeTrue : 1f,
                         BossBehaviour.AreaDenial => e.IsMoving ? 1f : 1.6f,
                         BossBehaviour.AntiBlob => 1f + Crowd(e, 10f) * 0.4f,
-                        BossBehaviour.CoreProtection => Vector2.Distance(e.Position, v.Position) < 30f ? 2f : 1f,
+                        BossBehaviour.CoreProtection => Vector2.Distance(e.Position, v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BehaviourAimDistanceMax ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BehaviourAimDistanceTrue : 1f,
                         BossBehaviour.FlankPunishment => Behind(v, e) ? 2.2f : 1f,
                         _ => 1f,
                     };
@@ -130,7 +130,7 @@ namespace MachineBrigade.Sim.Bosses
         internal static bool Behind(Vehicle boss, Vehicle e)
         {
             var to = e.Position - boss.Position;
-            if (to.LengthSquared() < 0.01f) return false;
+            if (to.LengthSquared() < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BehindLengthSquaredMax) return false;
             return Vector2.Dot(Vector2.Normalize(to), SimMath.Forward(boss.Heading)) < 0.5f;
         }
     }

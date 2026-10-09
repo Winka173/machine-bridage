@@ -222,15 +222,15 @@ namespace MachineBrigade.Sim.Modes
 
         public static readonly IReadOnlyList<HuntSupportDef> All = new[]
         {
-            new HuntSupportDef("hull", "shield", HuntSupportKind.Hull, 0.15f, 0.15f),          // the army's health +15 %
-            new HuntSupportDef("gunnery", "crosshair", HuntSupportKind.Gunnery, 0.10f, 0.10f), // its damage +10 %
-            new HuntSupportDef("loaders", "ammo", HuntSupportKind.Loaders, 0.12f, 0.12f),      // its fire rate +12 %
-            new HuntSupportDef("engines", "move", HuntSupportKind.Engines, 0.12f, 0.06f),      // its speed +12 %
-            new HuntSupportDef("regen", "repair", HuntSupportKind.Regen, 0.01f, 0.08f),        // 1 % of health a second out of fire
-            new HuntSupportDef("rapid", "airstrike", HuntSupportKind.Rapid, 0.25f),     // fire support cooldowns -25 %
+            new HuntSupportDef("hull", "shield", HuntSupportKind.Hull, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.HullValue, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.HullStrength),          // the army's health +15 %
+            new HuntSupportDef("gunnery", "crosshair", HuntSupportKind.Gunnery, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.GunneryValue, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.GunneryStrength), // its damage +10 %
+            new HuntSupportDef("loaders", "ammo", HuntSupportKind.Loaders, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.LoadersValue, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.LoadersStrength),      // its fire rate +12 %
+            new HuntSupportDef("engines", "move", HuntSupportKind.Engines, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.EnginesValue, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.EnginesStrength),      // its speed +12 %
+            new HuntSupportDef("regen", "repair", HuntSupportKind.Regen, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.RegenValue, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.RegenStrength),        // 1 % of health a second out of fire
+            new HuntSupportDef("rapid", "airstrike", HuntSupportKind.Rapid, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.RapidValue),     // fire support cooldowns -25 %
             new HuntSupportDef("logistics", "cp", HuntSupportKind.Logistics, 0.20f, 0.10f),    // CP income +20 %
-            new HuntSupportDef("warchest", "coin", HuntSupportKind.WarChest, 35f, 0.05f),      // 35 CP now
-            new HuntSupportDef("supply", "people", HuntSupportKind.Supply, 6f, 0.08f),         // army cap +6
+            new HuntSupportDef("warchest", "coin", HuntSupportKind.WarChest, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.WarchestValue, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.WarchestStrength),      // 35 CP now
+            new HuntSupportDef("supply", "people", HuntSupportKind.Supply, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.SupplyValue, global::MachineBrigade.Sim.Content.SimTunables.Bosses.HuntSupports.SupplyStrength),         // army cap +6
             new HuntSupportDef("workshop", "gear", HuntSupportKind.Workshop, 1f, 0.05f),       // rests repair twice as much
             new HuntSupportDef("bounty", "trophy", HuntSupportKind.Bounty, 0.5f, 0.05f),       // boss bounties +50 %
             new HuntSupportDef("airdrop", "reinforce", HuntSupportKind.Airdrop, 3f),    // three of the deck's vehicles, free
