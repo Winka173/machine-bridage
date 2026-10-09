@@ -1257,7 +1257,27 @@
     { "id": "naval_mlrs_salvo", "inherits": "mlrs_rockets", "real": "M31 GMLRS 227 mm, four-pod naval battery (rocket_artillery_ship)", "burst": 8, "burstInterval": 0.25, "cooldown": 15.9, "spread": 3.0, "ammo": 0, "reload": 0 },
     { "id": "naval_203_monitor", "inherits": "gun_203_siege", "real": "M110 203 mm (naval_monitor)", "damage": 360, "cooldown": 7, "splash": 5.5, "ammo": 0, "reload": 0 },
     { "id": "naval_203_bc", "inherits": "cruiser_203", "real": "Mk 71 203 mm (twin, battlecruiser)", "damage": 420, "cooldown": 7.5 },
-    { "id": "naval_406_bs", "inherits": "cruiser_203", "real": "Mk 7 406 mm/50 (battleship, triple turret x3)", "caliberMm": 406, "barrels": 3, "salvoMode": "SIMULTANEOUS", "pen": 5, "damage": 200, "roundWeight": 600, "cooldown": 18, "splash": 8 }
+    { "id": "naval_406_bs", "inherits": "cruiser_203", "real": "Mk 7 406 mm/50 (battleship, triple turret x3)", "caliberMm": 406, "barrels": 3, "salvoMode": "SIMULTANEOUS", "pen": 5, "damage": 200, "roundWeight": 600, "cooldown": 18, "splash": 8 },
+    // bd weapons:begin (generated: boss-specific weapon ids of the 09/10 workbook, each a copy of an existing weapon)
+    { "id": "bd_ciws", "inherits": "hover_ciws", "real": "Boss design 09/10: CIWS 20-30 mm, twin: air defence, quick and light" },
+    { "id": "bd_flak_20", "inherits": "zu23", "real": "Boss design 09/10: 20 mm light anti-air mount" },
+    { "id": "bd_aa_25", "inherits": "aa_25_triple", "real": "Boss design 09/10: 25 mm light anti-air mount" },
+    { "id": "bd_auto_30", "inherits": "autocannon_30", "real": "Boss design 09/10: 30 mm autocannon (twin): secondary gun" },
+    { "id": "bd_auto_35", "inherits": "twin_35_ahead", "real": "Boss design 09/10: 35 mm twin cannon: secondary gun and air defence" },
+    { "id": "bd_auto_40", "inherits": "autocannon_40", "real": "Boss design 09/10: 40 mm twin cannon: secondary gun" },
+    { "id": "bd_auto_57", "inherits": "gun_57_auto", "real": "Boss design 09/10: 57 mm automatic gun: secondary gun" },
+    { "id": "bd_gun_76", "inherits": "naval_76", "real": "Boss design 09/10: 76 mm gun (twin): secondary gun" },
+    { "id": "bd_gun_105", "inherits": "gun_105_twin", "real": "Boss design 09/10: 105 mm twin gun: main gun of a gunboat" },
+    { "id": "bd_pod_70", "inherits": "scout_rockets", "real": "Boss design 09/10: 70 mm rocket pod" },
+    { "id": "bd_pod_122", "inherits": "boss_rockets", "real": "Boss design 09/10: 122 mm rocket pod" },
+    { "id": "bd_sam", "inherits": "sam_post", "real": "Boss design 09/10: surface-to-air missile launcher" },
+    { "id": "bd_pd_laser", "inherits": "orbital_laser", "real": "Boss design 09/10: point-defence laser" },
+    { "id": "bd_hmg", "inherits": "boss_hmg", "real": "Boss design 09/10: 12.7 mm heavy machine gun (twin)" },
+    { "id": "bd_coil", "inherits": "coilgun", "real": "Boss design 09/10: light coilgun (twin)" },
+    { "id": "bd_atgm", "inherits": "kornet_twin", "real": "Boss design 09/10: anti-tank missile launcher (twin)" },
+    { "id": "bd_flamer", "inherits": "boss_flamer", "real": "Boss design 09/10: small flamethrower" },
+    { "id": "bd_mortar_120", "inherits": "mortar_120", "real": "Boss design 09/10: 120 mm mortar (twin)" }
+    // bd weapons:end
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -1278,7 +1298,7 @@
     "aircraft":   { "move": "aircraft",   "defaults": { "firesWhileMoving": true, "captureRate": 0, "cp": 0, "flying": true } },
     "spacecraft": { "move": "spacecraft", "defaults": { "firesWhileMoving": true, "captureRate": 0, "cp": 0, "flying": true, "altitude": 22,
                                                         "tiers": { "descend": 4, "shift": 3.5, "heights": { "orbit": 150, "high": 60, "low": 22 },
-                                                                   "marks": [0.6, 0.25] } } }
+                                                                   "marks": [0.5] } } }
   },
   // bossParts: the shared part and weapon library. A boss's part { "use": "<id>", "id": ..., "at": ... } takes the
   // library part's fields under its own; with a "weapon" and no "mounts" it adds its own weapon mount ("slot",
@@ -1302,8 +1322,32 @@
     "tracks":        { "kind": "tracks",     "hp": 0.07, "armour": 2, "wreck": "wreck_engine",  "radius": 2.6, "speed": 0.85 },
     "workshop_door": { "kind": "door",       "hp": 0.07, "armour": 2, "wreck": "wreck_stump",   "radius": 2.6, "stops": ["factory"], "radio": "radio.part.door" },
     "pod_bay":       { "kind": "podbay",     "hp": 0.08, "armour": 2, "wreck": "wreck_stump",   "radius": 2.6, "stops": ["pods"], "radio": "radio.part.podbay" },
-    "pd_laser":      { "kind": "pdlaser",    "hp": 0.08, "armour": 2, "wreck": "wreck_turret",  "radius": 1.6, "stops": ["aps"], "fx": "energy" }
+    "pd_laser":      { "kind": "pdlaser",    "hp": 0.08, "armour": 2, "wreck": "wreck_turret",  "radius": 1.6, "stops": ["aps"], "fx": "energy" },
+    // bd parts:begin (generated: library parts of the 09/10 workbook's new hardpoints; "count" gives one part several mounts)
+    "bd_ciws": {"kind": "ciws", "hp": 0.03, "armour": 1, "wreck": "wreck_turret", "radius": 1.6, "weapon": "bd_ciws", "slot": "mg", "aim": "Free", "group": "ciws", "new": true, "breakDamage": 0},
+    "bd_flak_20": {"kind": "flak", "hp": 0.03, "armour": 1, "wreck": "wreck_turret", "radius": 1.5, "weapon": "bd_flak_20", "slot": "mg", "aim": "Free", "group": "ciws", "new": true, "breakDamage": 0},
+    "bd_aa_25": {"kind": "flak", "hp": 0.03, "armour": 1, "wreck": "wreck_turret", "radius": 1.6, "weapon": "bd_aa_25", "slot": "mg", "aim": "Free", "group": "ciws", "new": true, "breakDamage": 0},
+    "bd_auto_30": {"kind": "gun", "hp": 0.04, "armour": 2, "wreck": "wreck_turret", "radius": 1.7, "weapon": "bd_auto_30", "slot": "gun", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "bd_auto_35": {"kind": "flak", "hp": 0.04, "armour": 2, "wreck": "wreck_turret", "radius": 1.8, "weapon": "bd_auto_35", "slot": "gun", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "bd_auto_40": {"kind": "turret", "hp": 0.04, "armour": 3, "wreck": "wreck_turret", "radius": 1.9, "weapon": "bd_auto_40", "slot": "gun", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "bd_auto_57": {"kind": "gun", "hp": 0.04, "armour": 2, "wreck": "wreck_turret", "radius": 2.0, "weapon": "bd_auto_57", "slot": "gun", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "bd_gun_76": {"kind": "gun", "hp": 0.05, "armour": 3, "wreck": "wreck_turret", "radius": 2.2, "weapon": "bd_gun_76", "slot": "gun", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "bd_gun_105": {"kind": "gun", "hp": 0.05, "armour": 3, "wreck": "wreck_turret", "radius": 2.4, "weapon": "bd_gun_105", "slot": "gun", "aim": "Free", "group": "main", "new": true, "breakDamage": 0},
+    "bd_pod_70": {"kind": "rockets", "hp": 0.04, "armour": 2, "wreck": "wreck_launcher", "radius": 1.8, "weapon": "bd_pod_70", "slot": "rocket", "aim": "Free", "group": "suppress", "new": true, "breakDamage": 0},
+    "bd_pod_122": {"kind": "rockets", "hp": 0.04, "armour": 2, "wreck": "wreck_launcher", "radius": 2.0, "weapon": "bd_pod_122", "slot": "rocket", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "bd_sam": {"kind": "sam", "hp": 0.04, "armour": 2, "wreck": "wreck_launcher", "radius": 2.0, "weapon": "bd_sam", "slot": "missile", "aim": "Free", "group": "ciws", "new": true, "breakDamage": 0},
+    "bd_pd_laser": {"kind": "laser", "hp": 0.04, "armour": 2, "wreck": "wreck_turret", "radius": 1.6, "weapon": "bd_pd_laser", "slot": "gun", "aim": "Free", "group": "ciws", "new": true, "breakDamage": 0, "fx": "energy"},
+    "bd_hmg": {"kind": "gun", "hp": 0.03, "armour": 2, "wreck": "wreck_turret", "radius": 1.6, "weapon": "bd_hmg", "slot": "mg", "aim": "Free", "group": "suppress", "new": true, "breakDamage": 0},
+    "bd_coil": {"kind": "coilgun", "hp": 0.05, "armour": 3, "wreck": "wreck_turret", "radius": 2.0, "weapon": "bd_coil", "slot": "gun", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0, "fx": "energy"},
+    "bd_atgm": {"kind": "missiles", "hp": 0.04, "armour": 2, "wreck": "wreck_launcher", "radius": 1.8, "weapon": "bd_atgm", "slot": "missile", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "bd_flamer": {"kind": "flamer", "hp": 0.04, "armour": 2, "wreck": "wreck_turret", "radius": 1.6, "weapon": "bd_flamer", "slot": "gun", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "bd_mortar_120": {"kind": "mortar", "hp": 0.05, "armour": 2, "wreck": "wreck_launcher", "radius": 2.0, "weapon": "bd_mortar_120", "slot": "gun", "aim": "Free", "group": "secondary", "new": true, "breakDamage": 0},
+    "deploy_door": {"kind": "door", "hp": 0.05, "armour": 2, "wreck": "wreck_stump", "radius": 2.6, "radio": "radio.part.door", "breakDamage": 0},
+    "deploy_bay": {"kind": "bay", "hp": 0.05, "armour": 2, "wreck": "wreck_stump", "radius": 2.4, "radio": "radio.part.bay", "breakDamage": 0}
+    // bd parts:end
   },
+  // Boss design 09/10 (sheet 13): every boss has ONE phase, at 50 % of its health, once per fight (the old 60 / 25 % marks, the mini's 45 % and the
+  // damage / tempo / speed buffs that came with them are gone; a boss's own "phases" row and the spacecraft tiers' "marks" follow the same rule).
   // bossRanks: main and mini. A mini's "hp" is a share of its data health (its parts' with it, prompt 20 G.1),
   // "damageScale" its weapons', "bigAttackScale" its big attack's (damage, cooldown; the warning kept); every
   // boss with no "phases" (and no tiers) gets its rank's; "escortCap" cuts its escort waves; "intro" the
@@ -1315,13 +1359,13 @@
               // of its health to them in 10 s (a fifth of the rest gets through); the big attack +20 % (0.857 of the 1.4) and 15 % sooner.
               "damageScale": 1.4, "fireRate": 1.25, "airDamage": 1.6, "strikeTaken": 0.5, "strikeCap": 0.1, "strikeWindow": 10, "strikeOver": 0.2,
               "bigAttackScale": { "damage": 0.857, "cooldown": 0.85, "warn": 0 },
-              "phases": [ { "at": 0.6, "transform": 2.5, "damage": 1.1 }, { "at": 0.25, "transform": 3, "damage": 1.2, "speed": 1.1, "fireRate": 1.25 } ] },
+              "phases": [ { "at": 0.5, "transform": 2.5 } ] },
     "mini": { "hp": 0.55, "partsShare": 0.35, "damageScale": 1.2, "bigAttackScale": { "damage": 0.56, "cooldown": 1.1, "warn": 0 },
               // Play-test 6: damage 0.8 -> 1.2 (+50 %; its big attack 0.7 -> 0.56 of it, +20 %), the main rank's reloads and air
               // defence, 15 % of its health to strikes in 10 s, escorts 3 -> 4 a wave.
               "fireRate": 1.25, "airDamage": 1.6, "strikeTaken": 0.5, "strikeCap": 0.15, "strikeWindow": 10, "strikeOver": 0.2,
               "intro": 2.5, "music": "boss_mini", "reward": 0.45, "escortCap": 4, "compact": true,
-              "phases": [ { "at": 0.45, "transform": 2, "damage": 1.15 } ] }
+              "phases": [ { "at": 0.5, "transform": 2 } ] }
   },
 
   // Balance pack 2 addendum item 1b (lane C, 04/10): barrel limits of boss weapons, in data (rule B, same values). The Sim lays
@@ -1369,7 +1413,8 @@
     "behemoth_mk2": { "p26_behemoth_main_be152": { "groundMinReach": 32, "maxRange": 103 } },
     "behemoth_tempest": { "boss_railgun": { "groundMinReach": 33, "maxRange": 106 }, "coilgun": { "groundMinReach": 17 } },
     "coeus": { "pt14_co_203": { "groundMinReach": 28 }, "pt14_co_spike": { "groundMinReach": 30 } },
-    "command_airship": { "p26_roc_direct_roc_atgm": { "groundMinReach": 30 }, "p26_roc_roc105": { "groundMinReach": 22, "maxRange": 71 } },
+    "command_airship": { "p26_roc_direct_roc_atgm": { "groundMinReach": 30 }, "p26_roc_main_roc_bombs": { "damageMult": 0.498, "radiusMult": 0.8 }, "p26_roc_roc105": { "groundMinReach": 22, "maxRange": 71 } },
+    "argus": { "p26_roc_main_roc_bombs": { "damageMult": 0.481, "radiusMult": 0.8 } },
     "daedalus": { "p26_daedalus_direct_dae_laser": { "groundMinReach": 13, "maxRange": 42 } },
     "drone_mothership": { "p26_matriarch_direct_ma_atgm": { "groundMinReach": 30 }, "p26_matriarch_ma_drones": { "groundMinReach": 15 }, "p26_matriarch_tiny_mothership_cannon": { "groundMinReach": 13 } },
     "earth_borer": { "borer_cannon": { "groundMinReach": 16, "maxRange": 52 } },
@@ -1379,7 +1424,7 @@
     "hyperion": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 14, "maxRange": 45 }, "pt14_hp_155": { "groundMinReach": 27 }, "pt14_hp_nsm": { "groundMinReach": 30 } },
     "icarus_mk0": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 11 } },
     "ixion": { "p26_ixion_125": { "groundMinReach": 30, "maxRange": 96 }, "pt14_ixion_grad": { "maxRange": 58 }, "pt14_ixion_kornet": { "groundMinReach": 30 } },
-    "kraken": { "p26_leviathan_direct_lev127": { "groundMinReach": 29, "maxRange": 93 }, "p26_leviathan_lev406": { "groundMinReach": 120, "maxRange": 300 }, "p26_leviathan_sec_lev155": { "groundMinReach": 88, "maxRange": 282 } },
+    // kraken: no row of its own: the carrier has no 406 / 155 mm guns (boss design 09/10), it fires what it was given.
     "leviathan": { "p26_leviathan_direct_lev127": { "groundMinReach": 42, "maxRange": 135 }, "p26_leviathan_lev406": { "groundMinReach": 103, "maxRange": 300 }, "p26_leviathan_sec_lev155": { "groundMinReach": 90, "maxRange": 288 } },
     "locust": { "locust_drones": { "groundMinReach": 15 } },
     "mega_gunship": { "gunship_rockets": { "groundMinReach": 10 } },
@@ -1392,6 +1437,67 @@
     "silver_bug": { "p26_icarus_direct_ic_laser": { "groundMinReach": 21, "maxRange": 68 }, "p26_icarus_main_ic_coil": { "groundMinReach": 19, "maxRange": 61 }, "p26_icarus_sec_orbital_laser": { "groundMinReach": 12, "maxRange": 39 } },
     "theia": { "p26_icarus_sec_orbital_laser": { "groundMinReach": 19, "maxRange": 61 }, "pt14_th_jagm": { "groundMinReach": 30 } },
     "typhon": { "p26_typhon_direct_ty100": { "groundMinReach": 21 }, "p26_typhon_sec_ty57": { "groundMinReach": 21, "maxRange": 68 } }
+  },
+
+  // Boss design 09/10, sheet 08 (summons): every periodic summon has "cooldown" (s between calls), "count" (units a call), "max" (units
+  // of it alive: a full flight skips the call, nothing queues), "delay" (s before the first call), "warn" (s a ground arrival is ringed first)
+  // and "safe" (m of clear ground round the arrival, else it waits and finally skips). A part that carries the skill (a hangar, a deck, a
+  // gate, a door) is where the units arrive; break it and the calls stop, the units already out fight on. Spacecraft call by "pods".
+  // Boss design workbook 09/10, sheet 12 (fire groups): how a boss with many guns shares the fight (BossWeaponDirector.GroupAllows). A mount
+  // belongs to the group its data names ("group") or its weapon sorts it into: main (heavy guns, 1-2 on a target in a window), secondary
+  // (2-4, out of step), ciws (air defence, independent), suppress (many light guns). gap [lo, hi]: two mounts of a group never open fire
+  // that close; maxAtTarget/window: how many are on one target at once. heavyAoe: a bomb stick or a big blast never opens within gap s of
+  // another of the boss's, nor while its big attack is under way; maxGroupsAtTarget: at most that many different groups (air defence aside)
+  // fire on one target at once. Bosses under minMounts mounts fire as before.
+  "bossFireGroups": {
+    "minMounts": 6,
+    "maxGroupsAtTarget": 2,
+    "heavyAoe": { "radius": 6, "gap": 5 },
+    "main":      { "maxAtTarget": 2, "window": 4, "gap": [1.0, 2.0] },
+    "secondary": { "maxAtTarget": 4, "window": 3, "gap": [0.4, 1.8] },
+    "ciws":      { },
+    "suppress":  { "maxAtTarget": 5, "window": 2, "gap": [0.3, 1.5] }
+  },
+  // Boss design workbook 09/10 (Docs/bosses/design_0910, DECISIONS "Boss design workbook (09/10)"): one row per boss or variant,
+  // laid over its entry before the templates are built (Sim/Content/BossTemplates.Design.cs). hp: the sheet 10 target (toughness.bosses,
+  // difficulty and the mini rank share are applied on top, once); gunNerf: the old guns' damage and tempo (sheet 03); newGunDps: the DPS
+  // budget of its new hardpoints (weapon level, split over the mounts flagged "new"); set/add/drop/tune/unpart: see the C# summary.
+  "bossDesign": {
+    // bossDesign:begin (generated by the 09/10 workbook import; edit the numbers here, one row per boss or variant id)
+    "argus": {"hp": 74695, "gunNerf": {"damage": 0.874, "rate": 0.7}, "newGunDps": 87.94, "add": [{"use": "bd_auto_30", "id": "bd_auto_30_1", "at": [8.6, -5.2, 6.4], "count": 2, "arc": [90, 100]}, {"use": "bd_ciws", "id": "bd_ciws_2", "at": [-8.6, -1.4, 6.4], "count": 2}, {"use": "bd_pod_70", "id": "bd_pod_70_3", "at": [8.6, 2.4, 6.4]}, {"use": "bd_flak_20", "id": "bd_flak_20_4", "at": [-8.6, 6.2, 6.4]}, {"use": "deploy_bay", "id": "drone_bay_small", "at": [0, 0.5, -1.0], "skills": ["argus_launch"]}], "keep": ["engine_fl", "engine_fr"], "set": {"skills": ["argus_launch"], "phases": [{"at": 0.5, "transform": 2, "bigCooldown": 1.4, "summons": true}]}},
+    "armored_train": {"hp": 29729, "gunNerf": {"damage": 1.0, "rate": 0.95}},
+    "bastion_mk0": {"hp": 15160, "gunNerf": {"damage": 0.86, "rate": 0.82}, "newGunDps": 35.93, "add": [{"use": "bd_hmg", "id": "bd_hmg_1", "at": [2.5, -1.7, 7.0], "count": 2}, {"use": "bd_auto_30", "id": "bd_auto_30_2", "at": [-2.5, 2.2, 7.0], "arc": [-90, 100]}, {"use": "bd_flak_20", "id": "bd_flak_20_3", "at": [2.5, 6.1, 7.0], "count": 2}, {"use": "deploy_door", "id": "deploy_door", "at": [0, -4.9, 1.0], "skills": ["bastion_mk0_deploy"]}], "set": {"skills": ["train_patch", "bastion_mk0_deploy"], "phases": [{"at": 0.5, "transform": 2, "summons": true}]}},
+    "behemoth": {"hp": 23190, "gunNerf": {"damage": 0.872, "rate": 0.76}, "newGunDps": 128.62, "set": {"bigAttackScale": {"damage": 0.531, "cooldown": 1.0625, "warn": 0}, "skills": ["behemoth_deploy"], "phases": [{"at": 0.5, "transform": 2.5, "summons": true}]}, "add": [{"use": "bd_auto_30", "id": "bd_auto_30_1", "at": [2.0, -1.8, 5.2], "count": 2, "arc": [90, 100]}, {"use": "bd_pod_122", "id": "bd_pod_122_2", "at": [-2.0, 1.5, 5.2], "arc": [-90, 100]}, {"use": "deploy_door", "id": "deploy_door", "at": [0, -4.2, 1.0], "skills": ["behemoth_deploy"]}]},
+    "behemoth_inferno": {"hp": 19373, "gunNerf": {"damage": 0.891, "rate": 0.82}, "newGunDps": 55.99, "add": [{"use": "bd_flamer", "id": "bd_flamer_1", "at": [1.8, -2.4, 4.8], "count": 2, "arc": [90, 100]}, {"use": "bd_aa_25", "id": "bd_aa_25_2", "at": [-1.8, 1.2, 4.8]}], "set": {"skills": []}},
+    "behemoth_mk0": {"hp": 26696, "gunNerf": {"damage": 0.891, "rate": 0.82}, "newGunDps": 56.08, "add": [{"use": "bd_auto_30", "id": "bd_auto_30_1", "at": [2.0, -0.1, 5.2], "count": 3, "arc": [90, 100]}], "set": {"skills": []}},
+    "behemoth_mk2": {"hp": 42131, "gunNerf": {"damage": 0.86, "rate": 0.82}, "newGunDps": 123.54, "add": [{"use": "bd_atgm", "id": "bd_atgm_1", "at": [2.0, -1.8, 5.2], "count": 2, "arc": [90, 100]}, {"use": "bd_auto_30", "id": "bd_auto_30_2", "at": [-2.0, 1.5, 5.2], "count": 3, "arc": [-90, 100]}], "set": {"skills": []}},
+    "behemoth_tempest": {"hp": 29729, "gunNerf": {"damage": 0.891, "rate": 0.82}, "newGunDps": 51.78, "add": [{"use": "bd_pd_laser", "id": "bd_pd_laser_1", "at": [1.8, -0.9, 5.7], "count": 2}, {"use": "bd_auto_35", "id": "bd_auto_35_2", "at": [-1.8, 3.1, 5.7], "arc": [-90, 100]}], "set": {"skills": ["boss_emp"], "phases": [{"at": 0.5, "transform": 2, "skills": ["mothership_shield"]}]}, "tune": {"shield": {"skills": []}}},
+    "coeus": {"hp": 74695, "gunNerf": {"damage": 0.86, "rate": 0.82}, "newGunDps": 51.49, "add": [{"use": "bd_ciws", "id": "bd_ciws_1", "at": [4.8, -10.2, 4.4], "count": 2}, {"use": "bd_auto_40", "id": "bd_auto_40_2", "at": [-4.8, -2.2, 4.4], "count": 2, "arc": [-90, 100]}, {"use": "bd_pod_122", "id": "bd_pod_122_3", "at": [4.8, 5.7, 4.4], "arc": [90, 100]}, {"use": "deploy_bay", "id": "uav_pad", "at": [0, -2.2, -1.0], "skills": ["coeus_launch"]}], "set": {"skills": ["coeus_launch"], "tiers": {"marks": [0.5]}}},
+    "command_airship": {"hp": 155642, "gunNerf": {"damage": 0.843, "rate": 0.7}, "newGunDps": 158.88, "set": {"bigAttackScale": {"damage": 0.36, "cooldown": 1.2143, "warn": 0}, "phases": [{"at": 0.5, "transform": 2.5, "radio": "radio.quaden.airship.phase2", "bigCooldown": 1.4, "summons": true}]}, "add": [{"use": "bd_auto_35", "id": "bd_auto_35_1", "at": [8.6, -4.6, 6.4], "count": 2, "arc": [90, 100]}, {"use": "bd_ciws", "id": "bd_ciws_2", "at": [-8.6, 0.5, 6.4], "count": 2}, {"use": "bd_pod_122", "id": "bd_pod_122_3", "at": [8.6, 5.6, 6.4], "count": 2, "arc": [90, 100]}], "unpart": ["radar"]},
+    "daedalus": {"hp": 181878, "gunNerf": {"damage": 0.872, "rate": 0.76}, "newGunDps": 108.22, "set": {"bigAttackScale": {"damage": 0.531, "cooldown": 1.0625, "warn": 0}, "skills": [], "pods": {"first": 25, "every": 100, "count": 1, "perPod": 1, "max": 2, "everyByPhase": [100, 100, 100]}, "tiers": {"marks": [0.5], "haltPhase": 1}}, "add": [{"use": "bd_auto_35", "id": "bd_auto_35_1", "at": [2.4, -12.8, 3.2], "count": 2, "arc": [90, 100]}, {"use": "bd_pd_laser", "id": "bd_pd_laser_2", "at": [-2.4, -7.8, 3.2], "count": 2}, {"use": "bd_pod_122", "id": "bd_pod_122_3", "at": [2.4, -2.7, 3.2], "count": 2, "arc": [90, 100]}, {"use": "bd_ciws", "id": "bd_ciws_4", "at": [-2.4, 2.3, 3.2]}]},
+    "drone_mothership": {"hp": 58834, "gunNerf": {"damage": 0.842, "rate": 0.76}, "newGunDps": 166.77, "set": {"bigAttackScale": {"damage": 0.531, "cooldown": 1.0625, "warn": 0}, "skills": ["mothership_launch", "boss_flares"], "phases": [{"at": 0.5, "transform": 2.5, "bigCooldown": 1.2, "summons": true, "skills": ["mothership_shield"]}]}, "add": [{"use": "bd_auto_35", "id": "bd_auto_35_1", "at": [1.8, -4.6, 5.2], "count": 2, "arc": [90, 100]}, {"use": "bd_ciws", "id": "bd_ciws_2", "at": [-1.8, 1.2, 5.2], "count": 2}, {"use": "bd_pod_122", "id": "bd_pod_122_3", "at": [1.8, 6.9, 5.2], "count": 2, "arc": [90, 100]}], "tune": {"shield": {"skills": []}}},
+    "earth_borer": {"hp": 56700, "gunNerf": {"damage": 1.0, "rate": 0.95}, "set": {"skills": [], "phases": [{"at": 0.5, "transform": 2.5, "radio": "radio.hung.borer.half"}]}},
+    "fenrir": {"hp": 23586, "gunNerf": {"damage": 0.891, "rate": 0.82}, "newGunDps": 80.01, "add": [{"use": "bd_auto_57", "id": "bd_auto_57_1", "at": [1.9, -3.0, 7.2], "count": 2, "arc": [90, 100]}, {"use": "bd_ciws", "id": "bd_ciws_2", "at": [-1.9, 1.5, 7.2]}, {"use": "bd_pod_122", "id": "bd_pod_122_3", "at": [1.9, 6.0, 7.2], "arc": [90, 100]}, {"use": "deploy_door", "id": "deploy_door", "at": [0, -6.8, 1.0], "skills": ["fenrir_deploy"]}], "set": {"skills": ["fenrir_deploy"], "phases": [{"at": 0.5, "transform": 2, "summons": true}]}},
+    "fortress_bastion": {"hp": 16783, "gunNerf": {"damage": 0.842, "rate": 0.76}, "newGunDps": 104.08, "set": {"bigAttackScale": {"damage": 0.531, "cooldown": 1.0625, "warn": 0}, "skills": ["train_patch", "bastion_deploy"], "phases": [{"at": 0.5, "transform": 2.5, "summons": true}]}, "add": [{"use": "bd_auto_35", "id": "bd_auto_35_1", "at": [2.5, -0.7, 7.0], "count": 2, "arc": [90, 100]}, {"use": "bd_ciws", "id": "bd_ciws_2", "at": [-2.5, 5.1, 7.0], "count": 2}, {"use": "deploy_door", "id": "deploy_door", "at": [0, -4.9, 1.0], "skills": ["bastion_deploy"]}], "tune": {"mortar": {"skills": []}}},
+    "hydra": {"hp": 64024, "gunNerf": {"damage": 0.891, "rate": 0.82}, "newGunDps": 79.65, "add": [{"use": "bd_auto_30", "id": "bd_auto_30_1", "at": [1.8, -16.0, 9.2], "arc": [90, 100]}, {"use": "bd_atgm", "id": "bd_atgm_2", "at": [-1.8, -0.1, 9.2], "arc": [-90, 100]}, {"use": "bd_ciws", "id": "bd_ciws_3", "at": [1.8, 15.8, 9.2]}]},
+    "hyperion": {"hp": 213434, "gunNerf": {"damage": 0.842, "rate": 0.76}, "newGunDps": 202.9, "set": {"bigAttackScale": {"damage": 0.531, "cooldown": 1.0625, "warn": 0}, "skills": [], "pods": {"first": 18, "every": 90, "count": 1, "max": 2}, "tiers": {"marks": [0.5]}}, "add": [{"use": "bd_gun_76", "id": "bd_gun_76_1", "at": [4.8, -10.2, 4.4], "count": 2, "arc": [90, 100]}, {"use": "bd_ciws", "id": "bd_ciws_2", "at": [-4.8, -2.2, 4.4], "count": 2}, {"use": "bd_pd_laser", "id": "bd_pd_laser_3", "at": [4.8, 5.7, 4.4], "count": 2}], "drop": ["bd_coil_1", "bd_pd_laser_2", "bd_auto_35_3"]},
+    "icarus_mk0": {"hp": 74695, "gunNerf": {"damage": 0.86, "rate": 0.82}, "newGunDps": 144.91, "add": [{"use": "bd_auto_40", "id": "bd_auto_40_1", "at": [4.8, -11.2, 4.4], "count": 2, "arc": [90, 100]}, {"use": "bd_pd_laser", "id": "bd_pd_laser_2", "at": [-4.8, -5.2, 4.4], "count": 3}, {"use": "bd_pod_122", "id": "bd_pod_122_3", "at": [4.8, 0.7, 4.4], "arc": [90, 100]}, {"use": "bd_coil", "id": "bd_coil_4", "at": [-4.8, 6.7, 4.4], "arc": [-90, 100]}], "set": {"skills": [], "pods": {"first": 20, "every": 100, "count": 1, "max": 1}, "tiers": {"marks": [0.5]}}},
+    "ixion": {"hp": 69077, "gunNerf": {"damage": 1.0, "rate": 0.95}, "set": {"skills": ["ixion_deploy"], "phases": [{"at": 0.5, "transform": 2.5, "summons": true}]}, "add": [{"use": "deploy_door", "id": "deploy_door", "at": [0, -9.9, 1.0], "skills": ["ixion_deploy"]}]},
+    "kraken": {"hp": 127486, "gunNerf": {"damage": 0.842, "rate": 0.76}, "newGunDps": 489.78, "set": {"bigAttackScale": {"damage": 0.531, "cooldown": 1.0625, "warn": 0}, "mountWeapons": {"0": "bd_gun_76", "1": "bd_gun_76", "2": "bd_ciws", "3": "bd_ciws", "4": "bd_auto_35", "5": "bd_auto_35", "6": "bd_auto_35", "11": "bd_sam"}, "salvo": null, "air": null, "wake": null, "skills": ["kraken_jets"], "phases": [{"at": 0.5, "transform": 2.5, "summons": true}]}, "drop": ["turret_fore", "turret_super", "turret_aft", "bd_ciws_1", "bd_ciws_2", "bd_auto_57_3"], "tune": {"flight_deck": {"skills": ["kraken_jets"]}}},
+    "landing_hovercraft": {"hp": 42131, "gunNerf": {"damage": 0.86, "rate": 0.82}, "newGunDps": 221.17, "add": [{"use": "bd_hmg", "id": "bd_hmg_1", "at": [3.2, -4.5, 6.2], "count": 2}, {"use": "bd_auto_30", "id": "bd_auto_30_2", "at": [-3.2, 6.1, 6.2], "count": 2, "arc": [-90, 100]}], "set": {"phases": [{"at": 0.5, "transform": 2.5, "radio": "radio.kessler.hovercraft.half"}]}},
+    "leviathan": {"hp": 39463, "gunNerf": {"damage": 0.842, "rate": 0.76}, "newGunDps": 239.11, "set": {"bigAttackScale": {"damage": 0.531, "cooldown": 1.0625, "warn": 0}, "salvo": {"damage": 1488, "every": 75, "edge": 21.6, "radius": 12.6}, "cruise": {"damage": 322, "every": 62.5, "radius": 12.6}, "skills": [], "phases": [{"at": 0.5, "transform": 2.5, "radio": "radio.kessler.leviathan.phase2", "bigCooldown": 1.2}], "naval": {"escapePhase": 1}}, "add": [{"use": "bd_ciws", "id": "bd_ciws_1", "at": [3.7, -29.9, 16.6], "count": 2}, {"use": "bd_ciws", "id": "bd_ciws_2", "at": [-3.7, -10.7, 16.6], "count": 2}, {"use": "bd_auto_57", "id": "bd_auto_57_3", "at": [3.7, 8.6, 16.6], "count": 2, "arc": [90, 100]}], "unpart": ["radar"], "tune": {"flight_deck": {"skills": []}}},
+    "locust": {"hp": 35950, "gunNerf": {"damage": 0.86, "rate": 0.82}, "newGunDps": 56.6, "add": [{"use": "bd_ciws", "id": "bd_ciws_1", "at": [1.8, -3.2, 5.2], "count": 3}, {"use": "bd_auto_30", "id": "bd_auto_30_2", "at": [-1.8, 5.5, 5.2], "count": 3, "arc": [-90, 100]}], "set": {"skills": ["boss_flares", "locust_launch"], "phases": [{"at": 0.5, "transform": 2, "summons": true}]}, "tune": {"drone_bay": {"skills": ["locust_launch"]}}},
+    "mega_gunship": {"hp": 23586, "gunNerf": {"damage": 1.0, "rate": 0.95}, "set": {"skills": ["boss_flares"]}},
+    "mobile_fortress": {"hp": 29368, "gunNerf": {"damage": 0.895, "rate": 0.76}, "newGunDps": 153.94, "add": [{"use": "bd_auto_40", "id": "bd_auto_40_1", "at": [1.9, -1.9, 7.2], "count": 2, "arc": [90, 100]}, {"use": "bd_pod_122", "id": "bd_pod_122_2", "at": [-1.9, 4.9, 7.2], "count": 2, "arc": [-90, 100]}, {"use": "deploy_door", "id": "deploy_door", "at": [0, -6.8, 1.0], "skills": ["jotunn_deploy"]}, {"use": "tracks", "id": "tracks", "at": [0, 0, 0.5]}], "set": {"skills": ["boss_emp", "jotunn_deploy"], "phases": [{"at": 0.5, "transform": 2.5, "summons": true}]}, "tune": {"howitzer": {"skills": []}}},
+    "moloch": {"hp": 60821, "gunNerf": {"damage": 1.0, "rate": 0.95}, "set": {"skills": [], "factory": {"first": 25, "every": 110, "min": 1, "max": 1, "grow": 99999, "cap": 2}}},
+    "monster": {"hp": 102440, "gunNerf": {"damage": 1.0, "rate": 0.9}, "set": {"skills": ["train_patch"]}, "drop": ["bd_auto_35_1", "bd_ciws_2", "deploy_door"]},
+    "nuke_train": {"hp": 82976, "gunNerf": {"damage": 1.0, "rate": 0.9}},
+    "nyx": {"hp": 29729, "gunNerf": {"damage": 0.86, "rate": 0.82}, "newGunDps": 133.53, "add": [{"use": "bd_ciws", "id": "bd_ciws_1", "at": [3.7, -25.1, 16.6], "count": 2}, {"use": "bd_auto_30", "id": "bd_auto_30_2", "at": [-3.7, 3.8, 16.6], "count": 2, "arc": [-90, 100]}]},
+    "scylla": {"hp": 29729, "gunNerf": {"damage": 0.895, "rate": 0.76}, "newGunDps": 176.47, "add": [{"use": "bd_ciws", "id": "bd_ciws_1", "at": [3.7, -25.1, 16.6], "count": 2}, {"use": "bd_auto_35", "id": "bd_auto_35_2", "at": [-3.7, 3.8, 16.6], "count": 2, "arc": [-90, 100]}]},
+    "silver_bug": {"hp": 213434, "gunNerf": {"damage": 0.777, "rate": 0.76}, "newGunDps": 225.0, "set": {"bigAttackScale": {"damage": 0.531, "cooldown": 1.0625, "warn": 0}, "skills": [], "pods": {"first": 18, "every": 80, "count": 1, "perPod": 1, "max": 2}, "tiers": {"marks": [0.5], "crash": null}}, "add": [{"use": "bd_coil", "id": "bd_coil_1", "at": [4.8, -10.2, 4.4], "count": 2, "arc": [90, 100]}, {"use": "bd_pd_laser", "id": "bd_pd_laser_2", "at": [-4.8, -2.2, 4.4], "count": 2}, {"use": "bd_auto_35", "id": "bd_auto_35_3", "at": [4.8, 5.7, 4.4], "count": 2, "arc": [90, 100]}]},
+    "theia": {"hp": 74695, "gunNerf": {"damage": 0.86, "rate": 0.82}, "newGunDps": 152.11, "add": [{"use": "bd_ciws", "id": "bd_ciws_1", "at": [4.8, -2.2, 4.4]}], "set": {"skills": [], "pods": {"first": 18, "every": 75, "count": 2, "max": 3}, "tiers": {"marks": [0.5]}}},
+    "typhon": {"hp": 127486, "gunNerf": {"damage": 1.0, "rate": 0.9}, "unpart": ["sonar"]}
+    // bossDesign:end
   },
 
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
@@ -2509,7 +2615,15 @@
       "secondary": [ { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" }, { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
       "aps": { "radius": 11, "charges": 2, "recharge": 10 },
-      "deathExplosion": { "damage": 300, "radius": 16, "delay": 2.6, "tier": "Ultimate" } }
+      "deathExplosion": { "damage": 300, "radius": 16, "delay": 2.6, "tier": "Ultimate" } },
+    // bd minis:begin (generated: the six new mini bosses of the 09/10 workbook, sheet 05, variants of their parent chassis)
+    {"id": "roc_gunship", "paint": "#7d8790", "paintFinish": [0.3, 0.5], "variantOf": "command_airship", "general": "quaden", "radioSpawn": "radio.quaden.airship", "hp": 77821, "gunNerf": {"damage": 0.7, "rate": 0.75}, "gunDpsAll": 563.91, "mountWeapons": {"0": "bd_gun_105", "1": "bd_gun_105"}, "partLock": null, "skills": [], "armour": 2, "variant": {"size": 0.65, "keep": ["engine_fl", "engine_fr", "engine_rl", "engine_rr"], "tint": [0.86, 0.82, 0.76], "mark": "arsenal", "add": [{"id": "turret_105_a", "kind": "maingun", "hp": 0.07, "armour": 3, "wreck": "wreck_turret", "at": [-7.5, 0, -3.0], "radius": 2.4, "mounts": [0], "breakDamage": 0}, {"id": "turret_105_b", "kind": "maingun", "hp": 0.07, "armour": 3, "wreck": "wreck_turret", "at": [7.5, 0, -3.0], "radius": 2.4, "mounts": [1], "breakDamage": 0}, {"use": "bd_auto_35", "id": "bd_auto_35_1", "at": [-5, 6, -2.5]}, {"use": "bd_auto_35", "id": "bd_auto_35_2", "at": [5, 6, -2.5]}, {"use": "bd_ciws", "id": "bd_ciws_3", "at": [-10, -4, 0.5], "count": 2}, {"use": "bd_pod_70", "id": "bd_pod_70_4", "at": [10, -4, 0.5], "count": 2}], "name": "arsenal"}},
+    {"id": "daedalus_assault", "paint": "#b9a58f", "paintFinish": [0.3, 0.5], "variantOf": "daedalus", "general": "aurel", "radioSpawn": "radio.aurel.daedalus", "hp": 63657, "gunNerf": {"damage": 0.7, "rate": 0.75}, "gunDpsAll": 480.96, "mountWeapons": {"0": "bd_auto_57", "1": "bd_auto_57", "2": "bd_auto_30", "3": "bd_auto_30"}, "tiers": {"opening": 0, "marks": [0.5], "haltPhase": 1, "schedule": [{"steps": [{"tier": "high", "seconds": 16}, {"tier": "low", "seconds": 14}]}, {"steps": [{"tier": "low", "seconds": 60}]}], "radio": {"phase2": "radio.aurel.daedalus.phase2"}}, "pods": {"first": 30, "every": 120, "count": 1, "perPod": 1, "max": 1, "everyByPhase": [120, 120, 120]}, "skills": [], "variant": {"size": 0.5, "keep": ["engine", "pod_bay_1", "pd_laser_l", "pd_laser_r"], "tint": [0.95, 0.88, 0.78], "mark": "assault", "add": [{"id": "turret_57_a", "kind": "gun", "hp": 0.06, "armour": 3, "wreck": "wreck_turret", "at": [-4, 4, 5], "radius": 2.2, "mounts": [0], "breakDamage": 0}, {"id": "turret_57_b", "kind": "gun", "hp": 0.06, "armour": 3, "wreck": "wreck_turret", "at": [4, 4, 5], "radius": 2.2, "mounts": [1], "breakDamage": 0}, {"id": "gun_30", "kind": "gun", "hp": 0.05, "armour": 2, "wreck": "wreck_turret", "at": [0, -4, 4], "radius": 1.8, "mounts": [2, 3], "breakDamage": 0}, {"use": "bd_pd_laser", "id": "bd_pd_laser_3", "at": [-5, -2, 5], "count": 2}, {"use": "bd_pod_122", "id": "bd_pod_122_4", "at": [5, -2, 5]}], "name": "assault"}},
+    {"id": "icarus_interceptor", "paint": "#b4c3d0", "paintFinish": [0.3, 0.5], "variantOf": "silver_bug", "general": "aurel", "radioSpawn": "radio.aurel.icarus_mk0", "hp": 74702, "gunNerf": {"damage": 0.7, "rate": 0.75}, "gunDpsAll": 902.78, "weapon": "p26_icarus_sec_orbital_laser", "mainSlot": "gun", "secondary": [{"weapon": "p26_icarus_sec_orbital_laser", "slot": "gun", "aim": "Free"}], "arena": null, "model": "silver_bug", "tiers": {"opening": 0, "crash": null, "hijack": null, "marks": [0.5], "schedule": [{"steps": [{"tier": "high", "seconds": 18}, {"tier": "low", "seconds": 12}]}, {"steps": [{"tier": "high", "seconds": 12}, {"tier": "low", "seconds": 18}]}], "radio": {"phase2": "radio.aurel.icarus_mk0.phase2"}}, "pods": {"first": 25, "every": 110, "count": 1, "perPod": 1, "max": 1}, "skills": [], "variant": {"size": 0.5, "keep": ["main_engine", "thruster_rl", "thruster_rr", "pod_bay", "pd_laser_l", "pd_laser_r"], "tint": [0.82, 0.9, 1.0], "mark": "sentinel", "add": [{"id": "laser_tower_a", "kind": "laser", "hp": 0.07, "armour": 2, "wreck": "wreck_turret", "at": [-5, 8, 8], "radius": 2.0, "mounts": [0], "breakDamage": 0}, {"id": "laser_tower_b", "kind": "laser", "hp": 0.07, "armour": 2, "wreck": "wreck_turret", "at": [5, 8, 8], "radius": 2.0, "mounts": [1], "breakDamage": 0}, {"use": "bd_ciws", "id": "bd_ciws_3", "at": [-6, -6, 8], "count": 2}, {"use": "bd_sam", "id": "bd_sam_4", "at": [6, -6, 8], "count": 2}, {"use": "bd_coil", "id": "bd_coil_5", "at": [0, 0, 9]}], "name": "sentinel"}},
+    {"id": "matriarch_flak", "paint": "#8a9a5b", "paintFinish": [0.3, 0.5], "variantOf": "drone_mothership", "general": "sen", "radioSpawn": "radio.sen.matriarch", "hp": 35300, "gunNerf": {"damage": 0.7, "rate": 0.75}, "gunDpsAll": 665.18, "mountWeapons": {"1": "p26_matriarch_ma_drones"}, "skills": ["wasp_launch"], "wake": null, "variant": {"size": 0.55, "keep": ["drone_bay", "drone_bay_2"], "tint": [1.02, 1.02, 0.78], "mark": "wasp", "add": [{"use": "bd_auto_35", "id": "bd_auto_35_1", "at": [-6, 4, 2]}, {"use": "bd_auto_35", "id": "bd_auto_35_2", "at": [6, 4, 2]}, {"use": "bd_ciws", "id": "bd_ciws_3", "at": [0, -5, 3], "count": 2}], "name": "wasp", "tune": {"drone_bay": {"skills": ["wasp_launch"], "hp": 0.12}, "drone_bay_2": {"hp": 0.1}}}},
+    {"id": "jotunn_artillery", "paint": "#8a7a66", "paintFinish": [0.3, 0.5], "variantOf": "mobile_fortress", "general": "orlov", "radioSpawn": "radio.orlov.fortress", "hp": 22026, "gunNerf": {"damage": 0.7, "rate": 0.75}, "gunDpsAll": 718.38, "mountWeapons": {"0": "bd_mortar_120"}, "skills": [], "variant": {"size": 0.7, "keep": ["howitzer", "tracks"], "tint": [0.94, 0.88, 0.8], "mark": "mortar", "add": [{"use": "bd_mortar_120", "id": "bd_mortar_120_1", "at": [-4, -3, 4]}, {"use": "bd_auto_57", "id": "bd_auto_57_2", "at": [-6, 5, 3]}, {"use": "bd_auto_57", "id": "bd_auto_57_3", "at": [6, 5, 3]}, {"use": "bd_ciws", "id": "bd_ciws_4", "at": [0, -7, 4], "count": 2}, {"use": "bd_pod_122", "id": "bd_pod_122_5", "at": [4, 0, 4]}], "name": "mortar"}},
+    {"id": "bastion_aa", "paint": "#7f8f80", "paintFinish": [0.3, 0.5], "variantOf": "fortress_bastion", "general": "brandt", "radioSpawn": "radio.brandt.bastion", "hp": 13426, "gunNerf": {"damage": 0.7, "rate": 0.75}, "gunDpsAll": 415.12, "mountWeapons": {"0": "bd_gun_105"}, "skills": [], "variant": {"size": 0.7, "keep": ["casemate"], "tint": [0.86, 0.94, 0.86], "mark": "flak", "add": [{"use": "bd_auto_35", "id": "bd_auto_35_1", "at": [-6, 6, 4]}, {"use": "bd_auto_35", "id": "bd_auto_35_2", "at": [6, 6, 4]}, {"use": "bd_auto_35", "id": "bd_auto_35_3", "at": [-6, -6, 4]}, {"use": "bd_auto_35", "id": "bd_auto_35_4", "at": [6, -6, 4]}, {"use": "bd_sam", "id": "bd_sam_5", "at": [0, 0, 6], "count": 2}], "name": "flak"}}
+    // bd minis:end
   ],
 
   // Skills of elite units and bosses, used automatically when the trigger is met (see SkillDef).
@@ -2531,19 +2645,31 @@
     { "id": "boss_emp",         "kind": "Emp",       "trigger": "EnemyInRange",    "radius": 22, "cooldown": 35, "duration": 4 },
     { "id": "fortress_barrage", "kind": "Barrage",   "trigger": "HpBelow",         "threshold": 0.4, "cooldown": 25, "duration": 8, "amount": 2 },
     { "id": "train_patch",      "kind": "Patch",     "trigger": "PartBroken",      "once": true, "amount": 0.5 },
-    { "id": "mothership_launch", "kind": "Summon",   "trigger": "EnemyInRange",    "radius": 70, "cooldown": 30, "count": 3, "unit": "strike_drone" },
+    { "id": "mothership_launch", "kind": "Summon",   "trigger": "EnemyInRange",    "radius": 70, "cooldown": 45, "count": 2, "max": 6, "delay": 10, "unit": "strike_drone" },
     { "id": "mothership_shield", "kind": "Shield",   "trigger": "HpBelow",         "threshold": 0.5, "cooldown": 30, "duration": 8, "amount": 0.5 },
     // Prompt 8 bosses: the airship's two drone bays launch a strike drone each (a bay broken, its launches stop).
     // Prompt 16 F: the old escort calls (behemoth_escort, fortress_escort, gunship_escort, nuke_escort,
     // supreme_guard) are gone: every boss's escorts are the general system's, "escorts" below.
-    { "id": "airship_launch_l", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
-    { "id": "airship_launch_r", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 30, "count": 1, "unit": "strike_drone" },
+    { "id": "airship_launch_l", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 65, "count": 1, "max": 2, "delay": 14, "unit": "strike_drone" },
+    { "id": "airship_launch_r", "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 80, "cooldown": 65, "count": 1, "max": 2, "delay": 14, "unit": "strike_drone" },
     // Prompt 16: Leviathan's flight deck launches an attack helicopter from phase 2 (its deck broken, no more).
     { "id": "leviathan_helos",  "kind": "Summon",    "trigger": "HpBelow",         "threshold": 0.7, "cooldown": 55, "count": 1, "unit": "attack_helicopter" },
     // Play-test 14 (lane G): the Kraken is a carrier: its flight deck launches its stealth strike jets (the carrier jet,
     // F-35C-like) two at a time once an enemy is within 110 m, at most four up at once, every 40 s (a deck cycle; broken
     // deck, no more launches).
-    { "id": "kraken_jets",      "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 110, "cooldown": 40, "count": 2, "max": 4, "unit": "stealth_naval_strike" }
+    { "id": "kraken_jets",      "kind": "Summon",    "trigger": "EnemyInRange",    "radius": 110, "cooldown": 55, "count": 2, "max": 4, "delay": 12, "unit": "stealth_naval_strike" },
+    // bd skills:begin (generated: the 09/10 workbook's periodic summons, sheet 08)
+    { "id": "argus_launch", "kind": "Summon", "trigger": "EnemyInRange", "radius": 80, "cooldown": 85, "count": 1, "max": 2, "unit": "recon_drone", "delay": 18 },
+    { "id": "locust_launch", "kind": "Summon", "trigger": "EnemyInRange", "radius": 80, "cooldown": 75, "count": 1, "max": 2, "unit": "strike_drone", "delay": 15 },
+    { "id": "coeus_launch", "kind": "Summon", "trigger": "EnemyInRange", "radius": 90, "cooldown": 105, "count": 1, "max": 1, "unit": "recon_drone", "delay": 20 },
+    { "id": "behemoth_deploy", "kind": "Summon", "trigger": "EnemyInRange", "radius": 130, "cooldown": 110, "count": 1, "max": 2, "unit": "main_battle_tank", "delay": 25, "warn": 3, "safe": 12 },
+    { "id": "bastion_deploy", "kind": "Summon", "trigger": "EnemyInRange", "radius": 140, "cooldown": 85, "count": 1, "max": 3, "unit": "main_battle_tank", "delay": 20, "warn": 3, "safe": 12 },
+    { "id": "bastion_mk0_deploy", "kind": "Summon", "trigger": "EnemyInRange", "radius": 120, "cooldown": 110, "count": 1, "max": 2, "unit": "armored_car", "delay": 20, "warn": 3, "safe": 12 },
+    { "id": "jotunn_deploy", "kind": "Summon", "trigger": "EnemyInRange", "radius": 130, "cooldown": 95, "count": 1, "max": 2, "unit": "light_tank", "delay": 25, "warn": 3, "safe": 12 },
+    { "id": "fenrir_deploy", "kind": "Summon", "trigger": "EnemyInRange", "radius": 110, "cooldown": 115, "count": 1, "max": 1, "unit": "armored_car", "delay": 25, "warn": 3, "safe": 12 },
+    { "id": "ixion_deploy", "kind": "Summon", "trigger": "EnemyInRange", "radius": 130, "cooldown": 125, "count": 1, "max": 2, "unit": "armored_car", "delay": 30, "warn": 3, "safe": 12 },
+    { "id": "wasp_launch", "kind": "Summon", "trigger": "EnemyInRange", "radius": 80, "cooldown": 60, "count": 1, "max": 2, "unit": "strike_drone", "delay": 12 }
+    // bd skills:end
   ],
 
   // Prompt 16 F: escorts for every boss (BossSystem.Escorts, DECISIONS 15B). A wave comes in with the boss
@@ -2625,7 +2751,7 @@
       "arrive": [ { "unit": "strike_drone" }, { "unit": "strike_drone" }, { "unit": "fighter_jet", "role": "cover" }, { "unit": "recon_drone", "role": "spot" } ],
       "phase": [ { "unit": "scout_heli", "role": "spot" } ] },
     // Prompt 19 D.3: the generals' elites as before, the phases at its own marks, and two fighters round it (they come as it leaves orbit).
-    { "boss": "silver_bug", "marks": [0.6, 0.25],
+    { "boss": "silver_bug", "marks": [0.5],
       "arrive": [ { "unit": "elite_heavy_tank" }, { "unit": "elite_grad" }, { "unit": "recon_drone", "role": "spot" },
                   { "unit": "fighter_jet", "role": "cover" }, { "unit": "fighter_jet", "role": "cover" } ],
       "phases": [ { "units": [ { "unit": "elite_fpv_carrier" }, { "unit": "ew_jammer", "role": "jam" } ] },
@@ -2679,33 +2805,33 @@
   // "late": from a boss phase on (0 up), another cooldown and its first strike's rounds (Icarus on the ground).
   "bigAttacks": [
     // Prompt 25 C1: Behemoth's super weapon, 6 x 400, 8 m blast, every 50 s, 3.5 s warning (sheet Boss đề xuất).
-    { "id": "behemoth_barrage", "icon": "artillery", "warn": 3.5, "cooldown": 45, "aim": "group", "reach": 70, "target": "mixed", "strikes": [{ "shape": "circle", "parts": ["main_gun"], "count": 6, "salvo": 2, "damage": 600, "type": "HighExplosive", "pen": 2, "radius": 8.5, "area": 14, "duration": 2.4, "rings": true }] },
+    { "id": "behemoth_barrage", "icon": "artillery", "warn": 3.5, "cooldown": 45, "aim": "group", "reach": 70, "target": "mixed", "strikes": [{ "shape": "circle", "parts": ["main_gun"], "count": 6, "salvo": 2, "damage": 600, "type": "HighExplosive", "pen": 2, "radius": 7.7, "area": 14, "duration": 2.4, "rings": true }] },
     // Prompt 25 C1: Nemesis's super weapon, 1 x 2500, 18 m blast, 6 s in flight, shot down at 600, every 90 s, 5 s warning (sheet Boss đề xuất).
     { "id": "doomsday_missile", "icon": "ballistic", "warn": 4, "cooldown": 50, "aim": "hq", "target": "base", "strikes": [{ "shape": "missile", "parts": ["erector"], "count": 1, "damage": 3500, "type": "HighExplosive", "pen": 2, "thermo": true, "radius": 18, "falloff": 0.3, "hp": 600, "flight": 6, "weapon": "ballistic_missile" }] },
     // Prompt 25 C1: Jötunn's super weapon, 4 x 700, 8 m blast, every 55 s, 4 s warning (sheet Boss đề xuất).
     { "id": "fortress_203_barrage", "icon": "artillery", "warn": 4, "cooldown": 50, "aim": "group", "reach": 70, "target": "mixed", "strikes": [{ "shape": "circle", "parts": ["howitzer", "howitzer_2"], "perPart": 2, "damage": 900, "type": "HighExplosive", "pen": 4, "radius": 10, "area": 14, "duration": 2.4, "weapon": "boss_howitzer" }] },
     // Prompt 25 C1: Icarus's super weapon, 7 x 1800, 7 m blast, every 60 s, 4 s warning (phase 3: 9 every 50 s) (sheet Boss đề xuất).
-    { "id": "bug_rod_rain", "icon": "ballistic", "warn": 4, "cooldown": 45, "first": 5, "aim": "group", "target": "tanks", "strikes": [{ "shape": "rods", "parts": ["uplink"], "count": 7, "damage": 1800, "type": "Kinetic", "pen": 4, "top": true, "radius": 7, "falloff": 0.3 }], "late": { "phase": 2, "cooldown": 45, "count": 9 } },
+    { "id": "bug_rod_rain", "icon": "ballistic", "warn": 4, "cooldown": 45, "first": 5, "aim": "group", "target": "tanks", "strikes": [{ "shape": "rods", "parts": ["uplink"], "count": 7, "damage": 1800, "type": "Kinetic", "pen": 4, "top": true, "radius": 6.3, "falloff": 0.3 }] },
     // Prompt 25 C1: Bastion's super weapon, 1 x 2000, 14 m blast, every 60 s, 4 s warning (sheet Boss đề xuất).
     // Prompt 26 D.1: Ixion's crush charge is its secondary weapon (the mine truck's ram), not a super weapon: a 2 s warned line, about every 10 s.
     { "id": "ixion_crush_charge", "icon": "barrage", "warn": 2, "cooldown": 45, "first": 6, "aim": "group", "reach": 90, "target": "packed", "strikes": [{ "shape": "charge", "parts": ["wheel_l", "wheel_r"], "cut": 0, "length": 60, "width": 10, "duration": 4, "damage": 900, "type": "Kinetic", "pen": 4, "stun": 1 }] },
-    { "id": "bastion_420_shell", "icon": "mortar", "warn": 4, "cooldown": 45, "aim": "group", "reach": 85, "target": "defences", "strikes": [{ "shape": "circle", "parts": ["mortar"], "count": 1, "damage": 2000, "type": "HighExplosive", "pen": 4, "structure": 2, "radius": 10, "weapon": "boss_mortar" }] },
+    { "id": "bastion_420_shell", "icon": "mortar", "warn": 4, "cooldown": 45, "aim": "group", "reach": 85, "target": "defences", "strikes": [{ "shape": "circle", "parts": ["mortar"], "count": 1, "damage": 2000, "type": "HighExplosive", "pen": 4, "structure": 2, "radius": 9, "weapon": "boss_mortar" }] },
     // Prompt 25 C1: Matriarch's super weapon, 1 x 1600, 16 m blast, 3 s in flight, shot down at 250, every 60 s, 3.5 s warning (sheet Boss đề xuất).
-    { "id": "carrier_heavy_bomb", "icon": "bomb", "warn": 3.5, "cooldown": 45, "aim": "group", "reach": 40, "target": "defences", "exposed": 1.3, "halt": true, "strikes": [{ "shape": "missile", "parts": ["bomb_bay"], "count": 1, "damage": 1600, "type": "HighExplosive", "pen": 3, "structure": 2, "radius": 16, "weapon": "bomber_payload", "hp": 250, "flight": 3, "targets": 1 }] },
+    { "id": "carrier_heavy_bomb", "icon": "bomb", "warn": 3.5, "cooldown": 45, "aim": "group", "reach": 40, "target": "defences", "exposed": 1.3, "halt": true, "strikes": [{ "shape": "missile", "parts": ["bomb_bay"], "count": 1, "damage": 1600, "type": "HighExplosive", "pen": 3, "structure": 2, "radius": 14.4, "weapon": "bomber_payload", "hp": 250, "flight": 3, "targets": 1 }] },
     // Prompt 25 C1: Roc's super weapon, 16 x 350, 7 m blast along a strip 80 x 12 m, every 70 s, 4 s warning (sheet Boss đề xuất).
-    { "id": "airship_carpet", "icon": "bomb", "warn": 4, "cooldown": 50, "aim": "group", "reach": 60, "target": "light", "strikes": [{ "shape": "strip", "parts": ["bomb_bay"], "count": 16, "damage": 400, "type": "HighExplosive", "pen": 1, "radius": 7, "length": 80, "width": 12, "axis": "heading", "duration": 3 }] },
+    { "id": "airship_carpet", "icon": "bomb", "warn": 4, "cooldown": 50, "aim": "group", "reach": 60, "target": "light", "strikes": [{ "shape": "strip", "parts": ["bomb_bay"], "count": 16, "damage": 400, "type": "HighExplosive", "pen": 1, "radius": 5.6, "length": 80, "width": 12, "axis": "heading", "duration": 3 }] },
     // Prompt 25 C1: Leviathan's super weapon, 9 x 950, 13 m blast along a strip 60 x 12 m, every 70 s, 4 s warning (sheet Boss đề xuất).
-    { "id": "leviathan_volley", "icon": "artillery", "warn": 4, "cooldown": 50, "aim": "base", "target": "base", "hold": ["cruise"], "strikes": [{ "shape": "strip", "parts": ["turret_fore", "turret_super", "turret_aft"], "perPart": 3, "damage": 950, "type": "HighExplosive", "pen": 4, "structure": 1.5, "radius": 12, "falloff": 0.35, "duration": 2.4, "length": 60, "width": 12, "axis": "toward" }] },
+    { "id": "leviathan_volley", "icon": "artillery", "warn": 4, "cooldown": 50, "aim": "base", "target": "base", "hold": ["cruise"], "strikes": [{ "shape": "strip", "parts": ["turret_fore", "turret_super", "turret_aft"], "perPart": 3, "damage": 950, "type": "HighExplosive", "pen": 4, "structure": 1.5, "radius": 10.8, "falloff": 0.35, "duration": 2.4, "length": 60, "width": 12, "axis": "toward" }] },
     // Prompt 20 H-J: the new bosses' big attacks.
     // Prompt 25 C1: Moloch's super weapon, 6 vehicles landed + 8 x 300, 6 m blast, every 75 s, 4 s warning (sheet Boss đề xuất).
-    { "id": "moloch_factory_dump", "icon": "reinforce", "warn": 4, "cooldown": 50, "aim": "group", "reach": 90, "target": "army", "strikes": [{ "shape": "drop", "parts": ["door_l", "door_r"], "perPart": 3, "max": 6, "units": ["main_battle_tank", "ifv", "light_tank", "main_battle_tank", "ifv", "armored_car"], "at": [0, -16] }, { "shape": "circle", "count": 8, "damage": 350, "type": "HighExplosive", "pen": 2, "radius": 6, "area": 12, "duration": 3, "weapon": "gun_152_he" }] },
+    { "id": "moloch_factory_dump", "icon": "reinforce", "warn": 4, "cooldown": 50, "aim": "group", "reach": 90, "target": "army", "strikes": [{ "shape": "drop", "parts": ["door_l", "door_r"], "perPart": 1, "max": 2, "units": ["main_battle_tank", "ifv", "light_tank", "main_battle_tank", "ifv", "armored_car"], "at": [0, -16] }, { "shape": "circle", "count": 8, "damage": 350, "type": "HighExplosive", "pen": 2, "radius": 6, "area": 12, "duration": 3, "weapon": "gun_152_he" }] },
     // Prompt 25 C1: Daedalus's super weapon, 8 x 500, 6 m blast, every 70 s, 4 s warning (sheet Boss đề xuất).
-    { "id": "daedalus_mass_drop", "icon": "reinforce", "warn": 4, "cooldown": 50, "aim": "group", "target": "packed", "strikes": [{ "shape": "circle", "parts": ["pod_bay_1", "pod_bay_2", "pod_bay_3"], "count": 8, "cut": 0.5, "damage": 600, "type": "Kinetic", "pen": 4, "top": true, "radius": 6, "falloff": 0.3, "area": 12, "duration": 1.5, "seats": 1, "max": 8, "units": ["main_battle_tank", "ifv", "heavy_tank", "armored_car", "main_battle_tank", "ifv", "tank_destroyer"] }] },
+    { "id": "daedalus_mass_drop", "icon": "reinforce", "warn": 4, "cooldown": 50, "aim": "group", "target": "packed", "strikes": [{ "shape": "circle", "parts": ["pod_bay_1", "pod_bay_2", "pod_bay_3"], "count": 8, "cut": 0.5, "damage": 600, "type": "Kinetic", "pen": 4, "top": true, "radius": 5.4, "falloff": 0.3, "area": 12, "duration": 1.5, "seats": 1, "max": 2, "units": ["main_battle_tank", "ifv", "heavy_tank", "armored_car", "main_battle_tank", "ifv", "tank_destroyer"] }] },
     // Prompt 25 C1: Typhon's super weapon, 6 x 600, 9 m blast, 9 s in flight, shot down at 250, every 75 s, 4 s warning (sheet Boss đề xuất).
     { "id": "typhon_underwater_launch", "icon": "missile", "warn": 4, "cooldown": 50, "aim": "base", "target": "base", "surface": true, "hold": ["cruise"], "strikes": [{ "shape": "missile", "parts": ["doors_l", "doors_r"], "count": 6, "damage": 700, "type": "HighExplosive", "pen": 3, "radius": 9, "structure": 2, "hp": 250, "flight": 9, "targets": 3, "weapon": "leviathan_cruise" }] },
     // Prompt 25 F2 batch D: the new main bosses' super weapons (sheet "Boss mới"). Mini bosses have none.
     // Kraken: an air raid, 12 x 400, 9 m blast along a strip 90 x 14 m, every 75 s, 4 s warning; breaking the flight deck stops it.
-    { "id": "kraken_air_raid", "icon": "bomb", "warn": 4, "cooldown": 50, "aim": "group", "reach": 70, "target": "mixed", "strikes": [{ "shape": "strip", "parts": ["flight_deck"], "count": 12, "damage": 400, "type": "HighExplosive", "pen": 2, "radius": 9, "length": 90, "width": 14, "axis": "heading", "duration": 3 }] },
+    { "id": "kraken_air_raid", "icon": "bomb", "warn": 4, "cooldown": 50, "aim": "group", "reach": 70, "target": "mixed", "strikes": [{ "shape": "strip", "parts": ["flight_deck"], "count": 12, "damage": 400, "type": "HighExplosive", "pen": 2, "radius": 8.1, "length": 90, "width": 14, "axis": "heading", "duration": 3 }] },
     // Monster: the 800 mm shell, 1 x 4000, 20 m blast, every 80 s, 6 s warning (the barrel rises slowly); breaking the barrel stops it.
     { "id": "monster_800_shell", "icon": "mortar", "warn": 4, "cooldown": 50, "aim": "group", "reach": 90, "target": "defences", "strikes": [{ "shape": "circle", "parts": ["mortar"], "count": 1, "damage": 4000, "type": "HighExplosive", "pen": 4, "structure": 2, "radius": 20, "weapon": "boss_mortar" }] },
     // Hyperion: the sun beam, a 70 x 6 m strip burnt for 4 s at 500 a second, every 65 s, 4 s warning (smoke's 80 % cut waits for a smoke rule on strikes).

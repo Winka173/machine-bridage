@@ -691,6 +691,9 @@ namespace MachineBrigade.Game.Views
             if (Def.Flying && index > 0 && Def.Mounts[index].Slot == "aam" && _muzzles[index] != null &&
                 Mathf.Abs(_body.InverseTransformPoint(_muzzles[index].position).x) < 0.1f && AirframeStore(index, "aam", out var rail))
                 return Anchored(_body, rail);
+            // Boss design 09/10: a hardpoint the workbook added has no muzzle of its own in the parent's model: it fires from the part
+            // that carries it (its place on the hull), until the model is redrawn with real muzzles.
+            if (index > 0 && Def.Mounts[index].NewGun && NewGunPart(index) is var carrier && carrier >= 0) return Anchored(_body, PartWorld(carrier));
             if (index < _muzzles.Length && _muzzles[index] != null) return Anchored(_muzzles[index], _muzzles[index].position);
             if (index == 0) return Anchored(_body, MuzzleWorld);
             var slot = Def.Mounts[index].Slot;
@@ -699,6 +702,15 @@ namespace MachineBrigade.Game.Views
             if (slot == "coax") return Anchored(pivot, _body.TransformPoint(_model.Muzzle) + pivot.right * 0.35f - pivot.forward * 0.6f);
             var top = pivot.position + Vector3.up * (pivot == _body ? MuzzleHeight + 0.6f : 0.8f);
             return Anchored(pivot, top + DirectionOf(index) * 0.8f);
+        }
+
+        /// <summary>The part carrying mount <paramref name="index"/> (-1: none).</summary>
+        private int NewGunPart(int index)
+        {
+            for (var p = 0; p < Def.Parts.Count; p++)
+                foreach (var m in Def.Parts[p].Mounts)
+                    if (m == index) return p;
+            return -1;
         }
 
         /// <summary>

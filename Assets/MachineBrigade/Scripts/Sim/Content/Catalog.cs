@@ -241,6 +241,10 @@ namespace MachineBrigade.Sim.Content
                         k.Float("duration", 0f), k.Float("amount", 0f), k.Float("radius", 0f), k.Int("count", 0),
                         k.Has("unit") ? k.String("unit") : null, k.Bool("once", false)));
                     skill.Max = Math.Max(0, k.Int("max", 0));
+                    skill.Delay = Math.Max(0f, k.Float("delay", 0f));
+                    skill.Warn = Math.Max(0f, k.Float("warn", 0f));
+                    skill.Safe = Math.Max(0f, k.Float("safe", 0f));
+                    skill.Warning = k.Has("warning") ? k.String("warning") : null;
                     if (!skills.TryAdd(skill.Id, skill)) throw new FormatException($"{k.Path}: duplicate skill '{skill.Id}'.");
                 }
 
@@ -265,6 +269,8 @@ namespace MachineBrigade.Sim.Content
                         secondary.Add(new WeaponMount(bossEdges ? bossReach.Arm(bossId, WithEdge(Weapon(weapons, m, "weapon"), twoLayer)) : Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
                         {
                             ProjectileModel = m.Has("model") ? m.String("model") : null,
+                            GroupName = m.Has("group") ? m.String("group") : null,
+                            NewGun = m.Bool("new", false),
                             ArcCentre = m.Has("arc") ? m.FloatArray("arc")[0] * MathF.PI / 180f : 0f,
                             ArcHalf = m.Has("arc") && m.FloatArray("arc").Count > 1 ? Math.Clamp(m.FloatArray("arc")[1], 5f, 180f) * MathF.PI / 180f : 0f,
                         });
@@ -359,6 +365,7 @@ namespace MachineBrigade.Sim.Content
                                 At = p.Float("at"), Transform = p.Float("transform", 3f), Heal = p.Float("heal", 0f),
                                 Damage = p.Float("damage", 1f), Speed = p.Float("speed", 1f), Armor = p.Float("armor", 1f), FireRate = p.Float("fireRate", 1f),
                                 Skills = phaseSkills, Model = p.Has("model") ? p.String("model") : null, Radio = p.Has("radio") ? p.String("radio") : null,
+                                BigCooldown = Math.Clamp(p.Float("bigCooldown", 1f), 0.2f, 5f), CallSummons = p.Bool("summons", false),
                             });
                         }
                         phases.Sort((a, b) => b.At.CompareTo(a.At));
@@ -538,6 +545,7 @@ namespace MachineBrigade.Sim.Content
             // Fix prompt L4 / L5: the munition and warning rules (lane B's blocks).
             catalog.FinishFixRules(root);
             catalog.FinishWalls();
+            catalog.FinishBossDesign(root);
             catalog.CheckNaval();
             return catalog;
         }

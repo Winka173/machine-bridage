@@ -22157,3 +22157,40 @@ lead runs Docs/naval/final/TEST_PLAN.md after the merge). Report: Docs/naval/fin
   QA guide section 1 fields) and `naval-econ` (static). flight_feel_audit: TORPEDO class. EditMode NavalFinalTests (compile only).
 - Checks: Sim and regress dotnet builds 0 errors; Unity assemblies via dotnet 0 new errors; catalog parse OK; flight audit
   HARD_FAIL 0; mount check 0 hard; glb_check 0 errors. No export.py, no Unity run.
+
+
+## Boss design workbook (09/10)
+
+Owner prompt 09/10 (Docs/bosses/design_0910/PROMPT_owner_vi.md): implement `Machine_Brigade_Boss_Thiet_Ke_Tong_Hop.xlsx` (16 sheets, dump in `sheets.md`) in the lead
+checkout, code and data first, looks of new bosses and weapons rough (another agent redraws them). Branch `feature/boss-design-0910`. Mapping, decisions D1-D14:
+Docs/bosses/design_0910/MAPPING.md; results: REPORT.md.
+- **Where the numbers live.** balance.json `bossDesign`, one generated row per boss or variant (hp, gunNerf, newGunDps/gunDpsAll, set/add/drop/tune/unpart/keep), laid
+  over the raw entries before the templates are built (BossTemplates.Design.cs). `bossFireGroups` (sheet 12), `bossWeaponOverrides` gained damageMult / rateMult /
+  radiusMult (bombs), `skills` gained delay / warn / safe, phases gained bigCooldown / summons, library parts gained `count` (one part, several mounts) and variants `add`.
+- **HP (B).** `hp` = sheet 10 "HP thiết kế hiện tại" (Excel ROUND, half up). toughness.bosses 0.85, difficulty bossHp and the mini rank share 0.55 are the old rules and
+  stay (reduced once). Part HP stays a share of the body.
+- **DPS (B/C).** Sheet 03 "DPS gốc" is the sum of weapon-level sustained DPS (sheet 07). Old guns: relative `gunNerf` {damage, rate} (boss weaponDamage x damage, boss
+  fire scale x rate) on top of the rank buffs; the eight boss rows with no new guns (Juggernaut, Tartarus, Ixion, Harpy, Moloch, Monster, Nemesis, Typhon) take the sheet's
+  total DPS % as tempo only (damage 1: sheet 03 lists damage 109-118 %, which would raise per-hit damage; sheet 01 says "no direct change"). New hardpoints:
+  `newGunDps` split over the mounts flagged `new`, each mount's damage scale solved at catalog load so total = old x nerf + budget, never more with more guns.
+- **Bombs / AoE (B).** Roc, Argus: bomb damage 42 % (net), radius 80 %, tempo 70 %; eight bosses' big attacks and the Leviathan's salvo / cruise: damage 62 %, cooldown
+  x1.25, radius x0.9 (mid of the sheet 04 ranges). Falloff = the damage table's splash row. Shared heavy-AoE gap 5 s and no heavy blast while the big attack is under
+  way (BossWeaponDirector). Roc / Argus carpet strike also on the 04 row.
+- **Fire groups (C).** main / secondary / ciws / suppress (data `group` or sorted by weapon): per-group stagger gap, max mounts and max groups on one target, a
+  deterministic start delay per mount. Bosses with fewer than 6 mounts fire as before. Kraken: 13 hardpoints (drops the three 406 mm turrets and its laid salvo, swaps
+  weapons), Leviathan: 22. New weapon ids `bd_*` copy existing weapons; new mounts fire from their part's place until the model is redrawn.
+- **Summons (D).** Periodic summons are skills with cooldown / count / max / delay / warn / safe; a full flight skips the call (no queue); the units arrive from the part
+  that carries the skill; a ground unit is put on open ground and waits (4 tries) while an enemy ground unit is within `safe` m; units already out are untouched by a
+  break; a self-repair never mends a summon module. Spacecraft call by `pods` (retuned to sheet 08; the pod bay is the hangar). Escort tables stay separate (arrival wave
+  once, phase wave once). Moloch / Daedalus big-attack drops capped at 2.
+- **Parts (D).** No radar or command-tower part: Roc, Leviathan (+ Kraken), Argus and Typhon's sonar (it stopped the "radar" mechanism) removed; Argus's spot aura is permanent.
+  Deployment doors / bays added to the ground bosses, Argus, Coeus; Jötunn gets an engine part.
+- **Phase (E).** One phase at 50 % for every boss, once: rank defaults, own phases, tier marks (spacecraft crash phase removed, Daedalus lowers at 50 %), no buffs;
+  old HP-threshold skills removed; phase events: `summons` (calls the summons / pods now, caps still apply), `bigCooldown`, shield skill. A safety net starts the
+  phase however the health got under the mark. Leviathan's naval `escapePhase` 2 -> 1 (its last phase). Mission HP events are separate code and untouched.
+- **Minis (F).** `roc_gunship`, `daedalus_assault`, `icarus_interceptor`, `matriarch_flak`, `jotunn_artillery`, `bastion_aa`: variants of their parent chassis (same model and
+  card), mount counts 8/7/7/6/7/7, whole-gun DPS from sheet 05 (`gunDpsAll`), HP = parent target x 0.50/0.35/0.35/0.60/0.75/0.80 (sheet 10 has no row), own summon caps (none
+  for four; pods cap 1 for the two spacecraft; Wasp: 2 drones). Registered in Boss Rush kinds and the campaign chapters' mini lists (end of list), names and cards.
+- **Checks.** `dotnet build Tools/simbuild/Sim.csproj` and the regress harness 0 errors; harness `bossrules` (BossDesignRules, also in CatalogCheck) no breach; harness `bosssmoke`
+  (39 bosses, 90-360 s each: phase once incl. a big hit, a heal and a dip, summon cap and delay, broken module stops new units) 0 failures on the final run. No Unity run; EditMode
+  tests written/updated (BossDesign0910Tests, Prompt20/26AB/8Content) and NOT run.

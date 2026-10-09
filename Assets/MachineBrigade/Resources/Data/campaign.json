@@ -81,21 +81,21 @@
     ]
   },
   "chapters": [
-    {"number": 1, "act": 1, "maps": ["landingbeach", "greenvale", "ashfield"], "general": "brandt", "main": "fortress_bastion", "minis": ["bastion_mk0"], "comic": "comic.1"},
+    {"number": 1, "act": 1, "maps": ["landingbeach", "greenvale", "ashfield"], "general": "brandt", "main": "fortress_bastion", "minis": ["bastion_mk0", "bastion_aa"], "comic": "comic.1"},
     {"number": 2, "act": 1, "maps": ["dunebreak", "redrock"], "general": "varga", "main": "behemoth", "minis": ["behemoth_inferno"], "comic": "comic.2"},
-    {"number": 3, "act": 1, "maps": ["whiteout", "frostpeak"], "general": "orlov", "main": "mobile_fortress", "minis": ["mega_gunship", "fenrir"], "comic": "comic.3"},
+    {"number": 3, "act": 1, "maps": ["whiteout", "frostpeak"], "general": "orlov", "main": "mobile_fortress", "minis": ["mega_gunship", "fenrir", "jotunn_artillery"], "comic": "comic.3"},
     {"number": 13, "act": 1, "interlude": 1, "maps": ["foundry"], "general": "varga", "minis": ["behemoth_mk0"], "comic": "comic.13"},
     {"number": 4, "act": 2, "maps": ["rustyard", "ironport", "lighthousebay"], "general": "kessler", "main": "leviathan", "minis": ["behemoth_tempest", "armored_train", "scylla"], "comic": "comic.4"},
-    {"number": 5, "act": 2, "maps": ["junglepass", "emberridge"], "general": "sen", "main": "drone_mothership", "minis": ["locust"], "comic": "comic.5"},
+    {"number": 5, "act": 2, "maps": ["junglepass", "emberridge"], "general": "sen", "main": "drone_mothership", "minis": ["locust", "matriarch_flak"], "comic": "comic.5"},
     {"number": 6, "act": 2, "maps": ["ashfield", "whiteout", "greenvale", "landingbeach", "hydrodam"], "general": "varga", "main": "moloch", "minis": ["landing_hovercraft", "behemoth_mk2"], "comic": "comic.6"},
     {"number": 14, "act": 2, "interlude": 2, "maps": ["swamp", "borderbridge"], "minis": ["locust"], "comic": "comic.14"},
     {"number": 7, "act": 3, "maps": ["metrocity", "veyra_old_quarter", "capital"], "general": "hung", "main": "nuke_train", "minis": ["behemoth_mk2", "behemoth_inferno", "armored_train"], "comic": "comic.7"},
     {"number": 8, "act": 3, "maps": ["redrock", "openpit", "hydrodam", "dunebreak"], "general": "hung", "main": "moloch", "minis": ["ixion", "earth_borer"], "comic": "comic.8"},
     {"number": 9, "act": 3, "maps": ["ironport", "landingbeach", "lighthousebay", "coralisles"], "general": "hung", "main": "typhon", "minis": ["landing_hovercraft", "scylla"], "comic": "comic.9"},
     {"number": 15, "act": 3, "interlude": 3, "maps": ["frostpeak", "junglepass"], "general": "quaden", "minis": ["mega_gunship"], "comic": "comic.15"},
-    {"number": 10, "act": 4, "maps": ["frostpeak", "skyhold", "whiteout"], "general": "quaden", "main": "command_airship", "minis": ["icarus_mk0", "argus", "mega_gunship"], "comic": "comic.10"},
-    {"number": 11, "act": 4, "maps": ["rustyard", "skyhold", "frostpeak", "orbitalgate"], "general": "aurel", "main": "daedalus", "minis": ["monster", "locust"], "comic": "comic.11"},
-    {"number": 12, "act": 4, "maps": ["launchsite", "saltflat", "dunebreak", "lighthousebay"], "general": "aurel", "main": "silver_bug", "minis": ["behemoth_mk2", "scylla", "locust"], "comic": "comic.12"}
+    {"number": 10, "act": 4, "maps": ["frostpeak", "skyhold", "whiteout"], "general": "quaden", "main": "command_airship", "minis": ["icarus_mk0", "argus", "mega_gunship", "roc_gunship"], "comic": "comic.10"},
+    {"number": 11, "act": 4, "maps": ["rustyard", "skyhold", "frostpeak", "orbitalgate"], "general": "aurel", "main": "daedalus", "minis": ["monster", "locust", "daedalus_assault"], "comic": "comic.11"},
+    {"number": 12, "act": 4, "maps": ["launchsite", "saltflat", "dunebreak", "lighthousebay"], "general": "aurel", "main": "silver_bug", "minis": ["behemoth_mk2", "scylla", "locust", "icarus_interceptor"], "comic": "comic.12"}
   ],
   "generals": [
     {"id": "varga", "deck": ["light_tank", "main_battle_tank", "heavy_tank", "tank_destroyer", "ifv", "flame_tank", "twin_tank", "fpv_carrier"], "supports": ["artillery_barrage", "airstrike", "repair_drop"], "style": "varga", "stance": "Attack"},

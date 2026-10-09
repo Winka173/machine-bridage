@@ -337,3 +337,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 09/10 "xuất toàn bộ các hằng số còn thiếu ra file data" (= Pack 2 lượt 2, các literal đánh dấu de_xuat_dua_ra_du_lieu=co).
 - 09/10 "update file tối ưu, dùng sonnet 5.5 mới nhất thay vì sonnet 5".
 - 09/10 "sau đó đọc file @test/Machine_Brigade_FULL_GAME_QA_TEST_GUIDE.md @test/Machine_Brigade_NAVAL_VEHICLE_EXPANSION_SPEC_FINAL.md và prompt @test/Prompt_IMPLEMENT_NAVAL_EXPANSION_FULL.txt và thực hiện test đầy đủ" -> Docs/naval/final/ (sau Pack 2 lượt 2; chủ dự án cho phép chạy test).
+- 09/10 "làm cái này trước: đọc file @Machine_Brigade_Boss_Thiet_Ke_Tong_Hop.xlsx và sửa theo đó, code trước, ... design boss mới / vũ khí mới cứ làm sơ sài cũng được, tôi đang có 1 agent khác sẽ vào và vẽ lại toàn bộ boss và vũ khí, nhớ áp dụng các quy tắc tiết kiệm token hết mức có thể, test cũng ở mức tối thiểu" + PROMPT TRIỂN KHAI HỆ THỐNG BOSS -> Docs/bosses/design_0910/.

@@ -191,6 +191,8 @@ namespace MachineBrigade.Sim.Bosses
             // The new phase's cycle from its first step (after a change under way settles).
             v.TierStep = -1;
             v.TierNext = now;
+            // Boss design 09/10: the 50 % mark opens the hangar: its pod bays drop and its summons are called at once.
+            if (phase >= 1) _world.Abilities.CallSummons(v, now);
         }
 
         /// <summary>The opening is over: down from orbit to its first step, a satellite left up there; never back.</summary>
