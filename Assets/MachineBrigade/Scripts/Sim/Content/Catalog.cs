@@ -265,6 +265,8 @@ namespace MachineBrigade.Sim.Content
                         secondary.Add(new WeaponMount(bossEdges ? bossReach.Arm(bossId, WithEdge(Weapon(weapons, m, "weapon"), twoLayer)) : Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
                         {
                             ProjectileModel = m.Has("model") ? m.String("model") : null,
+                            GroupName = m.Has("group") ? m.String("group") : null,
+                            NewGun = m.Bool("new", false),
                             ArcCentre = m.Has("arc") ? m.FloatArray("arc")[0] * MathF.PI / 180f : 0f,
                             ArcHalf = m.Has("arc") && m.FloatArray("arc").Count > 1 ? Math.Clamp(m.FloatArray("arc")[1], 5f, 180f) * MathF.PI / 180f : 0f,
                         });
@@ -538,6 +540,7 @@ namespace MachineBrigade.Sim.Content
             // Fix prompt L4 / L5: the munition and warning rules (lane B's blocks).
             catalog.FinishFixRules(root);
             catalog.FinishWalls();
+            catalog.FinishBossDesign(root);
             catalog.CheckNaval();
             return catalog;
         }

@@ -588,7 +588,7 @@ namespace MachineBrigade.Sim.Combat
             // AI MASTER P0-C (spec 203): a boss's different heavy weapons never open fire in the same instant (checked before the
             // rhythm, which notes the opening).
             else if (target == null || state.Ammo == 0 || !CanFire(v, index, target) ||
-                     (v.Brain != null && !Bosses.BossWeaponDirector.CadenceAllows(v, index, _world.Time)) || !InRhythm(v, index)) return;
+                     (v.Brain != null && !Bosses.BossWeaponDirector.CadenceAllows(v, index, _world.Time, _world.Catalog.FireGroups)) || !InRhythm(v, index)) return;
             else if (weapon.Charge > 0f)
             {
                 state.ChargeLeft = weapon.Charge;

@@ -282,10 +282,10 @@ namespace MachineBrigade.Sim.Content
         /// <see cref="ProjectileScale"/> stays the one that gives it on the model the game ships.
         /// </summary>
         public float RoundLength { get; internal set; }
-        public float Damage { get; }
+        public float Damage { get; private set; }
 
         /// <summary>Seconds between shots. Keeps counting down while moving or retargeting.</summary>
-        public float Cooldown { get; }
+        public float Cooldown { get; private set; }
 
         // MB_FINAL F2: private set for WithReach (a boss's own copy, bossWeaponOverrides); the shared weapon never changes.
         public float Range { get; private set; }
@@ -294,7 +294,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Metres per second; a shot lands after distance / speed.</summary>
         public float ProjectileSpeed { get; }
 
-        public float SplashRadius { get; }
+        public float SplashRadius { get; private set; }
 
         /// <summary>Radius of random aim error at maximum range, in metres.</summary>
         public float Spread { get; }
@@ -464,6 +464,15 @@ namespace MachineBrigade.Sim.Content
         public float ArcCentre { get; internal set; }
 
         public float ArcHalf { get; internal set; }
+
+        /// <summary>Boss design 09/10: the fire group it belongs to (data "group": main, secondary, ciws, suppress); null: sorted by its weapon.</summary>
+        public string? GroupName { get; internal set; }
+
+        /// <summary>Boss design 09/10: a hardpoint the workbook adds (data "new": true); its damage is scaled to the boss's new-gun DPS budget.</summary>
+        public bool NewGun { get; internal set; }
+
+        /// <summary>Boss design 09/10: this mount's own damage multiplier (the budget split of a new gun); 1 for the rest.</summary>
+        public float DamageScale { get; internal set; } = 1f;
     }
 
     /// <summary>

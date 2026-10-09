@@ -133,6 +133,16 @@ namespace MachineBrigade.Sim.Content
             // 0 until FinishExtras fills in the elite default (or 1).
             def.DamageScale = v.Has("damageScale") ? Math.Clamp(v.Float("damageScale", 1f), 0.1f, 5f) : 0f;
             def.WeaponDamage = Math.Clamp(v.Float("weaponDamage", 1f), 0.1f, 10f);
+            // Boss design 09/10: the workbook's gun nerf (sheet 03: the old guns' damage and tempo) and its new-gun DPS budget.
+            if (v.Has("gunNerf"))
+            {
+                var nerf = v.Object("gunNerf");
+                def.WeaponDamage = Math.Clamp(def.WeaponDamage * Math.Clamp(nerf.Float("damage", 1f), 0.1f, 2f), 0.01f, 10f);
+                def.FireScale = Math.Clamp(nerf.Float("rate", 1f), 0.1f, 2f);
+                def.GunNerfDamage = Math.Clamp(nerf.Float("damage", 1f), 0.1f, 2f);
+            }
+            def.NewGunDps = Math.Max(0f, v.Float("newGunDps", 0f));
+            ScaleNewGuns(def);
             // Prompt 29 S03, S04.
             def.OutgoingDamageMult = Math.Clamp(v.Float("outgoingDamageMult", 1f), 0.1f, 10f);
             def.DropDelay = Math.Clamp(v.Float("dropDelay", Economy.EconomySystem.DeliverySeconds), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseExtrasFloatMin3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseExtrasFloatMax4);

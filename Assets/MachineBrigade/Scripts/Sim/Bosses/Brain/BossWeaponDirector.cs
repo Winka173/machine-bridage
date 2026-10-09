@@ -69,6 +69,66 @@ namespace MachineBrigade.Sim.Bosses
             for (var i = 0; i < v.Weapons.Length; i++) b._turretTargets.Add(i == 0 ? v.Target : v.Weapons[i].Target);
         }
 
+        // ================================================================== fire groups (boss design 09/10, sheet 12)
+
+        internal enum FireGroup : byte { Main, Secondary, Ciws, Suppress }
+
+        /// <summary>The group of mount <paramref name="i"/>: the data's "group", else sorted by what its weapon is.</summary>
+        internal static FireGroup GroupOf(Vehicle v, int i)
+        {
+            var m = v.Def.Mounts[i];
+            switch (m.GroupName)
+            {
+                case "main": return FireGroup.Main;
+                case "secondary": return FireGroup.Secondary;
+                case "ciws": return FireGroup.Ciws;
+                case "suppress": return FireGroup.Suppress;
+            }
+            var w = v.Arms[i];
+            // Air defence: it cannot hit the ground at all, or it is a light quick gun that can reach the air (a CIWS, a flak mount).
+            if (w.InterceptOnly || !w.CanTarget(false)) return FireGroup.Ciws;
+            if (w.CanTarget(true) && w.Damage < 120f && w.Cooldown < 1.5f) return FireGroup.Ciws;
+            if (w.Cooldown >= 2.5f && w.Damage >= 250f) return FireGroup.Main;
+            if (w.Cooldown < 1f || w.Clip > 0) return FireGroup.Suppress;
+            return FireGroup.Secondary;
+        }
+
+        /// <summary>A heavy blast weapon: a bomb stick or a big shell, the ones that must not stack.</summary>
+        internal static bool HeavyAoe(WeaponDef w, FireGroupRules rules) =>
+            w.Damage > 0f && !w.InterceptOnly && w.CanTarget(false) && (w.LaysStick || (w.SplashRadius >= rules.HeavyAoeRadius && w.Damage >= 250f));
+
+        private static EntityId TargetOf(Vehicle v, int i) => i == 0 ? v.Target : v.Weapons[i].Target;
+
+        /// <summary>
+        /// Whether mount <paramref name="index"/> may open fire now: no other group mount opened within its own stagger gap, fewer than
+        /// the group's cap of mounts on its target, and, for a heavy blast, no other heavy blast of the boss within the shared gap
+        /// nor its big attack under way.
+        /// </summary>
+        internal static bool GroupAllows(Vehicle v, int index, double now, FireGroupRules rules)
+        {
+            var w = v.Arms[index];
+            if (HeavyAoe(w, rules))
+            {
+                if (v.BigAttack is { Stage: not BigStage.Ready }) return false;
+                for (var j = 0; j < v.Arms.Length; j++)
+                    if (j != index && HeavyAoe(v.Arms[j], rules) && now - v.Weapons[j].OpenedAt < rules.HeavyAoeGap) return false;
+            }
+            var g = GroupOf(v, index);
+            var rule = g switch { FireGroup.Main => rules.Main, FireGroup.Secondary => rules.Secondary, FireGroup.Suppress => rules.Suppress, _ => rules.Ciws };
+            if (rule.Free) return true;
+            var gap = rule.GapLo + (rule.GapHi - rule.GapLo) * (index * 0.618034f % 1f);
+            var target = TargetOf(v, index);
+            var active = 0;
+            for (var j = 0; j < v.Arms.Length; j++)
+            {
+                if (j == index || GroupOf(v, j) != g) continue;
+                var s = v.Weapons[j];
+                if (now - s.OpenedAt < gap) return false;
+                if (target.IsValid && TargetOf(v, j) == target && now - s.FiredAt < rule.Window) active++;
+            }
+            return active < rule.MaxAtTarget;
+        }
+
         // ================================================================== cadence (spec 203)
 
         /// <summary>A heavy weapon for the cadence director: slow, not a stream, not a machine gun, able to hit the ground.</summary>
@@ -79,9 +139,11 @@ namespace MachineBrigade.Sim.Bosses
         /// Spec 203: whether mount <paramref name="index"/> of a boss may open fire now: no other heavy weapon of a different
         /// kind opened fire within the gap. True for everything else (and for any vehicle without a brain).
         /// </summary>
-        internal static bool CadenceAllows(Vehicle v, int index, double now)
+        internal static bool CadenceAllows(Vehicle v, int index, double now, FireGroupRules? groups = null)
         {
             if (v.Brain == null || index < 0 || index >= v.Arms.Length) return true;
+            // Boss design 09/10: fire groups and the shared heavy-blast gap (a boss with many mounts only).
+            if (groups != null && v.Arms.Length >= groups.MinMounts && !GroupAllows(v, index, now, groups)) return false;
             var w = v.Arms[index];
             if (!Heavy(w) || w.Simultaneous) return true;
             var heavy = 0;

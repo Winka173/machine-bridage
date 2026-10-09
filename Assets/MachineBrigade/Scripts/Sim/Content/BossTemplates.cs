@@ -29,13 +29,13 @@ namespace MachineBrigade.Sim.Content
     /// Big attacks may inherit another ("from"), their strikes merged by index. Nothing here touches the
     /// sim: the result is ordinary vehicle data, parsed as before.
     /// </summary>
-    internal static class BossTemplates
+    internal static partial class BossTemplates
     {
         /// <summary>Keys a variant never takes from its parent.</summary>
         private static readonly string[] NotInherited =
         {
             "id", "rank", "variantOf", "variant", "phases", "radioSpawn", "bigAttack", "bigAttackScale", "damageScale", "weaponDamage", "mountWeapons",
-            "size", "dropParts", "tint", "mark", "variantName", "hiddenNodes",
+            "size", "dropParts", "tint", "mark", "variantName", "hiddenNodes", "gunNerf", "newGunDps",
         };
 
         /// <summary>Every vehicle entry, bosses built from their templates, in data order.</summary>
@@ -45,6 +45,8 @@ namespace MachineBrigade.Sim.Content
             var library = Raw(root, "bossParts");
             var ranks = Raw(root, "bossRanks");
             var entries = new List<JsonObject>(vehicles);
+            // Boss design 09/10: the workbook's per-boss rows (balance.json "bossDesign") go onto the raw entries first.
+            ApplyDesign(root, entries);
             var built = new Dictionary<string, object?>[entries.Count];
             var beforeRank = new Dictionary<string, Dictionary<string, object?>>();
             // Bosses and variants first without their variants' parents; then the variants.
@@ -65,7 +67,7 @@ namespace MachineBrigade.Sim.Content
                     {
                         var parent = (string)parentId!;
                         if (!beforeRank.TryGetValue(parent, out var from)) throw new FormatException($"{path}.variantOf: '{parent}' is no boss built before it.");
-                        d = Variant(from, raw, parent, path);
+                        d = Variant(from, raw, parent, path, library);
                     }
                     else
                     {
@@ -100,6 +102,12 @@ namespace MachineBrigade.Sim.Content
                 if (!frames.TryGetValue(frameId, out var frame) || frame is not Dictionary<string, object?> fd) throw new FormatException($"{path}.frame: unknown body frame '{frameId}'.");
                 if (fd.TryGetValue("defaults", out var defaults) && defaults is Dictionary<string, object?> dd) d = Merge(dd, d);
             }
+            ExpandLibraryParts(d, library, path);
+            return d;
+        }
+
+        private static void ExpandLibraryParts(Dictionary<string, object?> d, Dictionary<string, object?> library, string path)
+        {
             if (d.TryGetValue("parts", out var p) && p is List<object?> parts)
             {
                 var secondary = d.TryGetValue("secondary", out var s) && s is List<object?> list ? new List<object?>(list) : new List<object?>();
@@ -114,19 +122,18 @@ namespace MachineBrigade.Sim.Content
                         if (!merged.ContainsKey("mounts"))
                         {
                             var mount = new Dictionary<string, object?> { ["weapon"] = weapon };
-                            foreach (var key in new[] { "slot", "aim", "arc", "model" })
+                            foreach (var key in new[] { "slot", "aim", "arc", "model", "group", "new" })
                                 if (merged.TryGetValue(key, out var value) && value != null) mount[key] = value;
                             if (!mount.ContainsKey("slot")) mount["slot"] = "gun";
                             secondary.Add(mount);
                             merged["mounts"] = new List<object?> { (double)secondary.Count };
                         }
-                        foreach (var key in new[] { "weapon", "slot", "aim", "arc", "model" }) merged.Remove(key);
+                        foreach (var key in new[] { "weapon", "slot", "aim", "arc", "model", "group", "new" }) merged.Remove(key);
                     }
                     parts[k] = merged;
                 }
                 if (secondary.Count > 0) d["secondary"] = secondary;
             }
-            return d;
         }
 
         /// <summary>
@@ -266,7 +273,7 @@ namespace MachineBrigade.Sim.Content
         // ================================================================== variants
 
         /// <summary>A mini boss from a boss's data (prompt 20 E.5): its parts cut down, resized, recoloured, its own fields on top.</summary>
-        private static Dictionary<string, object?> Variant(Dictionary<string, object?> parent, Dictionary<string, object?> own, string parentId, string path)
+        private static Dictionary<string, object?> Variant(Dictionary<string, object?> parent, Dictionary<string, object?> own, string parentId, string path, Dictionary<string, object?> library)
         {
             var d = Copy(parent);
             foreach (var key in NotInherited) d.Remove(key);
@@ -284,6 +291,13 @@ namespace MachineBrigade.Sim.Content
             {
                 var drop = Strings(dropList);
                 Strip(d, id => !drop.Contains(id));
+            }
+            // Boss design 09/10: parts of its own (a gun mount, a bay, a door) on top of the ones it keeps.
+            if (rules.TryGetValue("add", out var ad) && ad is List<object?> addList)
+            {
+                if (!d.TryGetValue("parts", out var existing) || existing is not List<object?>) d["parts"] = new List<object?>();
+                foreach (var a in addList) ((List<object?>)d["parts"]!).Add(Clone(a));
+                ExpandLibraryParts(d, library, path);
             }
             // Part by part changes (a thinner hull's parts, a hardened one).
             if (rules.TryGetValue("tune", out var t) && t is Dictionary<string, object?> tune && d.TryGetValue("parts", out var p) && p is List<object?> parts)
