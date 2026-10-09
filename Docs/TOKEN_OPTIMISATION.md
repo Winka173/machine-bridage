@@ -252,15 +252,13 @@ Fewer turns
 
 The Agent tool's `model` option takes `opus`, `sonnet`, `haiku` or `fable`.
 
-**Owner rule (03/10): "sonnet" means Sonnet 5.0 only. NEVER use Sonnet 5.5.** Pinned on 03/10: the user settings
-(`~/.claude/settings.json`, `env.ANTHROPIC_DEFAULT_SONNET_MODEL = "claude-sonnet-5"`) make the `sonnet` alias resolve to
-Sonnet 5.0 in every session started after that change; a session already running keeps its old alias until restarted.
-Model ids: Sonnet 5.0 `claude-sonnet-5`, Sonnet 5.5 `claude-sonnet-5-5` (forbidden), Opus 5.5 `claude-opus-5-5`,
-Opus 5.0 `claude-opus-5`, Haiku 4.5 `claude-haiku-4-5-20251001`. The Agent tool's `sonnet` alias
-resolves to the newest Sonnet (5.5 in this setup), so it must NOT be used unless the alias is pinned to Sonnet 5.0
-(Claude Code reads `ANTHROPIC_DEFAULT_SONNET_MODEL` from the environment or settings to pin an alias to a full model
-id; set it only with the owner's word and the exact Sonnet 5.0 id). Until it is pinned, the mid-tier jobs below use
-`opus` (or `haiku` where the job is routine).
+**Owner rule (09/10): "sonnet" means Sonnet 5.5, the newest Sonnet** (replaces the 03/10 rule "Sonnet 5.0 only, never
+5.5"). The user settings (`~/.claude/settings.json`, `env.ANTHROPIC_DEFAULT_SONNET_MODEL = "claude-sonnet-5-5"`) pin the
+`sonnet` alias to Sonnet 5.5 in every session started after that change; a session already running keeps its old alias
+until restarted. Model ids: Sonnet 5.5 `claude-sonnet-5-5` (use), Sonnet 5.0 `claude-sonnet-5` (no longer used),
+Opus 5.5 `claude-opus-5-5`, Opus 5.0 `claude-opus-5`, Haiku 4.5 `claude-haiku-4-5-20251001`. Owner (06/10): data and
+balance passes may use sonnet. If a sonnet agent is cut by an API usage-policy false positive, relaunch the same brief on
+`opus`.
 
 **Owner rule (03/10): the strongest model used here is `opus`. NEVER use `fable`, at any cost** (not for agents, not
 for the lead, not through the `best` alias, which can resolve to Fable: always name `opus` explicitly).
@@ -282,11 +280,11 @@ decides how they look use the most capable allowed model, `opus`, with no token 
 | Model rebuild waves, new builders, kit parts, spec writing/research for models | `opus` | Owner rule; long multi-model runs with many gate rounds need the strongest allowed model |
 | VFX / effects (explosions, smoke, rings, wrecks), card/render look | `opus` | Owner rule; visual judgement on renders |
 | Gameplay / Sim bug fixes, AI and tactics, balance design | `opus` | Root-cause work across systems; a wrong fix costs more than the tokens |
-| Code-reading audits, export passes (`Docs/export`), doc generators, PDF build fixes | `sonnet` (= Sonnet 5.0, pinned) | Mechanical but needs reading code correctly |
-| Writing tests (not running them) | `sonnet` (= Sonnet 5.0, pinned) | Follows existing test patterns; the lead or a reviewer checks |
+| Code-reading audits, export passes (`Docs/export`), doc generators, PDF build fixes | `sonnet` (= Sonnet 5.5, pinned) | Mechanical but needs reading code correctly |
+| Writing tests (not running them) | `sonnet` (= Sonnet 5.5, pinned) | Follows existing test patterns; the lead or a reviewer checks |
 | Routine docs, CHANGELOG/DECISIONS bookkeeping, log summaries, report formatting | `haiku` | Simple text work; spot-check its first runs (not yet tried on this repo) |
 | File moves, archive passes, simple greps and counts | `haiku` | Deterministic steps; mistakes show in `git status` |
-| Broad read-only searches ("where is X used") | Explore agent, `model: haiku` or `sonnet` (= 5.0) | Read-only, skips CLAUDE.md and git status so it starts cheaper [4]; cannot be resumed |
+| Broad read-only searches ("where is X used") | Explore agent, `model: haiku` or `sonnet` (= 5.5) | Read-only, skips CLAUDE.md and git status so it starts cheaper [4]; cannot be resumed |
 | Merges, renders, owner-facing image checks | the lead itself | `merge_lane.sh` / `render_wave.sh` are one call each; the lead needs the outcome in its own context |
 | The lead session | `opus` (never `fable`) | Judgement, owner dialogue, reviewing reports; never switch mid-session (cache) |
 
@@ -369,7 +367,7 @@ Before any task
 
 Lead
 - [ ] Brief = "Read Docs/AGENT_RULES.md first" + task, paths, ids, checks, report format; inputs by path.
-- [ ] Model per section 5: opus for models, VFX, Sim fixes, balance (never fable); sonnet (= Sonnet 5.0, pinned; never 5.5) for audits, exports, tests;
+- [ ] Model per section 5: opus for models, VFX, Sim fixes, balance (never fable); sonnet (= Sonnet 5.5, pinned) for data/balance passes, audits, exports, tests;
       haiku for routine docs, moves, greps; Explore (haiku) for broad searches.
 - [ ] Read the handback, not the files; no re-reading what it summarised.
 - [ ] Merge in batches: `merge_lane.sh ... 2>&1 | tail -15`; `--stat` only.

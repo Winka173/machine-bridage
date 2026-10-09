@@ -335,3 +335,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 06/10 "làm render ảnh thẻ cho các tàu trong tab Hải quân".
 - 06/10 "chạy luôn task export".
 - 09/10 "xuất toàn bộ các hằng số còn thiếu ra file data" (= Pack 2 lượt 2, các literal đánh dấu de_xuat_dua_ra_du_lieu=co).
+- 09/10 "update file tối ưu, dùng sonnet 5.5 mới nhất thay vì sonnet 5".
