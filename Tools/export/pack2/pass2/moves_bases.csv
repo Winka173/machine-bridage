@@ -41,12 +41,12 @@ Game/Match/GearCatalog.Tower.cs,45,120,0.16f,bases.gearCatalog.ammoHandlingTop2N
 Game/Match/GearCatalog.Tower.cs,66,81,4f,bases.gearCatalog.towerCounterBatteryEpic1,count,gioi_han_thuc_the,04,pass2:static array table (FloatArray / IntArray entry),,"arg:GearCatalog.V: new(TraitId.TowerCounterBattery, GearSlot.TowerSystems, NoBranch, V(4f), V(6f)),"
 Game/Match/GearCatalog.Tower.cs,66,88,6f,bases.gearCatalog.towerCounterBatteryLegendary1,count,gioi_han_thuc_the,04,pass2:static array table (FloatArray / IntArray entry),,"arg:GearCatalog.V: new(TraitId.TowerCounterBattery, GearSlot.TowerSystems, NoBranch, V(4f), V(6f)),"
 Game/Match/GearCatalog.Tower.cs,106,39,0.1f,bases.gearCatalog.buildTowerCapsCaps,m,ban_kinh,04,pass2:inline,,assign: caps[(int)StatId.Range] = 0.1f;
-Sim/Content/BaseRules.cs,96,67,2,bases.baseRules.rebuildThoi,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
-Sim/Content/BaseRules.cs,96,70,25f,bases.baseRules.rebuildThoi2,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
-Sim/Content/BaseRules.cs,96,77,4,bases.baseRules.rebuildThoi3,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
-Sim/Content/BaseRules.cs,96,80,40f,bases.baseRules.rebuildThoi4,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
-Sim/Content/BaseRules.cs,96,87,7,bases.baseRules.rebuildThoi5,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
-Sim/Content/BaseRules.cs,96,90,60f,bases.baseRules.rebuildThoi6,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
+Sim/Content/BaseRules.cs,96,67,2,bases.baseRules.rebuild1Cp,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
+Sim/Content/BaseRules.cs,96,70,25f,bases.baseRules.rebuild1Cooldown,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
+Sim/Content/BaseRules.cs,96,77,4,bases.baseRules.rebuild2Cp,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
+Sim/Content/BaseRules.cs,96,80,40f,bases.baseRules.rebuild2Cooldown,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
+Sim/Content/BaseRules.cs,96,87,7,bases.baseRules.rebuild3Cp,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
+Sim/Content/BaseRules.cs,96,90,60f,bases.baseRules.rebuild3Cooldown,s,thoi_gian,04,pass2:inline,,"tuple: private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };"
 Sim/Content/BaseRules.cs,220,127,5,bases.baseRules.parseIntMax,count,gioi_han_thuc_the,04,pass2:inline,,"math_clamp: var loadout = new Modes.BaseLoadout { HqLevel = Math.Clamp(r.Int(""level"", rules._reference.Count + 1), 1, 5) };"
 Sim/Content/BaseRules.cs,245,93,3,bases.baseRules.parseFallback,m,ban_kinh,04,pass2:inline,,"arg:JsonObject.Int: foreach (var key in levels.Keys) rules._aiLevels[key] = levels.Int(key, 3);"
 Sim/Content/BaseSites.cs,55,86,5f,bases.hardpointDef.acrossSizeValue,count,gioi_han_thuc_the,04,pass2:inline,,"switch_arm: public static float Across(SlotSize size) => size switch { SlotSize.Small => 5f, SlotSize.Medium => 6.5f, _ => 9f };"
@@ -55,28 +55,26 @@ Sim/Content/BaseSites.cs,55,120,9f,bases.hardpointDef.acrossSizeValue3,count,gio
 Sim/Content/BaseSites.cs,58,67,5.5f,bases.hardpointDef.classOfMetresMax,m,ban_kinh,04,pass2:inline,,compare: public static SlotSize ClassOf(float metres) => metres <= 5.5f ? SlotSize.Small : metres <= 7.5f ? SlotSize.Medium : SlotSize.Large;
 Sim/Content/BaseSites.cs,58,101,7.5f,bases.hardpointDef.classOfMetresMax2,m,ban_kinh,04,pass2:inline,,compare: public static SlotSize ClassOf(float metres) => metres <= 5.5f ? SlotSize.Small : metres <= 7.5f ? SlotSize.Medium : SlotSize.Large;
 Sim/Content/FortressDef.cs,86,47,2,bases.fortressDef.layeredCountMin,count,gioi_han_thuc_the,04,pass2:inline,,compare: public bool Layered => Rings.Count >= 2;
-Sim/Content/FortressDef.cs,136,30,3,bases.fortressDef.insideCountMax,count,gioi_han_thuc_the,04,pass2:inline,,compare: if (poly.Count < 3) return false;
-Sim/Content/FortressDef.cs,199,50,2,bases.fortressDef.pointsI,count,gioi_han_thuc_the,04,pass2:inline,,"compound_assign: for (var i = 0; i < flat.Count; i += 2) list.Add(new Vector2(flat[i], flat[i + 1]));"
-Sim/Content/HqTypeRules.cs,67,44,60f,bases.hqTypeRules.n12,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
-Sim/Content/HqTypeRules.cs,67,49,60f,bases.hqTypeRules.n22,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
-Sim/Content/HqTypeRules.cs,67,54,60f,bases.hqTypeRules.n32,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
-Sim/Content/HqTypeRules.cs,67,59,60f,bases.hqTypeRules.n4,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
-Sim/Content/HqTypeRules.cs,67,64,60f,bases.hqTypeRules.n52,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
-Sim/Content/HqTypeRules.cs,98,41,6,bases.hqTypeRules.n13,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
-Sim/Content/HqTypeRules.cs,98,44,8,bases.hqTypeRules.n23,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
-Sim/Content/HqTypeRules.cs,98,47,10,bases.hqTypeRules.n33,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
-Sim/Content/HqTypeRules.cs,98,51,12,bases.hqTypeRules.n42,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
-Sim/Content/HqTypeRules.cs,98,55,15,bases.hqTypeRules.n53,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
-Sim/Content/HqTypeRules.cs,113,36,0.002f,bases.hqTypeRules.n15,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
-Sim/Content/HqTypeRules.cs,113,44,0.0025f,bases.hqTypeRules.n25,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
-Sim/Content/HqTypeRules.cs,113,53,0.003f,bases.hqTypeRules.n35,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
-Sim/Content/HqTypeRules.cs,113,61,0.0035f,bases.hqTypeRules.n43,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
-Sim/Content/HqTypeRules.cs,113,70,0.004f,bases.hqTypeRules.n55,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
-Sim/Content/HqTypeRules.cs,116,35,0.08f,bases.hqTypeRules.n16,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
-Sim/Content/HqTypeRules.cs,116,42,0.10f,bases.hqTypeRules.n26,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
-Sim/Content/HqTypeRules.cs,116,49,0.12f,bases.hqTypeRules.n36,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
-Sim/Content/HqTypeRules.cs,116,56,0.15f,bases.hqTypeRules.n44,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
-Sim/Content/HqTypeRules.cs,116,63,0.18f,bases.hqTypeRules.n56,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
+Sim/Content/HqTypeRules.cs,67,44,60f,bases.hqTypeRules.garrisonEvery1,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
+Sim/Content/HqTypeRules.cs,67,49,60f,bases.hqTypeRules.garrisonEvery2,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
+Sim/Content/HqTypeRules.cs,67,54,60f,bases.hqTypeRules.garrisonEvery3,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
+Sim/Content/HqTypeRules.cs,67,59,60f,bases.hqTypeRules.garrisonEvery4,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
+Sim/Content/HqTypeRules.cs,67,64,60f,bases.hqTypeRules.garrisonEvery5,x,tan_suat,04,pass2:inline,,"table: private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };"
+Sim/Content/HqTypeRules.cs,98,41,6,bases.hqTypeRules.garrisonCaps1,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
+Sim/Content/HqTypeRules.cs,98,44,8,bases.hqTypeRules.garrisonCaps2,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
+Sim/Content/HqTypeRules.cs,98,47,10,bases.hqTypeRules.garrisonCaps3,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
+Sim/Content/HqTypeRules.cs,98,51,12,bases.hqTypeRules.garrisonCaps4,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
+Sim/Content/HqTypeRules.cs,98,55,15,bases.hqTypeRules.garrisonCaps5,x,khac,04,pass2:inline,,"table: private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };"
+Sim/Content/HqTypeRules.cs,113,36,0.002f,bases.hqTypeRules.regen1,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
+Sim/Content/HqTypeRules.cs,113,44,0.0025f,bases.hqTypeRules.regen2,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
+Sim/Content/HqTypeRules.cs,113,53,0.003f,bases.hqTypeRules.regen3,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
+Sim/Content/HqTypeRules.cs,113,61,0.0035f,bases.hqTypeRules.regen4,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
+Sim/Content/HqTypeRules.cs,113,70,0.004f,bases.hqTypeRules.regen5,x,khac,04,pass2:inline,,"table: private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };"
+Sim/Content/HqTypeRules.cs,116,35,0.08f,bases.hqTypeRules.dome1,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
+Sim/Content/HqTypeRules.cs,116,42,0.10f,bases.hqTypeRules.dome2,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
+Sim/Content/HqTypeRules.cs,116,49,0.12f,bases.hqTypeRules.dome3,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
+Sim/Content/HqTypeRules.cs,116,56,0.15f,bases.hqTypeRules.dome4,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
+Sim/Content/HqTypeRules.cs,116,63,0.18f,bases.hqTypeRules.dome5,x,khac,04,pass2:inline,,"table: private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };"
 Sim/Content/HqTypeRules.cs,179,33,5f,bases.hqTypeRules.parseFloatFloor2,m,ban_kinh,04,pass2:inline,,"math_max: r.Radius = Math.Max(5f, o.Float(""radius"", r.Radius));"
 Sim/Content/HqTypeRules.cs,228,42,0.5f,bases.hqTypeRules.parseFloatFloor4,s,thoi_gian,04,pass2:inline,,"math_max: r.DomeSeconds = Math.Max(0.5f, s.Float(""domeSeconds"", r.DomeSeconds));"
 Sim/Content/WallRules.cs,185,112,0.5f,bases.wallSegmentDef.outMinScale,x,ban_kinh,04,pass2:inline,,"multiply: public Vector2 Out(float metres) => Center + Core.SimMath.Forward(Facing) * (MathF.Min(Width, Depth) * 0.5f + metres);"
@@ -85,27 +83,18 @@ Sim/Modes/BaseStrength.cs,70,87,0.05f,bases.baseStrength.scoreDamageTakenFloor,x
 Sim/Modes/BaseStrength.cs,80,129,3,bases.baseStrength.referenceLevel,x,nguong,04,pass2:inline,,"arg:BaseLoadout.ForAi: return (float)References.GetValue(catalog, c => MathF.Max(1f, Power(c, BaseLoadout.ForAi(c, ""Normal"", ""default"", 1, 3))));"
 Sim/Modes/BaseStrength.cs,105,44,0.01f,bases.baseStrength.waveScaleScoreFloor,count,gioi_han_thuc_the,04,pass2:inline,,"math_max: Math.Clamp(MathF.Pow(MathF.Max(0.01f, score / 100f), SimTunables.Modes.BaseStrengthRules.WaveScaleExponent),"
 Sim/Modes/BaseStrength.cs,105,59,100f,bases.baseStrength.waveScaleScoreDivisor,x,gioi_han_thuc_the,04,pass2:inline,,"divide: Math.Clamp(MathF.Pow(MathF.Max(0.01f, score / 100f), SimTunables.Modes.BaseStrengthRules.WaveScaleExponent),"
-Sim/Modes/BaseSystem.Hangars.cs,61,71,0.01f,bases.baseSystem.stepHangarsLengthSquaredMin,m,ban_kinh,04,pass2:inline,,compare: var heading = SimMath.HeadingOf(dir.LengthSquared() > 0.01f ? dir : Vector2.UnitX);
-Sim/Modes/BaseSystem.Hangars.cs,62,80,0.01f,bases.baseSystem.stepHangarsLengthSquaredMin,m,ban_kinh,04,pass2:inline,,compare: var at = _world.ClampToMap(v.Position + (dir.LengthSquared() > 0.01f ? Vector2.Normalize(dir) : Vector2.UnitX) * (v.Def.Radius + 4f));
 Sim/Modes/BaseSystem.Hangars.cs,62,146,4f,bases.baseSystem.stepHangarsRadiusAdd,m,ban_kinh,04,pass2:inline,,add: var at = _world.ClampToMap(v.Position + (dir.LengthSquared() > 0.01f ? Vector2.Normalize(dir) : Vector2.UnitX) * (v.Def.Radius + 4f));
-Sim/Modes/BaseSystem.Hangars.cs,101,58,0.01f,bases.baseSystem.hangarPostLengthSquaredMin,m,ban_kinh,04,pass2:inline,,compare: return _world.ClampToMap(d.LengthSquared() > 0.01f ? hangar.Position + Vector2.Normalize(d) * (hangar.Def.Radius + 15f) : hangar.Position);
 Sim/Modes/BaseSystem.Hangars.cs,101,128,15f,bases.baseSystem.hangarPostRadiusAdd,m,ban_kinh,04,pass2:inline,,add: return _world.ClampToMap(d.LengthSquared() > 0.01f ? hangar.Position + Vector2.Normalize(d) * (hangar.Def.Radius + 15f) : hangar.Position);
 Sim/Modes/BaseSystem.HqTypes.cs,88,56,5,bases.baseSystem.setUpHqHqLevelMax,x,nguong,04,pass2:inline,,"math_clamp: s.Level = Math.Clamp(b.Loadout.HqLevel, 1, 5);"
 Sim/Modes/BaseSystem.HqTypes.cs,139,37,0.5f,bases.baseSystem.marksShareMax,x,nguong,04,pass2:inline,,compare: if (!s.Half && share <= 0.5f)
 Sim/Modes/BaseSystem.HqTypes.cs,189,108,0.5f,bases.baseSystem.garrisonRadiusScale,x,ban_kinh,04,pass2:inline,,"multiply: var post = intruder != null ? Toward(b.HqPosition, intruder.Position, MathF.Min(rules.Radius * 0.5f, Vector2.Distance(b.HqPosition, intruder.Position)"
 Sim/Modes/BaseSystem.HqTypes.cs,195,81,5f,bases.baseSystem.garrisonRadiusAdd,m,ban_kinh,04,pass2:inline,,"add: if (Vector2.Distance(g.Position, b.HqPosition) > rules.Radius + 5f && g.Order.Kind != OrderKind.Idle)"
-Sim/Modes/BaseSystem.HqTypes.cs,215,40,0.01f,bases.baseSystem.towardLengthSquaredMin,m,ban_kinh,04,pass2:inline,,compare: return d.LengthSquared() > 0.01f ? from + Vector2.Normalize(d) * metres : from;
-Sim/Modes/BaseSystem.HqTypes.cs,242,87,0.01f,bases.baseSystem.turnOutGarrisonCapAdd,count,tran,04,pass2:inline,,add: if (ids.Count == 0 || GarrisonCp(s) + cost > rules.GarrisonCap(s.Level) + 0.01f) return false;
 Sim/Modes/BaseSystem.HqTypes.cs,244,85,6f,bases.baseSystem.turnOutTryGetVehicleFalse,m,ban_kinh,04,pass2:inline,,"conditional: var hqRadius = _world.TryGetVehicle(b.Hq, out var hq) ? hq.Def.Radius : 6f;"
 Sim/Modes/BaseSystem.HqTypes.cs,245,65,6f,bases.baseSystem.turnOutHqRadiusAdd,m,ban_kinh,04,pass2:inline,,"add: var out0 = Toward(b.HqPosition, towards, hqRadius + 6f);"
-Sim/Modes/BaseSystem.HqTypes.cs,247,46,0.01f,bases.baseSystem.turnOutLengthSquaredMin,m,ban_kinh,04,pass2:inline,,"compare: var side = dir.LengthSquared() > 0.01f ? Vector2.Normalize(new Vector2(-dir.Y, dir.X)) : Vector2.UnitX;"
 Sim/Modes/BaseSystem.HqTypes.cs,250,90,5f,bases.baseSystem.turnOutKScale,x,gioi_han_thuc_the,04,pass2:inline,,multiply: var at = _world.ClampToMap(out0 + side * ((k - (ids.Count - 1) * 0.5f) * 5f));
-Sim/Modes/BaseSystem.HqTypes.cs,251,108,0.01f,bases.baseSystem.turnOutLengthSquaredMin,m,ban_kinh,04,pass2:inline,,"compare: var v = _world.SpawnVehicle(ids[k].Id, b.Team, at, SimMath.HeadingOf(dir.LengthSquared() > 0.01f ? dir : Vector2.UnitX));"
 Sim/Modes/BaseSystem.cs,178,69,12f,bases.baseSystem.establishAwayScale,x,khac,04,pass2:inline,,multiply: var hqAt = site?.Hq ?? _world.ClampToMap(rally + away * 12f);
 Sim/Modes/BaseSystem.cs,567,130,7f,bases.baseSystem.tryGetDropZoneScale,x,ban_kinh,04,pass2:inline,,multiply: var spot = _world.ClampToMap(v.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * 7f);
-Sim/Modes/BaseSystem.cs,605,130,1e7f,bases.baseSystem.stepAmount,x,sat_thuong,04,pass2:inline,,"arg:DamageSystem.Apply: if (_world.TryGetVehicle(slot.Structure, out var tower) && tower.IsAlive) _world.Damage.Apply(tower, 1e7f, DamageType.HighExplosive);"
 Sim/Modes/BaseSystem.cs,629,156,30f,bases.baseSystem.watchTowerFalse,s,thoi_gian,04,pass2:inline,,"conditional: var cooldown = slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCooldown(def) : 30f;"
 Sim/Modes/WallSystem.cs,185,62,5,bases.wallSystem.keepsAnchorsMaxRings,x,sat_thuong,04,pass2:inline,,"arg:NavGrid.TryNearestWalkable: if (r == 0 && grid.TryNearestWalkable(a, 5, out var open)) r = grid.RegionOf(open);"
-Sim/Modes/WallSystem.cs,217,44,1e7f,bases.wallSystem.onDestroyedAmount,x,sat_thuong,04,pass2:inline,,"arg:DamageSystem.Apply: _world.Damage.Apply(tower, 1e7f, DamageType.HighExplosive);"
 Sim/Modes/WallSystem.cs,285,95,3f,bases.wallSystem.rubbleRouteMinAdd,m,ban_kinh,04,pass2:inline,,"add: var inside = RegionNear(s.Def.Out(-(MathF.Min(s.Def.Width, s.Def.Depth) + 3f)));"
 Sim/Modes/WallSystem.cs,300,54,2,bases.wallSystem.regionNearMaxRings,x,sat_thuong,04,pass2:inline,,"arg:NavGrid.TryNearestWalkable: if (r == 0 && grid.TryNearestWalkable(p, 2, out var open)) r = grid.RegionOf(open);"

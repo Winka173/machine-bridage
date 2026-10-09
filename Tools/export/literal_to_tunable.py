@@ -212,7 +212,7 @@ def _math_rule(c, src_line: str):
     if v is not None and v != 0 and abs(v) <= 1e-3 and (ctx in ("math_max", "math_min", "math_clamp", "compare", "subtract", "add", "equals")
                                                          or "e-" in lit.lower()):
         return "math: a float epsilon (guards a division or a 'not zero' test)"
-    if v is not None and abs(v) >= 1e8:
+    if v is not None and abs(v) >= 1e6:
         return "sentinel: a huge number meaning 'none' / 'never' (not a quantity)"
     if v in (31, 32, 63, 64) and re.search(r"<<|>>", src_line):
         return "bit width: the team bit mask / a 32-bit shift"
@@ -226,6 +226,14 @@ def _math_rule(c, src_line: str):
         return "math: rounding digits"
     if v == 0.5 and ctx == "subtract" and re.search(r"NextDouble\(\)\)?\s*-\s*$", before):
         return "math: a random draw centred on 0 (r - 0.5)"
+    if v is not None and 0 < v <= 0.01 and ctx == "compare" and re.search(r"Length(Squared)?\(\)\s*[<>]=?\s*" + re.escape(lit), src_line):
+        return "math: a zero-length guard (a vector is normalised only when it is longer than this)"
+    if v == 0.01 and ctx == "add" and re.search(r"[<>]", src_line):
+        return "math: a float tolerance on a comparison"
+    if v == 3 and re.search(r"poly\.Count\s*<\s*3", src_line):
+        return "math: a polygon needs three points"
+    if v == 2 and ctx == "compound_assign" and re.search(r"\+=\s*2\)", src_line) and "flat" in src_line:
+        return "data format: x, z pairs"
     if ctx == "modulo" and v == 2:
         return "math: parity (even / odd: alternate sides, or x, z pairs in the data)"
     if ctx == "modulo" and v in (90, 180, 360):

@@ -34,11 +34,17 @@ internal static class TableNames
             if (p is MemberDeclarationSyntax) break;
             switch (p)
             {
+                case ArgumentSyntax targ when targ.Parent is TupleExpressionSyntax tup:
+                {
+                    var ti = tup.Arguments.IndexOf(targ);
+                    parts.Add(targ.NameColon?.Name.Identifier.Text ?? TupleElementName(tup, ti) ?? "part" + (ti + 1));
+                    break;
+                }
                 case ArgumentSyntax arg when arg.Parent is BaseArgumentListSyntax list:
                 {
                     var call = list.Parent;
                     var idx = list.Arguments.IndexOf(arg);
-                    if (call is TupleExpressionSyntax) { parts.Add(arg.NameColon?.Name.Identifier.Text ?? "part" + (idx + 1)); break; }
+                    if (call is TupleExpressionSyntax) { parts.Add(arg.NameColon?.Name.Identifier.Text ?? TupleElementName(call, idx) ?? "part" + (idx + 1)); break; }
                     var sym = call != null && model != null ? model.GetSymbolInfo(call).Symbol as IMethodSymbol : null;
                     string pname = arg.NameColon?.Name.Identifier.Text ?? "";
                     var isParams = false;
@@ -103,6 +109,9 @@ internal static class TableNames
             }
             else rowId = field!.Declaration.Variables[0].Identifier.Text;
         }
+        else if (field != null && field.Declaration.Variables.Count == 1 && field.Declaration.Variables[0].Initializer is { } fi2 && fi2.Value.Span.Contains(lit.Span)
+                 && node.Parent is EqualsValueClauseSyntax)
+            rowId = field.Declaration.Variables[0].Identifier.Text; // an instance field's own table: its name
         else rowId = "";
         parts.Reverse();
         var sb = new System.Text.StringBuilder(Ident(rowId));
@@ -116,6 +125,17 @@ internal static class TableNames
         if (name == "") return null;
         if (char.IsDigit(name[0])) name = "n" + name;
         return name.Length > 60 ? name[..60] : name;
+    }
+
+    /// <summary>The declared name of a tuple element ((int cp, float seconds)[] x = { (2, 25f) } -> "seconds" for index 1).</summary>
+    private static string? TupleElementName(SyntaxNode tuple, int idx)
+    {
+        var decl = tuple.Ancestors().OfType<VariableDeclarationSyntax>().FirstOrDefault();
+        var t = decl?.Type;
+        while (t is ArrayTypeSyntax at) t = at.ElementType;
+        if (t is GenericNameSyntax g && g.TypeArgumentList.Arguments.Count == 1) t = g.TypeArgumentList.Arguments[0];
+        if (t is TupleTypeSyntax tt && idx < tt.Elements.Count) return tt.Elements[idx].Identifier.Text is { Length: > 0 } n ? n : null;
+        return null;
     }
 
     /// <summary>A table row's id: Id = "x" in its initializer, else its first string argument, else its first enum argument.</summary>

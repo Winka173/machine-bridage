@@ -1910,7 +1910,19 @@
       "bulwarkShare": { "value": 0.35, "unit": "share", "kind": "nguong", "linh_vuc": "04", "code": "Gear.BulwarkShare" }
     },
     "baseSystem": {
-      "lookEvery": { "value": 0.25, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseSystem.LookEvery" }
+      "lookEvery": { "value": 0.25, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseSystem.LookEvery" },
+      "stepHangarsRadiusAdd": { "value": 4.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.Hangars.cs:62)" },
+      "hangarPostRadiusAdd": { "value": 15.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.Hangars.cs:101)" },
+      "setUpHqHqLevelMax": { "value": 5, "unit": "x", "kind": "nguong", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.HqTypes.cs:88)" },
+      "marksShareMax": { "value": 0.5, "unit": "x", "kind": "nguong", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.HqTypes.cs:139)" },
+      "garrisonRadiusScale": { "value": 0.5, "unit": "x", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.HqTypes.cs:189)" },
+      "garrisonRadiusAdd": { "value": 5.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.HqTypes.cs:195)" },
+      "turnOutTryGetVehicleFalse": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.HqTypes.cs:244)" },
+      "turnOutHqRadiusAdd": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.HqTypes.cs:245)" },
+      "turnOutKScale": { "value": 5.0, "unit": "x", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.HqTypes.cs:250)" },
+      "establishAwayScale": { "value": 12.0, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.cs:178)" },
+      "tryGetDropZoneScale": { "value": 7.0, "unit": "x", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.cs:567)" },
+      "watchTowerFalse": { "value": 30.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseSystem (pack 2 pass 2, was Sim/Modes/BaseSystem.cs:629)" }
     },
     "blastWall": {
       "radiusM": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:270)" },
@@ -1966,6 +1978,109 @@
     "reconPass": {
       "widthM": { "value": 60.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:357)" },
       "seconds": { "value": 20.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "Catalog (pack 2, was Sim/Content/Catalog.P25A.cs:357)" }
+    },
+    "gearCatalog": {
+      "fortressBarrelTop1": { "value": 0.02, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:21)" },
+      "fortressBarrelTop2": { "value": 0.03, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:21)" },
+      "fortressBarrelTop3": { "value": 0.04, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:21)" },
+      "fortressBarrelTop4": { "value": 0.06, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:21)" },
+      "fortressBarrelTop5": { "value": 0.08, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:21)" },
+      "sabotRoundsTop1": { "value": 0.4, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:23)" },
+      "sabotRoundsTop2": { "value": 0.55, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:23)" },
+      "sabotRoundsTop3": { "value": 0.7, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:23)" },
+      "sabotRoundsTop4": { "value": 0.85, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:23)" },
+      "flakProximityFuzeTop1": { "value": 0.05, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:24)" },
+      "flakProximityFuzeTop2": { "value": 0.08, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:24)" },
+      "flakProximityFuzeTop3": { "value": 0.12, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:24)" },
+      "flakProximityFuzeTop4": { "value": 0.16, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:24)" },
+      "flakProximityFuzeTop5": { "value": 0.2, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:24)" },
+      "airburstShellsTop1": { "value": 0.05, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:25)" },
+      "airburstShellsTop2": { "value": 0.08, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:25)" },
+      "airburstShellsTop3": { "value": 0.12, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:25)" },
+      "airburstShellsTop4": { "value": 0.16, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:25)" },
+      "airburstShellsTop5": { "value": 0.2, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:25)" },
+      "ammoHoistTop1": { "value": 0.06, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:27)" },
+      "ammoHoistTop2": { "value": 0.09, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:27)" },
+      "ammoHoistTop3": { "value": 0.12, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:27)" },
+      "ammoHoistTop4": { "value": 0.15, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:27)" },
+      "ammoHoistTop5": { "value": 0.18, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:27)" },
+      "blastWallsTop1": { "value": 0.06, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:32)" },
+      "blastWallsTop2": { "value": 0.09, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:32)" },
+      "blastWallsTop3": { "value": 0.13, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:32)" },
+      "blastWallsTop4": { "value": 0.17, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:32)" },
+      "blastWallsTop5": { "value": 0.22, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:32)" },
+      "engineerBayTop2": { "value": 1.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:34)" },
+      "engineerBayTop3": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:34)" },
+      "engineerBayTop4": { "value": 2.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:34)" },
+      "engineerBayTop5": { "value": 3.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:34)" },
+      "traverseMotorsMainScale": { "value": 1.5, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:41)" },
+      "ammoHandlingTop2N1": { "value": 0.07, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:45)" },
+      "ammoHandlingTop2N2": { "value": 0.1, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:45)" },
+      "ammoHandlingTop2N3": { "value": 0.12, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:45)" },
+      "ammoHandlingTop2N4": { "value": 0.14, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:45)" },
+      "ammoHandlingTop2N5": { "value": 0.16, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:45)" },
+      "towerCounterBatteryEpic1": { "value": 4.0, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:66)" },
+      "towerCounterBatteryLegendary1": { "value": 6.0, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:66)" },
+      "buildTowerCapsCaps": { "value": 0.1, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "GearCatalog (pack 2 pass 2, was Game/Match/GearCatalog.Tower.cs:106)" }
+    },
+    "baseRules": {
+      "rebuild1Cp": { "value": 2, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseRules (pack 2 pass 2, was Sim/Content/BaseRules.cs:96)" },
+      "rebuild1Cooldown": { "value": 25.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseRules (pack 2 pass 2, was Sim/Content/BaseRules.cs:96)" },
+      "rebuild2Cp": { "value": 4, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseRules (pack 2 pass 2, was Sim/Content/BaseRules.cs:96)" },
+      "rebuild2Cooldown": { "value": 40.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseRules (pack 2 pass 2, was Sim/Content/BaseRules.cs:96)" },
+      "rebuild3Cp": { "value": 7, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseRules (pack 2 pass 2, was Sim/Content/BaseRules.cs:96)" },
+      "rebuild3Cooldown": { "value": 60.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "BaseRules (pack 2 pass 2, was Sim/Content/BaseRules.cs:96)" },
+      "parseIntMax": { "value": 5, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "BaseRules (pack 2 pass 2, was Sim/Content/BaseRules.cs:220)" },
+      "parseFallback": { "value": 3, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseRules (pack 2 pass 2, was Sim/Content/BaseRules.cs:245)" }
+    },
+    "hardpointDef": {
+      "acrossSizeValue": { "value": 5.0, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "BaseSites (pack 2 pass 2, was Sim/Content/BaseSites.cs:55)" },
+      "acrossSizeValue2": { "value": 6.5, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "BaseSites (pack 2 pass 2, was Sim/Content/BaseSites.cs:55)" },
+      "acrossSizeValue3": { "value": 9.0, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "BaseSites (pack 2 pass 2, was Sim/Content/BaseSites.cs:55)" },
+      "classOfMetresMax": { "value": 5.5, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSites (pack 2 pass 2, was Sim/Content/BaseSites.cs:58)" },
+      "classOfMetresMax2": { "value": 7.5, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "BaseSites (pack 2 pass 2, was Sim/Content/BaseSites.cs:58)" }
+    },
+    "fortressDef": {
+      "layeredCountMin": { "value": 2, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "FortressDef (pack 2 pass 2, was Sim/Content/FortressDef.cs:86)" }
+    },
+    "hqTypeRules": {
+      "garrisonEvery1": { "value": 60.0, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:67)" },
+      "garrisonEvery2": { "value": 60.0, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:67)" },
+      "garrisonEvery3": { "value": 60.0, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:67)" },
+      "garrisonEvery4": { "value": 60.0, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:67)" },
+      "garrisonEvery5": { "value": 60.0, "unit": "x", "kind": "tan_suat", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:67)" },
+      "garrisonCaps1": { "value": 6, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:98)" },
+      "garrisonCaps2": { "value": 8, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:98)" },
+      "garrisonCaps3": { "value": 10, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:98)" },
+      "garrisonCaps4": { "value": 12, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:98)" },
+      "garrisonCaps5": { "value": 15, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:98)" },
+      "regen1": { "value": 0.002, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:113)" },
+      "regen2": { "value": 0.0025, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:113)" },
+      "regen3": { "value": 0.003, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:113)" },
+      "regen4": { "value": 0.0035, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:113)" },
+      "regen5": { "value": 0.004, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:113)" },
+      "dome1": { "value": 0.08, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:116)" },
+      "dome2": { "value": 0.1, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:116)" },
+      "dome3": { "value": 0.12, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:116)" },
+      "dome4": { "value": 0.15, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:116)" },
+      "dome5": { "value": 0.18, "unit": "x", "kind": "khac", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:116)" },
+      "parseFloatFloor2": { "value": 5.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:179)" },
+      "parseFloatFloor4": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "04", "code": "HqTypeRules (pack 2 pass 2, was Sim/Content/HqTypeRules.cs:228)" }
+    },
+    "wallSegmentDef": {
+      "outMinScale": { "value": 0.5, "unit": "x", "kind": "ban_kinh", "linh_vuc": "04", "code": "WallRules (pack 2 pass 2, was Sim/Content/WallRules.cs:185)" }
+    },
+    "baseStrength": {
+      "qualityDamageTakenFloor": { "value": 0.05, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "BaseStrength (pack 2 pass 2, was Sim/Modes/BaseStrength.cs:26)" },
+      "scoreDamageTakenFloor": { "value": 0.05, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "BaseStrength (pack 2 pass 2, was Sim/Modes/BaseStrength.cs:70)" },
+      "referenceLevel": { "value": 3, "unit": "x", "kind": "nguong", "linh_vuc": "04", "code": "BaseStrength (pack 2 pass 2, was Sim/Modes/BaseStrength.cs:80)" },
+      "waveScaleScoreFloor": { "value": 0.01, "unit": "count", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "BaseStrength (pack 2 pass 2, was Sim/Modes/BaseStrength.cs:105)" },
+      "waveScaleScoreDivisor": { "value": 100.0, "unit": "x", "kind": "gioi_han_thuc_the", "linh_vuc": "04", "code": "BaseStrength (pack 2 pass 2, was Sim/Modes/BaseStrength.cs:105)" }
+    },
+    "wallSystem": {
+      "keepsAnchorsMaxRings": { "value": 5, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "WallSystem (pack 2 pass 2, was Sim/Modes/WallSystem.cs:185)" },
+      "rubbleRouteMinAdd": { "value": 3.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "04", "code": "WallSystem (pack 2 pass 2, was Sim/Modes/WallSystem.cs:285)" },
+      "regionNearMaxRings": { "value": 2, "unit": "x", "kind": "sat_thuong", "linh_vuc": "04", "code": "WallSystem (pack 2 pass 2, was Sim/Modes/WallSystem.cs:300)" }
     }
   },
   "modes": {

@@ -83,7 +83,7 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyList<IReadOnlyList<Vector2>> Rings { get; }
 
         /// <summary>Whether this is a layered base (its rings are polygons, its hardpoints labelled by place).</summary>
-        public bool Layered => Rings.Count >= 2;
+        public bool Layered => Rings.Count >= global::MachineBrigade.Sim.Content.SimTunables.Bases.FortressDef.LayeredCountMin;
 
         /// <summary>Where the attack's reinforcements land once a ring has fallen (B.2): after stage 1, after stage 2.</summary>
         public IReadOnlyList<Vector2> ForwardDrops { get; }

@@ -52,10 +52,10 @@ namespace MachineBrigade.Sim.Content
         public SlotSize Class { get; }
 
         /// <summary>Metres across each size class keeps clear of lanes (what a structure in it may cover).</summary>
-        public static float Across(SlotSize size) => size switch { SlotSize.Small => 5f, SlotSize.Medium => 6.5f, _ => 9f };
+        public static float Across(SlotSize size) => size switch { SlotSize.Small => global::MachineBrigade.Sim.Content.SimTunables.Bases.HardpointDef.AcrossSizeValue, SlotSize.Medium => global::MachineBrigade.Sim.Content.SimTunables.Bases.HardpointDef.AcrossSizeValue2, _ => global::MachineBrigade.Sim.Content.SimTunables.Bases.HardpointDef.AcrossSizeValue3 };
 
         /// <summary>The class of an old slot given in metres across.</summary>
-        public static SlotSize ClassOf(float metres) => metres <= 5.5f ? SlotSize.Small : metres <= 7.5f ? SlotSize.Medium : SlotSize.Large;
+        public static SlotSize ClassOf(float metres) => metres <= global::MachineBrigade.Sim.Content.SimTunables.Bases.HardpointDef.ClassOfMetresMax ? SlotSize.Small : metres <= global::MachineBrigade.Sim.Content.SimTunables.Bases.HardpointDef.ClassOfMetresMax2 ? SlotSize.Medium : SlotSize.Large;
 
         public Vector2 Position { get; }
         public HardpointKind Kind { get; }

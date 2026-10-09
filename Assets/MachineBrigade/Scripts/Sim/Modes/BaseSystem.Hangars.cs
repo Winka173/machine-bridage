@@ -59,7 +59,7 @@ namespace MachineBrigade.Sim.Modes
                 var post = HangarPost(b, v);
                 var dir = post - v.Position;
                 var heading = SimMath.HeadingOf(dir.LengthSquared() > 0.01f ? dir : Vector2.UnitX);
-                var at = _world.ClampToMap(v.Position + (dir.LengthSquared() > 0.01f ? Vector2.Normalize(dir) : Vector2.UnitX) * (v.Def.Radius + 4f));
+                var at = _world.ClampToMap(v.Position + (dir.LengthSquared() > 0.01f ? Vector2.Normalize(dir) : Vector2.UnitX) * (v.Def.Radius + global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.StepHangarsRadiusAdd));
                 var unit = _world.SpawnVehicle(s.Unit, b.Team, at, heading);
                 unit.Garrison = true;
                 unit.GuardPoint = post;
@@ -98,7 +98,7 @@ namespace MachineBrigade.Sim.Modes
                 }
             var toward = enemy ?? Vector2.Zero;
             var d = toward - hangar.Position;
-            return _world.ClampToMap(d.LengthSquared() > 0.01f ? hangar.Position + Vector2.Normalize(d) * (hangar.Def.Radius + 15f) : hangar.Position);
+            return _world.ClampToMap(d.LengthSquared() > 0.01f ? hangar.Position + Vector2.Normalize(d) * (hangar.Def.Radius + global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.HangarPostRadiusAdd) : hangar.Position);
         }
 
         /// <summary>Play-test 14: the side's hangar rally point; every hangar unit in the field heads there at once.</summary>

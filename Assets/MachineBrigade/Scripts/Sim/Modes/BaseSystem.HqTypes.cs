@@ -85,7 +85,7 @@ namespace MachineBrigade.Sim.Modes
             s.Type = b.Loadout.HqType;
             s.Branch = b.Loadout.HqBranch;
             s.Unit = b.Loadout.HqUnit;
-            s.Level = Math.Clamp(b.Loadout.HqLevel, 1, 5);
+            s.Level = Math.Clamp(b.Loadout.HqLevel, 1, global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.SetUpHqHqLevelMax);
             s.SkillReadyAt = _world.Time;
             s.Stock = 0;
             s.NextStockAt = s.Type == HqType.Garrison ? _world.Time + rules.GarrisonEvery(s.Level) : double.PositiveInfinity;
@@ -136,7 +136,7 @@ namespace MachineBrigade.Sim.Modes
         {
             var share = hq.Hp / MathF.Max(1f, hq.MaxHp);
             var ours = b.Team == 0;
-            if (!s.Half && share <= 0.5f)
+            if (!s.Half && share <= global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.MarksShareMax)
             {
                 s.Half = true;
                 _world.Emit(SimEvent.Alert(b.HqPosition, ours ? "alert.hq.half.ours" : "alert.hq.half.theirs", bad: ours));
@@ -186,13 +186,13 @@ namespace MachineBrigade.Sim.Modes
             }
             else if (double.IsNaN(s.ClearSince)) s.ClearSince = now;
             // The garrison keeps to the base: its post is the HQ's side facing the intruder; past the region it is called back.
-            var post = intruder != null ? Toward(b.HqPosition, intruder.Position, MathF.Min(rules.Radius * 0.5f, Vector2.Distance(b.HqPosition, intruder.Position))) : b.HqPosition;
+            var post = intruder != null ? Toward(b.HqPosition, intruder.Position, MathF.Min(rules.Radius * global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.GarrisonRadiusScale, Vector2.Distance(b.HqPosition, intruder.Position))) : b.HqPosition;
             foreach (var id in s.Garrison)
             {
                 if (!_world.TryGetVehicle(id, out var g)) continue;
                 g.GuardPoint = _world.ClampToMap(post);
                 g.PostRadius = rules.Radius;
-                if (Vector2.Distance(g.Position, b.HqPosition) > rules.Radius + 5f && g.Order.Kind != OrderKind.Idle)
+                if (Vector2.Distance(g.Position, b.HqPosition) > rules.Radius + global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.GarrisonRadiusAdd && g.Order.Kind != OrderKind.Idle)
                 {
                     g.SetOrder(Order.Idle);
                     g.ClearPath();
@@ -241,13 +241,13 @@ namespace MachineBrigade.Sim.Modes
                 }
             if (ids.Count == 0 || GarrisonCp(s) + cost > rules.GarrisonCap(s.Level) + 0.01f) return false;
             if (_world.TryGetEconomy(b.Team, out var economy) && _world.Economy.VehicleCount(b.Team) + ids.Count > economy.VehicleCap) return false;
-            var hqRadius = _world.TryGetVehicle(b.Hq, out var hq) ? hq.Def.Radius : 6f;
-            var out0 = Toward(b.HqPosition, towards, hqRadius + 6f);
+            var hqRadius = _world.TryGetVehicle(b.Hq, out var hq) ? hq.Def.Radius : global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.TurnOutTryGetVehicleFalse;
+            var out0 = Toward(b.HqPosition, towards, hqRadius + global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.TurnOutHqRadiusAdd);
             var dir = towards - b.HqPosition;
             var side = dir.LengthSquared() > 0.01f ? Vector2.Normalize(new Vector2(-dir.Y, dir.X)) : Vector2.UnitX;
             for (var k = 0; k < ids.Count; k++)
             {
-                var at = _world.ClampToMap(out0 + side * ((k - (ids.Count - 1) * 0.5f) * 5f));
+                var at = _world.ClampToMap(out0 + side * ((k - (ids.Count - 1) * 0.5f) * global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.TurnOutKScale));
                 var v = _world.SpawnVehicle(ids[k].Id, b.Team, at, SimMath.HeadingOf(dir.LengthSquared() > 0.01f ? dir : Vector2.UnitX));
                 v.Garrison = true;
                 v.GuardPoint = at;

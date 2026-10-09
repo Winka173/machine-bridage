@@ -225,7 +225,7 @@ internal static partial class Scan
             // pass 2 (09/10): a literal in a data table gets its row id and path (TableNames), and is never merged with another
             var inStaticInit = l.Node.Ancestors().OfType<FieldDeclarationSyntax>().FirstOrDefault() is { } sf && sf.Modifiers.Any(SyntaxKind.StaticKeyword) && !sf.Modifiers.Any(SyntaxKind.ConstKeyword)
                                && !(sf.Declaration.Variables.Count == 1 && sf.Declaration.Variables[0].Initializer?.Value == (l.Negated ? (ExpressionSyntax)l.Node.Parent! : l.Node));
-            if (c != null && (l.Context == "table" || inStaticInit) && TableNames.Of(l.Node, c.Model(Repo.Scripts + "/" + l.File)) is { } tableName)
+            if (c != null && (l.Context is "table" or "tuple" || inStaticInit) && TableNames.Of(l.Node, c.Model(Repo.Scripts + "/" + l.File)) is { } tableName)
             {
                 baseName = tableName;
                 named = true;

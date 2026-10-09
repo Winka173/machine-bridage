@@ -182,7 +182,7 @@ namespace MachineBrigade.Sim.Modes
                 foreach (var a in Anchors())
                 {
                     var r = grid.RegionOf(a);
-                    if (r == 0 && grid.TryNearestWalkable(a, 5, out var open)) r = grid.RegionOf(open);
+                    if (r == 0 && grid.TryNearestWalkable(a, global::MachineBrigade.Sim.Content.SimTunables.Bases.WallSystem.KeepsAnchorsMaxRings, out var open)) r = grid.RegionOf(open);
                     if (r == 0) continue;
                     if (region < 0) region = r;
                     else if (r != region) return false;
@@ -282,7 +282,7 @@ namespace MachineBrigade.Sim.Modes
                 {
                     if (!s.Rubble || _world.NavStates.ActiveOf(s.Site) != RubbleState) continue;
                     var outside = RegionNear(s.Def.Out(3f));
-                    var inside = RegionNear(s.Def.Out(-(MathF.Min(s.Def.Width, s.Def.Depth) + 3f)));
+                    var inside = RegionNear(s.Def.Out(-(MathF.Min(s.Def.Width, s.Def.Depth) + global::MachineBrigade.Sim.Content.SimTunables.Bases.WallSystem.RubbleRouteMinAdd)));
                     if (outside > 0 && outside == inside)
                     {
                         _breached[l.Team] = true;
@@ -297,7 +297,7 @@ namespace MachineBrigade.Sim.Modes
         {
             var grid = _world.Grid;
             var r = grid.RegionOf(p);
-            if (r == 0 && grid.TryNearestWalkable(p, 2, out var open)) r = grid.RegionOf(open);
+            if (r == 0 && grid.TryNearestWalkable(p, global::MachineBrigade.Sim.Content.SimTunables.Bases.WallSystem.RegionNearMaxRings, out var open)) r = grid.RegionOf(open);
             return r;
         }
 

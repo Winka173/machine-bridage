@@ -17,7 +17,6 @@ Sim/AI/BreachAccess.cs,165,101,2f,ai.breachAccess.buildClearanceScale,x,ban_kinh
 Sim/AI/CombatActivityWatchdog.cs,185,24,200,ai.combatActivityWatchdog.stepTickMod,s,thoi_gian,06,pass2:inline,,modulo: if (tick % 200 == 0)
 Sim/AI/CombatActivityWatchdog.cs,314,145,0.5f,ai.combatActivityWatchdog.firingWindowCooldownAdd,s,thoi_gian,06,pass2:inline,,"add: private static double FiringWindow(WeaponDef weapon) => MathF.Max(SimTunables.Ai.CombatWatchdog.FiredRecentlySeconds, weapon.Cooldown + 0.5f);"
 Sim/AI/CombatActivityWatchdog.cs,428,55,2,ai.combatActivityWatchdog.recoverAnomalyRecoveriesMin,s,thoi_gian,06,pass2:inline,,"compare: _world.Combat.ResetAim(v, r.Recoveries >= 2, now + SimTunables.Ai.CombatWatchdog.SuppressSeconds);"
-Sim/AI/Commander.Units.cs,71,43,0.01f,ai.aiCommander.scootLengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: back = back.LengthSquared() > 0.01f ? -Vector2.Normalize(back) : -SimMath.Forward(v.Heading);
 Sim/AI/Commander.Units.cs,74,58,10,ai.aiCommander.scootTimeDivisor,x,thoi_gian,06,pass2:inline,,divide: var first = ((v.Id.Value + (int)world.Time / 10) & 1) == 0 ? 1f : -1f;
 Sim/AI/Commander.Units.cs,78,63,18f,ai.aiCommander.scootDirScale,x,khac,06,pass2:inline,,"multiply: var spot = world.Map.Clamp(v.Position + dir * 18f, 6f);"
 Sim/AI/Commander.Units.cs,78,68,6f,ai.aiCommander.scootMargin,x,khac,06,pass2:inline,,"arg:MapDefinition.Clamp: var spot = world.Map.Clamp(v.Position + dir * 18f, 6f);"
@@ -108,7 +107,6 @@ Sim/AI/ConquestAi.cs,568,44,8f,ai.conquestAi.enemyNearRadiusAdd,m,ban_kinh,06,pa
 Sim/AI/ConquestAi.cs,577,76,0.6,ai.conquestAi.tryStrikeNextDoubleMax,share,xac_suat,06,pass2:inline,,compare: if (_difficulty == AiDifficulty.Easy && _random.NextDouble() < 0.6) return false;
 Sim/AI/ConquestAi.cs,579,100,0.7,ai.conquestAi.tryStrikeNextDoubleMax2,share,xac_suat,06,pass2:inline,,compare: if (_difficulty >= AiDifficulty.Hard && _tactics.HoldingBack && _random.NextDouble() < 0.7) return false;
 Sim/AI/ConquestAi.cs,600,67,16f,ai.conquestAi.tryStrikeRadiusAdd,m,ban_kinh,06,pass2:inline,,"add: if (OwnCentroid(world, e.Position, e.Radius + 16f, out var own))"
-Sim/AI/ConquestAi.cs,603,52,0.01f,ai.conquestAi.tryStrikeLengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: if (away.LengthSquared() > 0.01f) cluster = e.Position + Vector2.Normalize(away) * (e.Radius + 3f);
 Sim/AI/ConquestAi.cs,603,120,3f,ai.conquestAi.tryStrikeRadiusAdd2,m,ban_kinh,06,pass2:inline,,add: if (away.LengthSquared() > 0.01f) cluster = e.Position + Vector2.Normalize(away) * (e.Radius + 3f);
 Sim/AI/ConquestAi.cs,667,127,45f,ai.conquestAi.tryUtilityStrikeDistanceMax,m,ban_kinh,06,pass2:inline,,"compare: if (e.IsAlive && !e.Flying && !e.Def.Static && Vector2.Distance(e.Position, p.Def.Position) < 45f) threat++;"
 Sim/AI/ConquestAi.cs,672,143,5f,ai.conquestAi.tryUtilityStrikeScale,x,ban_kinh,06,pass2:inline,,multiply: var at = world.ClampToMap(p.Def.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * 5f);
@@ -239,11 +237,9 @@ Sim/AI/P2/Commander.P2.cs,252,31,10f,ai.aiCommander.assignmentScoreClampScale,x,
 Sim/AI/P2/Commander.P2.cs,252,87,300f,ai.aiCommander.assignmentScoreDistanceDivisor,x,ban_kinh,06,pass2:inline,,"divide: var distanceFit = 10f * (1f - Math.Clamp(Vector2.Distance(s.Centre, to) / 300f, 0f, 1f));"
 Sim/AI/P2/ComponentState.cs,62,59,31,ai.componentState.ofIMax,count,gioi_han_thuc_the,06,pass2:inline,,compare: for (var i = 0; i < v.Def.Mounts.Count && i < 31; i++)
 Sim/AI/P2/ComponentState.cs,90,35,4096,ai.componentWatch.checkCountMin,count,gioi_han_thuc_the,06,pass2:inline,,compare: if (_last.Count > 4096) Prune();
-Sim/AI/P2/FireSupportAnchor.cs,130,57,0.01f,ai.fireSupportDirector.referenceLengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: var forward = ctx.Forward.LengthSquared() > 0.01f ? Vector2.Normalize(ctx.Forward) : Vector2.UnitY;
 Sim/AI/P2/FireSupportAnchor.cs,170,74,2f,ai.fireSupportDirector.referenceRangeScale,x,ban_kinh,06,pass2:inline,,"multiply: var tower = NearestDefence(world, ctx.Front, range * 2f);"
 Sim/AI/P2/FireSupportAnchor.cs,190,125,1.5f,ai.fireSupportDirector.referenceRangeScale2,x,ban_kinh,06,pass2:inline,,"multiply: reference = ctx.Contact && ctx.EnemyCentre is { } enemy && Vector2.Distance(enemy, ctx.Front) < range * 1.5f"
 Sim/AI/P2/FireSupportAnchor.cs,192,103,25f,ai.fireSupportDirector.referenceDistanceCap,m,ban_kinh,06,pass2:inline,,"math_min: : ctx.Front + forward * MathF.Min(Vector2.Distance(ctx.Front, ctx.Objective), 25f);"
-Sim/AI/P2/FireSupportAnchor.cs,199,94,0.01f,ai.fireSupportDirector.normalizeLengthSquaredMin,m,ban_kinh,06,pass2:inline,,"compare: private static Vector2 Normalize(Vector2 v, Vector2 fallback) => v.LengthSquared() > 0.01f ? Vector2.Normalize(v) : fallback;"
 Sim/AI/P2/FireSupportAnchor.cs,218,106,12f,ai.fireSupportDirector.convoyDistanceMax,m,ban_kinh,06,pass2:inline,,"compare: if (v.IsAlive && v.Team == _team && v.IsMoving && Vector2.Distance(v.Position, centre) < 12f) h += SimMath.Forward(v.Heading);"
 Sim/AI/P2/FireSupportAnchor.cs,275,55,2f,ai.fireSupportDirector.triggerMinRangeAdd,m,ban_kinh,06,pass2:inline,,add: if (dist > s.Range || dist < s.MinRange + 2f)
 Sim/AI/P2/FireSupportAnchor.cs,285,93,0.5f,ai.fireSupportDirector.triggerLengthSquaredMin,m,ban_kinh,06,pass2:inline,,"compare: if ((tr & RepositionTrigger.WaveDirection) != 0 && s.Approach.LengthSquared() > 0.5f && Vector2.Dot(s.Approach, approach) < 0.7f) return ""waveDirectio"
@@ -271,7 +267,6 @@ Sim/AI/P2/FireSupportAnchor.cs,432,40,7,ai.fireSupportDirector.scoreI6,m,ban_kin
 Sim/AI/P2/FireSupportAnchor.cs,432,72,3f,ai.fireSupportDirector.scoreCongestionDivisor,x,ban_kinh,06,pass2:inline,,"divide: - W(6) * threat - W(7) * MathF.Min(1f, congestion / 3f) - W(8) * minRange - W(9) * traffic"
 Sim/AI/P2/FireSupportAnchor.cs,432,80,8,ai.fireSupportDirector.scoreI7,m,ban_kinh,06,pass2:inline,,"arg:FireSupportDirector.W: - W(6) * threat - W(7) * MathF.Min(1f, congestion / 3f) - W(8) * minRange - W(9) * traffic"
 Sim/AI/P2/FireSupportAnchor.cs,432,98,9,ai.fireSupportDirector.scoreI8,m,ban_kinh,06,pass2:inline,,"arg:FireSupportDirector.W: - W(6) * threat - W(7) * MathF.Min(1f, congestion / 3f) - W(8) * minRange - W(9) * traffic"
-Sim/AI/P2/FireSupportAnchor.cs,441,43,0.01f,ai.fireSupportDirector.slotLengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: back = back.LengthSquared() > 0.01f ? -Vector2.Normalize(back) : Vector2.UnitY;
 Sim/AI/P2/FireSupportAnchor.cs,447,88,6f,ai.fireSupportDirector.slotMargin,m,ban_kinh,06,pass2:inline,,"arg:MapDefinition.Clamp: var p = world.Map.Clamp(s.Point + side * lateral + back * (row * spacing), 6f);"
 Sim/AI/P2/FiringLane.cs,52,26,4f,maps.firingLaneResolver.blockerLengthMax,m,ban_kinh,08,pass2:inline,,compare: if (length < 4f) return null;
 Sim/AI/P2/FiringLane.cs,61,30,2f,maps.firingLaneResolver.blockerAlongMax,m,ban_kinh,08,pass2:inline,,compare: if (along <= 2f || along >= length - 2f || along > 60f) continue;
@@ -459,7 +454,6 @@ Sim/AI/P3/Commander.P3.cs,1022,37,2.0,ai.aiCommander.assaultSmokeP3ExecuteAtSub,
 Sim/AI/P3/Commander.P3.cs,1022,64,6.0,ai.aiCommander.assaultSmokeP3ExecuteAtAdd,s,thoi_gian,06,pass2:inline,,add: if (now < p.ExecuteAt - 2.0 || now > p.ExecuteAt + 6.0) return null;
 Sim/AI/P3/Commander.P3.cs,1051,117,20f,ai.aiCommander.artilleryP3ReachAdd,m,ban_kinh,06,pass2:inline,,"add: if (c.Unit.Contains(""counter_battery"") && Vector2.Distance(c.Position, v.Position) <= c.Reach + 20f) threat = true;"
 Sim/AI/P3/Commander.P3.cs,1053,63,0.3f,ai.aiCommander.artilleryP3MinConfidence,s,thoi_gian,06,pass2:inline,,"arg:CounterBatteryTracker.Best: var known = enemyGuns || tc.Battery.Best(now, 0.3f) != null;"
-Sim/AI/P3/Commander.P3.cs,1075,43,0.01f,ai.aiCommander.scootP3LengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: back = back.LengthSquared() > 0.01f ? -Vector2.Normalize(back) : -SimMath.Forward(v.Heading);
 Sim/AI/P3/Commander.P3.cs,1077,58,10,ai.aiCommander.scootP3TimeDivisor,x,thoi_gian,06,pass2:inline,,divide: var first = ((v.Id.Value + (int)world.Time / 10) & 1) == 0 ? 1f : -1f;
 Sim/AI/P3/Commander.P3.cs,1083,73,6f,ai.aiCommander.scootP3Margin,m,ban_kinh,06,pass2:inline,,"arg:MapDefinition.Clamp: var spot = world.Map.Clamp(v.Position + dir * distance, 6f);"
 Sim/AI/P3/Commander.P3.cs,1142,63,10.0,ai.aiCommander.fireMissionP3NowAdd,s,thoi_gian,06,pass2:inline,,"add: tc.Board.AssignMission(pick.Id.Value, v.Id, now + 10.0);"
@@ -508,7 +502,6 @@ Sim/AI/P3/FrontlineModel.cs,152,76,0.4f,ai.frontlineModel.addSegmentWFalse,s,tho
 Sim/AI/P3/FrontlineModel.cs,159,69,12f,ai.frontlineModel.addFinalDistanceMax,m,ban_kinh,06,pass2:inline,,"compare: if (Vector2.Distance(_previous[i].Centre, centre) < 12f) since = Math.Min(since, _previousSince[i]);"
 Sim/AI/P3/FrontlineModel.cs,160,106,10.0,ai.frontlineModel.addFinalNowDivisor,x,thoi_gian,06,pass2:inline,,"divide: _segments.Add(new FrontSegment(centre, normal, own, enemy, (float)Math.Clamp((now - since) / 10.0, 0.0, 1.0), width, confidence));"
 Sim/AI/P3/FrontlineModel.cs,200,57,0.1f,ai.frontlineModel.weakestFriendlyPressureFloor,x,nguong,06,pass2:inline,,"math_max: var ratio = s.EnemyPressure / MathF.Max(0.1f, s.FriendlyPressure);"
-Sim/AI/P3/FrontlineModel.cs,239,40,0.01f,ai.frontlineModel.dirLengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: return d.LengthSquared() > 0.01f ? Vector2.Normalize(d) : Vector2.UnitY;
 Sim/AI/P3/PlannedActionBoard.cs,96,50,16,ai.plannedActionBoard.plannedDamageShooterDivisor,x,sat_thuong,06,pass2:inline,,divide: if (r.until > now && r.shooter / 16 != except.Value) sum += r.amount;
 Sim/AI/P3/PlannedActionBoard.cs,181,33,16,ai.plannedActionBoard.planSmokeCountMin,count,gioi_han_thuc_the,06,pass2:inline,,compare: if (_smoke.Count >= 16) _smoke.RemoveAt(0);
 Sim/AI/P3/PlannedActionBoard.cs,207,33,256,ai.plannedActionBoard.pruneCountMin,count,sat_thuong,06,pass2:inline,,compare: if (_damage.Count > 256)
@@ -578,7 +571,6 @@ Sim/AI/P4/Air.P4.cs,304,73,4f,ai.aiCommander.bomberP4BlastAdd,x,sat_thuong,06,pa
 Sim/AI/P4/Air.P4.cs,318,48,6.0,ai.aiCommander.bomberP4NowAdd,x,sat_thuong,06,pass2:inline,,"add: tp.ReserveDrop(b, blast, now + 6.0);"
 Sim/AI/P4/Air.P4.cs,331,93,15f,ai.aiCommander.bomberP4DistanceMin,m,ban_kinh,06,pass2:inline,,"compare: if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, loiter) > 15f)"
 Sim/AI/P4/Air.P4.cs,332,106,10f,ai.aiCommander.bomberP4Margin,x,khac,06,pass2:inline,,"arg:MapDefinition.Clamp: world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, world.Map.Clamp(loiter, 10f)));"
-Sim/AI/P4/Air.P4.cs,350,49,0.01f,ai.aiCommander.approachLengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: inbound = inbound.LengthSquared() > 0.01f ? Vector2.Normalize(inbound) : Vector2.UnitX;
 Sim/AI/P4/Air.P4.cs,353,48,-1.05f,ai.aiCommander.n22,m,ban_kinh,06,pass2:inline,,"table: foreach (var angle in new[] { 0f, -1.05f, 1.05f, -1.75f, 1.75f })"
 Sim/AI/P4/Air.P4.cs,353,55,1.05f,ai.aiCommander.n3,m,ban_kinh,06,pass2:inline,,"table: foreach (var angle in new[] { 0f, -1.05f, 1.05f, -1.75f, 1.75f })"
 Sim/AI/P4/Air.P4.cs,353,63,-1.75f,ai.aiCommander.n42,m,ban_kinh,06,pass2:inline,,"table: foreach (var angle in new[] { 0f, -1.05f, 1.05f, -1.75f, 1.75f })"
@@ -590,13 +582,11 @@ Sim/AI/P4/Air.P4.cs,392,35,32,ai.aiCommander.seadP4CountMin,count,gioi_han_thuc_
 Sim/AI/P4/Air.P4.cs,396,51,90.0,ai.aiCommander.seadP4NowMin,s,thoi_gian,06,pass2:inline,,compare: if (now - kv.Value.Made > 90.0) old.Add(kv.Key);
 Sim/AI/P4/Air.P4.cs,420,95,30f,ai.aiCommander.seadP4AgeMax,s,thoi_gian,06,pass2:inline,,"compare: if ((c.AntiAir || c.Group == ForceGroup.AntiAir) && !c.Flying && c.Age(now) < 30f && Vector2.Distance(c.Position, goal) <= 80f &&"
 Sim/AI/P4/Air.P4.cs,420,140,80f,ai.aiCommander.seadP4DistanceMax,m,thoi_gian,06,pass2:inline,,"compare: if ((c.AntiAir || c.Group == ForceGroup.AntiAir) && !c.Flying && c.Age(now) < 30f && Vector2.Distance(c.Position, goal) <= 80f &&"
-Sim/AI/P4/Air.P4.cs,425,53,0.01f,ai.aiCommander.seadP4LengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: inbound = inbound.LengthSquared() > 0.01f ? Vector2.Normalize(inbound) : Vector2.UnitX;
 Sim/AI/P4/Air.P4.cs,427,81,40f,ai.aiCommander.seadP4ReachDefault,m,ban_kinh,06,pass2:inline,,"coalesce: var ingress = world.Map.Clamp(centre - inbound * ((aa?.Reach ?? 40f) + Tun.AirOps.SeadStandoff), 10f);"
 Sim/AI/P4/Air.P4.cs,427,114,10f,ai.aiCommander.seadP4Margin,m,ban_kinh,06,pass2:inline,,"arg:MapDefinition.Clamp: var ingress = world.Map.Clamp(centre - inbound * ((aa?.Reach ?? 40f) + Tun.AirOps.SeadStandoff), 10f);"
 Sim/AI/P4/Air.P4.cs,429,98,15f,ai.aiCommander.seadP4DistanceMin,m,ban_kinh,06,pass2:inline,,"compare: if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, ingress) > 15f)"
 Sim/AI/P4/Air.P4.cs,444,52,25.0,ai.aiCommander.seadP4NowAdd,s,thoi_gian,06,pass2:inline,,"add: _approach[v.Id] = (goal, now + 25.0);"
 Sim/AI/P4/Air.P4.cs,468,39,2.0,ai.aiCommander.egressP4NowMin,s,thoi_gian,06,pass2:inline,,"compare: if (now - v.LastFiredAt > 2.0 || (_egressAt.TryGetValue(v.Id, out var at) && now < at)) return false;"
-Sim/AI/P4/Air.P4.cs,473,43,0.01f,ai.aiCommander.egressP4LengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: away = away.LengthSquared() > 0.01f ? Vector2.Normalize(away) : -SimMath.Forward(v.Heading);
 Sim/AI/P4/Air.P4.cs,476,48,-0.87f,ai.aiCommander.n23,m,ban_kinh,06,pass2:inline,,"table: foreach (var angle in new[] { 0f, -0.87f, 0.87f, -1.75f, 1.75f })"
 Sim/AI/P4/Air.P4.cs,476,55,0.87f,ai.aiCommander.n32,m,ban_kinh,06,pass2:inline,,"table: foreach (var angle in new[] { 0f, -0.87f, 0.87f, -1.75f, 1.75f })"
 Sim/AI/P4/Air.P4.cs,476,63,-1.75f,ai.aiCommander.n43,m,ban_kinh,06,pass2:inline,,"table: foreach (var angle in new[] { 0f, -0.87f, 0.87f, -1.75f, 1.75f })"
@@ -618,12 +608,9 @@ Sim/AI/P4/Commander.P4.cs,209,26,60f,ai.aiCommander.forcesForDMax,count,gioi_han
 Sim/AI/P4/Commander.P4.cs,229,114,50f,ai.aiCommander.forcesForDistanceMax,m,ban_kinh,06,pass2:inline,,"compare: if (v.Def.RepairAura is { } aura && members.Count > 0 && Vector2.Distance(v.Position, centre) <= 50f && own.Count > 0)"
 Sim/AI/P4/Commander.P4.cs,233,83,40f,ai.aiCommander.forcesForRadius,s,thoi_gian,06,pass2:inline,,"arg:TacticalMemory.UnknownShare: if (CoordinationP3 is { } tc && tc.Memory.UnknownShare(intel, target, 40f, now) >= 0.5f) enemy = enemy.Scaled(Tun.Forecast.UnknownMargin);"
 Sim/AI/P4/Commander.P4.cs,233,96,0.5f,ai.aiCommander.forcesForUnknownShareMin,share,thoi_gian,06,pass2:inline,,"compare: if (CoordinationP3 is { } tc && tc.Memory.UnknownShare(intel, target, 40f, now) >= 0.5f) enemy = enemy.Scaled(Tun.Forecast.UnknownMargin);"
-Sim/AI/P4/Commander.P4.cs,242,25,1000003L,ai.aiCommander.forecastKeyHScale,x,ban_kinh,06,pass2:inline,,multiply: h = h * 1000003L + (long)MathF.Floor(distance / 10f);
 Sim/AI/P4/Commander.P4.cs,242,65,10f,ai.aiCommander.forecastKeyDistanceDivisor,x,ban_kinh,06,pass2:inline,,divide: h = h * 1000003L + (long)MathF.Floor(distance / 10f);
-Sim/AI/P4/Commander.P4.cs,243,25,1000003L,ai.aiCommander.forecastKeyHScale,x,sat_thuong,06,pass2:inline,,multiply: h = h * 1000003L + own.Count * 131L + (long)MathF.Round(own.Hp / 50f);
 Sim/AI/P4/Commander.P4.cs,243,48,131L,ai.aiCommander.forecastKeyCountScale,x,sat_thuong,06,pass2:inline,,multiply: h = h * 1000003L + own.Count * 131L + (long)MathF.Round(own.Hp / 50f);
 Sim/AI/P4/Commander.P4.cs,243,82,50f,ai.aiCommander.forecastKeyHpDivisor,x,sat_thuong,06,pass2:inline,,divide: h = h * 1000003L + own.Count * 131L + (long)MathF.Round(own.Hp / 50f);
-Sim/AI/P4/Commander.P4.cs,244,28,1000003L,ai.aiCommander.forecastKeyHScale,x,sat_thuong,06,pass2:inline,,multiply: return h * 1000003L + enemy.Count * 131L + (long)MathF.Round(enemy.Hp / 50f);
 Sim/AI/P4/Commander.P4.cs,244,53,131L,ai.aiCommander.forecastKeyCountScale,x,sat_thuong,06,pass2:inline,,multiply: return h * 1000003L + enemy.Count * 131L + (long)MathF.Round(enemy.Hp / 50f);
 Sim/AI/P4/Commander.P4.cs,244,89,50f,ai.aiCommander.forecastKeyHpDivisor,x,sat_thuong,06,pass2:inline,,divide: return h * 1000003L + enemy.Count * 131L + (long)MathF.Round(enemy.Hp / 50f);
 Sim/AI/P4/Commander.P4.cs,294,87,5f,ai.aiCommander.evaluatePlansMainFalse,x,tan_suat,06,pass2:inline,,"conditional: var speed = main != null ? MathF.Max(1f, Squads.SlowestP3(world, main)) : 5f;"
@@ -681,7 +668,6 @@ Sim/AI/P4/Planning.cs,287,95,30f,ai.teamPlanning.observeDeathRangeFloor,m,sat_th
 Sim/AI/P4/Planning.cs,287,121,0.8f,ai.teamPlanning.observeDeathConfidence,x,sat_thuong,06,pass2:inline,,"ctor_arg:OpportunityWindow: Open(new OpportunityWindow(OpportunityKind.AntiAirDown, v.Position, MathF.Max(30f, v.Def.Weapon.Range), 0.8f,"
 Sim/AI/P4/Planning.cs,295,85,40f,ai.teamPlanning.observePartBrokenRadiusAdd,m,sat_thuong,06,pass2:inline,,"add: Open(new OpportunityWindow(OpportunityKind.BossPartDown, boss.Position, 40f + boss.Radius, 0.9f, _world.Time + Tun.Opportunity.PartDownS,"
 Sim/AI/P4/Planning.cs,295,104,0.9f,ai.teamPlanning.observePartBrokenConfidence,x,sat_thuong,06,pass2:inline,,"ctor_arg:OpportunityWindow: Open(new OpportunityWindow(OpportunityKind.BossPartDown, boss.Position, 40f + boss.Radius, 0.9f, _world.Time + Tun.Opportunity.PartDownS,"
-Sim/AI/P4/Planning.cs,308,45,1000003L,ai.teamPlanning.observeWarningsSourceScale,x,thoi_gian,06,pass2:inline,,multiply: key = ((long)w.Source * 1000003L + (long)MathF.Round(w.Centre.X * 0.5f) * 7919L + (long)MathF.Round(w.Centre.Y * 0.5f)) * 31L + (long)Math.Round(w.Due
 Sim/AI/P4/Planning.cs,308,87,0.5f,ai.teamPlanning.observeWarningsXScale,x,thoi_gian,06,pass2:inline,,multiply: key = ((long)w.Source * 1000003L + (long)MathF.Round(w.Centre.X * 0.5f) * 7919L + (long)MathF.Round(w.Centre.Y * 0.5f)) * 31L + (long)Math.Round(w.Due
 Sim/AI/P4/Planning.cs,308,95,7919L,ai.teamPlanning.observeWarningsRoundScale,x,thoi_gian,06,pass2:inline,,multiply: key = ((long)w.Source * 1000003L + (long)MathF.Round(w.Centre.X * 0.5f) * 7919L + (long)MathF.Round(w.Centre.Y * 0.5f)) * 31L + (long)Math.Round(w.Due
 Sim/AI/P4/Planning.cs,308,134,0.5f,ai.teamPlanning.observeWarningsYScale,x,thoi_gian,06,pass2:inline,,multiply: key = ((long)w.Source * 1000003L + (long)MathF.Round(w.Centre.X * 0.5f) * 7919L + (long)MathF.Round(w.Centre.Y * 0.5f)) * 31L + (long)Math.Round(w.Due
@@ -719,11 +705,8 @@ Sim/AI/P4/PlanningRules.cs,395,44,0.01f,ai.repetitionMemory.prunePenaltyMax,s,th
 Sim/AI/P4/PlanningRules.cs,429,31,0.5f,ai.probeRules.judgeProbeStrengthFloor,x,nguong,06,pass2:inline,,"math_max: var p = MathF.Max(0.5f, probeStrength);"
 Sim/AI/P4/PlanningRules.cs,430,74,0.34f,ai.probeRules.judgeLossShareMin,share,nguong,06,pass2:inline,,compare: if (antiTankThreat / p >= Tun.Probe.AtThreat || lossShare >= 0.34f) return ProbeOutcome.Threat;
 Sim/AI/P4/PlanningRules.cs,439,55,5f,ai.probeRules.envelopeGoalReachFloor,m,ban_kinh,06,pass2:inline,,"math_max: var keep = Tun.Probe.Envelope * MathF.Max(5f, reach);"
-Sim/AI/P4/PlanningRules.cs,442,40,0.01f,ai.probeRules.envelopeGoalLengthSquaredMax,m,ban_kinh,06,pass2:inline,,compare: if (away.LengthSquared() < 0.01f) away = from - e;
-Sim/AI/P4/PlanningRules.cs,443,40,0.01f,ai.probeRules.envelopeGoalLengthSquaredMax,m,ban_kinh,06,pass2:inline,,compare: if (away.LengthSquared() < 0.01f) return goal;
 Sim/AI/P4/PlanningRules.cs,459,116,2,ai.feintRules.utilityI,s,thoi_gian,06,pass2:inline,,"arg:FeintRules.W: return (contestsSecondary ? W(0) : 0f) + Math.Clamp(unknownShare, 0f, 1f) * W(1) + (threatensFlank ? W(2) : 0f) + (pinsArc ? W(3) : 0f);"
 Sim/AI/P4/PlanningRules.cs,459,140,3,ai.feintRules.utilityI2,s,thoi_gian,06,pass2:inline,,"arg:FeintRules.W: return (contestsSecondary ? W(0) : 0f) + Math.Clamp(unknownShare, 0f, 1f) * W(1) + (threatensFlank ? W(2) : 0f) + (pinsArc ? W(3) : 0f);"
-Sim/AI/P4/PlanningRules.cs,467,159,0.01f,ai.feintRules.succeededSeenAtFeintBeforeAdd,x,khac,06,pass2:inline,,add: seenAtMainBefore > 0f && (seenAtMainBefore - seenAtMainNow) / seenAtMainBefore >= Tun.Feint.RedeployShare && seenAtFeintNow > seenAtFeintBefore + 0.01
 Sim/AI/P4/PlanningRules.cs,538,46,8,ai.escapeSectors.assignSectorsMax,x,nguong,06,pass2:inline,,"math_clamp: sectors = Math.Clamp(sectors, 1, 8);"
 Sim/AI/P4/PlanningRules.cs,582,66,4f,ai.escapeSectors.assignSlotScale,x,ban_kinh,06,pass2:inline,,multiply: var offset = slot == 0 ? 0f : ((slot + 1) / 2) * 4f * (slot % 2 == 1 ? 1f : -1f);
 Sim/AI/P4/PlanningRules.cs,614,85,131,ai.patternMemory.signatureSourceScale,x,ban_kinh,06,pass2:inline,,"multiply: public static int Signature(int source, float radius) => unchecked(source * 131 + (int)MathF.Round(radius / 4f));"
@@ -907,7 +890,6 @@ Sim/AI/Squads.cs,886,162,4f,ai.squadLayer.unstickMargin,s,thoi_gian,06,pass2:inl
 Sim/AI/Squads.cs,889,94,8f,ai.squadLayer.unstickValueTrue,s,thoi_gian,06,pass2:inline,,"conditional: var sideStep = new Vector2(away.Y, -away.X) * ((id.Value & 1) == 0 ? 8f : -8f);"
 Sim/AI/Squads.cs,889,100,-8f,ai.squadLayer.unstickValueFalse,s,thoi_gian,06,pass2:inline,,"conditional: var sideStep = new Vector2(away.Y, -away.X) * ((id.Value & 1) == 0 ? 8f : -8f);"
 Sim/AI/Squads.cs,890,143,4f,ai.squadLayer.unstickMargin,s,thoi_gian,06,pass2:inline,,"arg:MapDefinition.Clamp: world.Submit(new Command(type, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(goal + sideStep, 4f))));"
-Sim/AI/Squads.cs,894,55,0.01f,ai.squadLayer.unstickLengthSquaredMin,m,thoi_gian,06,pass2:inline,,"compare: out_ = out_.LengthSquared() > 0.01f ? Vector2.Normalize(out_) : new Vector2(away.Y, -away.X);"
 Sim/AI/Squads.cs,895,158,8f,ai.squadLayer.unstickOutScale,x,thoi_gian,06,pass2:inline,,"multiply: world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(v.Position + out_ * 8f, 4f))));"
 Sim/AI/Squads.cs,895,162,4f,ai.squadLayer.unstickMargin,s,thoi_gian,06,pass2:inline,,"arg:MapDefinition.Clamp: world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, UnsharedSlot(world, v, world.Map.Clamp(v.Position + out_ * 8f, 4f))));"
 Sim/AI/Squads.cs,901,61,3,ai.squadLayer.unstickRungCap,count,thoi_gian,06,pass2:inline,,"math_min: s.Progress[id] = (v.Position, now, Math.Min(3, p.rung + 1));"
@@ -937,9 +919,7 @@ Sim/AI/Squads.cs,1150,121,0.5f,ai.squadLayer.betterSpotThreatAtScale,x,sat_thuon
 Sim/AI/Squads.cs,1157,102,25f,ai.squadLayer.betterSpotScale,x,khac,06,pass2:inline,,"multiply: var p = world.Map.Clamp(s.Centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 25f, 6f);"
 Sim/AI/Squads.cs,1157,107,6f,ai.squadLayer.betterSpotMargin,x,khac,06,pass2:inline,,"arg:MapDefinition.Clamp: var p = world.Map.Clamp(s.Centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 25f, 6f);"
 Sim/AI/Squads.cs,1167,64,10f,ai.squadLayer.betterSpotHereScale,x,nguong,06,pass2:inline,,"multiply: gain = (here - best) / MathF.Max(1f, s.Strength) * 10f;"
-Sim/AI/Squads.cs,1174,40,0.01f,ai.squadLayer.directionLengthSquaredMin,m,ban_kinh,06,pass2:inline,,compare: return d.LengthSquared() > 0.01f ? Vector2.Normalize(d) : Vector2.UnitY;
 Sim/AI/TacticalAi.P3.cs,26,117,0.8f,ai.tacticalAi.repairTargetP3MaxHpScale,x,sat_thuong,06,pass2:inline,,multiply: if (!v.IsAlive || v.Team != _team || v.Flying || v.Def.Static || v == engineer || v.Hp >= v.MaxHp * 0.8f) continue;
-Sim/AI/TacticalAi.P3.cs,55,48,0.01f,ai.tacticalAi.repairTargetP3LengthSquaredMin,m,ban_kinh,06,pass2:inline,,"compare: var stand = away.LengthSquared() > 0.01f ? best.Position - Vector2.Normalize(away) * MathF.Max(2f, aura.Radius * 0.5f) : best.Position;"
 Sim/AI/TacticalAi.P3.cs,55,108,2f,ai.tacticalAi.repairTargetP3RadiusFloor,m,ban_kinh,06,pass2:inline,,"math_max: var stand = away.LengthSquared() > 0.01f ? best.Position - Vector2.Normalize(away) * MathF.Max(2f, aura.Radius * 0.5f) : best.Position;"
 Sim/AI/TacticalAi.P3.cs,55,126,0.5f,ai.tacticalAi.repairTargetP3RadiusScale,x,ban_kinh,06,pass2:inline,,"multiply: var stand = away.LengthSquared() > 0.01f ? best.Position - Vector2.Normalize(away) * MathF.Max(2f, aura.Radius * 0.5f) : best.Position;"
 Sim/AI/TacticalAi.Watchdog.cs,19,64,2f,ai.tacticalAi.explainSpanDecisionIntervalScale,x,thoi_gian,06,pass2:inline,,multiply: private static float ExplainSpan => DecisionInterval * 2f + 0.5f;
@@ -1133,12 +1113,8 @@ Sim/Content/FixedDeckDef.cs,65,38,2,ai.fixedDeckDef.maxLoaned,count,nguong,06,pa
 Sim/Content/MapDefinition.cs,138,43,0.5f,maps.mapDefinition.ctorSizeScale,x,nguong,08,pass2:inline,,multiply: Min = new Vector2(-Size * 0.5f);
 Sim/Content/MapDefinition.cs,139,42,0.5f,maps.mapDefinition.ctorSizeScale,x,nguong,08,pass2:inline,,multiply: Max = new Vector2(Size * 0.5f);
 Sim/Content/MapDefinition.cs,170,48,1.2f,maps.mapDefinition.isLongWidthScale,x,ban_kinh,08,pass2:inline,,multiply: public bool IsLong => Length > Width * 1.2f;
-Sim/Content/MapDefinition.cs,233,30,3,maps.mapDefinition.insideBoundaryCountMax,count,gioi_han_thuc_the,08,pass2:inline,,compare: if (poly.Count < 3) return Contains(p);
 Sim/Content/MapDefinition.cs,314,61,0.5f,maps.mapDefinition.isSquareSizeScale,x,nguong,08,pass2:inline,,multiply: private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
 Sim/Content/MapDefinition.cs,314,96,0.5f,maps.mapDefinition.isSquareSizeScale,x,nguong,08,pass2:inline,,multiply: private bool IsSquare => Min == new Vector2(-Size * 0.5f) && Max == new Vector2(Size * 0.5f);
-Sim/Content/MapDefinition.cs,370,58,2,maps.mapDefinition.fromJsonI,count,gioi_han_thuc_the,08,pass2:inline,,"compound_assign: for (var i = 0; i < flat.Count; i += 2) line.Add(new Vector2(flat[i], flat[i + 1]));"
-Sim/Content/MapDefinition.cs,380,54,2,maps.mapDefinition.fromJsonI,count,gioi_han_thuc_the,08,pass2:inline,,"compound_assign: for (var i = 0; i < flat.Count; i += 2) boundary.Add(new Vector2(flat[i], flat[i + 1]));"
-Sim/Content/MapDefinition.cs,405,58,2,maps.mapDefinition.fromJsonI,count,gioi_han_thuc_the,08,pass2:inline,,"compound_assign: for (var i = 0; i < flat.Count; i += 2) line.Add(new Vector2(flat[i], flat[i + 1]));"
 Sim/Content/SkillDef.cs,194,39,0.95f,ai.hiddenDef.ctorCutMax,x,nguong,06,pass2:inline,,"math_clamp: Cut = Math.Clamp(cut, 0f, 0.95f);"
 Sim/Content/SupportDef.cs,92,77,6f,ai.supportDef.ctorRadiusCap,count,sat_thuong,06,pass2:inline,,"math_min: BlastRadius = blastRadius > 0f ? blastRadius : Math.Min(radius, 6f);"
 Sim/Navigation/CoverGrid.cs,93,80,0.5f,maps.coverGrid.insideCellSizeScale,x,ban_kinh,08,pass2:inline,,multiply: MathF.Abs(p.X - prop.Position.X) <= prop.Width * 0.5f + CellSize * 0.5f &&
@@ -1319,7 +1295,6 @@ Sim/Navigation/GameplayTopology.cs,532,39,1.5f,maps.gameplayTopology.queueSpacin
 Sim/Navigation/GameplayTopology.cs,533,51,4f,maps.gameplayTopology.queueOpenWidthAdd,m,ban_kinh,08,pass2:inline,,add: var halfAcross = c.OpenWidth * 0.5f + 4f;
 Sim/Navigation/GameplayTopology.cs,591,74,12f,maps.gameplayTopology.laneStretchRadiusAdd,m,ban_kinh,08,pass2:inline,,add: if (nearest == null || MathF.Abs(nearest.W - f.Y) > radius + 12f || nearest.Patrol <= 0f) return null;
 Sim/Navigation/LaneMap.cs,257,38,255,maps.laneMap.stampSegmentRouteCountMax,count,gioi_han_thuc_the,08,pass2:inline,,compare: if (_routeCount[i] < 255) _routeCount[i]++;
-Sim/Navigation/LaneMap.cs,283,55,0.01f,maps.laneMap.findDoorwaysNarrowWidthAdd,m,ban_kinh,08,pass2:inline,,add: if (across * step > NarrowWidth + 0.01f) continue;
 Sim/Navigation/LaneMap.cs,393,39,2f,maps.laneMap.offLaneRingScale,x,ban_kinh,08,pass2:inline,,multiply: for (var ring = 1; ring * 2f <= reach; ring++)
 Sim/Navigation/LaneMap.cs,414,49,12f,maps.laneMap.standCostFTrue,CP,gioi_han_thuc_the,08,pass2:inline,,conditional: return ((f & LaneFlags.Road) != 0 ? 12f : 0f) + ((f & LaneFlags.Route) != 0 ? 20f * RouteCountAt(p) : 0f);
 Sim/Navigation/LaneMap.cs,414,91,20f,maps.laneMap.standCostRouteCountAtScale,x,gioi_han_thuc_the,08,pass2:inline,,multiply: return ((f & LaneFlags.Road) != 0 ? 12f : 0f) + ((f & LaneFlags.Route) != 0 ? 20f * RouteCountAt(p) : 0f);

@@ -62,7 +62,6 @@ Game/Match/ModeSessions.cs,1261,61,10.0,modes.survivalSession.lostNowMin,s,thoi_
 Game/Match/ModeSessions.cs,1261,115,15.0,modes.survivalSession.lostNowMin2,s,thoi_gian,05,pass2:inline,,compare: return (_wipedSince >= 0 && now - _wipedSince > 10.0) || (_overrunSince >= 0 && now - _overrunSince > 15.0);
 Game/Match/ModeSessions.cs,1551,82,32f,modes.missionSession.configureTrue,m,ban_kinh,05,pass2:inline,,conditional: player.Leash = def.Goal is MissionGoal.Hold or MissionGoal.Outpost ? 32f : null;
 Sim/Content/CampaignDefs.cs,189,60,4,campaign.campaignRelease.everythingLastAct,x,tan_suat,07,pass2:inline,,arg:CampaignRelease.UpTo: public static CampaignRelease Everything() => UpTo(4);
-Sim/Content/MissionDef.cs,877,54,2,campaign.missionDef.points2I,count,gioi_han_thuc_the,07,pass2:inline,,"compound_assign: for (var i = 0; i + 1 < flat.Count; i += 2) list.Add(new Vector2(flat[i], flat[i + 1]));"
 Sim/Content/OperationsData.cs,184,53,100,campaign.operationsData.rotationCapMax,count,tran,07,pass2:inline,,compare: for (var cap = 1; pick < 0 && cap < 100; cap++)
 Sim/Content/OperationsData.cs,213,53,2,campaign.operationsData.weeklyCountMax,count,gioi_han_thuc_the,07,pass2:inline,,compare: if (operations <= 0 || Mutators.Count < 2) return null;
 Sim/Content/OperationsData.cs,321,78,1500f,campaign.mutators.applyTimeLimitFalse,s,thoi_gian,07,pass2:inline,,conditional: copy.TimeLimit = (copy.TimeLimit > 0f ? copy.TimeLimit : 1500f) * m.TimeScale;
@@ -77,11 +76,9 @@ Sim/Economy/EconomySystem.cs,27,91,30f,modes.teamEconomy.ctorBank,count,tran,05,
 Sim/Economy/EconomySystem.cs,357,103,3f,modes.economySystem.airliftIndexAdd,x,khac,05,pass2:inline,,"add: var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));"
 Sim/Economy/EconomySystem.cs,357,117,5,modes.economySystem.airliftIndexMod,x,khac,05,pass2:inline,,"modulo: var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));"
 Sim/Economy/EconomySystem.cs,357,122,2f,modes.economySystem.airliftIndexScale2,x,khac,05,pass2:inline,,"multiply: var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));"
-Sim/Economy/EconomySystem.cs,527,79,0.01f,modes.economySystem.inwardLengthSquaredMin,m,ban_kinh,05,pass2:inline,,compare: private static Vector2 Inward(Vector2 zone) => zone.LengthSquared() > 0.01f ? Vector2.Normalize(-zone) : Vector2.UnitY;
 Sim/Economy/EconomySystem.cs,550,39,40,modes.economySystem.edgeBehindStepMax,m,ban_kinh,05,pass2:inline,,compare: for (var step = 0; step < 40 && map.EdgeDistance(p - inward * 4f) >= 2f; step++)
 Sim/Economy/EconomySystem.cs,550,75,4f,modes.economySystem.edgeBehindInwardScale,x,ban_kinh,05,pass2:inline,,multiply: for (var step = 0; step < 40 && map.EdgeDistance(p - inward * 4f) >= 2f; step++)
 Sim/Economy/EconomySystem.cs,550,82,2f,modes.economySystem.edgeBehindEdgeDistanceMin,m,ban_kinh,05,pass2:inline,,compare: for (var step = 0; step < 40 && map.EdgeDistance(p - inward * 4f) >= 2f; step++)
-Sim/Events/SimEvent.cs,470,55,0.01f,modes.simEvent.eventNoticeLengthSquaredMin,m,ban_kinh,05,pass2:inline,,"compare: airborne: direction.LengthSquared() > 0.01f, offset: direction);"
 Sim/Events/SimEvent.cs,483,23,0.5f,modes.simEvent.priorityValueMin,x,nguong,05,pass2:inline,,"compare: ? Value > 0.5f ? (LinePriority)Math.Clamp((int)MathF.Round(Value) - 1, 0, 3) : LinePriority.Event"
 Sim/Events/SimEvent.cs,483,87,3,modes.simEvent.priorityRoundMax,x,nguong,05,pass2:inline,,"math_clamp: ? Value > 0.5f ? (LinePriority)Math.Clamp((int)MathF.Round(Value) - 1, 0, 3) : LinePriority.Event"
 Sim/Modes/BattleEvents.P28.cs,73,18,4,modes.battleEvents.maxTierStallValue,count,nguong,05,pass2:inline,,"switch_arm: _ => 4,"
@@ -261,7 +258,6 @@ Sim/Modes/MissionEvents.P31.cs,222,68,12f,campaign.missionEventSystem.prepareP31
 Sim/Modes/MissionEvents.P31.cs,222,73,90f,campaign.missionEventSystem.prepareP31NumberMax3,x,tan_suat,07,pass2:inline,,"math_clamp: Every = Math.Clamp(e.Number(""every"", 30f), 12f, 90f),"
 Sim/Modes/MissionEvents.P31.cs,223,61,40f,campaign.missionEventSystem.prepareP31Fallback11,x,nguong,07,pass2:inline,,"arg:MissionEventDef.Number: Dps = MathF.Max(0f, e.Number(""dps"", 40f)),"
 Sim/Modes/MissionEvents.P31.cs,224,63,6f,campaign.missionEventSystem.prepareP31Fallback12,x,nguong,07,pass2:inline,,"arg:MissionEventDef.Number: Burn = MathF.Max(1f, e.Number(""burn"", 6f)),"
-Sim/Modes/MissionEvents.P31.cs,227,56,0.01f,campaign.missionEventSystem.prepareP31LengthSquaredMin,m,ban_kinh,07,pass2:inline,,compare: plan.Wind = wind.LengthSquared() > 0.01f ? Vector2.Normalize(wind) : Vector2.UnitY;
 Sim/Modes/MissionEvents.P31.cs,323,84,0.75f,campaign.missionEventSystem.happenP31TryGetValueFalse,m,ban_kinh,07,pass2:inline,,"conditional: var ratio = (sight.TryGetValue(""Night"", out var to) ? to : 0.75f) / MathF.Max(0.1f, sight.TryGetValue(from, out var was) ? was : 1f);"
 Sim/Modes/MissionEvents.P31.cs,323,103,0.1f,campaign.missionEventSystem.happenP31Floor,m,ban_kinh,07,pass2:inline,,"math_max: var ratio = (sight.TryGetValue(""Night"", out var to) ? to : 0.75f) / MathF.Max(0.1f, sight.TryGetValue(from, out var was) ? was : 1f);"
 Sim/Modes/MissionEvents.P31.cs,325,86,0.5f,campaign.missionEventSystem.happenP31WeatherSightMin,m,ban_kinh,07,pass2:inline,,"math_clamp: plan.Weather.Target = Math.Clamp(world.WeatherSight * ratio, 0.5f, 1.3f);"
@@ -297,7 +293,6 @@ Sim/Modes/MissionEvents.cs,321,129,30f,campaign.missionEventSystem.payDistanceMa
 Sim/Modes/MissionEvents.cs,479,129,0.1f,campaign.missionEventSystem.strengthCombatValueFloor,x,nguong,07,pass2:inline,,"math_max: public static float Strength(VehicleDef def) => MathF.Max(1f, def.ArmyCost > 0 ? def.ArmyCost : def.CpCost) * MathF.Max(0.1f, def.CombatValue);"
 Sim/Modes/MissionEvents.cs,501,136,14f,campaign.missionEventSystem.groupScale,x,ban_kinh,07,pass2:inline,,"multiply: if (b.IsAlive && b.Team == team && !b.Flying && !b.Def.Static && Vector2.DistanceSquared(a.Position, b.Position) < 14f * 14f)"
 Sim/Modes/MissionEvents.cs,501,142,14f,campaign.missionEventSystem.groupScale,x,ban_kinh,07,pass2:inline,,"multiply: if (b.IsAlive && b.Team == team && !b.Flying && !b.Def.Static && Vector2.DistanceSquared(a.Position, b.Position) < 14f * 14f)"
-Sim/Modes/MissionEvents.cs,569,55,16777619,campaign.missionEventSystem.stableHScale,x,ban_kinh,07,pass2:inline,,multiply: foreach (var c in text) h = (h ^ c) * 16777619;
 Sim/Modes/MissionEvents.cs,622,107,4,campaign.missionEventSystem.deliverIMod,x,khac,07,pass2:inline,,"modulo: var spot = drives ? GateSpot(world, at, inward, i) : world.ClampToMap(at + across * ((i % 4) - 1.5f) * 5f - inward * (i / 4) * 6f);"
 Sim/Modes/MissionEvents.cs,622,112,1.5f,campaign.missionEventSystem.deliverISub,x,khac,07,pass2:inline,,"subtract: var spot = drives ? GateSpot(world, at, inward, i) : world.ClampToMap(at + across * ((i % 4) - 1.5f) * 5f - inward * (i / 4) * 6f);"
 Sim/Modes/MissionEvents.cs,622,120,5f,campaign.missionEventSystem.deliverAcrossScale,x,khac,07,pass2:inline,,"multiply: var spot = drives ? GateSpot(world, at, inward, i) : world.ClampToMap(at + across * ((i % 4) - 1.5f) * 5f - inward * (i / 4) * 6f);"
@@ -328,7 +323,6 @@ Sim/Modes/MissionMode.cs,1009,131,0.5f,campaign.missionMode.checkFleeOutwardScal
 Sim/Modes/MissionMode.cs,1089,97,8f,campaign.missionMode.convoyFrontNormalizeScale,x,ban_kinh,07,pass2:inline,,multiply: return ahead.LengthSquared() > 1f ? truck.Position + Vector2.Normalize(ahead) * 8f : truck.Position;
 Sim/Modes/ModeSupport.cs,55,99,3f,modes.pointCapture.tickCaptureSecondsScale,x,thoi_gian,05,pass2:inline,,"multiply: point.Progress = SimMath.MoveTowards(point.Progress, rest, dt / (captureSeconds * 3f));"
 Sim/Modes/ModeSupport.cs,216,96,36f,modes.outposts.tickNeutralDistanceSquaredMax,ticks,thoi_gian,05,pass2:inline,,"compare: if (v.IsAlive && !v.Flying && Vector2.DistanceSquared(v.Position, site.Spot) < 36f) return;"
-Sim/Modes/ModeSupport.cs,227,44,1e7f,modes.outposts.tickHolderAmount,ticks,sat_thuong,05,pass2:inline,,"arg:DamageSystem.Apply: world.Damage.Apply(tower!, 1e7f, DamageType.HighExplosive);"
 Sim/Modes/ModeSupport.cs,281,44,3f,modes.outposts.spotForRadiusAdd,m,ban_kinh,05,pass2:inline,,add: var reach = point.Def.Radius + 3f;
 Sim/Modes/ModeSupport.cs,289,105,3f,modes.outposts.spotForRingScale,x,ban_kinh,05,pass2:inline,,"multiply: var at = centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (reach + ring * 3f);"
 Sim/Modes/ModeSupport.cs,290,41,3f,modes.outposts.spotForRoom,x,sat_thuong,05,pass2:inline,,"arg:Outposts.Open: if (Open(world, at, 3f)) return at;"
@@ -355,7 +349,6 @@ Sim/Modes/QuickModes.cs,301,43,300f,modes.assaultRules.applyFallback,s,thoi_gian
 Sim/Modes/QuickModes.cs,301,67,300f,modes.assaultRules.applyStartSecondsDivisor,x,thoi_gian,05,pass2:inline,,"divide: StartSeconds = r.Get(""start"", 300f) * (StartSeconds / 300f);"
 Sim/Modes/QuickModes.cs,390,71,0.25f,modes.assaultMode.tickSectorScale,x,thoi_gian,05,pass2:inline,,"multiply: if (world.TryGetEconomy(Attacker, out var e0)) e0.Bonus = 0.25f * Sector;"
 Sim/Modes/QuickModes.cs,399,133,0.999f,modes.assaultMode.tickProgressMax,ticks,thoi_gian,05,pass2:inline,,"compare: fighting |= point.Contested || (point.Owner != Attacker && point.Progress * (Defender == Attacker ? 1f : -1f) < 0.999f && Pushing(world, point));"
-Sim/Modes/QuickModes.cs,420,98,1e7f,modes.assaultMode.advanceAmount,x,sat_thuong,05,pass2:inline,,"arg:DamageSystem.Apply: if (world.TryGetVehicle(id, out var gun) && gun.IsAlive) world.Damage.Apply(gun, 1e7f, DamageType.HighExplosive);"
 Sim/Modes/QuickModes.cs,430,71,14f,modes.assaultMode.advanceAxisScale,x,sat_thuong,05,pass2:inline,,"multiply: world.SetRally(Attacker, Open(world, centre - _axis * 14f, 10f));"
 Sim/Modes/QuickModes.cs,430,76,10f,modes.assaultMode.advanceSearch,x,sat_thuong,05,pass2:inline,,"arg:AssaultMode.Open: world.SetRally(Attacker, Open(world, centre - _axis * 14f, 10f));"
 Sim/Modes/QuickModes.cs,450,48,52f,modes.assaultMode.buildSectorsLengthFloor,m,ban_kinh,05,pass2:inline,,"math_max: var cSpot = to - _axis * MathF.Max(52f, length * 0.26f);"
@@ -464,7 +457,6 @@ Sim/Modes/SiegeModes.cs,1175,140,144f,modes.siegeMode.superGunAimDistanceSquared
 Sim/Modes/SiegeModes.cs,1194,64,3,modes.siegeMode.nextArrivalStageMin,count,gioi_han_thuc_the,05,pass2:inline,,compare: if (_fortress?.Arrival is not { } line || Stage >= 3 || line.Path.Count < 2) return null;
 Sim/Modes/SiegeModes.cs,1194,87,2,modes.siegeMode.nextArrivalCountMax,count,gioi_han_thuc_the,05,pass2:inline,,compare: if (_fortress?.Arrival is not { } line || Stage >= 3 || line.Path.Count < 2) return null;
 Sim/Modes/SiegeModes.cs,1196,86,2,modes.siegeMode.nextArrivalCountSub,count,gioi_han_thuc_the,05,pass2:inline,,subtract: var along = line.Path[line.Path.Count - 1] - line.Path[line.Path.Count - 2];
-Sim/Modes/SiegeModes.cs,1197,45,0.01f,modes.siegeMode.nextArrivalLengthSquaredMin,m,ban_kinh,05,pass2:inline,,compare: along = along.LengthSquared() > 0.01f ? Vector2.Normalize(along) : Vector2.UnitX;
 Sim/Modes/SiegeModes.cs,1198,66,2.5,modes.siegeMode.nextArrivalArrivalAtMin,s,thoi_gian,05,pass2:inline,,"compare: if (!double.IsNaN(_arrivalAt) && _arrivalAt - now >= 2.5) return (_arrivalAt, line.Stop, along);"
 Sim/Modes/SiegeModes.cs,1224,98,4,modes.siegeMode.planWaveCountDivisor,x,tan_suat,05,pass2:inline,,"divide: var heavies = _rules.WaveHeavy.Count > 0 && _rules.HeavyEvery > 0 ? Math.Min(count / 4, wave / _rules.HeavyEvery) : 0;"
 Sim/Modes/SiegeModes.cs,1226,107,4,modes.siegeMode.planWaveCountDivisor,x,ban_kinh,05,pass2:inline,,"divide: var breakers = _rules.WaveBreachers.Count > 0 && wave >= _rules.BreachFrom ? Math.Min(count / 4, 1 + (wave - _rules.BreachFrom) / Math.Max(1, _rules.B"

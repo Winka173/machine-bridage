@@ -23,7 +23,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>What rank and equipment make of a structure: √(toughness × firepower), 1 with none.</summary>
         public static float Quality(VehicleBoost b)
         {
-            var toughness = b.Hp / MathF.Max(0.05f, b.DamageTaken);
+            var toughness = b.Hp / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseStrength.QualityDamageTakenFloor, b.DamageTaken);
             var firepower = b.Damage * b.FireRate;
             return MathF.Sqrt(MathF.Max(0f, toughness * firepower));
         }
@@ -67,7 +67,7 @@ namespace MachineBrigade.Sim.Modes
             foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive || v.Team != team || v.Def.Fort == null) continue;
-                total += v.Def.Power * MathF.Sqrt(MathF.Max(0f, v.BoostHp / MathF.Max(0.05f, v.DamageTaken) * v.DamageBoost * v.FireGear));
+                total += v.Def.Power * MathF.Sqrt(MathF.Max(0f, v.BoostHp / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseStrength.ScoreDamageTakenFloor, v.DamageTaken) * v.DamageBoost * v.FireGear));
             }
             return 100f * total / Reference(world.Catalog);
         }
@@ -77,7 +77,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The 100 mark's power in CP: the Normal enemy base at HQ level 3 with no upgrades.</summary>
         public static float Reference(Catalog catalog)
         {
-            return (float)References.GetValue(catalog, c => MathF.Max(1f, Power(c, BaseLoadout.ForAi(c, "Normal", "default", 1, 3))));
+            return (float)References.GetValue(catalog, c => MathF.Max(1f, Power(c, BaseLoadout.ForAi(c, "Normal", "default", 1, global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseStrength.ReferenceLevel))));
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace MachineBrigade.Sim.Modes
         /// waves 1.7 times the size; a bare HQ about three quarters). Tunables modes.baseStrengthRules.
         /// </summary>
         public static float WaveScale(float score) =>
-            Math.Clamp(MathF.Pow(MathF.Max(0.01f, score / 100f), SimTunables.Modes.BaseStrengthRules.WaveScaleExponent),
+            Math.Clamp(MathF.Pow(MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseStrength.WaveScaleScoreFloor, score / global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseStrength.WaveScaleScoreDivisor), SimTunables.Modes.BaseStrengthRules.WaveScaleExponent),
                 SimTunables.Modes.BaseStrengthRules.WaveScaleMin, SimTunables.Modes.BaseStrengthRules.WaveScaleMax);
     }
 }

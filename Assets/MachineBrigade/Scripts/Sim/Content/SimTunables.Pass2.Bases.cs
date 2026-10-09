@@ -9,10 +9,342 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Bases
         {
+            public static partial class BaseRules
+            {
+                /// <summary>bases.baseRules.rebuild1Cp (s; thoi_gian, was Sim/Content/BaseRules.cs:96).</summary>
+                public static int Rebuild1Cp = 2;
+                /// <summary>bases.baseRules.rebuild1Cooldown (s; thoi_gian, was Sim/Content/BaseRules.cs:96).</summary>
+                public static float Rebuild1Cooldown = 25f;
+                /// <summary>bases.baseRules.rebuild2Cp (s; thoi_gian, was Sim/Content/BaseRules.cs:96).</summary>
+                public static int Rebuild2Cp = 4;
+                /// <summary>bases.baseRules.rebuild2Cooldown (s; thoi_gian, was Sim/Content/BaseRules.cs:96).</summary>
+                public static float Rebuild2Cooldown = 40f;
+                /// <summary>bases.baseRules.rebuild3Cp (s; thoi_gian, was Sim/Content/BaseRules.cs:96).</summary>
+                public static int Rebuild3Cp = 7;
+                /// <summary>bases.baseRules.rebuild3Cooldown (s; thoi_gian, was Sim/Content/BaseRules.cs:96).</summary>
+                public static float Rebuild3Cooldown = 60f;
+                /// <summary>bases.baseRules.parseIntMax (count; gioi_han_thuc_the, was Sim/Content/BaseRules.cs:220).</summary>
+                public static int ParseIntMax = 5;
+                /// <summary>bases.baseRules.parseFallback (m; ban_kinh, was Sim/Content/BaseRules.cs:245).</summary>
+                public static int ParseFallback = 3;
+            }
+
+            public static partial class BaseStrength
+            {
+                /// <summary>bases.baseStrength.qualityDamageTakenFloor (x; sat_thuong, was Sim/Modes/BaseStrength.cs:26).</summary>
+                public static float QualityDamageTakenFloor = 0.05f;
+                /// <summary>bases.baseStrength.scoreDamageTakenFloor (x; sat_thuong, was Sim/Modes/BaseStrength.cs:70).</summary>
+                public static float ScoreDamageTakenFloor = 0.05f;
+                /// <summary>bases.baseStrength.referenceLevel (x; nguong, was Sim/Modes/BaseStrength.cs:80).</summary>
+                public static int ReferenceLevel = 3;
+                /// <summary>bases.baseStrength.waveScaleScoreFloor (count; gioi_han_thuc_the, was Sim/Modes/BaseStrength.cs:105).</summary>
+                public static float WaveScaleScoreFloor = 0.01f;
+                /// <summary>bases.baseStrength.waveScaleScoreDivisor (x; gioi_han_thuc_the, was Sim/Modes/BaseStrength.cs:105).</summary>
+                public static float WaveScaleScoreDivisor = 100f;
+            }
+
+            public static partial class BaseSystem
+            {
+                /// <summary>bases.baseSystem.stepHangarsRadiusAdd (m; ban_kinh, was Sim/Modes/BaseSystem.Hangars.cs:62).</summary>
+                public static float StepHangarsRadiusAdd = 4f;
+                /// <summary>bases.baseSystem.hangarPostRadiusAdd (m; ban_kinh, was Sim/Modes/BaseSystem.Hangars.cs:101).</summary>
+                public static float HangarPostRadiusAdd = 15f;
+                /// <summary>bases.baseSystem.setUpHqHqLevelMax (x; nguong, was Sim/Modes/BaseSystem.HqTypes.cs:88).</summary>
+                public static int SetUpHqHqLevelMax = 5;
+                /// <summary>bases.baseSystem.marksShareMax (x; nguong, was Sim/Modes/BaseSystem.HqTypes.cs:139).</summary>
+                public static float MarksShareMax = 0.5f;
+                /// <summary>bases.baseSystem.garrisonRadiusScale (x; ban_kinh, was Sim/Modes/BaseSystem.HqTypes.cs:189).</summary>
+                public static float GarrisonRadiusScale = 0.5f;
+                /// <summary>bases.baseSystem.garrisonRadiusAdd (m; ban_kinh, was Sim/Modes/BaseSystem.HqTypes.cs:195).</summary>
+                public static float GarrisonRadiusAdd = 5f;
+                /// <summary>bases.baseSystem.turnOutTryGetVehicleFalse (m; ban_kinh, was Sim/Modes/BaseSystem.HqTypes.cs:244).</summary>
+                public static float TurnOutTryGetVehicleFalse = 6f;
+                /// <summary>bases.baseSystem.turnOutHqRadiusAdd (m; ban_kinh, was Sim/Modes/BaseSystem.HqTypes.cs:245).</summary>
+                public static float TurnOutHqRadiusAdd = 6f;
+                /// <summary>bases.baseSystem.turnOutKScale (x; gioi_han_thuc_the, was Sim/Modes/BaseSystem.HqTypes.cs:250).</summary>
+                public static float TurnOutKScale = 5f;
+                /// <summary>bases.baseSystem.establishAwayScale (x; khac, was Sim/Modes/BaseSystem.cs:178).</summary>
+                public static float EstablishAwayScale = 12f;
+                /// <summary>bases.baseSystem.tryGetDropZoneScale (x; ban_kinh, was Sim/Modes/BaseSystem.cs:567).</summary>
+                public static float TryGetDropZoneScale = 7f;
+                /// <summary>bases.baseSystem.watchTowerFalse (s; thoi_gian, was Sim/Modes/BaseSystem.cs:629).</summary>
+                public static float WatchTowerFalse = 30f;
+            }
+
+            public static partial class FortressDef
+            {
+                /// <summary>bases.fortressDef.layeredCountMin (count; gioi_han_thuc_the, was Sim/Content/FortressDef.cs:86).</summary>
+                public static int LayeredCountMin = 2;
+            }
+
+            public static partial class GearCatalog
+            {
+                /// <summary>bases.gearCatalog.fortressBarrelTop1 (m; ban_kinh, was Game/Match/GearCatalog.Tower.cs:21).</summary>
+                public static float FortressBarrelTop1 = 0.02f;
+                /// <summary>bases.gearCatalog.fortressBarrelTop2 (m; ban_kinh, was Game/Match/GearCatalog.Tower.cs:21).</summary>
+                public static float FortressBarrelTop2 = 0.03f;
+                /// <summary>bases.gearCatalog.fortressBarrelTop3 (m; ban_kinh, was Game/Match/GearCatalog.Tower.cs:21).</summary>
+                public static float FortressBarrelTop3 = 0.04f;
+                /// <summary>bases.gearCatalog.fortressBarrelTop4 (m; ban_kinh, was Game/Match/GearCatalog.Tower.cs:21).</summary>
+                public static float FortressBarrelTop4 = 0.06f;
+                /// <summary>bases.gearCatalog.fortressBarrelTop5 (m; ban_kinh, was Game/Match/GearCatalog.Tower.cs:21).</summary>
+                public static float FortressBarrelTop5 = 0.08f;
+                /// <summary>bases.gearCatalog.sabotRoundsTop1 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:23).</summary>
+                public static float SabotRoundsTop1 = 0.4f;
+                /// <summary>bases.gearCatalog.sabotRoundsTop2 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:23).</summary>
+                public static float SabotRoundsTop2 = 0.55f;
+                /// <summary>bases.gearCatalog.sabotRoundsTop3 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:23).</summary>
+                public static float SabotRoundsTop3 = 0.7f;
+                /// <summary>bases.gearCatalog.sabotRoundsTop4 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:23).</summary>
+                public static float SabotRoundsTop4 = 0.85f;
+                /// <summary>bases.gearCatalog.flakProximityFuzeTop1 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:24).</summary>
+                public static float FlakProximityFuzeTop1 = 0.05f;
+                /// <summary>bases.gearCatalog.flakProximityFuzeTop2 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:24).</summary>
+                public static float FlakProximityFuzeTop2 = 0.08f;
+                /// <summary>bases.gearCatalog.flakProximityFuzeTop3 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:24).</summary>
+                public static float FlakProximityFuzeTop3 = 0.12f;
+                /// <summary>bases.gearCatalog.flakProximityFuzeTop4 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:24).</summary>
+                public static float FlakProximityFuzeTop4 = 0.16f;
+                /// <summary>bases.gearCatalog.flakProximityFuzeTop5 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:24).</summary>
+                public static float FlakProximityFuzeTop5 = 0.2f;
+                /// <summary>bases.gearCatalog.airburstShellsTop1 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:25).</summary>
+                public static float AirburstShellsTop1 = 0.05f;
+                /// <summary>bases.gearCatalog.airburstShellsTop2 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:25).</summary>
+                public static float AirburstShellsTop2 = 0.08f;
+                /// <summary>bases.gearCatalog.airburstShellsTop3 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:25).</summary>
+                public static float AirburstShellsTop3 = 0.12f;
+                /// <summary>bases.gearCatalog.airburstShellsTop4 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:25).</summary>
+                public static float AirburstShellsTop4 = 0.16f;
+                /// <summary>bases.gearCatalog.airburstShellsTop5 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:25).</summary>
+                public static float AirburstShellsTop5 = 0.2f;
+                /// <summary>bases.gearCatalog.ammoHoistTop1 (x; tan_suat, was Game/Match/GearCatalog.Tower.cs:27).</summary>
+                public static float AmmoHoistTop1 = 0.06f;
+                /// <summary>bases.gearCatalog.ammoHoistTop2 (x; tan_suat, was Game/Match/GearCatalog.Tower.cs:27).</summary>
+                public static float AmmoHoistTop2 = 0.09f;
+                /// <summary>bases.gearCatalog.ammoHoistTop3 (x; tan_suat, was Game/Match/GearCatalog.Tower.cs:27).</summary>
+                public static float AmmoHoistTop3 = 0.12f;
+                /// <summary>bases.gearCatalog.ammoHoistTop4 (x; tan_suat, was Game/Match/GearCatalog.Tower.cs:27).</summary>
+                public static float AmmoHoistTop4 = 0.15f;
+                /// <summary>bases.gearCatalog.ammoHoistTop5 (x; tan_suat, was Game/Match/GearCatalog.Tower.cs:27).</summary>
+                public static float AmmoHoistTop5 = 0.18f;
+                /// <summary>bases.gearCatalog.blastWallsTop1 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:32).</summary>
+                public static float BlastWallsTop1 = 0.06f;
+                /// <summary>bases.gearCatalog.blastWallsTop2 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:32).</summary>
+                public static float BlastWallsTop2 = 0.09f;
+                /// <summary>bases.gearCatalog.blastWallsTop3 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:32).</summary>
+                public static float BlastWallsTop3 = 0.13f;
+                /// <summary>bases.gearCatalog.blastWallsTop4 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:32).</summary>
+                public static float BlastWallsTop4 = 0.17f;
+                /// <summary>bases.gearCatalog.blastWallsTop5 (x; sat_thuong, was Game/Match/GearCatalog.Tower.cs:32).</summary>
+                public static float BlastWallsTop5 = 0.22f;
+                /// <summary>bases.gearCatalog.engineerBayTop2 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:34).</summary>
+                public static float EngineerBayTop2 = 1.5f;
+                /// <summary>bases.gearCatalog.engineerBayTop3 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:34).</summary>
+                public static float EngineerBayTop3 = 2f;
+                /// <summary>bases.gearCatalog.engineerBayTop4 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:34).</summary>
+                public static float EngineerBayTop4 = 2.5f;
+                /// <summary>bases.gearCatalog.engineerBayTop5 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:34).</summary>
+                public static float EngineerBayTop5 = 3f;
+                /// <summary>bases.gearCatalog.traverseMotorsMainScale (x; tan_suat, was Game/Match/GearCatalog.Tower.cs:41).</summary>
+                public static float TraverseMotorsMainScale = 1.5f;
+                /// <summary>bases.gearCatalog.ammoHandlingTop2N1 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:45).</summary>
+                public static float AmmoHandlingTop2N1 = 0.07f;
+                /// <summary>bases.gearCatalog.ammoHandlingTop2N2 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:45).</summary>
+                public static float AmmoHandlingTop2N2 = 0.1f;
+                /// <summary>bases.gearCatalog.ammoHandlingTop2N3 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:45).</summary>
+                public static float AmmoHandlingTop2N3 = 0.12f;
+                /// <summary>bases.gearCatalog.ammoHandlingTop2N4 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:45).</summary>
+                public static float AmmoHandlingTop2N4 = 0.14f;
+                /// <summary>bases.gearCatalog.ammoHandlingTop2N5 (s; thoi_gian, was Game/Match/GearCatalog.Tower.cs:45).</summary>
+                public static float AmmoHandlingTop2N5 = 0.16f;
+                /// <summary>bases.gearCatalog.towerCounterBatteryEpic1 (count; gioi_han_thuc_the, was Game/Match/GearCatalog.Tower.cs:66).</summary>
+                public static float TowerCounterBatteryEpic1 = 4f;
+                /// <summary>bases.gearCatalog.towerCounterBatteryLegendary1 (count; gioi_han_thuc_the, was Game/Match/GearCatalog.Tower.cs:66).</summary>
+                public static float TowerCounterBatteryLegendary1 = 6f;
+                /// <summary>bases.gearCatalog.buildTowerCapsCaps (m; ban_kinh, was Game/Match/GearCatalog.Tower.cs:106).</summary>
+                public static float BuildTowerCapsCaps = 0.1f;
+            }
+
+            public static partial class HardpointDef
+            {
+                /// <summary>bases.hardpointDef.acrossSizeValue (count; gioi_han_thuc_the, was Sim/Content/BaseSites.cs:55).</summary>
+                public static float AcrossSizeValue = 5f;
+                /// <summary>bases.hardpointDef.acrossSizeValue2 (count; gioi_han_thuc_the, was Sim/Content/BaseSites.cs:55).</summary>
+                public static float AcrossSizeValue2 = 6.5f;
+                /// <summary>bases.hardpointDef.acrossSizeValue3 (count; gioi_han_thuc_the, was Sim/Content/BaseSites.cs:55).</summary>
+                public static float AcrossSizeValue3 = 9f;
+                /// <summary>bases.hardpointDef.classOfMetresMax (m; ban_kinh, was Sim/Content/BaseSites.cs:58).</summary>
+                public static float ClassOfMetresMax = 5.5f;
+                /// <summary>bases.hardpointDef.classOfMetresMax2 (m; ban_kinh, was Sim/Content/BaseSites.cs:58).</summary>
+                public static float ClassOfMetresMax2 = 7.5f;
+            }
+
+            public static partial class HqTypeRules
+            {
+                /// <summary>bases.hqTypeRules.garrisonEvery1 (x; tan_suat, was Sim/Content/HqTypeRules.cs:67).</summary>
+                public static float GarrisonEvery1 = 60f;
+                /// <summary>bases.hqTypeRules.garrisonEvery2 (x; tan_suat, was Sim/Content/HqTypeRules.cs:67).</summary>
+                public static float GarrisonEvery2 = 60f;
+                /// <summary>bases.hqTypeRules.garrisonEvery3 (x; tan_suat, was Sim/Content/HqTypeRules.cs:67).</summary>
+                public static float GarrisonEvery3 = 60f;
+                /// <summary>bases.hqTypeRules.garrisonEvery4 (x; tan_suat, was Sim/Content/HqTypeRules.cs:67).</summary>
+                public static float GarrisonEvery4 = 60f;
+                /// <summary>bases.hqTypeRules.garrisonEvery5 (x; tan_suat, was Sim/Content/HqTypeRules.cs:67).</summary>
+                public static float GarrisonEvery5 = 60f;
+                /// <summary>bases.hqTypeRules.garrisonCaps1 (x; khac, was Sim/Content/HqTypeRules.cs:98).</summary>
+                public static int GarrisonCaps1 = 6;
+                /// <summary>bases.hqTypeRules.garrisonCaps2 (x; khac, was Sim/Content/HqTypeRules.cs:98).</summary>
+                public static int GarrisonCaps2 = 8;
+                /// <summary>bases.hqTypeRules.garrisonCaps3 (x; khac, was Sim/Content/HqTypeRules.cs:98).</summary>
+                public static int GarrisonCaps3 = 10;
+                /// <summary>bases.hqTypeRules.garrisonCaps4 (x; khac, was Sim/Content/HqTypeRules.cs:98).</summary>
+                public static int GarrisonCaps4 = 12;
+                /// <summary>bases.hqTypeRules.garrisonCaps5 (x; khac, was Sim/Content/HqTypeRules.cs:98).</summary>
+                public static int GarrisonCaps5 = 15;
+                /// <summary>bases.hqTypeRules.regen1 (x; khac, was Sim/Content/HqTypeRules.cs:113).</summary>
+                public static float Regen1 = 0.002f;
+                /// <summary>bases.hqTypeRules.regen2 (x; khac, was Sim/Content/HqTypeRules.cs:113).</summary>
+                public static float Regen2 = 0.0025f;
+                /// <summary>bases.hqTypeRules.regen3 (x; khac, was Sim/Content/HqTypeRules.cs:113).</summary>
+                public static float Regen3 = 0.003f;
+                /// <summary>bases.hqTypeRules.regen4 (x; khac, was Sim/Content/HqTypeRules.cs:113).</summary>
+                public static float Regen4 = 0.0035f;
+                /// <summary>bases.hqTypeRules.regen5 (x; khac, was Sim/Content/HqTypeRules.cs:113).</summary>
+                public static float Regen5 = 0.004f;
+                /// <summary>bases.hqTypeRules.dome1 (x; khac, was Sim/Content/HqTypeRules.cs:116).</summary>
+                public static float Dome1 = 0.08f;
+                /// <summary>bases.hqTypeRules.dome2 (x; khac, was Sim/Content/HqTypeRules.cs:116).</summary>
+                public static float Dome2 = 0.10f;
+                /// <summary>bases.hqTypeRules.dome3 (x; khac, was Sim/Content/HqTypeRules.cs:116).</summary>
+                public static float Dome3 = 0.12f;
+                /// <summary>bases.hqTypeRules.dome4 (x; khac, was Sim/Content/HqTypeRules.cs:116).</summary>
+                public static float Dome4 = 0.15f;
+                /// <summary>bases.hqTypeRules.dome5 (x; khac, was Sim/Content/HqTypeRules.cs:116).</summary>
+                public static float Dome5 = 0.18f;
+                /// <summary>bases.hqTypeRules.parseFloatFloor2 (m; ban_kinh, was Sim/Content/HqTypeRules.cs:179).</summary>
+                public static float ParseFloatFloor2 = 5f;
+                /// <summary>bases.hqTypeRules.parseFloatFloor4 (s; thoi_gian, was Sim/Content/HqTypeRules.cs:228).</summary>
+                public static float ParseFloatFloor4 = 0.5f;
+            }
+
+            public static partial class WallSegmentDef
+            {
+                /// <summary>bases.wallSegmentDef.outMinScale (x; ban_kinh, was Sim/Content/WallRules.cs:185).</summary>
+                public static float OutMinScale = 0.5f;
+            }
+
+            public static partial class WallSystem
+            {
+                /// <summary>bases.wallSystem.keepsAnchorsMaxRings (x; sat_thuong, was Sim/Modes/WallSystem.cs:185).</summary>
+                public static int KeepsAnchorsMaxRings = 5;
+                /// <summary>bases.wallSystem.rubbleRouteMinAdd (m; ban_kinh, was Sim/Modes/WallSystem.cs:285).</summary>
+                public static float RubbleRouteMinAdd = 3f;
+                /// <summary>bases.wallSystem.regionNearMaxRings (x; sat_thuong, was Sim/Modes/WallSystem.cs:300).</summary>
+                public static int RegionNearMaxRings = 2;
+            }
         }
 
         private static readonly Entry[] Pass2Bases =
         {
+            new Entry("bases.baseRules.rebuild1Cp", "s", () => Bases.BaseRules.Rebuild1Cp, v => Bases.BaseRules.Rebuild1Cp = (int)System.Math.Round(v)),
+            new Entry("bases.baseRules.rebuild1Cooldown", "s", () => Bases.BaseRules.Rebuild1Cooldown, v => Bases.BaseRules.Rebuild1Cooldown = (float)v),
+            new Entry("bases.baseRules.rebuild2Cp", "s", () => Bases.BaseRules.Rebuild2Cp, v => Bases.BaseRules.Rebuild2Cp = (int)System.Math.Round(v)),
+            new Entry("bases.baseRules.rebuild2Cooldown", "s", () => Bases.BaseRules.Rebuild2Cooldown, v => Bases.BaseRules.Rebuild2Cooldown = (float)v),
+            new Entry("bases.baseRules.rebuild3Cp", "s", () => Bases.BaseRules.Rebuild3Cp, v => Bases.BaseRules.Rebuild3Cp = (int)System.Math.Round(v)),
+            new Entry("bases.baseRules.rebuild3Cooldown", "s", () => Bases.BaseRules.Rebuild3Cooldown, v => Bases.BaseRules.Rebuild3Cooldown = (float)v),
+            new Entry("bases.baseRules.parseIntMax", "count", () => Bases.BaseRules.ParseIntMax, v => Bases.BaseRules.ParseIntMax = (int)System.Math.Round(v)),
+            new Entry("bases.baseRules.parseFallback", "m", () => Bases.BaseRules.ParseFallback, v => Bases.BaseRules.ParseFallback = (int)System.Math.Round(v)),
+            new Entry("bases.baseStrength.qualityDamageTakenFloor", "x", () => Bases.BaseStrength.QualityDamageTakenFloor, v => Bases.BaseStrength.QualityDamageTakenFloor = (float)v),
+            new Entry("bases.baseStrength.scoreDamageTakenFloor", "x", () => Bases.BaseStrength.ScoreDamageTakenFloor, v => Bases.BaseStrength.ScoreDamageTakenFloor = (float)v),
+            new Entry("bases.baseStrength.referenceLevel", "x", () => Bases.BaseStrength.ReferenceLevel, v => Bases.BaseStrength.ReferenceLevel = (int)System.Math.Round(v)),
+            new Entry("bases.baseStrength.waveScaleScoreFloor", "count", () => Bases.BaseStrength.WaveScaleScoreFloor, v => Bases.BaseStrength.WaveScaleScoreFloor = (float)v),
+            new Entry("bases.baseStrength.waveScaleScoreDivisor", "x", () => Bases.BaseStrength.WaveScaleScoreDivisor, v => Bases.BaseStrength.WaveScaleScoreDivisor = (float)v),
+            new Entry("bases.baseSystem.stepHangarsRadiusAdd", "m", () => Bases.BaseSystem.StepHangarsRadiusAdd, v => Bases.BaseSystem.StepHangarsRadiusAdd = (float)v),
+            new Entry("bases.baseSystem.hangarPostRadiusAdd", "m", () => Bases.BaseSystem.HangarPostRadiusAdd, v => Bases.BaseSystem.HangarPostRadiusAdd = (float)v),
+            new Entry("bases.baseSystem.setUpHqHqLevelMax", "x", () => Bases.BaseSystem.SetUpHqHqLevelMax, v => Bases.BaseSystem.SetUpHqHqLevelMax = (int)System.Math.Round(v)),
+            new Entry("bases.baseSystem.marksShareMax", "x", () => Bases.BaseSystem.MarksShareMax, v => Bases.BaseSystem.MarksShareMax = (float)v),
+            new Entry("bases.baseSystem.garrisonRadiusScale", "x", () => Bases.BaseSystem.GarrisonRadiusScale, v => Bases.BaseSystem.GarrisonRadiusScale = (float)v),
+            new Entry("bases.baseSystem.garrisonRadiusAdd", "m", () => Bases.BaseSystem.GarrisonRadiusAdd, v => Bases.BaseSystem.GarrisonRadiusAdd = (float)v),
+            new Entry("bases.baseSystem.turnOutTryGetVehicleFalse", "m", () => Bases.BaseSystem.TurnOutTryGetVehicleFalse, v => Bases.BaseSystem.TurnOutTryGetVehicleFalse = (float)v),
+            new Entry("bases.baseSystem.turnOutHqRadiusAdd", "m", () => Bases.BaseSystem.TurnOutHqRadiusAdd, v => Bases.BaseSystem.TurnOutHqRadiusAdd = (float)v),
+            new Entry("bases.baseSystem.turnOutKScale", "x", () => Bases.BaseSystem.TurnOutKScale, v => Bases.BaseSystem.TurnOutKScale = (float)v),
+            new Entry("bases.baseSystem.establishAwayScale", "x", () => Bases.BaseSystem.EstablishAwayScale, v => Bases.BaseSystem.EstablishAwayScale = (float)v),
+            new Entry("bases.baseSystem.tryGetDropZoneScale", "x", () => Bases.BaseSystem.TryGetDropZoneScale, v => Bases.BaseSystem.TryGetDropZoneScale = (float)v),
+            new Entry("bases.baseSystem.watchTowerFalse", "s", () => Bases.BaseSystem.WatchTowerFalse, v => Bases.BaseSystem.WatchTowerFalse = (float)v),
+            new Entry("bases.fortressDef.layeredCountMin", "count", () => Bases.FortressDef.LayeredCountMin, v => Bases.FortressDef.LayeredCountMin = (int)System.Math.Round(v)),
+            new Entry("bases.gearCatalog.fortressBarrelTop1", "m", () => Bases.GearCatalog.FortressBarrelTop1, v => Bases.GearCatalog.FortressBarrelTop1 = (float)v),
+            new Entry("bases.gearCatalog.fortressBarrelTop2", "m", () => Bases.GearCatalog.FortressBarrelTop2, v => Bases.GearCatalog.FortressBarrelTop2 = (float)v),
+            new Entry("bases.gearCatalog.fortressBarrelTop3", "m", () => Bases.GearCatalog.FortressBarrelTop3, v => Bases.GearCatalog.FortressBarrelTop3 = (float)v),
+            new Entry("bases.gearCatalog.fortressBarrelTop4", "m", () => Bases.GearCatalog.FortressBarrelTop4, v => Bases.GearCatalog.FortressBarrelTop4 = (float)v),
+            new Entry("bases.gearCatalog.fortressBarrelTop5", "m", () => Bases.GearCatalog.FortressBarrelTop5, v => Bases.GearCatalog.FortressBarrelTop5 = (float)v),
+            new Entry("bases.gearCatalog.sabotRoundsTop1", "x", () => Bases.GearCatalog.SabotRoundsTop1, v => Bases.GearCatalog.SabotRoundsTop1 = (float)v),
+            new Entry("bases.gearCatalog.sabotRoundsTop2", "x", () => Bases.GearCatalog.SabotRoundsTop2, v => Bases.GearCatalog.SabotRoundsTop2 = (float)v),
+            new Entry("bases.gearCatalog.sabotRoundsTop3", "x", () => Bases.GearCatalog.SabotRoundsTop3, v => Bases.GearCatalog.SabotRoundsTop3 = (float)v),
+            new Entry("bases.gearCatalog.sabotRoundsTop4", "x", () => Bases.GearCatalog.SabotRoundsTop4, v => Bases.GearCatalog.SabotRoundsTop4 = (float)v),
+            new Entry("bases.gearCatalog.flakProximityFuzeTop1", "x", () => Bases.GearCatalog.FlakProximityFuzeTop1, v => Bases.GearCatalog.FlakProximityFuzeTop1 = (float)v),
+            new Entry("bases.gearCatalog.flakProximityFuzeTop2", "x", () => Bases.GearCatalog.FlakProximityFuzeTop2, v => Bases.GearCatalog.FlakProximityFuzeTop2 = (float)v),
+            new Entry("bases.gearCatalog.flakProximityFuzeTop3", "x", () => Bases.GearCatalog.FlakProximityFuzeTop3, v => Bases.GearCatalog.FlakProximityFuzeTop3 = (float)v),
+            new Entry("bases.gearCatalog.flakProximityFuzeTop4", "x", () => Bases.GearCatalog.FlakProximityFuzeTop4, v => Bases.GearCatalog.FlakProximityFuzeTop4 = (float)v),
+            new Entry("bases.gearCatalog.flakProximityFuzeTop5", "x", () => Bases.GearCatalog.FlakProximityFuzeTop5, v => Bases.GearCatalog.FlakProximityFuzeTop5 = (float)v),
+            new Entry("bases.gearCatalog.airburstShellsTop1", "x", () => Bases.GearCatalog.AirburstShellsTop1, v => Bases.GearCatalog.AirburstShellsTop1 = (float)v),
+            new Entry("bases.gearCatalog.airburstShellsTop2", "x", () => Bases.GearCatalog.AirburstShellsTop2, v => Bases.GearCatalog.AirburstShellsTop2 = (float)v),
+            new Entry("bases.gearCatalog.airburstShellsTop3", "x", () => Bases.GearCatalog.AirburstShellsTop3, v => Bases.GearCatalog.AirburstShellsTop3 = (float)v),
+            new Entry("bases.gearCatalog.airburstShellsTop4", "x", () => Bases.GearCatalog.AirburstShellsTop4, v => Bases.GearCatalog.AirburstShellsTop4 = (float)v),
+            new Entry("bases.gearCatalog.airburstShellsTop5", "x", () => Bases.GearCatalog.AirburstShellsTop5, v => Bases.GearCatalog.AirburstShellsTop5 = (float)v),
+            new Entry("bases.gearCatalog.ammoHoistTop1", "x", () => Bases.GearCatalog.AmmoHoistTop1, v => Bases.GearCatalog.AmmoHoistTop1 = (float)v),
+            new Entry("bases.gearCatalog.ammoHoistTop2", "x", () => Bases.GearCatalog.AmmoHoistTop2, v => Bases.GearCatalog.AmmoHoistTop2 = (float)v),
+            new Entry("bases.gearCatalog.ammoHoistTop3", "x", () => Bases.GearCatalog.AmmoHoistTop3, v => Bases.GearCatalog.AmmoHoistTop3 = (float)v),
+            new Entry("bases.gearCatalog.ammoHoistTop4", "x", () => Bases.GearCatalog.AmmoHoistTop4, v => Bases.GearCatalog.AmmoHoistTop4 = (float)v),
+            new Entry("bases.gearCatalog.ammoHoistTop5", "x", () => Bases.GearCatalog.AmmoHoistTop5, v => Bases.GearCatalog.AmmoHoistTop5 = (float)v),
+            new Entry("bases.gearCatalog.blastWallsTop1", "x", () => Bases.GearCatalog.BlastWallsTop1, v => Bases.GearCatalog.BlastWallsTop1 = (float)v),
+            new Entry("bases.gearCatalog.blastWallsTop2", "x", () => Bases.GearCatalog.BlastWallsTop2, v => Bases.GearCatalog.BlastWallsTop2 = (float)v),
+            new Entry("bases.gearCatalog.blastWallsTop3", "x", () => Bases.GearCatalog.BlastWallsTop3, v => Bases.GearCatalog.BlastWallsTop3 = (float)v),
+            new Entry("bases.gearCatalog.blastWallsTop4", "x", () => Bases.GearCatalog.BlastWallsTop4, v => Bases.GearCatalog.BlastWallsTop4 = (float)v),
+            new Entry("bases.gearCatalog.blastWallsTop5", "x", () => Bases.GearCatalog.BlastWallsTop5, v => Bases.GearCatalog.BlastWallsTop5 = (float)v),
+            new Entry("bases.gearCatalog.engineerBayTop2", "s", () => Bases.GearCatalog.EngineerBayTop2, v => Bases.GearCatalog.EngineerBayTop2 = (float)v),
+            new Entry("bases.gearCatalog.engineerBayTop3", "s", () => Bases.GearCatalog.EngineerBayTop3, v => Bases.GearCatalog.EngineerBayTop3 = (float)v),
+            new Entry("bases.gearCatalog.engineerBayTop4", "s", () => Bases.GearCatalog.EngineerBayTop4, v => Bases.GearCatalog.EngineerBayTop4 = (float)v),
+            new Entry("bases.gearCatalog.engineerBayTop5", "s", () => Bases.GearCatalog.EngineerBayTop5, v => Bases.GearCatalog.EngineerBayTop5 = (float)v),
+            new Entry("bases.gearCatalog.traverseMotorsMainScale", "x", () => Bases.GearCatalog.TraverseMotorsMainScale, v => Bases.GearCatalog.TraverseMotorsMainScale = (float)v),
+            new Entry("bases.gearCatalog.ammoHandlingTop2N1", "s", () => Bases.GearCatalog.AmmoHandlingTop2N1, v => Bases.GearCatalog.AmmoHandlingTop2N1 = (float)v),
+            new Entry("bases.gearCatalog.ammoHandlingTop2N2", "s", () => Bases.GearCatalog.AmmoHandlingTop2N2, v => Bases.GearCatalog.AmmoHandlingTop2N2 = (float)v),
+            new Entry("bases.gearCatalog.ammoHandlingTop2N3", "s", () => Bases.GearCatalog.AmmoHandlingTop2N3, v => Bases.GearCatalog.AmmoHandlingTop2N3 = (float)v),
+            new Entry("bases.gearCatalog.ammoHandlingTop2N4", "s", () => Bases.GearCatalog.AmmoHandlingTop2N4, v => Bases.GearCatalog.AmmoHandlingTop2N4 = (float)v),
+            new Entry("bases.gearCatalog.ammoHandlingTop2N5", "s", () => Bases.GearCatalog.AmmoHandlingTop2N5, v => Bases.GearCatalog.AmmoHandlingTop2N5 = (float)v),
+            new Entry("bases.gearCatalog.towerCounterBatteryEpic1", "count", () => Bases.GearCatalog.TowerCounterBatteryEpic1, v => Bases.GearCatalog.TowerCounterBatteryEpic1 = (float)v),
+            new Entry("bases.gearCatalog.towerCounterBatteryLegendary1", "count", () => Bases.GearCatalog.TowerCounterBatteryLegendary1, v => Bases.GearCatalog.TowerCounterBatteryLegendary1 = (float)v),
+            new Entry("bases.gearCatalog.buildTowerCapsCaps", "m", () => Bases.GearCatalog.BuildTowerCapsCaps, v => Bases.GearCatalog.BuildTowerCapsCaps = (float)v),
+            new Entry("bases.hardpointDef.acrossSizeValue", "count", () => Bases.HardpointDef.AcrossSizeValue, v => Bases.HardpointDef.AcrossSizeValue = (float)v),
+            new Entry("bases.hardpointDef.acrossSizeValue2", "count", () => Bases.HardpointDef.AcrossSizeValue2, v => Bases.HardpointDef.AcrossSizeValue2 = (float)v),
+            new Entry("bases.hardpointDef.acrossSizeValue3", "count", () => Bases.HardpointDef.AcrossSizeValue3, v => Bases.HardpointDef.AcrossSizeValue3 = (float)v),
+            new Entry("bases.hardpointDef.classOfMetresMax", "m", () => Bases.HardpointDef.ClassOfMetresMax, v => Bases.HardpointDef.ClassOfMetresMax = (float)v),
+            new Entry("bases.hardpointDef.classOfMetresMax2", "m", () => Bases.HardpointDef.ClassOfMetresMax2, v => Bases.HardpointDef.ClassOfMetresMax2 = (float)v),
+            new Entry("bases.hqTypeRules.garrisonEvery1", "x", () => Bases.HqTypeRules.GarrisonEvery1, v => Bases.HqTypeRules.GarrisonEvery1 = (float)v),
+            new Entry("bases.hqTypeRules.garrisonEvery2", "x", () => Bases.HqTypeRules.GarrisonEvery2, v => Bases.HqTypeRules.GarrisonEvery2 = (float)v),
+            new Entry("bases.hqTypeRules.garrisonEvery3", "x", () => Bases.HqTypeRules.GarrisonEvery3, v => Bases.HqTypeRules.GarrisonEvery3 = (float)v),
+            new Entry("bases.hqTypeRules.garrisonEvery4", "x", () => Bases.HqTypeRules.GarrisonEvery4, v => Bases.HqTypeRules.GarrisonEvery4 = (float)v),
+            new Entry("bases.hqTypeRules.garrisonEvery5", "x", () => Bases.HqTypeRules.GarrisonEvery5, v => Bases.HqTypeRules.GarrisonEvery5 = (float)v),
+            new Entry("bases.hqTypeRules.garrisonCaps1", "x", () => Bases.HqTypeRules.GarrisonCaps1, v => Bases.HqTypeRules.GarrisonCaps1 = (int)System.Math.Round(v)),
+            new Entry("bases.hqTypeRules.garrisonCaps2", "x", () => Bases.HqTypeRules.GarrisonCaps2, v => Bases.HqTypeRules.GarrisonCaps2 = (int)System.Math.Round(v)),
+            new Entry("bases.hqTypeRules.garrisonCaps3", "x", () => Bases.HqTypeRules.GarrisonCaps3, v => Bases.HqTypeRules.GarrisonCaps3 = (int)System.Math.Round(v)),
+            new Entry("bases.hqTypeRules.garrisonCaps4", "x", () => Bases.HqTypeRules.GarrisonCaps4, v => Bases.HqTypeRules.GarrisonCaps4 = (int)System.Math.Round(v)),
+            new Entry("bases.hqTypeRules.garrisonCaps5", "x", () => Bases.HqTypeRules.GarrisonCaps5, v => Bases.HqTypeRules.GarrisonCaps5 = (int)System.Math.Round(v)),
+            new Entry("bases.hqTypeRules.regen1", "x", () => Bases.HqTypeRules.Regen1, v => Bases.HqTypeRules.Regen1 = (float)v),
+            new Entry("bases.hqTypeRules.regen2", "x", () => Bases.HqTypeRules.Regen2, v => Bases.HqTypeRules.Regen2 = (float)v),
+            new Entry("bases.hqTypeRules.regen3", "x", () => Bases.HqTypeRules.Regen3, v => Bases.HqTypeRules.Regen3 = (float)v),
+            new Entry("bases.hqTypeRules.regen4", "x", () => Bases.HqTypeRules.Regen4, v => Bases.HqTypeRules.Regen4 = (float)v),
+            new Entry("bases.hqTypeRules.regen5", "x", () => Bases.HqTypeRules.Regen5, v => Bases.HqTypeRules.Regen5 = (float)v),
+            new Entry("bases.hqTypeRules.dome1", "x", () => Bases.HqTypeRules.Dome1, v => Bases.HqTypeRules.Dome1 = (float)v),
+            new Entry("bases.hqTypeRules.dome2", "x", () => Bases.HqTypeRules.Dome2, v => Bases.HqTypeRules.Dome2 = (float)v),
+            new Entry("bases.hqTypeRules.dome3", "x", () => Bases.HqTypeRules.Dome3, v => Bases.HqTypeRules.Dome3 = (float)v),
+            new Entry("bases.hqTypeRules.dome4", "x", () => Bases.HqTypeRules.Dome4, v => Bases.HqTypeRules.Dome4 = (float)v),
+            new Entry("bases.hqTypeRules.dome5", "x", () => Bases.HqTypeRules.Dome5, v => Bases.HqTypeRules.Dome5 = (float)v),
+            new Entry("bases.hqTypeRules.parseFloatFloor2", "m", () => Bases.HqTypeRules.ParseFloatFloor2, v => Bases.HqTypeRules.ParseFloatFloor2 = (float)v),
+            new Entry("bases.hqTypeRules.parseFloatFloor4", "s", () => Bases.HqTypeRules.ParseFloatFloor4, v => Bases.HqTypeRules.ParseFloatFloor4 = (float)v),
+            new Entry("bases.wallSegmentDef.outMinScale", "x", () => Bases.WallSegmentDef.OutMinScale, v => Bases.WallSegmentDef.OutMinScale = (float)v),
+            new Entry("bases.wallSystem.keepsAnchorsMaxRings", "x", () => Bases.WallSystem.KeepsAnchorsMaxRings, v => Bases.WallSystem.KeepsAnchorsMaxRings = (int)System.Math.Round(v)),
+            new Entry("bases.wallSystem.rubbleRouteMinAdd", "m", () => Bases.WallSystem.RubbleRouteMinAdd, v => Bases.WallSystem.RubbleRouteMinAdd = (float)v),
+            new Entry("bases.wallSystem.regionNearMaxRings", "x", () => Bases.WallSystem.RegionNearMaxRings, v => Bases.WallSystem.RegionNearMaxRings = (int)System.Math.Round(v)),
         };
     }
 }
