@@ -125,7 +125,18 @@ internal static class Check
             var oldT = oldC?.Trees.GetValueOrDefault(f) ?? CSharpSyntaxTree.ParseText(oldS.Files[f], parse, f);
             var newT = newC?.Trees.GetValueOrDefault(f) ?? CSharpSyntaxTree.ParseText(newS.Files[f], parse, f);
             _newModel = newC?.Model(f);
-            CompareFile(f, oldT, newT, r);
+            // pass 2: "T x = lit" -> "T? x = null" + "(x ?? field)" is undone first; the rest of the proof runs on the undone text
+            var undone = UndoNullableDefaults(f, oldT, newT, r, out var mapBack);
+            var n0 = r.Sites.Count;
+            CompareFile(f, oldT, undone ?? newT, r);
+            if (undone != null)
+                for (var si = n0; si < r.Sites.Count; si++)
+                {
+                    var st = r.Sites[si];
+                    if (st.How == "param_default_nullable") continue;
+                    st.NewPos = mapBack(st.NewPos);
+                    st.NewLine = newT.GetText().Lines.GetLineFromPosition(st.NewPos).LineNumber + 1;
+                }
             _newModel = null;
         }
         foreach (var s in r.Sites) s.PairName = r.Name;
@@ -150,6 +161,101 @@ internal static class Check
     }
 
     private static string Norm(string s) => s.Replace("\r\n", "\n");
+
+    /// <summary>
+    /// Pack 2 pass 2 (09/10): the move tool's parameter-default rewrite. Old: "T x = D"; new: "T? x = null" and every read of
+    /// x in the member's body "(x ?? SimTunables.F)". Undoing it (the type back to T, null back to D, each "(x ?? F)" back to
+    /// x) must give the old member exactly (the rest of the check proves that on the undone text, rebuilt tree included);
+    /// every read of x must be wrapped (a bare x would now be a T?); F's default must be D (a site for checks b, c, e).
+    /// </summary>
+    private static SyntaxTree? UndoNullableDefaults(string f, SyntaxTree oldT, SyntaxTree newT, PairResult r, out Func<int, int> mapBack)
+    {
+        mapBack = p => p;
+        var oldRoot = oldT.GetRoot();
+        var newRoot = newT.GetRoot();
+        var edits = new List<(int start, int len, string text)>();
+        var found = new List<Site>();
+        var notes = new List<string>();
+        foreach (var member in newRoot.DescendantNodes().OfType<BaseMethodDeclarationSyntax>())
+        {
+            foreach (var par in member.ParameterList.Parameters)
+            {
+                if (par.Type is not NullableTypeSyntax { ElementType: PredefinedTypeSyntax et } nt
+                    || par.Default?.Value is not LiteralExpressionSyntax { RawKind: (int)SyntaxKind.NullLiteralExpression } nul)
+                    continue;
+                var old = Counterpart(oldRoot, member);
+                var op = old?.ParameterList.Parameters.FirstOrDefault(q => q.Identifier.Text == par.Identifier.Text);
+                if (op?.Default == null || op.Type?.ToString() != et.ToString()) continue;
+                var d = TypedValue.FromExpression(op.Default.Value);
+                if (d == null) continue;
+                var name = par.Identifier.Text;
+                var body = (SyntaxNode?)member.Body ?? member.ExpressionBody;
+                if (body == null) continue;
+                var wraps = body.DescendantNodes().OfType<ParenthesizedExpressionSyntax>()
+                    .Where(pe => pe.Expression is BinaryExpressionSyntax { RawKind: (int)SyntaxKind.CoalesceExpression } be
+                                 && be.Left is IdentifierNameSyntax lid && lid.Identifier.Text == name && Syn.TunablePath(be.Right) != null).ToList();
+                var wrapped = new HashSet<SyntaxNode>(wraps.Select(w => (SyntaxNode)((BinaryExpressionSyntax)w.Expression).Left));
+                var bare = body.DescendantNodes().OfType<IdentifierNameSyntax>().Where(i => i.Identifier.Text == name && !wrapped.Contains(i)
+                        && !(i.Parent is MemberAccessExpressionSyntax ma && ma.Name == i) && i.Parent is not NameColonSyntax and not NameEqualsSyntax
+                        && !i.Ancestors().OfType<InvocationExpressionSyntax>().Any(inv => inv.Expression is IdentifierNameSyntax { Identifier.Text: "nameof" }))
+                    .ToList();
+                if (bare.Count > 0 || wraps.Count == 0) continue;
+                edits.Add((nt.SpanStart, nt.Span.Length, et.ToString()));
+                edits.Add((nul.SpanStart, nul.Span.Length, op.Default.Value.ToString()));
+                foreach (var w in wraps)
+                {
+                    var chain = ((BinaryExpressionSyntax)w.Expression).Right;
+                    edits.Add((w.SpanStart, w.Span.Length, name));
+                    found.Add(new Site
+                    {
+                        File = f, Path = Syn.TunablePath(chain)!, How = "param_default_nullable", OldLine = Syn.Line(op), NewLine = Syn.Line(chain),
+                        OldPos = op.Default.Value.SpanStart, NewPos = chain.SpanStart, Literal = d.Value, LiteralText = op.Default.Value.ToString(),
+                        OldSnippet = op.ToString(),
+                    });
+                }
+                notes.Add($"{Repo.Short(f)}:{Syn.Line(par)} default parameter -> nullable + (x ?? field) (pass 2 pattern): {name} = {op.Default.Value}, {wraps.Count} read(s) wrapped, none bare");
+            }
+        }
+        if (edits.Count == 0) return null;
+        edits.Sort((a, b) => a.start.CompareTo(b.start));
+        var text = newT.GetText().ToString();
+        var sb = new StringBuilder();
+        var at = 0;
+        var map = new List<(int primeStart, int primeEnd, int newStart, int newEnd)>();
+        foreach (var e in edits)
+        {
+            if (e.start < at) return null; // overlapping: the plain diff reports the change
+            sb.Append(text, at, e.start - at);
+            var ps = sb.Length;
+            sb.Append(e.text);
+            map.Add((ps, sb.Length, e.start, e.start + e.len));
+            at = e.start + e.len;
+        }
+        sb.Append(text, at, text.Length - at);
+        mapBack = q =>
+        {
+            var delta = 0;
+            foreach (var m in map)
+            {
+                if (q < m.primeStart) break;
+                if (q < m.primeEnd) return m.newStart;
+                delta = m.newEnd - m.primeEnd;
+            }
+            return q + delta;
+        };
+        r.Sites.AddRange(found);
+        r.Rewrites.AddRange(notes);
+        return CSharpSyntaxTree.ParseText(sb.ToString(), (CSharpParseOptions)newT.Options, f);
+    }
+
+    private static BaseMethodDeclarationSyntax? Counterpart(SyntaxNode oldRoot, BaseMethodDeclarationSyntax member)
+    {
+        static string Name(BaseMethodDeclarationSyntax m) => m switch { MethodDeclarationSyntax mm => mm.Identifier.Text, ConstructorDeclarationSyntax => ".ctor", _ => "" };
+        static string Owner(SyntaxNode m) => (m.Parent as BaseTypeDeclarationSyntax)?.Identifier.Text ?? "";
+        var names = member.ParameterList.Parameters.Select(p => p.Identifier.Text).ToList();
+        return oldRoot.DescendantNodes().OfType<BaseMethodDeclarationSyntax>().FirstOrDefault(m => Name(m) == Name(member) && Owner(m) == Owner(member)
+            && m.ParameterList.Parameters.Select(p => p.Identifier.Text).SequenceEqual(names));
+    }
 
     private static string WKey(Diagnostic d) => d.Id + "|" + Repo.Short(d.Location.SourceTree?.FilePath ?? "") + "|" + Regex.Replace(d.GetMessage(), @"\d+", "#");
 
@@ -428,6 +534,24 @@ internal static class Check
                 return;
             }
         }
+        // (1b) pass 2 (--signed): a negated literal "-x" -> one SimTunables chain whose key holds -x
+        if (del.Count == 2 && del[0].IsKind(SyntaxKind.MinusToken) && del[0].Parent is PrefixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.UnaryMinusExpression } negPu
+            && del[1].IsKind(SyntaxKind.NumericLiteralToken) && negPu.Operand is LiteralExpressionSyntax opl && opl.Token == del[1] && ins.Count > 0)
+        {
+            var chain = Syn.ChainAt(newRoot, ins[0].SpanStart);
+            var path = chain == null ? null : TP(chain);
+            if (chain != null && path != null && chain.SpanStart == ins[0].SpanStart && chain.Span.End == ins[^1].Span.End)
+            {
+                var text = "-" + del[1].Text;
+                sites.Add(new Site
+                {
+                    File = f, Path = path, How = "inline", OldLine = Syn.Line(del[0]), NewLine = Syn.Line(ins[0]), OldPos = del[0].SpanStart, NewPos = chain.SpanStart,
+                    Literal = TypedValue.FromToken(del[1], negate: true)!.Value, LiteralText = text, OldSnippet = negPu.Parent?.ToString() ?? "",
+                });
+                reps.Add((chain.SpanStart, chain.Span.Length, text));
+                return;
+            }
+        }
         // (2) "const" dropped from a local whose initializer became a SimTunables read (mbconst move, local_const)
         if (del.Count == 1 && ins.Count == 0 && del[0].IsKind(SyntaxKind.ConstKeyword) && del[0].Parent is LocalDeclarationStatementSyntax && nextNew >= 0)
         {
@@ -459,6 +583,19 @@ internal static class Check
             var oldNode = om.SyntaxTree.GetRoot().FindToken(s.OldPos).Parent as ExpressionSyntax;
             var newNode = Syn.ChainAt(nm.SyntaxTree.GetRoot(), s.NewPos);
             if (oldNode == null || newNode == null) { r.TypeChanges.Add($"{Repo.Short(s.File)}:{s.NewLine} node not found"); continue; }
+            if (s.How == "param_default_nullable")
+            {
+                // the old default literal (converted to the parameter's type) vs the new "(x ?? field)"
+                var oldLit = om.SyntaxTree.GetRoot().FindToken(s.OldPos).Parent;
+                var oldExpr = oldLit?.Parent is PrefixUnaryExpressionSyntax neg0 ? neg0 : oldLit as ExpressionSyntax;
+                var chain = Syn.ChainAt(nm.SyntaxTree.GetRoot(), s.NewPos);
+                var paren = chain?.Parent?.Parent as ParenthesizedExpressionSyntax;
+                if (oldExpr == null || paren == null) { r.TypeChanges.Add($"{Repo.Short(s.File)}:{s.NewLine} param default: node not found"); continue; }
+                var pt = om.GetTypeInfo(oldExpr).ConvertedType;
+                var qt = nm.GetTypeInfo(paren).Type;
+                if (Disp(pt) != Disp(qt)) r.TypeChanges.Add($"{Repo.Short(s.File)}:{s.NewLine} param default {s.LiteralText} -> {s.Path}: {Disp(pt)} vs {Disp(qt)}");
+                continue;
+            }
             if (s.How.StartsWith("inline"))
             {
                 var oi = om.GetTypeInfo(oldNode);

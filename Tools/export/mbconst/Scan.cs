@@ -92,7 +92,7 @@ internal static partial class Scan
         var life = ScanE(g, lits);
         var systems = ScanF(c, g, lits);
         Classify(c, g, lits);
-        AssignLanes(lits, reg);
+        AssignLanes(lits, reg, c);
         Console.WriteLine($"scans done: {lits.Count} literals {(DateTime.Now - t0).TotalSeconds:F0}s");
 
         WriteCandidates(outDir, lits);

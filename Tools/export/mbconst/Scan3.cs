@@ -194,7 +194,7 @@ internal static partial class Scan
         return s;
     }
 
-    private static void AssignLanes(List<Lit> lits, Registry reg)
+    private static void AssignLanes(List<Lit> lits, Registry reg, Compiler.Pair? c = null)
     {
         var constUses = ConstantContextNames(lits);
         var assigned = AssignedNames(lits);
@@ -215,6 +215,14 @@ internal static partial class Scan
             if (baseName == "" || baseName == Syn.Camel(Ident(l.Member)) && ctx == "") baseName = Syn.Camel(Ident(l.Member)) + Syn.Pascal(l.Group == "khac" ? "value" : l.Group.Split('_')[0]);
             if (baseName == "" ) baseName = "value";
             if (baseName.Length > 48) baseName = baseName[..48];
+            // pass 2 (09/10): a literal in a data table gets its row id and path (TableNames), and is never merged with another
+            var inStaticInit = l.Node.Ancestors().OfType<FieldDeclarationSyntax>().FirstOrDefault() is { } sf && sf.Modifiers.Any(SyntaxKind.StaticKeyword) && !sf.Modifiers.Any(SyntaxKind.ConstKeyword)
+                               && !(sf.Declaration.Variables.Count == 1 && sf.Declaration.Variables[0].Initializer?.Value == (l.Negated ? (ExpressionSyntax)l.Node.Parent! : l.Node));
+            if (c != null && (l.Context == "table" || inStaticInit) && TableNames.Of(l.Node, c.Model(Repo.Scripts + "/" + l.File)) is { } tableName)
+            {
+                baseName = tableName;
+                named = true;
+            }
             if (Syn.Pascal(baseName) == Syn.Pascal(owner)) baseName += "Value";
             var tv = TypedValue.FromToken(l.Node.Token)!.Value;
             string key;

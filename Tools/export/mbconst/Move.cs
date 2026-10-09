@@ -15,7 +15,7 @@ internal static class Move
     public sealed class Row
     {
         public string File = "", Literal = "", Key = "", Unit = "", Kind = "", LinhVuc = "", Mode = "", Note = "";
-        public int Line, Occurrence;
+        public int Line, Occurrence, Col;
         public int CsvLine;
     }
 
@@ -25,8 +25,20 @@ internal static class Move
         public TypedValue Value;
         public int Start, Length;   // span replaced in the file
         public string Replacement = "";
-        public string How = "";      // inline | const_to_property | static_to_property | local_const
+        public string How = "";      // inline | const_to_property | static_to_property | local_const | static_init_inline
+        public bool Signed;          // pass 2: "-lit" replaced whole, the key holds the negative value
+        public List<(int Start, int Length, string Text)> Extra = new(); // pass 2: further edits of the same move (param_default_nullable)
     }
+
+    /// <summary>Pass 2 (09/10): also replace literals inside static field initializers (tables, expressions), read once at type init.</summary>
+    public static bool StaticInit;
+    /// <summary>Pass 2 (09/10): a negated literal "-x" is replaced whole and its key holds -x (the data shows the value the code uses).</summary>
+    public static bool SignedInline;
+    /// <summary>
+    /// Pass 2 (09/10): a parameter default "T x = lit" becomes "T? x = null" and every read of x in the body "(x ?? field)":
+    /// a call without the argument reads the field (= lit), a call with it reads its value; named arguments keep working.
+    /// </summary>
+    public static bool ParamDefaults;
 
     public static int Run(string[] args)
     {
@@ -37,6 +49,10 @@ internal static class Move
             if (args[i] == "--csv") csv = args[++i];
             else if (args[i] == "--dry-run") dry = true;
             else if (args[i] == "--repo") Repo.Root = args[++i];
+            else if (args[i] == "--static-init") StaticInit = true;
+            else if (args[i] == "--signed") SignedInline = true;
+            else if (args[i] == "--param-defaults") ParamDefaults = true;
+            else if (args[i] == "--fileset") Pack2Files.Prefix = args[++i] switch { "pass2" => "Pass2", _ => "Pack2" };
             else csv ??= args[i];
         }
         if (csv == null) { Console.Error.WriteLine("usage: mbconst move --csv <moves.csv> [--dry-run]"); return 2; }
@@ -98,10 +114,12 @@ internal static class Move
         {
             var text = wt.Files[g.Key];
             var spans = g.OrderByDescending(p => p.Start).ToList();
-            for (var i = 1; i < spans.Count; i++)
-                if (spans[i].Start + spans[i].Length > spans[i - 1].Start) throw new InvalidOperationException($"{g.Key}: overlapping edits at {spans[i].Row.Line}");
+            var edits = g.SelectMany(p => p.Extra.Select(e => (e.Start, e.Length, e.Text, p.Row.Line)).Prepend((p.Start, p.Length, p.Replacement, p.Row.Line)))
+                .OrderByDescending(e => e.Item1).ToList();
+            for (var i = 1; i < edits.Count; i++)
+                if (edits[i].Item1 + edits[i].Item2 > edits[i - 1].Item1) throw new InvalidOperationException($"{g.Key}: overlapping edits at {edits[i].Item4}");
             var sb = new StringBuilder(text);
-            foreach (var p in spans) sb.Remove(p.Start, p.Length).Insert(p.Start, p.Replacement);
+            foreach (var e in edits) sb.Remove(e.Item1, e.Item2).Insert(e.Item1, e.Item3);
             Console.WriteLine($"{Repo.Short(g.Key)}: {spans.Count} literal(s) -> SimTunables ({string.Join(", ", spans.Select(s => s.How).Distinct())})");
             if (!dry) Repo.WriteText(g.Key, sb.ToString());
         }
@@ -117,10 +135,10 @@ internal static class Move
             {
                 var row = plans.First(p => p.Row.Key == f.Key);
                 var code = Path.GetFileNameWithoutExtension(Repo.Short(Repo.Rel(row.Row.File))).Split('.')[0];
-                var entry = $"{{ \"value\": {row.Value.JsonText()}, \"unit\": \"{f.Unit}\", \"kind\": \"{f.Kind}\", \"linh_vuc\": \"{Pick(new[] { row.Row.LinhVuc }, DomainNumber(f.Key))}\", \"code\": \"{code} (pack 2, was {f.Was.Split(',')[0]})\" }}";
+                var entry = $"{{ \"value\": {row.Value.JsonText()}, \"unit\": \"{f.Unit}\", \"kind\": \"{f.Kind}\", \"linh_vuc\": \"{Pick(new[] { row.Row.LinhVuc }, DomainNumber(f.Key))}\", \"code\": \"{code} ({(Pack2Files.Prefix == "Pass2" ? "pack 2 pass 2" : "pack 2")}, was {f.Was.Split(',')[0]})\" }}";
                 json.Add(f.Key, entry);
             }
-            Console.WriteLine($"SimTunables.Pack2.{Syn.Pascal(dg.Key)}.cs: +{dg.Count()} field(s)");
+            Console.WriteLine($"SimTunables.{Pack2Files.Prefix}.{Syn.Pascal(dg.Key)}.cs: +{dg.Count()} field(s)");
         }
         if (!dry && newFields.Count > 0) Repo.WriteText(Repo.TunablesJson, json.Text);
         Console.WriteLine($"move: {plans.Count} literal(s), {newFields.Count} new key(s){(dry ? " (dry run, nothing written)" : "")}. Next: mbconst check --base HEAD");
@@ -135,7 +153,7 @@ internal static class Move
     };
 
     /// <summary>The field initializer: the literal token exactly as written (suffix kept; a minus sign stays in the code).</summary>
-    private static string LiteralText(Plan p) => p.Row.Literal.TrimStart('-');
+    private static string LiteralText(Plan p) => (p.Signed ? "-" : "") + p.Row.Literal.TrimStart('-');
 
     private static string? PlanRow(Row row, string rel, SyntaxTree tree, Dictionary<string, SyntaxTree> trees, SourceSet wt, out Plan? plan)
     {
@@ -147,16 +165,28 @@ internal static class Move
         var lit = row.Literal.TrimStart('-');
         var tokens = root.DescendantTokens(span).Where(t => t.IsKind(SyntaxKind.NumericLiteralToken) && t.Text == lit && span.Contains(t.Span)).ToList();
         if (tokens.Count == 0) return "literal not found on that line";
-        if (tokens.Count > 1 && row.Occurrence == 0) return $"literal appears {tokens.Count} times on the line: give the occurrence column";
-        var occ = row.Occurrence == 0 ? 1 : row.Occurrence;
-        if (occ > tokens.Count) return "occurrence out of range";
-        var tok = tokens[occ - 1];
+        SyntaxToken tok;
+        if (row.Col > 0)
+        {
+            // pass 2: the column (1-based, of the literal token itself) names the token exactly
+            var atCol = tokens.Where(t => t.GetLocation().GetLineSpan().StartLinePosition.Character + 1 == row.Col).ToList();
+            if (atCol.Count != 1) return $"no {lit} token at column {row.Col}";
+            tok = atCol[0];
+        }
+        else
+        {
+            if (tokens.Count > 1 && row.Occurrence == 0) return $"literal appears {tokens.Count} times on the line: give the occurrence column";
+            var occ = row.Occurrence == 0 ? 1 : row.Occurrence;
+            if (occ > tokens.Count) return "occurrence out of range";
+            tok = tokens[occ - 1];
+        }
         var litNode = (LiteralExpressionSyntax)tok.Parent!;
         var tv = TypedValue.FromToken(tok)!.Value;
         if (tv.Type is "decimal" or "ulong") return $"type {tv.Type} has no SimTunables entry type";
         var chain = Syn.Qualifier + Syn.KeyToPath(row.Key);
 
         var cc = Syn.ConstantContext(litNode);
+        if (cc == "parameter default" && ParamDefaults) return PlanParamDefault(row, tv, tok, litNode, chain, out plan);
         if (cc != null) return $"constant context ({cc}): manual";
 
         // implicit constant narrowing (byte b = 3) would no longer compile
@@ -177,8 +207,13 @@ internal static class Move
             var isConst = field.Modifiers.Any(SyntaxKind.ConstKeyword);
             if (field.Declaration.Variables.Count != 1) return "field declares several variables: manual";
             var v = field.Declaration.Variables[0];
-            if (v.Initializer?.Value != whole) return (isConst ? "const" : "static") + " field initializer is an expression, not the literal alone: manual" +
-                                                     (field.Declaration.Type is ArrayTypeSyntax ? " (array table)" : "");
+            if (v.Initializer?.Value != whole)
+            {
+                if (!isConst && StaticInit && field.Modifiers.Any(SyntaxKind.ReadOnlyKeyword))
+                    return PlanInline(row, tv, tok, litNode, negated, chain, "static_init_inline", out plan);
+                return (isConst ? "const" : "static") + " field initializer is an expression, not the literal alone: manual" +
+                       (field.Declaration.Type is ArrayTypeSyntax ? " (array table)" : "");
+            }
             var name = v.Identifier.Text;
             if (isConst)
             {
@@ -197,7 +232,10 @@ internal static class Move
         if (prop != null && prop.Initializer != null && prop.Initializer.Value.Span.Contains(litNode.Span) && prop.Modifiers.Any(SyntaxKind.StaticKeyword))
             return "static property initializer (runs before the data loads): manual";
         if (field != null && field.Declaration.Type is ArrayTypeSyntax && field.Modifiers.Any(SyntaxKind.StaticKeyword))
+        {
+            if (StaticInit && field.Modifiers.Any(SyntaxKind.ReadOnlyKeyword)) return PlanInline(row, tv, tok, litNode, negated, chain, "static_init_inline", out plan);
             return "static array table: manual (FloatArray / IntArray entry)";
+        }
         if (local != null && local.IsConst)
         {
             if (local.Declaration.Variables.Count != 1) return "const local declares several variables: manual";
@@ -218,7 +256,69 @@ internal static class Move
         if (field != null && !field.Modifiers.Any(SyntaxKind.StaticKeyword) && litNode.Ancestors().Any(a => a is TypeDeclarationSyntax { } td && td.Modifiers.Any(SyntaxKind.StaticKeyword)))
             return "field of a static class: manual";
         if (litNode.Ancestors().Any(a => a is InterpolationAlignmentClauseSyntax or InterpolationFormatClauseSyntax)) return "string format alignment: manual";
-        plan = new Plan { Row = row, Value = tv, Start = tok.SpanStart, Length = tok.Span.Length, Replacement = chain, How = "inline" };
+        return PlanInline(row, tv, tok, litNode, negated, chain, "inline", out plan);
+    }
+
+    /// <summary>"T x = lit" -> "T? x = null" and each read of x in the body -> "(x ?? field)" (see <see cref="ParamDefaults"/>).</summary>
+    private static string? PlanParamDefault(Row row, TypedValue tv, SyntaxToken tok, LiteralExpressionSyntax litNode, string chain, out Plan? plan)
+    {
+        plan = null;
+        var negated = litNode.Parent is PrefixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.UnaryMinusExpression };
+        var whole = negated ? (ExpressionSyntax)litNode.Parent! : litNode;
+        if (whole.Parent is not EqualsValueClauseSyntax { Parent: ParameterSyntax par } || par.Type is not PredefinedTypeSyntax pt)
+            return "parameter default: not 'T x = literal' with a built-in T: manual";
+        if (pt.Keyword.Kind() is not (SyntaxKind.FloatKeyword or SyntaxKind.IntKeyword or SyntaxKind.DoubleKeyword or SyntaxKind.LongKeyword))
+            return $"parameter default of type {pt}: manual";
+        if (par.Modifiers.Count > 0) return "parameter default with a modifier (ref / in / out / params / this): manual";
+        if (par.Parent?.Parent is not BaseMethodDeclarationSyntax member) return "parameter default outside a method / constructor: manual";
+        var body = (SyntaxNode?)member.Body ?? member.ExpressionBody;
+        if (body == null) return "parameter default of a member without a body: manual";
+        var name = par.Identifier.Text;
+        var type = member.Parent as TypeDeclarationSyntax;
+        var memberName = member switch { MethodDeclarationSyntax m => m.Identifier.Text, ConstructorDeclarationSyntax c => c.Identifier.Text, _ => "" };
+        if (memberName == "") return "parameter default of an operator / destructor: manual";
+        var count = member.ParameterList.Parameters.Count;
+        if (type != null && type.Members.OfType<BaseMethodDeclarationSyntax>().Count(m => m != member && m.ParameterList.Parameters.Count == count
+                && (m switch { MethodDeclarationSyntax mm => mm.Identifier.Text, ConstructorDeclarationSyntax cc => cc.Identifier.Text, _ => "" }) == memberName) > 0)
+            return "an overload with as many parameters exists (T -> T? could change overload resolution): manual";
+        var uses = body.DescendantNodes().OfType<IdentifierNameSyntax>().Where(i => i.Identifier.Text == name).ToList();
+        var edits = new List<(int, int, string)>();
+        foreach (var id in uses)
+        {
+            if (id.Parent is MemberAccessExpressionSyntax ma && ma.Name == id) continue; // other.x
+            if (id.Parent is NameColonSyntax or NameEqualsSyntax) continue;
+            if (id.Ancestors().OfType<InvocationExpressionSyntax>().Any(inv => inv.Expression is IdentifierNameSyntax { Identifier.Text: "nameof" })) continue;
+            if (id.Ancestors().Any(a => a is AnonymousFunctionExpressionSyntax af && af.ChildNodes().OfType<ParameterSyntax>().Any(pp => pp.Identifier.Text == name)
+                                        || a is ParenthesizedLambdaExpressionSyntax pl && pl.ParameterList.Parameters.Any(pp => pp.Identifier.Text == name)
+                                        || a is LocalFunctionStatementSyntax lf && lf.ParameterList.Parameters.Any(pp => pp.Identifier.Text == name)))
+                return $"parameter {name} is shadowed in the body: manual";
+            if (id.Parent is AssignmentExpressionSyntax asg && asg.Left == id || id.Parent is PrefixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.PreIncrementExpression or (int)SyntaxKind.PreDecrementExpression }
+                || id.Parent is PostfixUnaryExpressionSyntax || id.Parent is ArgumentSyntax a2 && !a2.RefKindKeyword.IsKind(SyntaxKind.None))
+                return $"parameter {name} is assigned or passed by reference in the body: manual";
+            edits.Add((id.SpanStart, id.Span.Length, $"({name} ?? {chain})"));
+        }
+        var value = negated ? TypedValue.FromToken(tok, negate: true)!.Value : tv;
+        // the parameter: "T x = lit" -> "T? x = null"
+        edits.Add((par.Type.Span.End, 0, "?"));
+        plan = new Plan
+        {
+            Row = row, Value = value, Start = whole.SpanStart, Length = whole.Span.Length, Replacement = "null", How = "param_default_nullable",
+            Signed = negated, Extra = edits,
+        };
+        return null;
+    }
+
+    /// <summary>The literal token (or, with --signed, the whole "-lit") replaced by the field read.</summary>
+    private static string? PlanInline(Row row, TypedValue tv, SyntaxToken tok, LiteralExpressionSyntax litNode, bool negated, string chain, string how, out Plan? plan)
+    {
+        if (negated && SignedInline)
+        {
+            var neg = (PrefixUnaryExpressionSyntax)litNode.Parent!;
+            var nv = TypedValue.FromToken(tok, negate: true)!.Value;
+            plan = new Plan { Row = row, Value = nv, Start = neg.SpanStart, Length = neg.Span.End - neg.SpanStart, Replacement = chain, How = how, Signed = true };
+            return null;
+        }
+        plan = new Plan { Row = row, Value = tv, Start = tok.SpanStart, Length = tok.Span.Length, Replacement = chain, How = how };
         return null;
     }
 
@@ -281,7 +381,8 @@ internal static class Move
             rows.Add(new Row
             {
                 File = Get("file"), Line = int.Parse(Get("line")), Literal = Get("literal"), Key = Get("key"), Unit = Get("unit"), Kind = Get("kind"),
-                LinhVuc = Get("linh_vuc"), Occurrence = int.TryParse(Get("occurrence"), out var o) ? o : 0, Mode = Get("mode"), Note = Get("note"), CsvLine = i + 1,
+                LinhVuc = Get("linh_vuc"), Occurrence = int.TryParse(Get("occurrence"), out var o) ? o : 0,
+                Col = int.TryParse(Get("col"), out var cl) ? cl : 0, Mode = Get("mode"), Note = Get("note"), CsvLine = i + 1,
             });
         }
         return rows;
