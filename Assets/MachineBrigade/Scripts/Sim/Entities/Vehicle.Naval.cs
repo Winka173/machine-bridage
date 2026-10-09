@@ -10,6 +10,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Which way along the coast it is going: +1 (towards +u) or -1.</summary>
         internal int NavalDir = 1;
 
+        /// <summary>Naval tune 09/10: a standoff ship cornered at its lane's end breaking out past its enemy (the way, +1 / -1), or 0.</summary>
+        internal int NavalBreak;
+
         /// <summary>Where it is steering to, in the coast's frame (u along, w out).</summary>
         internal Vector2 NavalGoal;
 

@@ -3145,6 +3145,17 @@
       "navalSalvoMinWorth": { "value": 8.0, "unit": "CP", "kind": "nguong", "linh_vuc": "06", "code": "RoleDoctrine.NavalSalvoMinWorth (naval FINAL 09/10)" },
       "clusterRadius": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "RoleDoctrine.ClusterRadius (AI MASTER P2)" }
     },
+    "navalEngage": {
+      "contactShare": { "value": 1.3, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.ContactShare (naval tune 09/10)" },
+      "standoffBand": { "value": 0.85, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.StandoffBand (naval tune 09/10)" },
+      "standoffMax": { "value": 0.95, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.StandoffMax (naval tune 09/10)" },
+      "brawlBand": { "value": 0.5, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.BrawlBand (naval tune 09/10)" },
+      "endMargin": { "value": 10.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "NavalEngage.EndMargin (naval tune 09/10)" },
+      "cornerRoom": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "NavalEngage.CornerRoom (naval tune 09/10)" },
+      "closingMin": { "value": 0.5, "unit": "m/s", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.ClosingMin (naval tune 09/10)" },
+      "kiteLead": { "value": 6.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "NavalEngage.KiteLead (naval tune 09/10)" },
+      "brawlChase": { "value": 0.7, "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "NavalEngage.BrawlChase (naval tune 09/10)" }
+    },
     "modeDoctrine": {
       "mortarBand": { "value": [0.55, 0.75], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ModeDoctrine.MortarBand (AI MASTER P2)" },
       "artilleryBand": { "value": [0.65, 0.85], "unit": "share", "kind": "nguong", "linh_vuc": "06", "code": "ModeDoctrine.ArtilleryBand (AI MASTER P2)" },
