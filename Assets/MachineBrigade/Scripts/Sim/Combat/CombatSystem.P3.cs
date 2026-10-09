@@ -35,7 +35,7 @@ namespace MachineBrigade.Sim.Combat
                     if (!StanceRules.ReturnFireAllows(shootsUs, now, v.LastHitTime)) return 0f;
                     break;
                 case UnitStance.Defend:
-                    worth *= shootsUs || Vector2.DistanceSquared(other.Position, v.Position) < 15f * 15f ? 1.3f : 0.7f;
+                    worth *= shootsUs || Vector2.DistanceSquared(other.Position, v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P3WorthScale * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P3WorthScale ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P3WorthShootsUsTrue : global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P3WorthShootsUsFalse;
                     break;
             }
             // Spec 200.
@@ -53,7 +53,7 @@ namespace MachineBrigade.Sim.Combat
             // Spec 139.
             var planned = tc.Board.PlannedDamage(other.Id, v.Id, now);
             if (planned > 0f && v.Weapons[index].Target != other.Id && PlannedActionBoard.Overkill(planned, Committed(other.Id), other.Hp) &&
-                !OverkillExempt(v, other) && !(v.SquadFocus == other.Id && v.SquadFocusWeight >= 0.5f))
+                !OverkillExempt(v, other) && !(v.SquadFocus == other.Id && v.SquadFocusWeight >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P3WorthSquadFocusWeightMin))
             {
                 worth *= OverkillFloor;
                 // Spec 225 plannedOverkillPrevented: a shooter-target pair counted once per step.
@@ -72,13 +72,13 @@ namespace MachineBrigade.Sim.Combat
         {
             var main = v.Arms[MainMount(v)];
             var c = ClassCached(other);
-            var light = weapon.Damage < main.Damage * 0.35f && weapon.SplashRadius < 2f;
+            var light = weapon.Damage < main.Damage * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.MountFitDamageScale && weapon.SplashRadius < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.MountFitSplashRadiusMax;
             if (light)
             {
                 if (c is TargetClass.SuperHeavy or TargetClass.Armour4 or TargetClass.Heavy or TargetClass.Mbt or TargetClass.Boss) return SimTunables.Ai.Board.SecondaryHeavy;
                 if (other.Flying || c is TargetClass.Light or TargetClass.Recon or TargetClass.Drone) return SimTunables.Ai.Board.SecondaryFit;
             }
-            if (weapon.Burst > 1 && weapon.SplashRadius >= 2f && (other.Def.Static || ClusteredCached(other))) return SimTunables.Ai.Board.SecondaryFit;
+            if (weapon.Burst > 1 && weapon.SplashRadius >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.MountFitSplashRadiusMin && (other.Def.Static || ClusteredCached(other))) return SimTunables.Ai.Board.SecondaryFit;
             if (weapon.CanTarget(true) && !weapon.CanTarget(false) && other.Flying) return SimTunables.Ai.Board.SecondaryFit;
             return 1f;
         }

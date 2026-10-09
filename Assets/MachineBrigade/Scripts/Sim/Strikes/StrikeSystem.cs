@@ -187,7 +187,7 @@ namespace MachineBrigade.Sim.Strikes
         internal void Launch(SupportDef support, int team, Vector2 point, Vector2 towards, IReadOnlyList<string>? calls = null)
         {
             var direction = towards - point;
-            direction = direction.LengthSquared() > 0.01f ? Vector2.Normalize(direction) : Vector2.UnitX;
+            direction = direction.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.LaunchLengthSquaredMin ? Vector2.Normalize(direction) : Vector2.UnitX;
             // Play-test 6: a dropped tower comes down on open ground near the mark, clear of what stands there.
             if (support.Kind == SupportKind.Tower && TowerOf(support, team) is { } dropped && _world.Catalog.Vehicles.TryGetValue(dropped, out var droppedDef))
                 point = _world.ClearSpot(droppedDef, point, team);
@@ -243,7 +243,7 @@ namespace MachineBrigade.Sim.Strikes
         public bool Obscures(Vector2 from, Vector2 to)
         {
             if (_smoke.Count == 0) return false;
-            if (Vector2.DistanceSquared(from, to) < 36f) return false;
+            if (Vector2.DistanceSquared(from, to) < global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.ObscuresDistanceSquaredMax) return false;
             foreach (var zone in _smoke)
             {
                 var r2 = zone.Radius * zone.Radius;
@@ -251,7 +251,7 @@ namespace MachineBrigade.Sim.Strikes
                 // The line of sight passes through the cloud.
                 var d = to - from;
                 var t = Math.Clamp(Vector2.Dot(zone.Centre - from, d) / d.LengthSquared(), 0f, 1f);
-                if (Vector2.DistanceSquared(zone.Centre, from + d * t) < r2 * 0.6f) return true;
+                if (Vector2.DistanceSquared(zone.Centre, from + d * t) < r2 * global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.ObscuresR2Scale) return true;
             }
             return false;
         }
@@ -274,7 +274,7 @@ namespace MachineBrigade.Sim.Strikes
                         var at = Scattered(s, s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * r);
                         var lands = s.Start + s.Planned.Count * interval;
                         s.Planned.Add(at);
-                        _world.Emit(SimEvent.ShellInbound(s.Team, support, at, FireFrom(s), (float)Math.Max(0.15, lands - now)));
+                        _world.Emit(SimEvent.ShellInbound(s.Team, support, at, FireFrom(s), (float)Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceLandsFloor, lands - now)));
                     }
                     if (now < s.Start) return false;
                     while (s.Done < support.Count && now >= s.Start + s.Done * interval)
@@ -291,8 +291,8 @@ namespace MachineBrigade.Sim.Strikes
                     // The aircraft flies the bomb line at the speed the bombs walk along it, and is
                     // over each bomb as it lands (bombs keep its forward speed as they fall): it
                     // comes in from far enough back to be seen, but never later than the first bomb.
-                    var speed = s.Length / MathF.Max(0.2f, s.Duration);
-                    var lead = MathF.Min(Approach + s.Length * 0.2f, speed * MathF.Max(0.3f, support.Delay - 0.1f));
+                    var speed = s.Length / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceDurationFloor, s.Duration);
+                    var lead = MathF.Min(Approach + s.Length * global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceLengthScale, speed * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceDelayFloor, support.Delay - global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceDelaySub));
                     if (!s.Announced && now >= s.Start - lead / speed)
                     {
                         var from = s.Point - s.Direction * lead;
@@ -304,8 +304,8 @@ namespace MachineBrigade.Sim.Strikes
                     var interval = s.Count > 1 ? s.Duration / (s.Count - 1) : 0f;
                     while (s.Done < s.Count && now >= s.Start + s.Done * interval)
                     {
-                        var along = s.Count > 1 ? s.Done / (float)(s.Count - 1) : 0.5f;
-                        var side = new Vector2(-s.Direction.Y, s.Direction.X) * (((float)_world.Random.NextDouble() - 0.5f) * support.Radius);
+                        var along = s.Count > 1 ? s.Done / (float)(s.Count - 1) : global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceCountFalse;
+                        var side = new Vector2(-s.Direction.Y, s.Direction.X) * (((float)_world.Random.NextDouble() - global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceNextDoubleSub) * support.Radius);
                         Blast(s, Vector2.Lerp(s.Point, end, along) + side);
                         s.Done++;
                     }
@@ -326,7 +326,7 @@ namespace MachineBrigade.Sim.Strikes
                     var side = new Vector2(-s.Direction.Y, s.Direction.X);
                     for (var k = 0; k < s.Count; k++)
                     {
-                        var at = s.Count > 1 ? s.Point + side * ((k - (s.Count - 1) * 0.5f) * MathF.Max(4f, support.BlastRadius * 0.8f)) : s.Point;
+                        var at = s.Count > 1 ? s.Point + side * ((k - (s.Count - 1) * 0.5f) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceBlastRadiusFloor, support.BlastRadius * global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceBlastRadiusScale)) : s.Point;
                         // The tower-branch rework: an enemy PAC-3 over the mark shoots the cruise missile (or glide bomb) down.
                         if (!support.Consumable && ShotDown(s, at)) continue;
                         Blast(s, at);
@@ -342,9 +342,9 @@ namespace MachineBrigade.Sim.Strikes
                         for (var k = 0; k < 5; k++)
                         {
                             var angle = k * SimMath.Tau / 4f + 0.8f;
-                            var at = k == 0 ? s.Point : s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (support.Radius * 0.5f);
+                            var at = k == 0 ? s.Point : s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (support.Radius * global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceRadiusScale);
                             _world.Emit(SimEvent.ShellInbound(s.Team, support, _world.ClampToMap(at), FireFrom(s),
-                                (float)Math.Max(0.15, s.Start - now + k * 0.08)));
+                                (float)Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceStartFloor, s.Start - now + k * global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceKScale)));
                         }
                     }
                     if (now < s.Start) return false;
@@ -386,7 +386,7 @@ namespace MachineBrigade.Sim.Strikes
                     {
                         if (!v.IsAlive || v.Team != s.Team || Vector2.Distance(v.Position, s.Point) > support.Radius + v.Radius) continue;
                         v.ShieldUntil = Math.Max(v.ShieldUntil, now + support.Duration);
-                        v.ShieldAmount = Math.Clamp(support.Damage, 0f, 0.9f);
+                        v.ShieldAmount = Math.Clamp(support.Damage, 0f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceDamageMax);
                         v.RefreshEffects(now);
                     }
                     return true;
@@ -400,14 +400,14 @@ namespace MachineBrigade.Sim.Strikes
                     for (var k = 0; k < units.Count; k++)
                     {
                         var angle = k * SimMath.Tau / Math.Max(1, units.Count);
-                        var at = s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (units.Count > 1 ? 6f : 0f);
+                        var at = s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (units.Count > 1 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceCountTrue : 0f);
                         var unit = _world.SpawnVehicle(units[k], s.Team, _world.ClampToMap(at), SimMath.HeadingOf(s.Direction));
                         if (support.Kind == SupportKind.Escort)
                         {
                             unit.ExpiresAt = now + support.Duration;
                             // It works over the spot it was called to (it used to wander off after targets 60 m away).
                             unit.GuardPoint = _world.ClampToMap(s.Point);
-                            unit.PostRadius = MathF.Max(support.Radius, 12f);
+                            unit.PostRadius = MathF.Max(support.Radius, global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceRadiusFloor);
                         }
                         // Prompt 25 F2 batch C (ht08): a timed Reinforce drop (the inflatable decoys) packs up after Duration too.
                         else if (support.Duration > 0f) unit.ExpiresAt = now + support.Duration;
@@ -434,14 +434,14 @@ namespace MachineBrigade.Sim.Strikes
                     while (s.Planned.Count < support.Count)
                     {
                         var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
-                        var r = support.Radius * MathF.Sqrt(0.1f + 0.9f * (float)_world.Random.NextDouble());
+                        var r = support.Radius * MathF.Sqrt(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceNextDoubleScale * (float)_world.Random.NextDouble());
                         s.Planned.Add(_world.ClampToMap(s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * r));
                     }
                     if (!s.Announced && now >= s.Start - ShellFall)
                     {
                         s.Announced = true;
                         for (var k = 0; k < s.Planned.Count; k++)
-                            _world.Emit(SimEvent.ShellInbound(s.Team, support, s.Planned[k], FireFrom(s), (float)Math.Max(0.15, s.Start - now + k * 0.06)));
+                            _world.Emit(SimEvent.ShellInbound(s.Team, support, s.Planned[k], FireFrom(s), (float)Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceStartFloor, s.Start - now + k * global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceKScale2)));
                     }
                     if (now < s.Start) return false;
                     var def = MinesOf(support);
@@ -478,7 +478,7 @@ namespace MachineBrigade.Sim.Strikes
                         s.Aimed = true;
                         s.Victim = NearestAirDefence(s.Point, s.Team, support.Radius);
                         var aim = _world.TryGetVehicle(s.Victim, out var marked) ? marked.Position : s.Point;
-                        _world.Emit(SimEvent.ShellInbound(s.Team, support, aim, FireFrom(s), (float)Math.Max(0.15, s.Start - now)));
+                        _world.Emit(SimEvent.ShellInbound(s.Team, support, aim, FireFrom(s), (float)Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceStartFloor, s.Start - now)));
                     }
                     if (now < s.Start) return false;
                     if (_world.TryGetVehicle(s.Victim, out var radar) && radar.IsAlive)
@@ -570,7 +570,7 @@ namespace MachineBrigade.Sim.Strikes
                     foreach (var v in _world.VehicleList)
                     {
                         if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || v.Flying || v.Def.Class != UnitClass.Artillery) continue;
-                        if (now - v.LastFiredAt > 10.0) continue;
+                        if (now - v.LastFiredAt > global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.AdvanceNowMin) continue;
                         if (Vector2.DistanceSquared(v.Position, s.Point) > r2) continue;
                         var damage = support.Damage * _world.StrikeDamage(s.Team, support.Id);
                         var info = new Combat.HitInfo(null, s.Team, null, v.Position, Combat.HitKind.Strike, true).WithPen(support.Penetration, top: true, support.Thermobaric);
@@ -598,7 +598,7 @@ namespace MachineBrigade.Sim.Strikes
         private MineLayerDef MinesOf(SupportDef support)
         {
             if (_mineDefs.TryGetValue(support.Id, out var def)) return def;
-            def = new MineLayerDef(1f, Math.Max(1, support.Count), new ExplosionDef(support.Damage, MathF.Max(1f, support.BlastRadius), 0f, support.Tier), 2.2f);
+            def = new MineLayerDef(1f, Math.Max(1, support.Count), new ExplosionDef(support.Damage, MathF.Max(1f, support.BlastRadius), 0f, support.Tier), global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.MinesOfTrigger);
             _mineDefs[support.Id] = def;
             return def;
         }
@@ -655,7 +655,7 @@ namespace MachineBrigade.Sim.Strikes
             if (s.Scatter > 1f)
             {
                 var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
-                var off = (s.Scatter - 1f) * MathF.Max(6f, support.Radius) * MathF.Sqrt((float)_world.Random.NextDouble());
+                var off = (s.Scatter - 1f) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.ScatteredRadiusFloor, support.Radius) * MathF.Sqrt((float)_world.Random.NextDouble());
                 at += new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * off;
             }
             return _world.ClampToMap(at);
@@ -673,7 +673,7 @@ namespace MachineBrigade.Sim.Strikes
         private Vector2 FireFrom(Strike s)
         {
             if (_world.TryGetRally(s.Team, out var home) && Vector2.DistanceSquared(home, s.Point) > 1f) return Vector2.Normalize(home - s.Point);
-            return s.Direction.LengthSquared() > 0.01f ? -Vector2.Normalize(s.Direction) : Vector2.UnitY;
+            return s.Direction.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Weapons.StrikeSystem.FireFromLengthSquaredMin ? -Vector2.Normalize(s.Direction) : Vector2.UnitY;
         }
 
         private void Heal(Strike s)

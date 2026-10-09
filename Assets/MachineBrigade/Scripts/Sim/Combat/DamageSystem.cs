@@ -86,9 +86,9 @@ namespace MachineBrigade.Sim.Combat
                 }
                 // A round aimed at a boss's part strikes it only if it lands on it; else it strikes the body.
                 if (p.Part >= 0 && target is Vehicle partBoss && (partBoss.IsPartBroken(p.Part) ||
-                    Vector2.Distance(partBoss.PartPosition(p.Part), at) > partBoss.Def.Parts[p.Part].Radius + 1.5f)) p.Part = -1;
+                    Vector2.Distance(partBoss.PartPosition(p.Part), at) > partBoss.Def.Parts[p.Part].Radius + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ResolveImpactRadiusAdd)) p.Part = -1;
                 // A part may stand out past the hull's round footprint (a hovercraft's fans, a train's locomotive): landing on it is a hit.
-                if (!decoyed && !lured && (p.Part >= 0 || Vector2.Distance(target.Position, at) <= target.Radius + 0.5f))
+                if (!decoyed && !lured && (p.Part >= 0 || Vector2.Distance(target.Position, at) <= target.Radius + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ResolveImpactRadiusAdd2))
                 {
                     // Blame first, so a killing blow is credited to this shooter.
                     if (target is Vehicle victim) Blame(victim, p.Owner, p.OwnerTeam);
@@ -126,12 +126,12 @@ namespace MachineBrigade.Sim.Combat
                     Splash(at, weapon.SplashRadius, weapon.Damage * p.DamageScale, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying,
                         info.As(HitKind.Splash), weapon.SplashEdge);
                 else
-                    Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
+                    Splash(at, weapon.SplashRadius * (global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.BurstNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.BurstNextDoubleScale * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
                         weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying, info.As(HitKind.Splash));
             }
             // A heavy round from equipment bursts round its target too, at half its weight.
             if (p.ExtraSplash > 0f)
-                Splash(at, p.ExtraSplash, weapon.Damage * p.DamageScale * 0.5f, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying,
+                Splash(at, p.ExtraSplash, weapon.Damage * p.DamageScale * global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.BurstDamageScale, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying,
                     info.As(HitKind.Splash));
 
             _world.Emit(SimEvent.Impact(weapon, at, hit, p.OwnerTeam, p.TargetFlying));
@@ -280,9 +280,9 @@ namespace MachineBrigade.Sim.Combat
             for (var k = 0; k < cluster.Count; k++)
             {
                 var angle = (float)rng.NextDouble() * SimMath.Tau;
-                var reach = cluster.Radius * MathF.Sqrt(0.15f + 0.85f * (float)rng.NextDouble());
+                var reach = cluster.Radius * MathF.Sqrt(global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ScatterNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ScatterNextDoubleScale * (float)rng.NextDouble());
                 var spot = at + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach;
-                _pending.Add(new PendingExplosion(_world.Time + 0.12 + 0.06 * k + 0.1 * rng.NextDouble(), spot, blast, EntityId.None, team, attacker, HitKind.Splash,
+                _pending.Add(new PendingExplosion(_world.Time + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ScatterTimeAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ScatterKScale * k + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ScatterNextDoubleScale2 * rng.NextDouble(), spot, blast, EntityId.None, team, attacker, HitKind.Splash,
                     cluster.Penetration));
             }
         }
@@ -436,12 +436,12 @@ namespace MachineBrigade.Sim.Combat
             if (aps.Missiles)
             {
                 var back = from - mark;
-                var meet = back.LengthSquared() > 0.01f ? mark + Vector2.Normalize(back) * MathF.Min(10f, back.Length() * 0.5f) : mark;
+                var meet = back.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.TryInterceptLengthSquaredMin ? mark + Vector2.Normalize(back) * MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.TryInterceptLengthCap, back.Length() * 0.5f) : mark;
                 _world.Emit(SimEvent.Intercept(v, weapon, meet, v.ApsLeft));
                 return true;
             }
             var toward = from - v.Position;
-            toward = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
+            toward = toward.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.TryInterceptLengthSquaredMin ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
             _world.Emit(SimEvent.Intercept(v, weapon, v.Position + toward * (v.Def.HullBound + 3f), v.ApsLeft));
             return true;
         }
@@ -523,7 +523,7 @@ namespace MachineBrigade.Sim.Combat
             // Play-test 6 (DECISIONS 21G): a boss's air defence hits aircraft harder (its rank's airDamage).
             if (!raw && hit.Attacker is { Def: { RankDef: { } firing } } && target is Vehicle { Flying: true }) damage *= firing.AirDamage;
             // A gun pit down in its hole takes much less (a thermobaric blast reaches half into it).
-            if (target is Vehicle { Lowered: true } pit && pit.Def.Hidden is { } hide) damage *= 1f - hide.Cut * (Thermobaric(hit) ? 0.5f : 1f);
+            if (target is Vehicle { Lowered: true } pit && pit.Def.Hidden is { } hide) damage *= 1f - hide.Cut * (Thermobaric(hit) ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ApplyThermobaricTrue : 1f);
 
             switch (target)
             {
@@ -559,7 +559,7 @@ namespace MachineBrigade.Sim.Combat
                 // A belly plate (the armoured bulldozer's) takes part of a mine's blast.
                 if (hit.Kind == HitKind.Mine) damage *= vehicle.Def.MineArmor;
                 if (vehicle.ShieldUp) damage *= 1f - vehicle.ShieldAmount;
-                if (vehicle.GraceUntil > now) damage *= 0.2f;
+                if (vehicle.GraceUntil > now) damage *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.HitVehicleDamage;
                 // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.
                 if (type is DamageType.Kinetic or DamageType.ShapedCharge && !hit.Indirect && _world.IsEntrenched(vehicle))
                     damage *= 1f - SimWorld.EntrenchReduction;
@@ -595,7 +595,7 @@ namespace MachineBrigade.Sim.Combat
                 if (vehicle.BodyLocked && hit.Kind != HitKind.Redirect) return 0f;
             }
             // Unbreakable: a killing blow once a life leaves it on a sliver, briefly untouchable.
-            if (damage >= vehicle.Hp && vehicle.Gear != null && damage < 1e6f && _world.Gear.Survives(vehicle)) damage = MathF.Max(0f, vehicle.Hp - 1f);
+            if (damage >= vehicle.Hp && vehicle.Gear != null && damage < global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.HitVehicleDamageMax && _world.Gear.Survives(vehicle)) damage = MathF.Max(0f, vehicle.Hp - 1f);
             // A multi-phase boss stops at its next phase's mark (what goes past it is lost) and transforms.
             var phaseReached = false;
             if (vehicle.Phase < vehicle.Def.Phases.Count && !vehicle.Transforming)
@@ -614,7 +614,7 @@ namespace MachineBrigade.Sim.Combat
             DamageLog?.Invoke(hit.Attacker, vehicle, damage, hit.Kind, hit.Weapon);
             if (phaseReached) _world.Abilities.BeginPhase(vehicle);
             // A firing-range target takes the hit (its bar shows it) but never goes down.
-            if (vehicle.Unkillable) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
+            if (vehicle.Unkillable) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.HitVehicleMaxHpScale);
             _world.Emit(SimEvent.Damage(vehicle, damage));
             if (vehicle.Gear != null) _world.Gear.AfterDamaged(vehicle, type, hit);
             if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle, hit);
@@ -706,7 +706,7 @@ namespace MachineBrigade.Sim.Combat
             var twoLayer = edgeRadius > radius;
             var share = _world.Catalog.Damage.SplashFalloff(edgeDistance, twoLayer ? radius : 0f, twoLayer ? edgeRadius : radius);
             if (!(share > 0f)) return;
-            if (!twoLayer && share < 1f && Thermobaric(info)) share = 1f - (1f - share) * 0.5f;
+            if (!twoLayer && share < 1f && Thermobaric(info)) share = 1f - (1f - share) * global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.ApplyFalloffShareScale;
             Apply(target, damage * share, type, info);
         }
 
@@ -734,7 +734,7 @@ namespace MachineBrigade.Sim.Combat
             var from = p.Origin;
             var line = to - from;
             var length = line.Length();
-            if (length < 0.1f) return;
+            if (length < global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.PierceLineLengthMax) return;
             var along = line / length;
             var info = HitInfo.Of(p, HitKind.Pierce);
             // Prompt 26 B.7: a slug that goes through at most PierceMax vehicles in all (the one aimed at counts): the nearest first.
@@ -745,8 +745,8 @@ namespace MachineBrigade.Sim.Combat
                 if (!v.IsAlive || v.Flying || v.Team == p.OwnerTeam || v.Id == struck || v.Id == p.Owner) continue;
                 var offset = v.Position - from;
                 var t = Vector2.Dot(offset, along);
-                if (t < 0f || t > length + 12f) continue;
-                if ((offset - along * t).Length() > v.Radius + 1.2f) continue;
+                if (t < 0f || t > length + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.PierceLineLengthAdd) continue;
+                if ((offset - along * t).Length() > v.Radius + global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.PierceLineRadiusAdd) continue;
                 if (capped)
                 {
                     _pierced.Add((t, v));
@@ -791,7 +791,7 @@ namespace MachineBrigade.Sim.Combat
             _world.Wrecks.Add(vehicle, _world.Time);
             // Who gets the kill: the vehicle whose round it was, else whoever hit it last (recently).
             var killer = hit.Attacker;
-            if (killer == null && vehicle.LastAttacker.IsValid && _world.Time - vehicle.LastHitTime <= 10.0 &&
+            if (killer == null && vehicle.LastAttacker.IsValid && _world.Time - vehicle.LastHitTime <= global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.OnVehicleDestroyedTimeMax &&
                 _world.TryGetVehicle(vehicle.LastAttacker, out var last)) killer = last;
             if (killer != null && killer.Team == vehicle.Team) killer = null;
             // Prompt 34 L7: an aircraft's crash is planned now (where and when it hits the ground) and told to the view on the
@@ -822,18 +822,18 @@ namespace MachineBrigade.Sim.Combat
         internal (Vector2 At, float Fall) CrashPlan(Vehicle vehicle, float speed)
         {
             var def = vehicle.Def;
-            var fall = MathF.Sqrt(2f * MathF.Max(1f, vehicle.Height) / (def.FixedWing ? 11f : 7f));
+            var fall = MathF.Sqrt(global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashPlanMaxScale * MathF.Max(1f, vehicle.Height) / (def.FixedWing ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashPlanFixedWingTrue : global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashPlanFixedWingFalse));
             var fade = def.FixedWing ? 0.35f : 0.5f;
             var glide = MathF.Min(fall, 1f / fade);
-            var carry = 0.8f * speed * (glide - 0.5f * fade * glide * glide);
+            var carry = global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashPlanSpeedScale * speed * (glide - global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashPlanFadeScale * fade * glide * glide);
             var forward = SimMath.Forward(vehicle.Heading);
             return (_world.ClampToMap(vehicle.Position + forward * carry), fall);
         }
 
         /// <summary>The blast of an aircraft hitting the ground: 8 % of its health as damage, wider for heavier aircraft.</summary>
         public static ExplosionDef CrashBlast(VehicleDef def) =>
-            new(Math.Clamp(def.MaxHp * 0.08f, 60f, 450f), Math.Clamp(3.5f + def.MaxHp / 800f, 4f, 10f), 0f,
-                def.MaxHp > 3000f ? ExplosionTier.Huge : ExplosionTier.Large);
+            new(Math.Clamp(def.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashBlastMaxHpScale, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashBlastMaxHpMin, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashBlastMaxHpMax), Math.Clamp(global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashBlastMaxHpAdd + def.MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashBlastMaxHpDivisor, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashBlastMaxHpMin2, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashBlastMaxHpMax2), 0f,
+                def.MaxHp > global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageSystem.CrashBlastMaxHpMin3 ? ExplosionTier.Huge : ExplosionTier.Large);
 
         /// <summary>A hull drives over a tree, bush or fence: it goes down the way the hull was going.</summary>
         internal void Crush(Prop prop, Vector2 direction)

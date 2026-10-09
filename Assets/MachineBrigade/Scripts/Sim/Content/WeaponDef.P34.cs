@@ -17,7 +17,7 @@ namespace MachineBrigade.Sim.Content
         {
             Id = id;
             Name = name;
-            Tier = Math.Clamp(tier, 0, 5);
+            Tier = Math.Clamp(tier, 0, global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponFamilyInfo.CtorTierMax);
         }
 
         public string Id { get; }
@@ -61,7 +61,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 34 L3: this round's escape warning (0 below T4).</summary>
         /// <para>Fix prompt L5: a round with no family that the rules warn of by its size (a 203 mm gun, a 400 kg bomb, a 300 mm
         /// rocket) warns as a T4.</para>
-        public float WarnSeconds => EscapeWarning(Tier < 0 && WarningRules.Shared.IsBig(this) ? 4 : Tier, WeaponFamilyId, SplashRadius);
+        public float WarnSeconds => EscapeWarning(Tier < 0 && WarningRules.Shared.IsBig(this) ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.WarnSecondsTierTrue : Tier, WeaponFamilyId, SplashRadius);
 
         /// <summary>Play-test 13 (lane C): the data's "flightProfile", if it names one.</summary>
         public FlightProfile? FlightData { get; internal set; }
@@ -87,9 +87,9 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public float ArcShare => Flight switch
         {
-            FlightProfile.Ballistic => 0.28f,
-            FlightProfile.Loft => 0.2f,
-            _ => Projectile == ProjectileKind.Missile ? 0.04f : 0.02f,
+            FlightProfile.Ballistic => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.ArcShareFlightValue,
+            FlightProfile.Loft => global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.ArcShareFlightValue2,
+            _ => Projectile == ProjectileKind.Missile ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.ArcShareProjectileTrue : global::MachineBrigade.Sim.Content.SimTunables.Weapons.WeaponDef.ArcShareProjectileFalse,
         };
 
         /// <summary>Prompt 34 L3: the ring a warning draws: the blast's edge when it has two layers, else its core.</summary>

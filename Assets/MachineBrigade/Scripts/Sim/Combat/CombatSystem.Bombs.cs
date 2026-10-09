@@ -44,7 +44,7 @@ namespace MachineBrigade.Sim.Combat
         internal static bool Sticks(Vehicle shooter, WeaponDef weapon) => weapon.LaysStick && (FreeFall(shooter, weapon) || BayStick(weapon));
 
         /// <summary>Seconds a bomb takes to fall from the aircraft's height.</summary>
-        internal static float BombFall(Vehicle shooter) => MathF.Sqrt(2f * MathF.Max(4f, shooter.Height) / BombGravity);
+        internal static float BombFall(Vehicle shooter) => MathF.Sqrt(2f * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BombFallHeightFloor, shooter.Height) / BombGravity);
 
         /// <summary>Where a bomb let go now comes down (before its scatter): ahead of the aircraft by its speed over the fall.</summary>
         internal static Vector2 BombImpact(Vehicle shooter) =>
@@ -89,8 +89,8 @@ namespace MachineBrigade.Sim.Combat
             var bombs = StickBombs(v, index, target);
             var stick = StickLength(v, weapon, bombs);
             var blast = weapon.SplashRadius + target.Radius;
-            if (across > blast || along < fall - blast * 0.5f) return false;
-            if (weapon.Stick is { Laid: true, Anchor: StickAnchor.Start }) return along <= fall + blast * 0.5f;
+            if (across > blast || along < fall - blast * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StickStraddlesBlastScale) return false;
+            if (weapon.Stick is { Laid: true, Anchor: StickAnchor.Start }) return along <= fall + blast * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StickStraddlesBlastScale;
             var centre = GroupCentre(v, weapon, target, forward, bombs);
             return Vector2.Dot(centre - v.Position, forward) <= fall + stick * 0.5f;
         }
@@ -116,9 +116,9 @@ namespace MachineBrigade.Sim.Combat
         {
             var side = new Vector2(-dir.Y, dir.X);
             var length = Math.Max(0, bombs - 1) * spacing;
-            var step = MathF.Max(1f, spacing * 0.5f);
+            var step = MathF.Max(1f, spacing * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BestStickCentreSpacingScale);
             var alongSteps = length > 0f ? (int)MathF.Floor(length * 0.5f / step + 1e-4f) : 0;
-            var sideSteps = lateral > 0f ? 2 : 0;
+            var sideSteps = lateral > 0f ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BestStickCentreLateralTrue : 0;
             var best = target;
             var bestScore = -1;
             var bestCost = float.MaxValue;
@@ -133,7 +133,7 @@ namespace MachineBrigade.Sim.Combat
                     var count = 0;
                     for (var p = 0; p < points.Count; p++)
                         if (UnderStick(points[p], centre, dir, bombs, spacing, reach)) count++;
-                    var score = count * 2 + (UnderStick(target, centre, dir, bombs, spacing, reach) ? 1 : 0);
+                    var score = count * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BestStickCentreCountScale + (UnderStick(target, centre, dir, bombs, spacing, reach) ? 1 : 0);
                     var cost = MathF.Abs(a) + MathF.Abs(b);
                     if (score < bestScore || (score == bestScore && cost >= bestCost - 1e-4f)) continue;
                     bestScore = score;
@@ -158,7 +158,7 @@ namespace MachineBrigade.Sim.Combat
             var weapon = v.Arms[index];
             var stick = StickLength(v, weapon, StickBombs(v, index));
             var middle = BombImpact(v) + SimMath.Forward(v.Heading) * (stick * 0.5f);
-            return OwnNear(v.Team, middle, weapon.SplashRadius + stick * 0.5f + 3f);
+            return OwnNear(v.Team, middle, weapon.SplashRadius + stick * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StickNearOwnSplashRadiusAdd);
         }
 
         // ------------------------------------------------------------------------------------------------ the bomb-run fix, pass 2
@@ -240,7 +240,7 @@ namespace MachineBrigade.Sim.Combat
             var weapon = v.Arms[index];
             if (!Sticks(v, weapon) || weapon.Stick is not { } s || s.MinTargets <= 0 || salvo <= s.Reduced) return salvo;
             var count = StickTargets(v, target.Position, StickLength(v, weapon, s.Bombs) * 0.5f + weapon.WarnRadius, out var structures);
-            return count >= s.MinTargets || structures >= 2 ? salvo : Math.Min(salvo, s.Reduced);
+            return count >= s.MinTargets || structures >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StickCountStructuresMin ? salvo : Math.Min(salvo, s.Reduced);
         }
 
         /// <summary>The bombs the next pull lets go on <paramref name="target"/>: the stores' salvo, cut to the few-target count.</summary>
@@ -270,7 +270,7 @@ namespace MachineBrigade.Sim.Combat
             if (s.Anchor == StickAnchor.Center)
             {
                 StickTargets(v, aim, length * 0.5f + weapon.SplashRadius + weapon.WarnRadius, out _);
-                var centre = BestStickCentre(aim, dir, bombs, s.Spacing, weapon.SplashRadius, weapon.SplashRadius * 0.5f, _stickPoints, out _);
+                var centre = BestStickCentre(aim, dir, bombs, s.Spacing, weapon.SplashRadius, weapon.SplashRadius * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StickLineSplashRadiusScale, _stickPoints, out _);
                 start = centre - dir * (length * 0.5f);
             }
             else start = aim;
@@ -337,12 +337,12 @@ namespace MachineBrigade.Sim.Combat
             var distance = offset.Length();
             var length = StickLength(v, weapon, s.Bombs);
             var back = v.Speed * BombFall(v) + length * 0.5f + turnRadius;
-            if (distance < 1e-3f || distance <= back + turnRadius * 2f) return goal;
+            if (distance < 1e-3f || distance <= back + turnRadius * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StickEntryTurnRadiusScale) return goal;
             var dir = AxisAt(v, weapon, target.Position, length, offset);
-            if (Vector2.Dot(dir, offset / distance) > 0.996f) return goal;
+            if (Vector2.Dot(dir, offset / distance) > global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StickEntryDotMin) return goal;
             // Play-test 13 (lane C): the run lines up on the best centre for the group (up to half a blast to the side of the
             // target), not on the target itself; the release then waits for the stick's middle to come over it (StickStraddles).
-            var centre = BestStickCentre(target.Position, dir, s.Bombs, s.Spacing, weapon.SplashRadius, weapon.SplashRadius * 0.5f, _stickPoints, out _);
+            var centre = BestStickCentre(target.Position, dir, s.Bombs, s.Spacing, weapon.SplashRadius, weapon.SplashRadius * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StickEntrySplashRadiusScale, _stickPoints, out _);
             return _world.ClampToMap(centre - dir * back);
         }
     }

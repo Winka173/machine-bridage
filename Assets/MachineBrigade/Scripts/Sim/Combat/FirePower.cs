@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Combat
         private static float OnPaper(WeaponDef w, VehicleDef? carrier)
         {
             if (w.Damage <= 0f) return 0f;
-            var cycle = MathF.Max(0.05f, w.CycleSeconds);
+            var cycle = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.FirePower.OnPaperCycleSecondsFloor, w.CycleSeconds);
             var perCycle = Volley(w);
             // An aircraft's stores: the whole load fired, then taken on again.
             var load = carrier?.LoadOf(w) ?? 0;

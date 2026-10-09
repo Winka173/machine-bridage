@@ -78,7 +78,7 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>Two more ground vehicles of the target's side inside the round's blast (4 m at least) round it.</summary>
         private bool Clustered(Vehicle target, WeaponDef round)
         {
-            var reach = System.MathF.Max(4f, round.SplashRadius);
+            var reach = System.MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ClusteredSplashRadiusFloor, round.SplashRadius);
             var r2 = reach * reach;
             var near = 0;
             foreach (var other in _world.VehicleList)

@@ -18,7 +18,7 @@ namespace MachineBrigade.Sim.Combat
         private float P28Worth(Vehicle v, Vehicle other, WeaponDef weapon)
         {
             var worth = 1f;
-            if (v.SquadFocus.IsValid && v.SquadFocus.Value == other.Id.Value) worth *= 1f + 0.6f * Math.Clamp(v.SquadFocusWeight, 0f, 2f);
+            if (v.SquadFocus.IsValid && v.SquadFocus.Value == other.Id.Value) worth *= 1f + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P28WorthClampScale * Math.Clamp(v.SquadFocusWeight, 0f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P28WorthSquadFocusWeightMax);
             if (v.SquadTargets is { Count: > 0 } targets && TeamIntel.GroupOf(other.Def) is { } group)
                 foreach (var t in targets)
                     if (t == group)
@@ -26,7 +26,7 @@ namespace MachineBrigade.Sim.Combat
                         worth *= 1.8f;
                         break;
                     }
-            if (!v.Flying && weapon.MinRange <= 0f && weapon.Projectile != ProjectileKind.Bomb && FriendInLine(v, other)) worth *= 0.6f;
+            if (!v.Flying && weapon.MinRange <= 0f && weapon.Projectile != ProjectileKind.Bomb && FriendInLine(v, other)) worth *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P28WorthWorth2;
             worth *= TowerWorth(v, other, weapon) * BossWorth(v, other, weapon);
             return worth;
         }
@@ -38,14 +38,14 @@ namespace MachineBrigade.Sim.Combat
             var to = target.Position;
             var d = to - from;
             var length = d.Length();
-            if (length < 4f) return false;
+            if (length < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.FriendInLineLengthMax) return false;
             var dir = d / length;
             foreach (var f in _world.VehicleList)
             {
                 if (f == v || !f.IsAlive || f.Team != v.Team || f.Flying || f.Def.Static) continue;
                 var rel = f.Position - from;
                 var along = Vector2.Dot(rel, dir);
-                if (along <= 2f || along >= length - 2f || along > 60f) continue;
+                if (along <= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.FriendInLineAlongMax || along >= length - global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.FriendInLineLengthSub || along > global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.FriendInLineAlongMin) continue;
                 var across = MathF.Abs(rel.X * dir.Y - rel.Y * dir.X);
                 if (across < f.Radius + 1f) return true;
             }

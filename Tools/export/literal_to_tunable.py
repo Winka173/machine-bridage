@@ -172,6 +172,62 @@ MANUAL_EXCLUDE = {
 }
 
 
+# literals the Roslyn scan calls gameplay that are math, geometry, structure or infrastructure (each rule a reason)
+GEOMETRY_OPERAND = re.compile(r"(?i)(length|width|depth|breadth|extent|stick)(scale)?$")
+STRUCTURE_LINES = {
+    # (file, line): reason; the table's shape, not its values
+    ("Sim/Content/DamageTable.cs", 53): "structure: the splash row's step count (the row's length; changing it breaks every table)",
+    ("Sim/Content/DamageTable.cs", 56): "structure: the overpenetration row's step count (the row's length)",
+    ("Sim/Content/DamageTable.cs", 90): "structure: the data row's accepted length (a 5-entry row skips its first column)",
+    ("Sim/Content/DamageTable.cs", 171): "structure: the penetration row's column offset (column 2 = penetration equals armour)",
+    ("Sim/Content/DamageTable.cs", 257): "structure: the overpenetration row starts 2 columns past the penetration row (one convention, three uses)",
+    ("Sim/Content/DamageTable.cs", 258): "structure: the overpenetration row starts 2 columns past the penetration row (one convention, three uses)",
+    ("Sim/Content/DamageTable.cs", 259): "structure: the overpenetration row starts 2 columns past the penetration row (one convention, three uses)",
+}
+STRUCTURE_RESULTS = {
+    # (file, line): the integer results of these lines are step indexes (the thresholds on them stay data)
+    ("Sim/Content/DamageTable.cs", 229): "index: the splash step number this distance falls in (the thresholds are data)",
+    ("Sim/Content/DamageTable.cs", 234): "index: the splash step number this distance falls in (the thresholds are data)",
+}
+MATH_MEMBERS = {
+    ("Sim/Combat/CombatSystem.Bombs.cs", "StickDirection"): "math: the principal axis of a point cloud (0.5 x atan2(2 cxy, cxx - cyy)), not a tunable",
+    ("Sim/Combat/CombatSystem.Bombs.cs", "BombFall"): "physics: free-fall time sqrt(2 h / g) (its 4 m floor is data)",
+}
+
+
+def _math_rule(c, src_line: str):
+    """A reason when this literal is math / geometry / structure / infrastructure, else None."""
+    f, lit, ctx = c["file"], c["literal"], c["context"]
+    v = _number(lit)
+    ln = int(c["line"])
+    col = int(c["col"]) - 1
+    before = src_line[:col]
+    if (f, ln) in STRUCTURE_LINES:
+        return STRUCTURE_LINES[(f, ln)]
+    if (f, ln) in STRUCTURE_RESULTS and ctx == "conditional" and c["type"] == "int":
+        return STRUCTURE_RESULTS[(f, ln)]
+    if (f, c["member"]) in MATH_MEMBERS and (c["member"] != "BombFall" or v == 2):
+        return MATH_MEMBERS[(f, c["member"])]
+    if v is not None and v != 0 and abs(v) <= 1e-3 and (ctx in ("math_max", "math_min", "math_clamp", "compare", "subtract", "add", "equals")
+                                                         or "e-" in lit.lower()):
+        return "math: a float epsilon (guards a division or a 'not zero' test)"
+    if v is not None and abs(v) >= 1e8:
+        return "sentinel: a huge number meaning 'none' / 'never' (not a quantity)"
+    if v in (31, 32, 63, 64) and re.search(r"<<|>>", src_line):
+        return "bit width: the team bit mask / a 32-bit shift"
+    if re.search(r"\.Count\s*>\s*" + re.escape(lit) + r"\)\s*\w+\.Clear\(\)", src_line):
+        return "infrastructure: a cache's size cap (memory), not gameplay"
+    if re.search(r"new\s+(System\.)?Random\(", src_line) and ctx in ("multiply", "add"):
+        return "RNG seed salt: an arbitrary constant mixed into a seed"
+    if v == 0.5 and ctx == "multiply":
+        hint = c["name_hint"]
+        if GEOMETRY_OPERAND.search(hint) or re.search(r"(?i)(length|width|depth)\s*\*\s*$", before):
+            return "geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant)"
+        if re.search(r"-\s*1\)\s*\*\s*$", before):
+            return "geometry: centring k - (n - 1) / 2 of a row of n slots (math)"
+    return None
+
+
 def _rel(path: str) -> str:
     return path[len(SCRIPTS) + 1:] if path.startswith(SCRIPTS + "/") else path
 
@@ -239,6 +295,16 @@ def _join(co, cand):
     return out, miss
 
 
+_LINES: dict = {}
+
+
+def _source_line(f: str, ln: int) -> str:
+    if f not in _LINES:
+        _LINES[f] = (ROOT / SCRIPTS / f).read_text("utf-8-sig").splitlines()
+    lines = _LINES[f]
+    return lines[ln - 1] if 0 < ln <= len(lines) else ""
+
+
 def _decide(r, c):
     """('move', lane, how-note) or ('exclude', reason)."""
     f, member, lit = c["file"], c["member"], c["literal"]
@@ -254,6 +320,9 @@ def _decide(r, c):
     if (f, lit) in MANUAL_EXCLUDE:
         return "exclude", MANUAL_EXCLUDE[(f, lit)]
     cls, reason = c["class"], c["reason"]
+    m = _math_rule(c, _source_line(f, int(c["line"])))
+    if m:
+        return "exclude", m
     if cls != "gameplay":
         for rx, test, why in FORCE_MOVE:
             if rx.search(reason) and test(c):
@@ -276,6 +345,16 @@ def _decide(r, c):
             return "manual", why
     lane = c["lane"] or "ai_rest"
     return "move", lane
+
+
+def _unit(c) -> str:
+    """The scan's unit, except for a pure factor (x ... Scale / Divisor / Factor) and a share."""
+    name = c["key"].rsplit(".", 1)[-1]
+    if re.search(r"(Scale|Divisor|Factor|Mult|Multiplier)\d*$", name):
+        return "x"
+    if re.search(r"(Share|Chance|Odds)\d*$", name):
+        return "share"
+    return c["unit"]
 
 
 def plan(args) -> int:
@@ -314,7 +393,7 @@ def plan(args) -> int:
             w.writerow(head)
             for c in rows:
                 mode = "pass2:" + (c["mode"][7:] if c["mode"].startswith("manual:") else c["mode"])
-                w.writerow([c["file"], c["line"], c["col"], c["literal"], c["key"], c["unit"], c["group"],
+                w.writerow([c["file"], c["line"], c["col"], c["literal"], c["key"], _unit(c), c["group"],
                             dom.get(c["key"].split(".")[0], ""), mode, "", f"{c['context']}: {c['line_text'][:150]}"])
     with open(out / "excluded.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)

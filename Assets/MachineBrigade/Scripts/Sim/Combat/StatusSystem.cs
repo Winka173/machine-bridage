@@ -47,8 +47,8 @@ namespace MachineBrigade.Sim.Combat
         public static float DurationFactor(Vehicle v, bool fire)
         {
             if (v.Gear == null) return 1f;
-            var f = 1f - Math.Clamp(v.Gear.Stat(StatId.StatusDuration), 0f, 0.6f);
-            if (fire) f *= 1f - Math.Clamp(v.Gear.Stat(StatId.ResistFire) * 2f, 0f, 0.5f);
+            var f = 1f - Math.Clamp(v.Gear.Stat(StatId.StatusDuration), 0f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.StatusSystem.DurationFactorStatMax);
+            if (fire) f *= 1f - Math.Clamp(v.Gear.Stat(StatId.ResistFire) * global::MachineBrigade.Sim.Content.SimTunables.Weapons.StatusSystem.DurationFactorStatScale, 0f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.StatusSystem.DurationFactorStatMax2);
             return f;
         }
 
@@ -91,7 +91,7 @@ namespace MachineBrigade.Sim.Combat
         {
             if (!target.IsAlive || share <= 0f || Cleansed(target)) return;
             var now = _world.Time;
-            if (target.Flying) share *= 0.5f;
+            if (target.Flying) share *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.StatusSystem.SlowShare;
             seconds *= DurationFactor(target, false);
             ref var s = ref target.Statuses[(int)StatusKind.Slow];
             s.Value = s.Until > now ? Math.Max(s.Value, share) : share;
@@ -102,7 +102,7 @@ namespace MachineBrigade.Sim.Combat
         /// <paramref name="stacks"/> more stacks of shred (up to <paramref name="maxStacks"/>; a fraction
         /// is kept towards the next), each making it take <paramref name="perStack"/> more damage.
         /// </summary>
-        public void Shred(Vehicle target, float perStack, float seconds, int maxStacks = 5, float stacks = 1f)
+        public void Shred(Vehicle target, float perStack, float seconds, int? maxStacks = null, float stacks = 1f)
         {
             if (!target.IsAlive || perStack <= 0f || Cleansed(target)) return;
             var now = _world.Time;
@@ -115,7 +115,7 @@ namespace MachineBrigade.Sim.Combat
             s.Extra += stacks;
             var whole = (int)MathF.Floor(s.Extra);
             s.Extra -= whole;
-            s.Stacks = Math.Min(maxStacks, s.Stacks + whole);
+            s.Stacks = Math.Min((maxStacks ?? global::MachineBrigade.Sim.Content.SimTunables.Weapons.StatusSystem.ShredMaxStacks), s.Stacks + whole);
             s.Value = Math.Max(s.Until > now ? s.Value : 0f, perStack);
             s.Until = now + seconds * DurationFactor(target, false);
         }

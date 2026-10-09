@@ -44,7 +44,7 @@ namespace MachineBrigade.Sim.Combat
             }
             if (other.Flying && weapon.GroupPriority)
             {
-                var reach = weapon.SplashRadius + 4f;
+                var reach = weapon.SplashRadius + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P25WorthSplashRadiusAdd;
                 var others = 0;
                 foreach (var e in _world.VehicleList)
                     if (e != other && e.IsAlive && e.Flying && e.Team == other.Team && Vector2.DistanceSquared(e.Position, other.Position) <= reach * reach) others++;
@@ -57,7 +57,7 @@ namespace MachineBrigade.Sim.Combat
             {
                 if (other.DecoyExposedTo(v.Team)) return 0f;
                 if (_world.Catalog.Vehicles.TryGetValue(decoy.Mimic, out var mimic))
-                    f *= MathF.Sqrt(Math.Clamp(mimic.MaxHp / 250f, 2f, 25f) / Math.Clamp(Worth(other), 2f, 25f)) * (ThreatWeight / 0.3f) * DecoyBait;
+                    f *= MathF.Sqrt(Math.Clamp(mimic.MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P25WorthMaxHpDivisor, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P25WorthMaxHpMin, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P25WorthMaxHpMax) / Math.Clamp(Worth(other), global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P25WorthWorthMin, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P25WorthWorthMax)) * (ThreatWeight / global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P25WorthThreatWeightDivisor) * DecoyBait;
             }
             // Linked towers gang up on what another linked tower is on.
             if (v.FireLinked && other.Id != v.Target && _world.Works.LinkedOn(v.Team, other.Id)) f *= _world.Works.LinkFocus(v);
@@ -96,7 +96,7 @@ namespace MachineBrigade.Sim.Combat
                 shooter.MrsiLands = now + travel;
                 return travel;
             }
-            return MathF.Max(0.3f, (float)(shooter.MrsiLands - now));
+            return MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.MrsiTravelMrsiLandsFloor, (float)(shooter.MrsiLands - now));
         }
 
         // ================================================================== the drone killers
@@ -185,7 +185,7 @@ namespace MachineBrigade.Sim.Combat
             v.LastFiredAt = _world.Time;
             v.TurretHeading = SimMath.HeadingOf(at - v.Position);
             RemoveRound(best);
-            var flight = MathF.Max(0.3f, Vector2.Distance(v.Position, at) / MathF.Max(1f, weapon.ProjectileSpeed));
+            var flight = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.HuntDistanceFloor, Vector2.Distance(v.Position, at) / MathF.Max(1f, weapon.ProjectileSpeed));
             _world.Emit(SimEvent.FiredWith(v, weapon, v.Position, at, flight, EntityId.None));
             _world.Emit(SimEvent.Intercept(v, best.Weapon, at, false));
         }
