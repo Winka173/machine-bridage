@@ -334,3 +334,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 06/10 "tiếp tục, task đang làm thì xong pháo 3 nòng là xong, không cần kiểm tra số nòng chỗ khác, không cần build lại bản window".
 - 06/10 "làm render ảnh thẻ cho các tàu trong tab Hải quân".
 - 06/10 "chạy luôn task export".
+- 09/10 "xuất toàn bộ các hằng số còn thiếu ra file data" (= Pack 2 lượt 2, các literal đánh dấu de_xuat_dua_ra_du_lieu=co).
