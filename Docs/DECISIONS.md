@@ -22124,3 +22124,36 @@ export.py. Full report: Docs/export/CHANGES.md "Gói 2 lượt 2 (09/10)".
   leaf mapped by Tools/export/core/tunables.py. Commit per domain after its check.
 - Open: static readonly tables read their keys once at first use (an edit applies if LoadCatalog ran first); key names are
   generated (file:line in "code"); ReplayHashTests baseline and TunablesTests are the owner's runs (commands in CHANGES).
+
+## Naval FINAL spec (09/10)
+
+Owner 09/10: Docs/naval/final (spec FINAL + implementation prompt) supersede Docs/naval/PROMPT_owner_vi.md. Branch
+feature/naval-final (worktree MachineBrigade-bal) from lead c78effdb7. Tests allowed by the owner but not run by this lane (the
+lead runs Docs/naval/final/TEST_PLAN.md after the merge). Report: Docs/naval/final/NAVAL_FINAL_REPORT.md.
+- Roster (data): CP per spec section 2 (7-23); HP by the spec's anchor ratios (torpedo 1.24 x missile_boat, CIWS craft 1.12 x
+  hover_gunboat, AShM corvette 0.90 x sea_corvette, frigate 1.25 x sea_corvette, destroyer 1.40 x frigate; monitor 223 HP/CP;
+  battleship highest at 5800); armour by chassis, no player naval Armour 5 (battleship [4,4,4,3]). Anchors untouched.
+- One primary + at most one secondary capability; MG / CIWS gun / aps / the short `sam` count as self-defence. Dropped: the
+  frigate's and missile frigate's SAM, the EW corvette's SAM; the battlecruiser's and battleship's sam_long became `sam`; the
+  destroyer keeps quad AShM + short SAM (the spec's named exception). Three model mounts left idle (report).
+- Weapons: player AShM ladder inherits anti_ship_missile (Pen 4, 80 m/s, 450) with "weaponFamily": "": light 2 / corvette 3 /
+  quad 4 / frigate 5 / destroyer 7 / cruiser 8 a salvo. "Below frigate/destroyer AShM alpha" read as the specialists'
+  (corvette 1350 < 2250 / 3150). naval_torpedo_light (renamed torpedo_naval, 55 m/s < 80). escort_ciws_ak630 (hover_ciws, Air
+  only: id kept out of the naval_ prefix, which the feel audit reads as NAVAL_DIRECT). naval_76_selfdef (burst 1) for the EW
+  and CIWS craft. naval_127_gd: two mounts = 1.125 x the destroyer's gun. naval_mlrs_salvo: the MLRS rocket rate in 8-round
+  salvos. naval_406_bs keeps 3 x 200 simultaneous, Pen 5 (owner's 06/10 exception), caliberMm 406.
+- Ships never stop on patrol: rocket_artillery_ship fires on the move (no erect), naval_mlrs_salvo / naval_203_monitor have
+  no stand-still magazine (ammo 0), else the ship would sit armed and idle. torpedo_boat navalOnly.
+- Renames (models kept): ciws_escort_craft, naval_monitor, sea_cruiser.missile (the 06/10 missile_cruiser), new
+  sea_cruiser.gun. Dotted + "inherits" is the vehicle variant mechanism (tower rank-7 branches); no "branchOf" (tower
+  roster's). Strings, card manifest (sorted, sea_cruiser.gun on sea_cruiser's picture), barrel audit updated.
+- AI: aiBehaviour.units entry per ship; NavalDef.Patrol ("patrol": far for missile / AA / escorts, near for gun ships, mid for
+  capitals) is the lane an escort holds without a flagship; a negative "station" keeps it astern (CIWS craft, EW corvette,
+  rocket ship). Naval salvo guard: CombatRoleDoctrine.NavalSalvo (main battery >= ai.roleDoctrine.navalSalvoMinAlpha 600 HP a
+  pull) makes a light / scout / support / drone target under ai.roleDoctrine.navalSalvoMinWorth (8 CP) a last resort for TD /
+  MainBattle unless critical; every mount of a ship's main weapon counts as main battery. Overkill: the generic guard.
+- ASW corvette / attack submarine: BLOCKED_BY_NO_COMPLEX_NEW_MECHANIC (submarine runtime is boss-only, BossSystem burrow).
+- Harness: Tools/simbuild/regress modes `naval` (spec 9 / prompt H matrix, formations, narrow lane, wreck, target, saturation;
+  QA guide section 1 fields) and `naval-econ` (static). flight_feel_audit: TORPEDO class. EditMode NavalFinalTests (compile only).
+- Checks: Sim and regress dotnet builds 0 errors; Unity assemblies via dotnet 0 new errors; catalog parse OK; flight audit
+  HARD_FAIL 0; mount check 0 hard; glb_check 0 errors. No export.py, no Unity run.

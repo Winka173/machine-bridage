@@ -1,5 +1,10 @@
 # Naval vehicle expansion — model contract (06/10 owner prompt, lane: data/AI/economy)
 
+> **09/10 (naval FINAL spec):** ids renamed, models kept: `ciws_escort_ship` -> `ciws_escort_craft` (model
+> `ciws_escort_ship`), `heavy_monitor` -> `naval_monitor` (model `heavy_monitor`), `missile_cruiser` -> `sea_cruiser.missile`
+> (model `missile_cruiser`); `sea_cruiser.gun` uses `sea_cruiser`. Weapons now idle on a mount: frigate and missile_frigate
+> `Mount_missile_02`, ew_corvette `Mount_missile` (Docs/naval/final/NAVAL_FINAL_REPORT.md).
+
 Written for the model/VFX lanes that will replace the stand-in GLBs this data pass uses. Source of truth for the
 gameplay numbers is `Assets/MachineBrigade/Resources/Data/balance.json` (canonical) and
 `Docs/naval/PROMPT_owner_vi.md` (the owner prompt + spec); this file only adds the geometry/silhouette brief and the
