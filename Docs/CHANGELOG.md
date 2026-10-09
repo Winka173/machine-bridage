@@ -7,6 +7,9 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Naval FINAL spec (09/10, feature/naval-final): 18-ship roster reconciled to the final spec (CP 7-23, HP by anchor ratio, no
+  Armour 5, one secondary capability, player AShM ladder Pen 4 / 80 m/s, light torpedo); ciws_escort_craft, naval_monitor,
+  sea_cruiser.gun / .missile; naval doctrine (patrol lanes, astern escorts, salvo guard); regress `naval` suite (not run).
 - Balance pack 2 pass 2 (09/10, feature/pack2-pass2): 3 607 more gameplay literals of the C# moved into
   Resources/Data/tunables.json (4 221 keys) with Tools/export/literal_to_tunable.py, values unchanged; 686 left with a reason.
 - Barrels (06/10, feature/barrels): the battleship carries three Iowa triple 406 mm turrets that fire all three barrels

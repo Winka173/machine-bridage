@@ -195,12 +195,18 @@ namespace MachineBrigade.Sim.AI
         /// Part B: the role's factor on the score of <paramref name="other"/> for <paramref name="v"/>'s main weapon.
         /// <paramref name="survival"/>: the target is an immediate survival threat; <paramref name="objectiveThreat"/>: Part H's
         /// ThreatToObjective (0-1); <paramref name="clustered"/>: other enemies stand around it (B8, B11).
+        /// <paramref name="navalSalvo"/>: a ship's main battery with a big salvo (<see cref="NavalSalvo"/>, naval FINAL spec 09/10).
         /// </summary>
         public static float Worth(DoctrineRole role, TargetClass c, bool survival, float objectiveThreat, bool clustered, bool targetsOwnHeavy,
-            bool moving, float targetWorth, bool salvoWeapon)
+            bool moving, float targetWorth, bool salvoWeapon, bool navalSalvo = false)
         {
             var critical = survival || objectiveThreat >= 0.7f;
             float LastResort() => critical ? Rung(0, 6) : Tun.RoleDoctrine.LastResort;
+            // Naval FINAL spec 09/10 (section 7): a torpedo / AShM / heavy-gun salvo is not spent on a cheap light boat, a scout,
+            // a support craft or a drone while anything better is in reach (a multiplier: alone, it is still shot; never idle).
+            if (navalSalvo && !critical && role is DoctrineRole.TankDestroyer or DoctrineRole.MainBattle &&
+                (LightTarget(c) || c == TargetClass.Drone) && targetWorth < Tun.RoleDoctrine.NavalSalvoMinWorth)
+                return Tun.RoleDoctrine.LastResort;
             switch (role)
             {
                 case DoctrineRole.TankDestroyer:
@@ -308,6 +314,13 @@ namespace MachineBrigade.Sim.AI
                     return 1f;
             }
         }
+
+        /// <summary>
+        /// Naval FINAL spec 09/10: <paramref name="weapon"/> is a ship's big salvo: its damage a trigger pull (rounds x barrels fired together) at
+        /// least <see cref="Tun.RoleDoctrine.NavalSalvoMinAlpha"/> (a torpedo pair, an AShM salvo, a heavy turret's volley).
+        /// </summary>
+        public static bool NavalSalvo(VehicleDef def, WeaponDef weapon) =>
+            def.Naval != null && weapon.Damage * Math.Max(1, weapon.Burst) * weapon.RoundsPerPull >= Tun.RoleDoctrine.NavalSalvoMinAlpha;
 
         /// <summary>Whether two or more other enemies of <paramref name="t"/>'s side stand within the cluster radius of it.</summary>
         internal static bool Clustered(SimWorld world, Vehicle t)

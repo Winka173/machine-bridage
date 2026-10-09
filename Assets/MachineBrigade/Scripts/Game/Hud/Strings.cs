@@ -2441,8 +2441,8 @@ namespace MachineBrigade.Game.Hud
             ["unit.sea_cruiser"] = ("Missile Cruiser", "Tuần dương hạm tên lửa"),
             ["unit.missile_boat"] = ("Missile Boat", "Xuồng tên lửa cao tốc"),
             ["unit.landing_craft"] = ("Landing Craft", "Tàu đổ bộ"),
-            // Naval expansion (06/10, Docs/naval/NAVAL_DATA_REPORT.md): all 17 are "card": false (AI / boss-escort
-            // only), named here so the Deck's Naval codex tab can show them.
+            // Naval expansion (06/10, Docs/naval/NAVAL_DATA_REPORT.md; FINAL spec 09/10, Docs/naval/final/NAVAL_FINAL_REPORT.md):
+            // all 18 are "card": false (AI / boss-escort only), named here so the Deck's Naval codex tab can show them.
             ["unit.torpedo_boat"] = ("Torpedo Boat", "Xuồng phóng ngư lôi"),
             ["unit.ashm_corvette"] = ("Anti-Ship Corvette", "Hộ vệ diệt hạm"),
             ["short.ashm_corvette"] = ("AShM Corvette", "Hộ vệ diệt hạm"),
@@ -2458,12 +2458,15 @@ namespace MachineBrigade.Game.Hud
             ["unit.aa_destroyer"] = ("AA Destroyer", "Khu trục phòng không"),
             ["unit.rocket_artillery_ship"] = ("Rocket Artillery Ship", "Tàu pháo phản lực"),
             ["short.rocket_artillery_ship"] = ("Rocket Ship", "Tàu Rocket"),
-            ["unit.heavy_monitor"] = ("Heavy Monitor", "Monitor hạng nặng"),
+            ["unit.naval_monitor"] = ("Monitor", "Pháo hạm Monitor"),
             ["unit.battlecruiser"] = ("Battlecruiser", "Tuần dương chiến hạm"),
             ["unit.battleship"] = ("Battleship", "Thiết giáp hạm"),
-            ["unit.missile_cruiser"] = ("Heavy Missile Cruiser", "Tuần dương tên lửa hạng nặng"),
-            ["short.missile_cruiser"] = ("Msl. Cruiser", "Tuần dương TL"),
-            ["unit.ciws_escort_ship"] = ("CIWS Escort", "Tàu hộ tống CIWS"),
+            ["unit.sea_cruiser.gun"] = ("Gun Cruiser", "Tuần dương pháo hạm"),
+            ["short.sea_cruiser.gun"] = ("Gun Cruiser", "Tuần dương pháo"),
+            ["unit.sea_cruiser.missile"] = ("Heavy Missile Cruiser", "Tuần dương tên lửa hạng nặng"),
+            ["short.sea_cruiser.missile"] = ("Msl. Cruiser", "Tuần dương TL"),
+            ["unit.ciws_escort_craft"] = ("CIWS Escort Craft", "Tàu hộ tống CIWS"),
+            ["short.ciws_escort_craft"] = ("CIWS Escort", "Hộ tống CIWS"),
             ["unit.ew_corvette"] = ("EW Corvette", "Hộ vệ tác chiến điện tử"),
             ["short.ew_corvette"] = ("EW Corvette", "Hộ vệ ĐTĐT"),
             ["unit.coastal_battery"] = ("Coastal Battery", "Trận địa pháo bờ biển"),

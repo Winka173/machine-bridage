@@ -645,8 +645,9 @@ namespace MachineBrigade.Sim.Bosses
                     v.NavalGoal = new Vector2(ff.X + v.StationAt.X + flag.NavalDir * 4f, w + across * (flag.Escaping ? 1.25f : 1f));
                     return;
                 }
-                var station = naval.Station == 0f ? 24f : naval.Station;
-                var side = (v.Id.Value & 1) == 0 ? 1f : -1f;
+                var station = naval.Station == 0f ? 24f : MathF.Abs(naval.Station);
+                // Naval FINAL spec 09/10: a negative station is astern of the flagship's way (it never leads); else either side.
+                var side = naval.Station < 0f ? -flag.NavalDir : (v.Id.Value & 1) == 0 ? 1f : -1f;
                 // Screening the run: between it and the shore, a little ahead or astern.
                 if (flag.Escaping) v.NavalGoal = new Vector2(ff.X + side * station * 0.45f + flag.NavalDir * 6f, ff.Y - 15f);
                 else
@@ -656,8 +657,8 @@ namespace MachineBrigade.Sim.Bosses
                 }
                 return;
             }
-            // Its flagship gone: it patrols the near lane on its own.
-            Patrol(v, sea, "near");
+            // Its flagship gone: it patrols its own lane (data "patrol", naval FINAL spec 09/10), else the near lane.
+            Patrol(v, sea, naval.Patrol is { } own && sea.Lane(own) != null ? own : "near");
         }
 
         private void Patrol(Vehicle v, SeaDef sea, string laneId)

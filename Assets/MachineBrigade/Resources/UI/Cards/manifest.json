@@ -627,7 +627,7 @@
             "hash": "v2:5f1c0c1de2ad239329dab04eb47322667b2c1974"
         },
         {
-            "id": "ciws_escort_ship",
+            "id": "ciws_escort_craft",
             "kind": "naval",
             "model": "ciws_escort_ship",
             "source": "Models/ciws_escort_ship",
@@ -949,13 +949,6 @@
             "hash": "v2:2aee986a6746226ebb0f7ec78d8371417e8b3f10"
         },
         {
-            "id": "heavy_monitor",
-            "kind": "naval",
-            "model": "heavy_monitor",
-            "source": "Models/heavy_monitor",
-            "hash": "v2:38ca2cf0861004a591b8468bc116d080aabfbbb5"
-        },
-        {
             "id": "heavy_turret",
             "kind": "tower",
             "model": "heavy_turret",
@@ -1117,13 +1110,6 @@
             "hash": "v2:420d79f9be3cbde0a8948e61375e377f6bb623f6"
         },
         {
-            "id": "missile_cruiser",
-            "kind": "naval",
-            "model": "missile_cruiser",
-            "source": "Models/missile_cruiser",
-            "hash": "v2:1a43108713759438b48b4ed10363fab8ca6726ed"
-        },
-        {
             "id": "missile_destroyer",
             "kind": "naval",
             "model": "missile_destroyer",
@@ -1157,6 +1143,13 @@
             "model": "monster",
             "source": "Models/monster",
             "hash": "v2:8ea389fbdf5ef92b393ab16d7b28de0266d624b0"
+        },
+        {
+            "id": "naval_monitor",
+            "kind": "naval",
+            "model": "heavy_monitor",
+            "source": "Models/heavy_monitor",
+            "hash": "v2:38ca2cf0861004a591b8468bc116d080aabfbbb5"
         },
         {
             "id": "nuke_train",
@@ -1241,6 +1234,20 @@
             "model": "sea_cruiser",
             "source": "Models/sea_cruiser",
             "hash": "v2:fe066c78eeed32126e692862d1e682d5f6f31c72"
+        },
+        {
+            "id": "sea_cruiser.gun",
+            "kind": "naval",
+            "model": "sea_cruiser",
+            "source": "Models/sea_cruiser",
+            "hash": "v2:fe066c78eeed32126e692862d1e682d5f6f31c72"
+        },
+        {
+            "id": "sea_cruiser.missile",
+            "kind": "naval",
+            "model": "missile_cruiser",
+            "source": "Models/missile_cruiser",
+            "hash": "v2:1a43108713759438b48b4ed10363fab8ca6726ed"
         },
         {
             "id": "shield_tower",

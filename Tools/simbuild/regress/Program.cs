@@ -44,6 +44,9 @@ static class P
             case "aps": Aps(sb); Lead(sb); break;
             case "missiles": Missiles(sb); break;
             case "missiles-pointblank": MissilesPointBlank(sb); break;
+            // Naval FINAL spec 09/10 (Naval.cs, Docs/naval/final/TEST_PLAN.md): the naval suite and its static economy table.
+            case "naval": NavalSuite.Run(Cat, sb, Environment.GetEnvironmentVariable("MB_SET") ?? "all"); break;
+            case "naval-econ": NavalSuite.Economy(Cat, sb); break;
             default: Console.Error.WriteLine("mode?"); return 2;
         }
         File.WriteAllText(outFile, sb.ToString(), new UTF8Encoding(false));

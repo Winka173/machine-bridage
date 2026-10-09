@@ -3141,6 +3141,8 @@
       "rankStep": { "value": 0.85, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "RoleDoctrine.RankStep (AI MASTER P2)" },
       "lastResort": { "value": 0.35, "unit": "x", "kind": "nguong", "linh_vuc": "06", "code": "RoleDoctrine.LastResort (AI MASTER P2)" },
       "heavySalvoMinWorth": { "value": 4.0, "unit": "CP", "kind": "nguong", "linh_vuc": "06", "code": "RoleDoctrine.HeavySalvoMinWorth (AI MASTER P2)" },
+      "navalSalvoMinAlpha": { "value": 600.0, "unit": "HP", "kind": "nguong", "linh_vuc": "06", "code": "RoleDoctrine.NavalSalvoMinAlpha (naval FINAL 09/10)" },
+      "navalSalvoMinWorth": { "value": 8.0, "unit": "CP", "kind": "nguong", "linh_vuc": "06", "code": "RoleDoctrine.NavalSalvoMinWorth (naval FINAL 09/10)" },
       "clusterRadius": { "value": 8.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "06", "code": "RoleDoctrine.ClusterRadius (AI MASTER P2)" }
     },
     "modeDoctrine": {
