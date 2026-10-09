@@ -40,6 +40,12 @@ namespace MachineBrigade.Game.Hud
             ["unit.fenrir"] = ("Fenrir · Vanguard", "Fenrir · Xe tiên phong"),
             ["unit.scylla"] = ("Scylla · Destroyer", "Scylla · Tàu khu trục"),
             ["unit.locust"] = ("Locust · Drone Tender", "Locust · Tàu con drone"),
+            ["unit.roc_gunship"] = ("Roc Arsenal · Combat Airship", "Roc Arsenal · Khí cầu chiến đấu"),
+            ["unit.daedalus_assault"] = ("Daedalus Assault · Assault Lander", "Daedalus Assault · Tàu đổ bộ xung kích"),
+            ["unit.icarus_interceptor"] = ("Icarus Sentinel · Interceptor Ship", "Icarus Sentinel · Phi thuyền đánh chặn"),
+            ["unit.matriarch_flak"] = ("Matriarch Wasp · Flak Drone Ship", "Matriarch Wasp · Tàu phòng không drone"),
+            ["unit.jotunn_artillery"] = ("Jötunn Mortar · Mortar Fortress", "Jötunn Mortar · Pháo đài bắn cầu"),
+            ["unit.bastion_aa"] = ("Bastion Flak · Anti-Air Fortress", "Bastion Flak · Pháo đài phòng không"),
             ["unit.behemoth_mk2"] = ("Behemoth Mk.II · Upgraded Behemoth", "Behemoth Mk.II · Behemoth nâng cấp"),
             ["unit.icarus_mk0"] = ("Icarus Mk.0 · Prototype Spacecraft", "Icarus Mk.0 · Phi thuyền nguyên mẫu"),
             ["unit.argus"] = ("Argus · Scout Airship", "Argus · Khí cầu trinh sát"),
@@ -51,6 +57,12 @@ namespace MachineBrigade.Game.Hud
             ["short.fenrir"] = ("Fenrir", "Fenrir"),
             ["short.scylla"] = ("Scylla", "Scylla"),
             ["short.locust"] = ("Locust", "Locust"),
+            ["short.roc_gunship"] = ("Roc Arsenal", "Roc Arsenal"),
+            ["short.daedalus_assault"] = ("Daedalus Assault", "Daedalus Assault"),
+            ["short.icarus_interceptor"] = ("Icarus Sentinel", "Icarus Sentinel"),
+            ["short.matriarch_flak"] = ("Matriarch Wasp", "Matriarch Wasp"),
+            ["short.jotunn_artillery"] = ("Jötunn Mortar", "Jötunn Mortar"),
+            ["short.bastion_aa"] = ("Bastion Flak", "Bastion Flak"),
             ["short.behemoth_mk2"] = ("Behemoth Mk.II", "Behemoth Mk.II"),
             ["short.icarus_mk0"] = ("Icarus Mk.0", "Icarus Mk.0"),
             ["short.argus"] = ("Argus", "Argus"),
@@ -64,9 +76,15 @@ namespace MachineBrigade.Game.Hud
             ["note.fenrir"] = ("Orlov's fast raider: two rocket boxes and flak; it dashes in, fires and pulls back.", "Xe đột kích nhanh của Orlov: hai hộp rốc-két và cao xạ; lao vào bắn rồi rút."),
             ["note.scylla"] = ("Kessler's destroyer on the near-shore lane: one main turret, missile cells, a CIWS. Tank guns reach it from the piers.", "Tàu khu trục của Kessler trên tuyến gần bờ: một tháp pháo chính, ống phóng tên lửa, CIWS. Pháo xe tăng bắn tới từ đầu cầu tàu."),
             ["note.locust"] = ("A thin-skinned drone tender: launches drones without pause. Bring anti-air.", "Tàu con drone vỏ mỏng: thả drone liên tục. Mang phòng không theo."),
+            ["note.roc_gunship"] = ("A gunship cut from the Roc's hull: heavy twin guns and flak, no bombs and no drones.", "Khinh khí cầu chiến đấu cắt từ thân Roc: pháo đôi hạng nặng và cao xạ, không bom, không drone."),
+            ["note.daedalus_assault"] = ("A light assault lander: close guns, point-defence lasers and one slow drop-pod bay.", "Tàu đổ bộ xung kích nhẹ: pháo cận chiến, laser phòng thủ điểm và một khoang thả xe chậm."),
+            ["note.icarus_interceptor"] = ("A fast interceptor with laser towers and anti-air missile pods; it hunts aircraft first.", "Phi thuyền đánh chặn nhanh: tháp laser và tên lửa phòng không, ưu tiên săn máy bay."),
+            ["note.matriarch_flak"] = ("A drone tender armed for the air: flak guns, CIWS and a few small drones.", "Tàu mang drone thiên về phòng không: cao xạ, CIWS và vài drone nhỏ."),
+            ["note.jotunn_artillery"] = ("A mobile fortress turned to mortars: it lobs shells over cover; close in under its arc.", "Pháo đài di động chuyên cối: bắn vòng qua vật cản; áp sát để tránh cung đạn."),
+            ["note.bastion_aa"] = ("A fortress thick with flak and missiles: deadly to aircraft, thin against tanks.", "Pháo đài dày cao xạ và tên lửa: chết chóc với máy bay, mỏng với xe tăng."),
             ["note.behemoth_mk2"] = ("Varga's upgraded Behemoth under ice-coated armour (front 4): main gun, two flak guns, a protection system.", "Behemoth nâng cấp của Varga, giáp phủ băng (trước cấp 4): pháo chính, hai cao xạ, hệ thống bảo vệ chủ động."),
             ["note.icarus_mk0"] = ("Aurel's prototype spacecraft: high and low on a fixed schedule, never in orbit; a laser turret, two 40 mm test guns under the hull, a pod bay and a point-defence laser.", "Phi thuyền nguyên mẫu của Aurel: đổi tầng cao và thấp theo lịch cố định, không lên quỹ đạo; tháp la-de, hai pháo thử 40 mm dưới bụng, khoang đổ bộ và la-de phòng thủ điểm."),
-            ["note.argus"] = ("A scout airship: while it lives the enemy's artillery falls far tighter. Flak and a radar.", "Khí cầu trinh sát: khi nó còn, pháo binh địch bắn chính xác hơn nhiều. Cao xạ và radar."),
+            ["note.argus"] = ("A scout airship: while it lives the enemy's artillery falls far tighter. Flak, rockets and bombs.", "Khí cầu trinh sát: khi nó còn, pháo binh địch bắn chính xác hơn nhiều. Cao xạ, rocket và bom."),
 
             // ---------------------------------------------------------------- Guide cards
             ["guide.moloch"] = (
@@ -141,6 +159,96 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: [[khoang drone]] thả drone liên tục; cao xạ trên lưng.\n" +
                 "Mạnh / yếu: thân rất mỏng (giáp cấp 1): phòng không hạ nó nhanh.\n" +
                 "Mẹo: phá khoang drone là nó hết đòn."),
+            ["guide.roc_gunship"] = (
+                "[[Mini boss]] · Roc Arsenal
+" +
+                "How it fights: A gunship cut from the Roc's hull: heavy twin guns and flak, no bombs and no drones.
+" +
+                "Strong / weak: many small guns, each its own part; break them one by one.
+" +
+                "Tip: it has no super weapon; keep tanks spread and flank it.",
+                "[[Mini boss]] · Roc Arsenal
+" +
+                "Cách đánh: Khinh khí cầu chiến đấu cắt từ thân Roc: pháo đôi hạng nặng và cao xạ, không bom, không drone.
+" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
+" +
+                "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
+            ["guide.daedalus_assault"] = (
+                "[[Mini boss]] · Daedalus Assault
+" +
+                "How it fights: A light assault lander: close guns, point-defence lasers and one slow drop-pod bay.
+" +
+                "Strong / weak: many small guns, each its own part; break them one by one.
+" +
+                "Tip: it has no super weapon; keep tanks spread and flank it.",
+                "[[Mini boss]] · Daedalus Assault
+" +
+                "Cách đánh: Tàu đổ bộ xung kích nhẹ: pháo cận chiến, laser phòng thủ điểm và một khoang thả xe chậm.
+" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
+" +
+                "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
+            ["guide.icarus_interceptor"] = (
+                "[[Mini boss]] · Icarus Sentinel
+" +
+                "How it fights: A fast interceptor with laser towers and anti-air missile pods; it hunts aircraft first.
+" +
+                "Strong / weak: many small guns, each its own part; break them one by one.
+" +
+                "Tip: it has no super weapon; keep tanks spread and flank it.",
+                "[[Mini boss]] · Icarus Sentinel
+" +
+                "Cách đánh: Phi thuyền đánh chặn nhanh: tháp laser và tên lửa phòng không, ưu tiên săn máy bay.
+" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
+" +
+                "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
+            ["guide.matriarch_flak"] = (
+                "[[Mini boss]] · Matriarch Wasp
+" +
+                "How it fights: A drone tender armed for the air: flak guns, CIWS and a few small drones.
+" +
+                "Strong / weak: many small guns, each its own part; break them one by one.
+" +
+                "Tip: it has no super weapon; keep tanks spread and flank it.",
+                "[[Mini boss]] · Matriarch Wasp
+" +
+                "Cách đánh: Tàu mang drone thiên về phòng không: cao xạ, CIWS và vài drone nhỏ.
+" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
+" +
+                "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
+            ["guide.jotunn_artillery"] = (
+                "[[Mini boss]] · Jötunn Mortar
+" +
+                "How it fights: A mobile fortress turned to mortars: it lobs shells over cover; close in under its arc.
+" +
+                "Strong / weak: many small guns, each its own part; break them one by one.
+" +
+                "Tip: it has no super weapon; keep tanks spread and flank it.",
+                "[[Mini boss]] · Jötunn Mortar
+" +
+                "Cách đánh: Pháo đài di động chuyên cối: bắn vòng qua vật cản; áp sát để tránh cung đạn.
+" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
+" +
+                "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
+            ["guide.bastion_aa"] = (
+                "[[Mini boss]] · Bastion Flak
+" +
+                "How it fights: A fortress thick with flak and missiles: deadly to aircraft, thin against tanks.
+" +
+                "Strong / weak: many small guns, each its own part; break them one by one.
+" +
+                "Tip: it has no super weapon; keep tanks spread and flank it.",
+                "[[Mini boss]] · Bastion Flak
+" +
+                "Cách đánh: Pháo đài dày cao xạ và tên lửa: chết chóc với máy bay, mỏng với xe tăng.
+" +
+                "Mạnh / yếu: nhiều súng nhỏ, mỗi khẩu là một bộ phận; phá từng cái một.
+" +
+                "Mẹo: không có siêu vũ khí; đừng để xe dồn cục, đánh vòng sau."),
             ["guide.behemoth_mk2"] = (
                 "[[Mini boss]] · upgraded Behemoth · ice-coated armour\n" +
                 "How it fights: Varga's upgrade after the Behemoth fell: its main gun, two flak guns and a protection system that shoots down missiles.\n" +
@@ -161,13 +269,13 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: chờ lúc nó xuống thấp; phá la-de phòng thủ điểm trước khi dùng tên lửa."),
             ["guide.argus"] = (
                 "[[Mini boss]] · scout airship · directs the enemy's guns\n" +
-                "How it fights: while it lives, the enemy's artillery falls about half as wide. Flak guns and a [[radar]].\n" +
+                "How it fights: while it lives, the enemy's artillery falls about half as wide. Flak guns, rockets and bombs.\n" +
                 "Strong / weak: slow and big; only anti-air and fighters reach it.\n" +
-                "Tip: break the radar and the enemy's artillery scatters again.",
+                "Tip: its [[drone bay]] and engines are all it has to break.",
                 "[[Mini boss]] · khí cầu trinh sát · chỉ điểm cho pháo địch\n" +
-                "Cách đánh: khi nó còn, pháo binh địch tản mát chỉ khoảng một nửa. Cao xạ và [[radar]].\n" +
+                "Cách đánh: khi nó còn, pháo binh địch tản mát chỉ khoảng một nửa. Cao xạ, rocket và bom.\n" +
                 "Mạnh / yếu: chậm và to; chỉ phòng không và tiêm kích bắn tới.\n" +
-                "Mẹo: phá radar là pháo binh địch lại bắn tản mát."),
+                "Mẹo: [[khoang drone]] và động cơ là tất cả những gì cần phá."),
 
             // ---------------------------------------------------------------- parts tips
             ["guide.parts.tip.moloch"] = ("Tip: flank it for the [[workshop doors]] at the back (armour 2): each one broken halves what it builds, both stop it; the [[tracks]] slow it.", "Mẹo: vòng ra sau đánh [[cửa xưởng]] (giáp cấp 2): phá một cửa là sinh xe giảm một nửa, phá cả hai là ngừng hẳn; phá [[cụm xích]] để làm chậm."),
@@ -178,9 +286,15 @@ namespace MachineBrigade.Game.Hud
             ["guide.parts.tip.fenrir"] = ("Tip: each [[rocket box]] broken halves its rockets; its flak is all it has against aircraft.", "Mẹo: mỗi [[hộp rốc-két]] bị phá là rốc-két của nó giảm một nửa; cao xạ là thứ duy nhất chống máy bay."),
             ["guide.parts.tip.scylla"] = ("Tip: break the [[missile cells]] for its cruise missiles and the [[CIWS]] before sending missiles.", "Mẹo: phá [[ống phóng tên lửa]] để chặn tên lửa hành trình, phá [[CIWS]] trước khi dùng tên lửa."),
             ["guide.parts.tip.locust"] = ("Tip: its [[drone bay]] is everything it has.", "Mẹo: [[khoang drone]] là tất cả những gì nó có."),
+            ["guide.parts.tip.roc_gunship"] = ("Tip: break its guns and its [[engine]] first; it carries no radar.", "Mẹo: phá súng và [[động cơ]] trước; nó không có radar."),
+            ["guide.parts.tip.daedalus_assault"] = ("Tip: break its guns and its [[engine]] first; it carries no radar.", "Mẹo: phá súng và [[động cơ]] trước; nó không có radar."),
+            ["guide.parts.tip.icarus_interceptor"] = ("Tip: break its guns and its [[engine]] first; it carries no radar.", "Mẹo: phá súng và [[động cơ]] trước; nó không có radar."),
+            ["guide.parts.tip.matriarch_flak"] = ("Tip: break its guns and its [[engine]] first; it carries no radar.", "Mẹo: phá súng và [[động cơ]] trước; nó không có radar."),
+            ["guide.parts.tip.jotunn_artillery"] = ("Tip: break its guns and its [[engine]] first; it carries no radar.", "Mẹo: phá súng và [[động cơ]] trước; nó không có radar."),
+            ["guide.parts.tip.bastion_aa"] = ("Tip: break its guns and its [[engine]] first; it carries no radar.", "Mẹo: phá súng và [[động cơ]] trước; nó không có radar."),
             ["guide.parts.tip.behemoth_mk2"] = ("Tip: the [[main gun]] is its punch; the [[protection system]] shoots down two missiles a volley.", "Mẹo: [[pháo chính]] là đòn mạnh nhất; [[hệ thống bảo vệ]] bắn hạ hai tên lửa mỗi loạt."),
             ["guide.parts.tip.icarus_mk0"] = ("Tip: the [[point-defence laser]] is its protection, the [[pod bay]] its drops.", "Mẹo: [[la-de phòng thủ điểm]] là lớp bảo vệ, [[khoang đổ bộ]] mang các đợt thả."),
-            ["guide.parts.tip.argus"] = ("Tip: the [[radar]] directs the enemy's guns.", "Mẹo: [[radar]] chỉ điểm cho pháo địch."),
+            ["guide.parts.tip.argus"] = ("Tip: its [[drone bay]] sends the scout drones; break it to stop them.", "Mẹo: [[khoang drone]] thả drone trinh sát; phá nó là hết."),
 
             // ---------------------------------------------------------------- new part kinds
             ["part.door"] = ("workshop door", "cửa xưởng"),

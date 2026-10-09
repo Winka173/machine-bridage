@@ -368,6 +368,13 @@
             "hash": "v2:0b4fee847c75618bf765e566f9283724be5a247b"
         },
         {
+            "id": "daedalus_assault",
+            "kind": "boss",
+            "model": "daedalus_assault",
+            "source": "Models/daedalus",
+            "hash": "v2:cf6ae12ff8f43ae469d9a80253cd79033f428ae8"
+        },
+        {
             "id": "demolition_line_vehicle",
             "kind": "vehicle",
             "model": "demolition_line_vehicle",
@@ -527,6 +534,13 @@
             "model": "barrage_balloon",
             "source": "Models/barrage_balloon",
             "hash": "v2:c71cff088978b1975e16c396decafff5fecea059"
+        },
+        {
+            "id": "bastion_aa",
+            "kind": "boss",
+            "model": "bastion_aa",
+            "source": "Models/fortress_bastion",
+            "hash": "v2:5a1851cab9dc29cf11093c294ce071c3b610e07e"
         },
         {
             "id": "bastion_mk0",
@@ -984,6 +998,13 @@
             "hash": "v2:0878e5ed319d521219090c8e9761f07ce0c01f41"
         },
         {
+            "id": "icarus_interceptor",
+            "kind": "boss",
+            "model": "icarus_interceptor",
+            "source": "Models/silver_bug",
+            "hash": "v2:f1966f1b0fd0c73e6c08d6109d3e4192d60b95c7"
+        },
+        {
             "id": "icarus_mk0",
             "kind": "boss",
             "model": "icarus_mk0",
@@ -996,6 +1017,13 @@
             "model": "ixion",
             "source": "Models/ixion",
             "hash": "v2:d60b3023d508fdac4c852d7126372d45eae2e799"
+        },
+        {
+            "id": "jotunn_artillery",
+            "kind": "boss",
+            "model": "jotunn_artillery",
+            "source": "Models/mobile_fortress",
+            "hash": "v2:96488b1ae325366094340c0dd8b499f4dda394eb"
         },
         {
             "id": "kraken",
@@ -1052,6 +1080,13 @@
             "model": "manpads_tower",
             "source": "Models/manpads_tower",
             "hash": "v2:b8a51cfd15af8336fdf9b2971ba30c47a5b5a4b8"
+        },
+        {
+            "id": "matriarch_flak",
+            "kind": "boss",
+            "model": "matriarch_flak",
+            "source": "Models/drone_mothership",
+            "hash": "v2:37669f53d6088ac7c2a170240fc4024e457f376d"
         },
         {
             "id": "mega_gunship",
@@ -1185,6 +1220,13 @@
             "model": "repair_bay",
             "source": "Models/repair_bay",
             "hash": "v2:8062aafafdd9e553ee01312c0e13e504f0391437"
+        },
+        {
+            "id": "roc_gunship",
+            "kind": "boss",
+            "model": "roc_gunship",
+            "source": "Models/command_airship",
+            "hash": "v2:26f86f15b598e35aeeb9907587209ccc312248b6"
         },
         {
             "id": "rocket_artillery_ship",

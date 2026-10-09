@@ -53,6 +53,7 @@ namespace MachineBrigade.Sim.Content
                     case "hp":
                     case "gunNerf":
                     case "newGunDps":
+                    case "gunDpsAll":
                         raw[pair.Key] = Clone(value);
                         break;
                     case "set":

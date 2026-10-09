@@ -142,6 +142,7 @@ namespace MachineBrigade.Sim.Content
                 def.GunNerfDamage = Math.Clamp(nerf.Float("damage", 1f), 0.1f, 2f);
             }
             def.NewGunDps = Math.Max(0f, v.Float("newGunDps", 0f));
+            def.GunDpsAll = Math.Max(0f, v.Float("gunDpsAll", 0f));
             ScaleNewGuns(def);
             // Prompt 29 S03, S04.
             def.OutgoingDamageMult = Math.Clamp(v.Float("outgoingDamageMult", 1f), 0.1f, 10f);

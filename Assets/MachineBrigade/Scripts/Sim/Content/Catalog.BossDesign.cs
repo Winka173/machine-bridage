@@ -84,6 +84,22 @@ namespace MachineBrigade.Sim.Content
 
         private static void ScaleNewGuns(VehicleDef def)
         {
+            if (def.GunDpsAll > 0f)
+            {
+                // A new mini boss (sheet 05): every mount is the workbook's; the target is the whole gun DPS.
+                var all = 0;
+                foreach (var m in def.Mounts)
+                    if (m.Weapon.SustainedDps > 0f) all++;
+                if (all == 0) return;
+                var each = def.GunDpsAll / all;
+                var nerfAll = Math.Max(0.05f, def.GunNerfDamage * def.FireScale);
+                foreach (var m in def.Mounts)
+                {
+                    var dps = m.Weapon.SustainedDps;
+                    if (dps > 0f) m.DamageScale = Math.Clamp(each / (dps * nerfAll), 0.02f, 4f);
+                }
+                return;
+            }
             if (def.NewGunDps <= 0f) return;
             var n = 0;
             foreach (var m in def.Mounts)

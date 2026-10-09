@@ -35,7 +35,7 @@ namespace MachineBrigade.Sim.Content
         private static readonly string[] NotInherited =
         {
             "id", "rank", "variantOf", "variant", "phases", "radioSpawn", "bigAttack", "bigAttackScale", "damageScale", "weaponDamage", "mountWeapons",
-            "size", "dropParts", "tint", "mark", "variantName", "hiddenNodes", "gunNerf", "newGunDps",
+            "size", "dropParts", "tint", "mark", "variantName", "hiddenNodes", "gunNerf", "newGunDps", "gunDpsAll",
         };
 
         /// <summary>Every vehicle entry, bosses built from their templates, in data order.</summary>

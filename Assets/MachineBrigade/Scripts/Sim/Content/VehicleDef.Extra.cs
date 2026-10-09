@@ -69,6 +69,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Boss design 09/10: the DPS budget of its new hardpoints at weapon level (sheet 03 col L; 0: it adds none).</summary>
         public float NewGunDps { get; internal set; }
 
+        /// <summary>Boss design 09/10: the whole gun DPS of a new mini boss at weapon level (sheet 05), shared evenly by all its mounts (0: not used).</summary>
+        public float GunDpsAll { get; internal set; }
+
         /// <summary>Boss design 09/10: the damage share of "gunNerf" (already folded into <see cref="WeaponDamage"/>); new guns are scaled against it.</summary>
         public float GunNerfDamage { get; internal set; } = 1f;
 
