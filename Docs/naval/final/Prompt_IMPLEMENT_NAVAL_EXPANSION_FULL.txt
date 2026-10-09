@@ -1,0 +1,379 @@
+MACHINE BRIGADE — IMPLEMENT NAVAL VEHICLE EXPANSION + FULL REGRESSION
+
+Implement the attached/companion spec:
+`Machine_Brigade_NAVAL_VEHICLE_EXPANSION_SPEC_FINAL.md`
+
+Use the attached/companion QA guide:
+`Machine_Brigade_FULL_GAME_QA_TEST_GUIDE.md`
+
+Treat current generated XLSX/MD exports as potentially stale. Modify canonical/runtime sources first. Regenerate documentation only after implementation and regression.
+
+## A. Hard constraints
+
+1. Do NOT add:
+- bridge-laying gameplay;
+- troop/cargo transport gameplay;
+- recovery/towing;
+- revive/resurrection;
+- salvage;
+- terrain-changing unit mechanics;
+- a new radar/vision gameplay subsystem;
+- a new logistics architecture solely for these ships.
+
+2. Reuse existing systems wherever possible:
+- ship movement/navigation;
+- weapons/projectiles;
+- SAM;
+- CIWS/interception;
+- jammer/aura;
+- shield;
+- repair/resupply only where already supported;
+- stealth/submarine only if existing runtime support is sufficient.
+
+3. Do not change boss armour or unrelated boss balance.
+
+4. Do not directly couple player weapons to boss-only weapons when future boss tuning would alter player balance. Create player variants where needed.
+
+5. Do not create duplicate roles when an existing unit already provides that identity.
+
+Current naval anchors include:
+- hover_gunboat
+- missile_boat
+- river_patrol_boat
+- river_gunboat
+- sea_corvette
+- sea_cruiser
+- landing_craft
+
+`landing_craft` is transport/support and is not a template for the new combat roster.
+
+## B. New naval roster
+
+Implement:
+
+1. `torpedo_boat` — CP 7
+2. `ciws_escort_craft` — CP 8
+3. `ashm_corvette` — CP 9
+4. `aa_corvette` — CP 9
+5. `ew_corvette` — CP 9
+6. `frigate` — CP 11
+7. `missile_frigate` — CP 12
+8. `aa_frigate` — CP 12
+9. `rocket_artillery_ship` — CP 12
+10. `naval_monitor` — CP 13
+11. `destroyer` — CP 14
+12. `gun_destroyer` — CP 14
+13. `missile_destroyer` — CP 15
+14. `aa_destroyer` — CP 15
+15. `sea_cruiser.gun` or the project-consistent equivalent branch — CP 17
+16. `sea_cruiser.missile` or equivalent — CP 18
+17. `battlecruiser` — CP 19
+18. `battleship` — CP 23
+
+Conditional:
+19. `asw_corvette` — CP 10
+20. `attack_submarine` — CP 14
+
+Implement the two conditional units ONLY if existing submarine/underwater runtime can support them without new sonar/detection/navigation architecture. If not, omit them and explicitly report `BLOCKED_BY_NO_COMPLEX_NEW_MECHANIC`.
+
+Do not invent a radar/vision subsystem to make ASW work.
+
+## C. Existing hull reuse
+
+Prefer:
+- existing `sea_corvette` as the baseline gun/general corvette;
+- existing `sea_cruiser` as the cruiser hull/base family;
+- variants/branches for gun vs missile cruiser.
+
+Do not create another generic “gun corvette” that duplicates `sea_corvette`.
+
+Do not delete existing naval units.
+
+## D. Role implementation
+
+### torpedo_boat
+- cheap anti-heavy glass cannon;
+- Armour 0–1;
+- HP about 1.15–1.30 × current missile_boat HP;
+- primary `naval_torpedo_light`;
+- torpedo visibly slower than AShM;
+- high anti-heavy value;
+- weak vs gunboat/corvette/air.
+
+### ciws_escort_craft
+- missile/drone interception;
+- Armour 1;
+- HP around hover_gunboat or slightly higher;
+- poor surface DPS;
+- weaker point defence than high-tier dedicated systems.
+
+### ashm_corvette
+- Armour 1–2;
+- HP ~0.85–0.95 × sea_corvette;
+- primary `anti_ship_missile_corvette`;
+- Pen 4;
+- projectile speed ~80 m/s;
+- light gun only as secondary.
+
+### aa_corvette
+- short/medium SAM + CIWS;
+- no strong anti-surface alpha;
+- SAM damage follows chosen player family and is not generically buffed.
+
+### ew_corvette
+- reuse existing jammer/aura semantics;
+- no radar/reveal/fake contacts;
+- light self-defence gun only;
+- weak in direct duel.
+
+### frigate
+- Armour 2;
+- HP ~1.20–1.35 × sea_corvette;
+- 100–127 mm main gun;
+- one moderate secondary capability only;
+- generalist, not specialist-best.
+
+### missile_frigate
+- stronger AShM salvo;
+- modest gun;
+- weak AA;
+- clear long cooldown.
+
+### aa_frigate
+- medium SAM + CIWS;
+- modest surface weapon;
+- no heavy AShM alpha.
+
+### rocket_artillery_ship
+- naval MLRS/GMLRS using existing fire-support rules;
+- respect minimum range;
+- use locked projectile speeds;
+- differentiate by coverage/cadence, not arbitrary raw damage inflation.
+
+### naval_monitor
+- Armour 3;
+- slow;
+- high HP for cost;
+- 152–203 mm primary;
+- strong vs structure/medium ships;
+- weak vs AShM/air.
+
+### destroyer
+- Armour 3;
+- HP ~1.35–1.50 × frigate;
+- 127–130 mm main gun;
+- moderate AShM + short/medium SAM + limited CIWS;
+- none of those secondary systems equal specialist variants.
+
+### gun_destroyer
+- same tier durability;
+- main gun effective output +10–15% over base destroyer;
+- reduce missile capability;
+- do NOT buff all secondary guns/MGs.
+
+### missile_destroyer
+- large AShM salvo;
+- weaker gun;
+- self-defence SAM only;
+- readable/interceptable salvo.
+
+### aa_destroyer
+- medium/long player SAM + CIWS;
+- modest surface gun;
+- weak relative to surface specialists when isolated;
+- player SAM speeds use latest player missile master, not boss overrides.
+
+### sea_cruiser.gun
+- Armour 3–4;
+- 152–203 mm heavy gun;
+- limited SAM/CIWS;
+- strong vs destroyer/structure.
+
+### sea_cruiser.missile
+- Armour 3;
+- heavy AShM/cruise-style player weapon;
+- medium SAM + CIWS at non-specialist strength;
+- reduced main gun;
+- do not use boss cruise weapons directly.
+
+### battlecruiser
+- Armour 3–4;
+- HP between cruiser and battleship;
+- faster than battleship;
+- choose heavy gun OR heavy missile emphasis as primary;
+- the other remains secondary;
+- do not combine battleship durability with missile-cruiser alpha.
+
+### battleship
+- CP 23;
+- Armour 4;
+- highest normal player naval HP;
+- 280–406 mm primary gun;
+- long reload;
+- secondary AA/CIWS not specialist-tier;
+- no aircraft spawn/transport/repair aura gimmick;
+- still vulnerable to concentrated Pen4 AShM/torpedo/specialist fire.
+
+## E. Weapon rules
+
+Every damage change must report the exact primary weapon ID.
+
+Do not automatically buff:
+- MG/HMG;
+- self-defence guns;
+- CIWS surface damage;
+- secondary SAM damage;
+- death explosions.
+
+Anti-ship missile:
+- Pen4;
+- latest effective speed target ~80 m/s;
+- readable/interceptable.
+
+Torpedo:
+- slower than AShM;
+- high anti-heavy value;
+- visible/readable travel;
+- no random critical/cookoff/one-shot mechanic.
+
+Do not apply missile speed rules to direct heavy naval cannon shells.
+
+Keep all locked global combat rules:
+- penetration table;
+- top-attack table;
+- damage-type matrix;
+- splash;
+- kinetic overpenetration;
+- fractional Pen/Armour interpolation.
+
+## F. AI
+
+Add CombatRoleDoctrine entries.
+
+Required:
+- missile ships maintain standoff;
+- gun ships seek preferred gun range;
+- AA escorts remain near valuable groups;
+- CIWS escort does not lead charge;
+- EW corvette remains protected;
+- artillery ship respects minimum range;
+- monitor does not chase fast boats;
+- capital ships prioritize meaningful targets;
+- overkill reservations cover torpedo/AShM/heavy-gun salvos;
+- no retreat-by-health;
+- no morale/panic.
+
+All armed ships must obey no-idle-armed-unit when a valid combat action exists.
+
+## G. Economy
+
+Report for every ship:
+- CP;
+- HP;
+- Armour;
+- primary weapon;
+- HP/CP;
+- primary effective DPS/CP vs intended target;
+- salvo alpha/CP if applicable;
+- expected useful lifetime;
+- explicit intended counter.
+
+Existing ships must retain niches.
+
+Do not make new ships strictly dominate:
+- river_patrol_boat;
+- hover_gunboat;
+- missile_boat;
+- river_gunboat;
+- sea_corvette;
+- sea_cruiser.
+
+## H. Full regression
+
+Use `Machine_Brigade_FULL_GAME_QA_TEST_GUIDE.md`.
+
+At minimum run naval tests:
+- patrol/hover gunboat vs torpedo boat;
+- sea_corvette vs ashm_corvette;
+- ashm_corvette vs corvette + CIWS escort;
+- frigate vs sea_corvette;
+- missile frigate vs frigate;
+- destroyer vs frigate;
+- gun destroyer vs missile destroyer at close and long range;
+- AA corvette/frigate/destroyer vs recon/scout/attack heli, fighter/attack jet, cruise missile;
+- rocket artillery ship vs shore tower/structure and moving target;
+- monitor vs structure and destroyer;
+- cruiser vs destroyer;
+- battlecruiser vs cruiser;
+- battleship vs concentrated AShM, torpedo and heavy gun;
+- EW group vs identical non-EW group.
+
+Also test:
+- 3-ship and 5-ship formations;
+- mixed escort group;
+- narrow naval lane;
+- wreck obstruction;
+- target selection;
+- salvo overkill;
+- interception;
+- projectile readability;
+- AI range keeping;
+- performance under missile saturation.
+
+## I. Do not regress previously locked balance
+
+Preserve:
+- boss armour unchanged;
+- latest missile/projectile speed master;
+- anti_ship_missile effective 80 m/s;
+- long SAM latest 115 m/s where applicable to the specified player long-SAM family;
+- boss-specific slower missile overrides;
+- tactical ballistic 90 m/s / splash 14 m where locked;
+- cruise footprint hierarchy;
+- Pen5 restricted specialist hierarchy;
+- no random crit/morale/retreat-by-health/random pen/per-hit armour degradation/random ammo cookoff.
+
+## J. Canonical/data pipeline
+
+1. Locate canonical source IDs and inheritance.
+2. Implement canonical/runtime definitions.
+3. Create player-specific weapon variants where sharing would cause unintended changes.
+4. Add AI role/doctrine.
+5. Add models/placeholders only through normal asset pipeline.
+6. Run validators.
+7. Run QA regressions.
+8. Fix HARD_FAILs and material role regressions.
+9. Run Unity `ExportGameDoc`.
+10. Run export pipeline (`export.py` or current canonical exporter).
+11. Run stale-value scan.
+12. Report generated files.
+
+Do not manually patch generated XLSX/MD as source of truth.
+
+## K. Final report required
+
+Return a table:
+
+Ship ID | Role | CP | HP | Armour | Primary weapon ID | Secondary IDs | Primary damage | Pen | Reload/cooldown | Range | Projectile speed | Splash | HP/CP | Intended prey | Intended counter | AI doctrine | Test result
+
+Also report:
+- canonical files changed;
+- exact new weapon IDs;
+- inherited vs overridden fields;
+- conditional ASW/submarine decision;
+- all regressions run;
+- remaining warnings/HARD_FAILs;
+- campaign/mode references affected;
+- exports regenerated;
+- stale scan result.
+
+Acceptance:
+- expanded naval roster feels layered and non-redundant;
+- no forbidden complex mechanics;
+- no new radar/vision system;
+- every ship has a function and a counter;
+- existing naval units still matter;
+- AI uses each ship correctly;
+- projectile/salvo feel is readable;
+- economy/CP curve is coherent;
+- boss balance is untouched.

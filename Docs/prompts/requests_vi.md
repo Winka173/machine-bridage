@@ -336,3 +336,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 06/10 "chạy luôn task export".
 - 09/10 "xuất toàn bộ các hằng số còn thiếu ra file data" (= Pack 2 lượt 2, các literal đánh dấu de_xuat_dua_ra_du_lieu=co).
 - 09/10 "update file tối ưu, dùng sonnet 5.5 mới nhất thay vì sonnet 5".
+- 09/10 "sau đó đọc file @test/Machine_Brigade_FULL_GAME_QA_TEST_GUIDE.md @test/Machine_Brigade_NAVAL_VEHICLE_EXPANSION_SPEC_FINAL.md và prompt @test/Prompt_IMPLEMENT_NAVAL_EXPANSION_FULL.txt và thực hiện test đầy đủ" -> Docs/naval/final/ (sau Pack 2 lượt 2; chủ dự án cho phép chạy test).
