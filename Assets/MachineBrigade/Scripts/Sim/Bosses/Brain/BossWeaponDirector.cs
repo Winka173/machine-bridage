@@ -115,6 +115,21 @@ namespace MachineBrigade.Sim.Bosses
             }
             var g = GroupOf(v, index);
             var rule = g switch { FireGroup.Main => rules.Main, FireGroup.Secondary => rules.Secondary, FireGroup.Suppress => rules.Suppress, _ => rules.Ciws };
+            // Sheet 12: at most MaxGroupsAtTarget different groups (the air-defence group aside) are on one target at once.
+            var target0 = TargetOf(v, index);
+            if (g != FireGroup.Ciws && target0.IsValid && rules.MaxGroupsAtTarget > 0)
+            {
+                var mask = 0;
+                var groups = 0;
+                for (var j = 0; j < v.Arms.Length; j++)
+                {
+                    if (j == index) continue;
+                    var gj = GroupOf(v, j);
+                    if (gj == FireGroup.Ciws || TargetOf(v, j) != target0 || now - v.Weapons[j].FiredAt >= rules.Secondary.Window) continue;
+                    if ((mask & (1 << (int)gj)) == 0) { mask |= 1 << (int)gj; groups++; }
+                }
+                if ((mask & (1 << (int)g)) == 0 && groups >= rules.MaxGroupsAtTarget) return false;
+            }
             if (rule.Free) return true;
             var gap = rule.GapLo + (rule.GapHi - rule.GapLo) * (index * 0.618034f % 1f);
             var target = TargetOf(v, index);

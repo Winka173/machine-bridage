@@ -1433,9 +1433,11 @@
   // belongs to the group its data names ("group") or its weapon sorts it into: main (heavy guns, 1-2 on a target in a window), secondary
   // (2-4, out of step), ciws (air defence, independent), suppress (many light guns). gap [lo, hi]: two mounts of a group never open fire
   // that close; maxAtTarget/window: how many are on one target at once. heavyAoe: a bomb stick or a big blast never opens within gap s of
-  // another of the boss's, nor while its big attack is under way. Bosses under minMounts mounts fire as before.
+  // another of the boss's, nor while its big attack is under way; maxGroupsAtTarget: at most that many different groups (air defence aside)
+  // fire on one target at once. Bosses under minMounts mounts fire as before.
   "bossFireGroups": {
     "minMounts": 6,
+    "maxGroupsAtTarget": 2,
     "heavyAoe": { "radius": 6, "gap": 5 },
     "main":      { "maxAtTarget": 2, "window": 4, "gap": [1.0, 2.0] },
     "secondary": { "maxAtTarget": 4, "window": 3, "gap": [0.4, 1.8] },

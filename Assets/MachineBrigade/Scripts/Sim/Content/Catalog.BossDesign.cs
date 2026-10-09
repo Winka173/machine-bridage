@@ -50,6 +50,9 @@ namespace MachineBrigade.Sim.Content
         public int MinMounts { get; internal set; } = 6;
         public float HeavyAoeRadius { get; internal set; } = 6f;
         public float HeavyAoeGap { get; internal set; } = 5f;
+
+        /// <summary>How many different fire groups (air defence aside) may be on one target at once (0: no limit).</summary>
+        public int MaxGroupsAtTarget { get; internal set; } = 2;
         public FireGroupRule Main { get; internal set; } = new FireGroupRule { MaxAtTarget = 2, Window = 4f, GapLo = 1f, GapHi = 2f };
         public FireGroupRule Secondary { get; internal set; } = new FireGroupRule { MaxAtTarget = 4, Window = 3f, GapLo = 0.4f, GapHi = 1.8f };
         public FireGroupRule Ciws { get; internal set; } = new FireGroupRule();
@@ -61,6 +64,7 @@ namespace MachineBrigade.Sim.Content
             if (!root.Has("bossFireGroups")) return r;
             var o = root.Object("bossFireGroups");
             r.MinMounts = o.Int("minMounts", r.MinMounts);
+            r.MaxGroupsAtTarget = o.Int("maxGroupsAtTarget", r.MaxGroupsAtTarget);
             if (o.Has("heavyAoe"))
             {
                 var h = o.Object("heavyAoe");

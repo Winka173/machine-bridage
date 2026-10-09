@@ -79,3 +79,8 @@ Static facts below come from `balance.json` and from a catalog dump (`regress bo
 - **D11 Boss armour.** Unchanged (the Excel states none).
 - **D12 New-mini HP.** Sheet 10 has no row for the six new minis: HP = parent target HP x a ratio taken from the existing siblings (documented in REPORT).
 - **D13 Sheet text "giu ...".** It keeps the existing weapons; the listed additions become new mounts carried by new parts, reusing the parent model (rough placement allowed by the owner, to be redrawn).
+- **D14 Spacecraft summons.** Icarus, Hyperion, Theia, Icarus Mk.0 and Daedalus already call units through `pods` (a pod bay is the hangar; a broken bay stops them, the pod falls with a 6 s ring and lands short of the player's group). Sheet 08 asks for "drones / sub-craft" with no unit id, so the periodic call is these pods retuned to the sheet's cooldown, count, cap and first delay (their units are ground vehicles); a real sub-craft needs an id and art. Coeus has no pod bay: it gets a recon-drone call from a new UAV pad part.
+- **D15 Big-attack drops.** Daedalus's mass drop and Moloch's dump landed up to 8 / 6 units; capped at 2 each so the sheet's live caps (Daedalus 2, Moloch 2) hold.
+- **D16 Self-repair.** The `train_patch` skill used to mend the part that drives a skill or mechanism first; it now never mends a summon module (hangar, deck, gate, door, pod bay), so "broken for the rest of the fight" holds (found by the smoke on Bastion).
+- **D17 Typhon sonar.** The sonar part stopped the "radar" (fire control) mechanism; treated as the same destructible sensor and removed with the radar parts.
+
