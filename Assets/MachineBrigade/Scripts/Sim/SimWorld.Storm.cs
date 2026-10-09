@@ -28,8 +28,8 @@ namespace MachineBrigade.Sim
         {
             StormOrigin = origin;
             StormNormal = normal.LengthSquared() > 1e-6f ? Vector2.Normalize(normal) : Vector2.UnitX;
-            StormInside = Math.Clamp(inside, 0.3f, 1.5f);
-            StormOutside = Math.Clamp(outside, 0.3f, 1.5f);
+            StormInside = Math.Clamp(inside, global::MachineBrigade.Sim.Content.SimTunables.Modes.SimWorld.SetStormInsideMin, global::MachineBrigade.Sim.Content.SimTunables.Modes.SimWorld.SetStormInsideMax);
+            StormOutside = Math.Clamp(outside, global::MachineBrigade.Sim.Content.SimTunables.Modes.SimWorld.SetStormOutsideMin, global::MachineBrigade.Sim.Content.SimTunables.Modes.SimWorld.SetStormOutsideMax);
             StormActive = MathF.Abs(StormInside - 1f) > 1e-3f || MathF.Abs(StormOutside - 1f) > 1e-3f;
         }
 

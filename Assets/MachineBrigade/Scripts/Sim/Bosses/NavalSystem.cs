@@ -123,7 +123,7 @@ namespace MachineBrigade.Sim.Bosses
                     }
                     else
                     {
-                        var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)) : (k - (count - 1) * 0.5f) * 22f;
+                        var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.JoinedKScale * (k / global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.JoinedKDivisor)) : (k - (count - 1) * 0.5f) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.JoinedKScale2;
                         var lane = role == NavalRole.Raider ? sea.Lane(RaiderLane(v)) : sea.Lane(v.NavalLane);
                         at = sea.At(f.X + along * v.NavalDir, lane?.W ?? f.Y);
                     }
@@ -187,8 +187,8 @@ namespace MachineBrigade.Sim.Bosses
             var sea = Sea;
             if (sea == null) return;
             var now = _world.Time;
-            if (_batteries.Count > 0 && _world.Tick % 5 == 0) Batteries(sea, dt * 5f, now);
-            if (sea.Lighthouse != null && _world.Tick % 5 == 0) Lighthouse(sea, dt * 5f);
+            if (_batteries.Count > 0 && _world.Tick % global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.StepTickMod == 0) Batteries(sea, dt * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.StepDtScale, now);
+            if (sea.Lighthouse != null && _world.Tick % global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.StepTickMod == 0) Lighthouse(sea, dt * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.StepDtScale);
             var flagshipAlive = false;
             foreach (var v in _world.VehicleList)
             {
@@ -261,7 +261,7 @@ namespace MachineBrigade.Sim.Bosses
             var to = goal - v.Position;
             var distance = to.Length();
             var speed = v.Def.Speed * v.SpeedFactor * (v.Escaping ? naval.EscapeSpeed : 1f);
-            if (v.Stunned || v.Landing || distance < 0.8f)
+            if (v.Stunned || v.Landing || distance < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailDistanceMax)
             {
                 v.Speed = MathF.Max(0f, v.Speed - v.Def.Speed * dt);
                 if (v.Brain != null) v.Brain.HullReason = HullReason.Hold;
@@ -280,17 +280,17 @@ namespace MachineBrigade.Sim.Bosses
             {
                 var desired = SimMath.HeadingOf(to) + turn;
                 v.Heading = SimMath.RotateTowards(v.Heading, desired, v.Def.TurnRate * v.TurnFactor * dt);
-                var alignment = MathF.Max(0.25f, Vector2.Dot(SimMath.Forward(v.Heading), to / distance));
+                var alignment = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailDotFloor, Vector2.Dot(SimMath.Forward(v.Heading), to / distance));
                 // Slows to a stop at its goal (a landing craft on the sand, a boat holding off a pier).
-                var target = speed * alignment * MathF.Min(1f, distance / 8f + 0.2f);
+                var target = speed * alignment * MathF.Min(1f, distance / global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailDistanceDivisor + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailDistanceAdd);
                 // Prompt 33 L4: never closing on a big ship in its way inside the minimum gap.
                 target = MathF.Min(target, v.SeaCap);
-                if (round) target = MathF.Min(target, speed * 0.5f);
-                v.Speed += Math.Clamp(target - v.Speed, -v.Def.Speed * dt, v.Def.Speed * 0.5f * dt);
+                if (round) target = MathF.Min(target, speed * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailSpeedScale);
+                v.Speed += Math.Clamp(target - v.Speed, -v.Def.Speed * dt, v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailSpeedScale * dt);
             }
             var next = v.Position + SimMath.Forward(v.Heading) * v.Speed * dt;
             // The waterline: a ship keeps its hull's half-width off it (a lander may ground on the sand).
-            var margin = naval.Role == NavalRole.Lander ? -1f : v.Def.HullRadius * 0.6f + 1f;
+            var margin = naval.Role == NavalRole.Lander ? -1f : v.Def.HullRadius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailHullRadiusScale + 1f;
             // Play-test 14 (lane J): never into a sinking wreck's hull (pushed back out of it, a part a step, as hulls are).
             if (_world.Wrecks.NavalCount > 0)
             {
@@ -299,8 +299,8 @@ namespace MachineBrigade.Sim.Bosses
                 var depth = push.Length();
                 if (depth > 0.05f)
                 {
-                    next += push / depth * MathF.Min(depth, MathF.Max(0.5f, v.Speed * dt * 1.5f));
-                    v.Speed *= 0.8f;
+                    next += push / depth * MathF.Min(depth, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailSpeedFloor, v.Speed * dt * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailSpeedScale2));
+                    v.Speed *= global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SailSpeed;
                 }
             }
             v.Position = OnWater(sea, next, margin, v.Escaping);
@@ -315,10 +315,10 @@ namespace MachineBrigade.Sim.Bosses
             turn = 0f;
             var forward = SimMath.Forward(v.Heading);
             var front = v.Position + forward * v.Def.HullHalf;
-            var probe = front + forward * (4f + MathF.Max(v.Speed, v.Def.Speed * 0.5f) * 3f);
+            var probe = front + forward * (global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.WreckAheadMaxAdd + MathF.Max(v.Speed, v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.WreckAheadSpeedScale) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.WreckAheadMaxScale);
             if (!_world.Wrecks.Ahead(v.Position, front, probe, v.Def.HullRadius + 1f, true, out var wreck)) return false;
             var offset = wreck.Position - v.Position;
-            turn = forward.X * offset.Y - forward.Y * offset.X > 0f ? 0.8f : -0.8f;
+            turn = forward.X * offset.Y - forward.Y * offset.X > 0f ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.WreckAheadXTrue : global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.WreckAheadXFalse;
             return true;
         }
 
@@ -330,7 +330,7 @@ namespace MachineBrigade.Sim.Bosses
             if (f.Y < shore + margin) f.Y = shore + margin;
             var q = sea.At(f.X, f.Y);
             if (leaving) return q;
-            var limit = _world.Map.HalfSize - 2f;
+            var limit = _world.Map.HalfSize - global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.OnWaterHalfSizeSub;
             return new Vector2(Math.Clamp(q.X, -limit, limit), Math.Clamp(q.Y, -limit, limit));
         }
 
@@ -357,14 +357,14 @@ namespace MachineBrigade.Sim.Bosses
                 var endU = v.NavalDir * far.End;
                 v.NavalGoal = new Vector2(endU, far.W);
                 var left = MathF.Abs(endU - f.X) + MathF.Abs(far.W - f.Y);
-                var pace = MathF.Max(0.3f, v.Def.Speed * v.SpeedFactor * naval.EscapeSpeed);
+                var pace = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.FlagshipSpeedFloor, v.Def.Speed * v.SpeedFactor * naval.EscapeSpeed);
                 if (double.IsNaN(v.EscapeDeadline))
                 {
                     var turn = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(sea.At(endU, far.W) - v.Position) - v.Heading));
-                    v.EscapeDeadline = now + left / pace + turn / MathF.Max(0.01f, v.Def.TurnRate * v.TurnFactor);
+                    v.EscapeDeadline = now + left / pace + turn / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.FlagshipTurnRateFloor, v.Def.TurnRate * v.TurnFactor);
                 }
                 v.EscapeSeconds = MathF.Max((float)(v.EscapeDeadline - now), left / pace);
-                if (MathF.Abs(f.X) >= far.End - 3f && now >= v.EscapeDeadline)
+                if (MathF.Abs(f.X) >= far.End - global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.FlagshipEndSub && now >= v.EscapeDeadline)
                 {
                     v.Escaped = true;
                     v.Invulnerable = true;
@@ -422,19 +422,19 @@ namespace MachineBrigade.Sim.Bosses
             v.NavalLane = naval.LaneFor(phase);
             // Phase 2 (index 1) is its point defence at its most: more interceptors, faster.
             if (v.Def.Aps is { } own)
-                v.Aps = phase == 1 ? new ApsDef(own.Radius, own.Charges + 2, own.Recharge * 0.6f) { Rockets = own.Rockets, Shells = own.Shells } : own;
+                v.Aps = phase == 1 ? new ApsDef(own.Radius, own.Charges + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.PhaseBeginsChargesAdd, own.Recharge * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.PhaseBeginsRechargeScale) { Rockets = own.Rockets, Shells = own.Shells } : own;
             v.ApsCharges = Math.Min(v.ApsCharges, v.Aps?.Charges ?? 0);
             // The interceptors its standing CIWS hold (part 2's cap) follow the new system.
             BossSystem.Recompute(v);
             if (v.ApsOff) v.Aps = null;
             if (v.Def.Craft is { } craft && phase >= craft.Phase && double.IsPositiveInfinity(v.CraftNext)) v.CraftNext = now + craft.First;
-            if (v.Def.Cruise is { } cruise && phase == cruise.Phase) v.CruiseNext = Math.Max(v.CruiseNext, now + cruise.First * 0.5);
+            if (v.Def.Cruise is { } cruise && phase == cruise.Phase) v.CruiseNext = Math.Max(v.CruiseNext, now + cruise.First * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.PhaseBeginsFirstScale);
             foreach (var wave in v.Def.AirWaves)
             {
                 if (wave.Phase != phase) continue;
                 for (var k = 0; k < wave.Units.Count; k++)
                 {
-                    var side = (k - (wave.Units.Count - 1) * 0.5f) * 18f;
+                    var side = (k - (wave.Units.Count - 1) * 0.5f) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.PhaseBeginsKScale;
                     var at = sea.AirEntry + sea.Along * side;
                     _spawns.Add((wave.Units[k], v.Team, at, SimMath.HeadingOf(-sea.Out), EntityId.None, -1, Array.Empty<string>(), null));
                 }
@@ -467,11 +467,11 @@ namespace MachineBrigade.Sim.Bosses
                 v.SweepSet = true;
             }
             v.SweepU += v.NavalDir * salvo.Sweep;
-            if (MathF.Abs(v.SweepU - f.X) > salvo.Range * 0.7f) v.SweepU = f.X;
+            if (MathF.Abs(v.SweepU - f.X) > salvo.Range * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SalvoRangeScale) v.SweepU = f.X;
             var sweep = sea.At(v.SweepU, sea.ShoreAt(v.SweepU) - 8f);
             Vector2 aim;
             if (v.Phase >= 1 && BiggestGroup(v, salvo.Range, out var group) > 0) aim = group;
-            else if (BiggestGroup(v, salvo.Range, out var near, sweep, 24f) > 0) aim = near;
+            else if (BiggestGroup(v, salvo.Range, out var near, sweep, global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SalvoRadius) > 0) aim = near;
             else aim = sweep;
             if (Vector2.Distance(aim, v.Position) > salvo.Range) return;
             // Play-test 14: the turrets are trained onto the aim first (TrainLaid); the salvo goes once they are on.
@@ -518,7 +518,7 @@ namespace MachineBrigade.Sim.Bosses
                     var reach = scatter * MathF.Sqrt((float)_world.Random.NextDouble());
                     var at = _world.ClampToMap(aim + sea.Along * along + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
                     if (warning != null) _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, salvo.Warn));
-                    _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), flight + 0.15 * (together ? turret : j), v.Team, v,
+                    _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), flight + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.FireSalvoScale2 * (together ? turret : j), v.Team, v,
                         HitKind.Strike, v.Id);
                 }
                 // The turret swings to its aim (inside its arc) and fires (its muzzle flash and the shells' flight).
@@ -631,7 +631,7 @@ namespace MachineBrigade.Sim.Bosses
                     {
                         var astern = new Vector2(ff.X - flag.NavalDir * ((flag.Def.Length + v.Def.Length) * 0.5f + GapExtra), w);
                         v.NavalGoal = astern;
-                        if (Vector2.Distance(sea.At(astern.X, astern.Y), v.Position) < 8f) v.SlotVia = false;
+                        if (Vector2.Distance(sea.At(astern.X, astern.Y), v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.EscortDistanceMax) v.SlotVia = false;
                         return;
                     }
                     // DECISIONS 20Y, prompt 33 L4: on its slot beside it (the coast's frame, inside the leash of its hull), a
@@ -639,7 +639,7 @@ namespace MachineBrigade.Sim.Bosses
                     var across = v.StationAt.Y;
                     if (!flag.Escaping && Turning(flag, sea, ff))
                     {
-                        var wide = (flag.Def.Length + v.Def.Width) * 0.5f + 2f;
+                        var wide = (flag.Def.Length + v.Def.Width) * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.EscortLengthAdd;
                         if (MathF.Abs(across) < wide) across = (across > 0f ? 1f : -1f) * wide;
                     }
                     v.NavalGoal = new Vector2(ff.X + v.StationAt.X + flag.NavalDir * 4f, w + across * (flag.Escaping ? 1.25f : 1f));
@@ -675,8 +675,8 @@ namespace MachineBrigade.Sim.Bosses
             if (now >= v.DashUntil)
             {
                 v.DashStage = (v.DashStage + 1) % 3;
-                v.DashUntil = now + v.DashStage switch { 0 => naval.DashEvery, 1 => 40.0, _ => naval.DashHold };
-                if (v.DashStage == 0 && _world.Random.NextDouble() < 0.5) v.NavalDir = -v.NavalDir;
+                v.DashUntil = now + v.DashStage switch { 0 => naval.DashEvery, 1 => global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RaiderDashStageValue, _ => naval.DashHold };
+                if (v.DashStage == 0 && _world.Random.NextDouble() < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RaiderNextDoubleMax) v.NavalDir = -v.NavalDir;
             }
             switch (v.DashStage)
             {
@@ -687,7 +687,7 @@ namespace MachineBrigade.Sim.Bosses
                     var lane = sea.Lane(withFlag ? RaiderLane(flag) : "mid")!;
                     var u = withFlag
                         ? sea.Frame(flag.Position).X + ((v.Id.Value % 3) - 1) * 20f
-                        : Math.Clamp(f.X + v.NavalDir * 20f, -lane.Patrol, lane.Patrol);
+                        : Math.Clamp(f.X + v.NavalDir * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RaiderNavalDirScale, -lane.Patrol, lane.Patrol);
                     v.NavalGoal = new Vector2(u, lane.W);
                     return;
                 }
@@ -695,8 +695,8 @@ namespace MachineBrigade.Sim.Bosses
                 {
                     // In: to just off the pier head nearest it; the hold starts when it gets there.
                     var pier = sea.Frame(sea.Approach(v.Position));
-                    v.NavalGoal = new Vector2(pier.X, MathF.Max(pier.Y + naval.DashW * 0.3f, sea.ShoreAt(pier.X) + 8f));
-                    if (Vector2.Distance(sea.At(v.NavalGoal.X, v.NavalGoal.Y), v.Position) < 6f)
+                    v.NavalGoal = new Vector2(pier.X, MathF.Max(pier.Y + naval.DashW * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RaiderDashWScale, sea.ShoreAt(pier.X) + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RaiderShoreAtAdd));
+                    if (Vector2.Distance(sea.At(v.NavalGoal.X, v.NavalGoal.Y), v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RaiderDistanceMax)
                     {
                         v.DashStage = 2;
                         v.DashUntil = now + naval.DashHold;
@@ -717,9 +717,9 @@ namespace MachineBrigade.Sim.Bosses
             {
                 var goal = sea.Frame(beach.At);
                 v.NavalGoal = goal;
-                if (double.IsPositiveInfinity(v.UnloadAt) && Vector2.Distance(v.Position, beach.At) < 5f)
+                if (double.IsPositiveInfinity(v.UnloadAt) && Vector2.Distance(v.Position, beach.At) < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.LanderDistanceMax)
                 {
-                    v.UnloadAt = now + 3.0;
+                    v.UnloadAt = now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.LanderNowAdd;
                     v.Landing = true;
                 }
                 if (now < v.UnloadAt) return;
@@ -728,7 +728,7 @@ namespace MachineBrigade.Sim.Bosses
                 var inland = beach.Inland;
                 var across = Vector2.Normalize(new Vector2(-(inland - beach.At).Y, (inland - beach.At).X));
                 for (var k = 0; k < v.Cargo.Length; k++)
-                    _spawns.Add((v.Cargo[k], v.Team, inland + across * ((k - (v.Cargo.Length - 1) * 0.5f) * 6f), SimMath.HeadingOf(inland - beach.At),
+                    _spawns.Add((v.Cargo[k], v.Team, inland + across * ((k - (v.Cargo.Length - 1) * 0.5f) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.LanderKScale), SimMath.HeadingOf(inland - beach.At),
                         EntityId.None, -1, Array.Empty<string>(), null));
                 _world.Emit(SimEvent.Landed(v, inland, v.Cargo.Length));
                 return;
@@ -736,7 +736,7 @@ namespace MachineBrigade.Sim.Bosses
             // Back out to its ship; alongside, it is hoisted in (it leaves the field).
             var home = _world.TryGetVehicle(v.Flagship, out var flag) && flag.IsAlive ? flag.Position : sea.At(sea.Frame(v.Position).X, sea.Lane("far")!.W);
             v.NavalGoal = sea.Frame(home);
-            if (Vector2.Distance(v.Position, home) < 10f + (flag?.Def.HullRadius ?? 0f))
+            if (Vector2.Distance(v.Position, home) < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.LanderHullRadiusAdd + (flag?.Def.HullRadius ?? 0f))
             {
                 v.Hp = 0f;
                 _world.Emit(SimEvent.Retired(v));
@@ -752,8 +752,8 @@ namespace MachineBrigade.Sim.Bosses
             var forward = SimMath.Forward(v.Heading);
             for (var k = 0; k < 5; k++)
             {
-                var at = v.Position + forward * ((k - 2) * v.Def.HullRadius * 0.55f);
-                _world.Damage.Queue(at, new ExplosionDef(0f, 9f + 2f * (k % 2), 0f, ExplosionTier.Ultimate), 0.8 + 0.7 * k, v.Team, null, HitKind.Strike, v.Id);
+                var at = v.Position + forward * ((k - global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SunkKSub) * v.Def.HullRadius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SunkKScale);
+                _world.Damage.Queue(at, new ExplosionDef(0f, global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SunkKAdd + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SunkKScale2 * (k % 2), 0f, ExplosionTier.Ultimate), global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SunkKAdd2 + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SunkKScale3 * k, v.Team, null, HitKind.Strike, v.Id);
             }
             // Prompt 20: each ship boss's own sign-off (Leviathan's is Kessler's line).
             var line = v.Def.Id != "leviathan" && v.Def.RadioSpawn != null ? v.Def.RadioSpawn + ".sunk" : "radio.kessler.leviathan.sunk";
@@ -879,7 +879,7 @@ namespace MachineBrigade.Sim.Bosses
                 foreach (var o in _world.VehicleList)
                 {
                     if (!o.IsAlive || o.Team != e.Team || o.Flying || o.Def.Naval != null) continue;
-                    if (Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;
+                    if (Vector2.DistanceSquared(o.Position, e.Position) > global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.BiggestGroupScale * global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.BiggestGroupScale) continue;
                     weight += MathF.Max(1f, o.Def.CpCost);
                     k++;
                     sum += o.Position;

@@ -45,17 +45,17 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>The share of the enemy's vehicle spending that may go on elites at a difficulty (Easy, Normal, Hard, Heroic, Iron).</summary>
         public float BudgetFor(string? difficulty) =>
-            difficulty != null && Budget.TryGetValue(difficulty, out var share) ? share : Budget.TryGetValue("Normal", out var normal) ? normal : 0.1f;
+            difficulty != null && Budget.TryGetValue(difficulty, out var share) ? share : Budget.TryGetValue("Normal", out var normal) ? normal : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.EliteRules.BudgetForTryGetValueFalse;
 
         /// <summary>How many elites the enemy may have out at once at a difficulty.</summary>
         public int CapFor(string? difficulty) =>
-            difficulty != null && Cap.TryGetValue(difficulty, out var cap) ? cap : Cap.TryGetValue("Normal", out var normal) ? normal : 2;
+            difficulty != null && Cap.TryGetValue(difficulty, out var cap) ? cap : Cap.TryGetValue("Normal", out var normal) ? normal : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.EliteRules.CapForTryGetValueFalse;
 
         /// <summary>
         /// How much stronger per CP an army gets with this share of its spending on elites (elites are
         /// <see cref="PowerRatio"/> as strong for <see cref="CostScale"/> the price).
         /// </summary>
-        public float PowerEdge(float share) => MathF.Max(0f, share) * MathF.Max(0f, PowerRatio / MathF.Max(0.1f, CostScale) - 1f);
+        public float PowerEdge(float share) => MathF.Max(0f, share) * MathF.Max(0f, PowerRatio / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.EliteRules.PowerEdgeCostScaleFloor, CostScale) - 1f);
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ namespace MachineBrigade.Sim.Content
             def.WeaponDamage = Math.Clamp(v.Float("weaponDamage", 1f), 0.1f, 10f);
             // Prompt 29 S03, S04.
             def.OutgoingDamageMult = Math.Clamp(v.Float("outgoingDamageMult", 1f), 0.1f, 10f);
-            def.DropDelay = Math.Clamp(v.Float("dropDelay", Economy.EconomySystem.DeliverySeconds), 0.5f, 30f);
+            def.DropDelay = Math.Clamp(v.Float("dropDelay", Economy.EconomySystem.DeliverySeconds), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseExtrasFloatMin3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseExtrasFloatMax4);
             // Prompt 29 S06, S07.
             def.FlareCharges = Math.Max(0, v.Int("flareCharges", 0));
             def.FlareRecharge = v.Has("flareRecharge") ? Math.Max(1f, v.Float("flareRecharge", 20f)) : null;
@@ -225,7 +225,7 @@ namespace MachineBrigade.Sim.Content
                     Every = l.Float("every", 40f), Stop = l.Float("stop", 6f), Min = l.Int("min", 3), Max = l.Int("max", 4),
                     Landings = l.Int("landings", 4), First = l.Float("first", 20f),
                     Units = l.Has("units") ? l.StringArray("units") : Array.Empty<string>(),
-                    Ramp = new Vector2(ramp.Count > 0 ? ramp[0] : 0f, ramp.Count > 1 ? ramp[1] : 10f),
+                    Ramp = new Vector2(ramp.Count > 0 ? ramp[0] : 0f, ramp.Count > 1 ? ramp[1] : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseExtrasCountFalse2),
                 };
             }
             if (v.Has("bombard"))
@@ -336,7 +336,7 @@ namespace MachineBrigade.Sim.Content
                 if (e.Has("cap"))
                 {
                     var cap = e.Object("cap");
-                    foreach (var key in cap.Keys) rules.Cap[key] = cap.Int(key, 2);
+                    foreach (var key in cap.Keys) rules.Cap[key] = cap.Int(key, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.FinishExtrasFallback);
                 }
                 Elites = rules;
             }
@@ -397,8 +397,8 @@ namespace MachineBrigade.Sim.Content
                 if (def.Crush is { Weapon: { } wheel } crush)
                 {
                     if (!_weapons.TryGetValue(wheel, out var w)) throw new FormatException($"{def.Id}.crush.weapon: unknown weapon '{wheel}'.");
-                    if (crush.Dps < 0f) crush.Dps = w.Damage / MathF.Max(0.05f, w.Cooldown);
-                    if (crush.Reach < 0f) crush.Reach = MathF.Max(0.5f, w.Range);
+                    if (crush.Dps < 0f) crush.Dps = w.Damage / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.FinishExtrasCooldownFloor, w.Cooldown);
+                    if (crush.Reach < 0f) crush.Reach = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.FinishExtrasRangeFloor, w.Range);
                 }
                 if (def.Landing != null)
                     foreach (var id in def.Landing.Units)

@@ -71,14 +71,14 @@ namespace MachineBrigade.Sim.AI
             back = back.LengthSquared() > 0.01f ? -Vector2.Normalize(back) : -SimMath.Forward(v.Heading);
             var side = new Vector2(back.Y, -back.X);
             // Across the line of fire, sides alternating by the gun's id and the time, then angled back; never a marked spot.
-            var first = ((v.Id.Value + (int)world.Time / 10) & 1) == 0 ? 1f : -1f;
+            var first = ((v.Id.Value + (int)world.Time / global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ScootTimeDivisor) & 1) == 0 ? 1f : -1f;
             Vector2[] tries = { side * first, -side * first, Vector2.Normalize(side * first + back), back };
             foreach (var dir in tries)
             {
-                var spot = world.Map.Clamp(v.Position + dir * 18f, 6f);
+                var spot = world.Map.Clamp(v.Position + dir * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ScootDirScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ScootMargin);
                 if (!world.Grid.IsWalkable(spot) || Near(spot, 15f)) continue;
                 var reach = Vector2.Distance(spot, aim);
-                if (target != null && (reach > v.Def.Weapon.Range - 2f || reach < v.Def.Weapon.MinRange + 3f)) continue;
+                if (target != null && (reach > v.Def.Weapon.Range - global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ScootRangeSub || reach < v.Def.Weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ScootMinRangeAdd)) continue;
                 world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, spot));
                 world.AiLog.Add(new DecisionEntry(world.Time, Team, AiLayer.Unit, v.Id.Value, DecisionKind.Action, "artillery scoot"));
                 return true;
@@ -98,10 +98,10 @@ namespace MachineBrigade.Sim.AI
             var now = world.Time;
             var here = intel.ThreatAt(ThreatKind.AntiAir, v.Position);
             // Not circling to death in dense anti-air: idle there 10 s without firing, it leaves to the clearest side.
-            if (here > TeamIntel.StrengthOf(v) * 2f && now - v.LastFiredAt > 5.0)
+            if (here > TeamIntel.StrengthOf(v) * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftStrengthOfScale && now - v.LastFiredAt > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftNowMin)
             {
                 if (!_inAntiAir.TryGetValue(v.Id, out var since)) _inAntiAir[v.Id] = since = now;
-                if (now - since >= 10.0)
+                if (now - since >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftNowMin2)
                 {
                     var best = v.Position;
                     var bestThreat = here;
@@ -129,7 +129,7 @@ namespace MachineBrigade.Sim.AI
             // An approach under way: on to the target once at the waypoint (or after its time).
             if (_approach.TryGetValue(v.Id, out var a))
             {
-                if (now >= a.until || Vector2.Distance(v.Position, v.Order.Point) < 15f || v.Order.Kind != OrderKind.Move)
+                if (now >= a.until || Vector2.Distance(v.Position, v.Order.Point) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftDistanceMax || v.Order.Kind != OrderKind.Move)
                 {
                     _approach.Remove(v.Id);
                     if (v.Order.Kind == OrderKind.Move) world.Submit(new Command(CommandType.AttackMove, Team, new[] { v.Id }, a.target));
@@ -138,19 +138,19 @@ namespace MachineBrigade.Sim.AI
             }
             if (v.Order.Kind != OrderKind.AttackMove) return;
             var goal = v.Order.Point;
-            if (intel.ThreatAt(ThreatKind.AntiAir, goal) <= 0f || Vector2.Distance(v.Position, goal) < 60f) return;
+            if (intel.ThreatAt(ThreatKind.AntiAir, goal) <= 0f || Vector2.Distance(v.Position, goal) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftDistanceMax2) return;
             // The least defended of three approaches 50 m out (straight, 60 degrees either side), by the anti-air on the way.
             var inbound = Vector2.Normalize(goal - v.Position);
             float Cost(Vector2 w) => intel.ThreatAt(ThreatKind.AntiAir, w) + intel.ThreatAt(ThreatKind.AntiAir, (w + v.Position) * 0.5f);
             var direct = Cost(goal - inbound * 50f);
             Vector2? pick = null;
             var pickCost = direct * 0.7f;
-            foreach (var angle in new[] { -1.05f, 1.05f })
+            foreach (var angle in new[] { global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftAngle1, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftAngle2 })
             {
                 var c = MathF.Cos(angle);
                 var s = MathF.Sin(angle);
                 var rotated = new Vector2(inbound.X * c - inbound.Y * s, inbound.X * s + inbound.Y * c);
-                var w = world.Map.Clamp(goal - rotated * 50f, 10f);
+                var w = world.Map.Clamp(goal - rotated * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftRotatedScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftMargin);
                 var cost = Cost(w);
                 if (cost < pickCost)
                 {
@@ -159,7 +159,7 @@ namespace MachineBrigade.Sim.AI
                 }
             }
             if (pick is not { } waypoint) return;
-            _approach[v.Id] = (goal, now + 25.0);
+            _approach[v.Id] = (goal, now + global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AircraftNowAdd);
             world.Submit(new Command(CommandType.Move, Team, new[] { v.Id }, waypoint));
         }
     }

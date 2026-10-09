@@ -16,7 +16,7 @@ namespace MachineBrigade.Sim.Content
         public float Grace { get; internal set; } = 1.5f;
 
         /// <summary>The multiplier after <paramref name="onTarget"/> seconds on the same target.</summary>
-        public float At(double onTarget) => From + (To - From) * (float)Math.Clamp(onTarget / Math.Max(0.1, Seconds), 0.0, 1.0);
+        public float At(double onTarget) => From + (To - From) * (float)Math.Clamp(onTarget / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.RampDef.AtSecondsFloor, Seconds), 0.0, 1.0);
 
         /// <summary>The mean multiplier over the first <paramref name="seconds"/> on one target (the theoretical table's figure).</summary>
         public float MeanOver(float seconds)

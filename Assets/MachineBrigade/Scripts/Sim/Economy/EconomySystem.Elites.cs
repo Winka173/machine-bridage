@@ -98,7 +98,7 @@ namespace MachineBrigade.Sim.Economy
         public string ForWave(int team, string defId, float minShare = 0f)
         {
             if (!_world.Catalog.Vehicles.TryGetValue(defId, out var def)) return defId;
-            var extraCap = minShare > 0f ? (int)MathF.Ceiling(minShare * 10f) : 0;
+            var extraCap = minShare > 0f ? (int)MathF.Ceiling(minShare * global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.ForWaveMinShareScale) : 0;
             var sent = EliteRoom(team, def, minShare, extraCap) ?? def;
             Count(team, sent);
             return sent.Id;

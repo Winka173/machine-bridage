@@ -32,12 +32,12 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyCollection<string> SightGuided { get; internal set; } = Array.Empty<string>();
 
         /// <summary>The view: flares a release puts out, by aircraft size (fighters and attack jets, helicopters, big aircraft), min and max.</summary>
-        public (int min, int max) FlaresFighter { get; internal set; } = (4, 6);
-        public (int min, int max) FlaresHelicopter { get; internal set; } = (4, 8);
-        public (int min, int max) FlaresLarge { get; internal set; } = (8, 16);
+        public (int min, int max) FlaresFighter { get; internal set; } = (global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.FlaresFighterNguong, global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.FlaresFighterNguong2);
+        public (int min, int max) FlaresHelicopter { get; internal set; } = (global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.FlaresHelicopterNguong, global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.FlaresHelicopterNguong2);
+        public (int min, int max) FlaresLarge { get; internal set; } = (global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.FlaresLargeNguong, global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.FlaresLargeNguong2);
 
         /// <summary>The view: how long one flare burns (s), min and max.</summary>
-        public (float min, float max) FlareBurn { get; internal set; } = (3f, 4f);
+        public (float min, float max) FlareBurn { get; internal set; } = (global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.FlareBurnNguong, global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.FlareBurnNguong2);
 
         /// <summary>
         /// Balance pack 2 addendum item 2: a weapon's own proximity fuze (data "proximityFuze"), else the shared group
@@ -85,7 +85,7 @@ namespace MachineBrigade.Sim.Content
         {
             if (!o.Has(key)) return fallback;
             var a = o.FloatArray(key);
-            if (a.Count != 2 || a[0] < 1f || a[1] < a[0]) throw new FormatException($"{o.Path}.{key}: [min, max] flares.");
+            if (a.Count != global::MachineBrigade.Sim.Content.SimTunables.Weapons.MunitionRules.PairCountIs || a[0] < 1f || a[1] < a[0]) throw new FormatException($"{o.Path}.{key}: [min, max] flares.");
             return ((int)a[0], (int)a[1]);
         }
     }
@@ -136,9 +136,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The warning a round of <paramref name="tier"/> (family <paramref name="familyId"/>, core m) must give: 0 below T4.</summary>
         public float Seconds(int tier, string? familyId, float core)
         {
-            if (tier < 4) return 0f;
-            var floor = familyId == "cal_406" ? Floor406 : tier >= 5 ? FloorT5 : FloorT4;
-            return MathF.Min(Cap, MathF.Max(floor, Base + MathF.Max(0f, core) / MathF.Max(0.1f, EscapeSpeed)));
+            if (tier < global::MachineBrigade.Sim.Content.SimTunables.Weapons.WarningRules.SecondsTierMax) return 0f;
+            var floor = familyId == "cal_406" ? Floor406 : tier >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.WarningRules.SecondsTierMin ? FloorT5 : FloorT4;
+            return MathF.Min(Cap, MathF.Max(floor, Base + MathF.Max(0f, core) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.WarningRules.SecondsEscapeSpeedFloor, EscapeSpeed)));
         }
 
         /// <summary>

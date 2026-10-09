@@ -107,13 +107,13 @@ namespace MachineBrigade.Sim.Navigation
         /// </summary>
         public static int ClearanceFor(float width, float cell)
         {
-            var open = width + 2f * Tun.SideClearance - 2f * SimWorld.ObstacleClearance;
+            var open = width + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ClearanceForSideClearanceScale * Tun.SideClearance - global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ClearanceForObstacleClearanceScale * SimWorld.ObstacleClearance;
             return Math.Max(1, (int)MathF.Ceiling((open / cell + 1f) * 0.5f));
         }
 
         /// <summary>Physical clear width (m) of a corridor whose centre cell has <paramref name="clearance"/>.</summary>
         public float WidthOfClearance(int clearance) =>
-            clearance <= 0 ? 0f : (clearance * 2f - 1f) * Map.Cell + 2f * SimWorld.ObstacleClearance;
+            clearance <= 0 ? 0f : (clearance * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.WidthOfClearanceClearanceScale - 1f) * Map.Cell + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.WidthOfClearanceObstacleClearanceScale * SimWorld.ObstacleClearance;
 
         private void MeasureClasses()
         {
@@ -141,7 +141,7 @@ namespace MachineBrigade.Sim.Navigation
                 speeds[c].Add(d.Speed);
             }
             // Fallbacks keep a class usable on a catalog without members of it (tests' small catalogs).
-            float[] defaultWidth = { 2.6f, 3.2f, 3.9f, 5.3f, 11f };
+            float[] defaultWidth = { global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasureClassesDefaultWidth1, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasureClassesDefaultWidth2, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasureClassesDefaultWidth3, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasureClassesDefaultWidth4, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasureClassesDefaultWidth5 };
             for (var i = 0; i < 5; i++)
             {
                 var list = widths[i].Count > 0 ? widths[i] : all[i];
@@ -149,8 +149,8 @@ namespace MachineBrigade.Sim.Navigation
                 // boss hulls range from 6 to 16 m, and each giant drives its own scripted route or arena).
                 var reference = list.Count == 0 ? defaultWidth[i] : i == (int)VehicleSizeClass.Boss ? Median(list) : Max(list);
                 var median = list.Count > 0 ? Median(list) : defaultWidth[i];
-                var length = lengths[i] > 0f ? lengths[i] : reference * 2.2f;
-                var speed = speeds[i].Count > 0 ? Median(speeds[i]) : 5f;
+                var length = lengths[i] > 0f ? lengths[i] : reference * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasureClassesReferenceScale;
+                var speed = speeds[i].Count > 0 ? Median(speeds[i]) : global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasureClassesCountFalse;
                 _classes[i] = new SizeClassInfo((VehicleSizeClass)i, all[i].Count, reference, median, length, speed, ClearanceFor(reference, Map.Cell));
             }
         }
@@ -244,8 +244,8 @@ namespace MachineBrigade.Sim.Navigation
                 };
                 Anchor("gate_" + gate.Id, AnchorKind.EntryGate, gate.Position, -1, domain, 6f);
             }
-            foreach (var p in map.Points) Anchor("point_" + p.Id, AnchorKind.Objective, p.Position, -1, MobilityDomain.Ground, MathF.Max(2f, p.Radius));
-            foreach (var b in map.Bases) Anchor("hq_" + b.Team, AnchorKind.Base, b.Hq, b.Team, MobilityDomain.Ground, 8f);
+            foreach (var p in map.Points) Anchor("point_" + p.Id, AnchorKind.Objective, p.Position, -1, MobilityDomain.Ground, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsRadiusFloor, p.Radius));
+            foreach (var b in map.Bases) Anchor("hq_" + b.Team, AnchorKind.Base, b.Hq, b.Team, MobilityDomain.Ground, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsRadius2);
             if (map.Fortress is { } fort)
             {
                 Anchor("fortress_hq", AnchorKind.Fortress, fort.Hq, -1, MobilityDomain.Ground, 10f);
@@ -259,15 +259,15 @@ namespace MachineBrigade.Sim.Navigation
                 if (line.Count == 0) continue;
                 var domain = name == "rail" ? MobilityDomain.Static : MobilityDomain.Ground;
                 Anchor($"route_{name}_start", AnchorKind.BossRoute, line[0], -1, domain, 6f);
-                if (line.Count > 2) Anchor($"route_{name}_mid", AnchorKind.BossRoute, line[line.Count / 2], -1, domain, 6f);
-                Anchor($"route_{name}_end", AnchorKind.BossRoute, line[line.Count - 1], -1, domain, 6f);
+                if (line.Count > global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsCountMin) Anchor($"route_{name}_mid", AnchorKind.BossRoute, line[line.Count / global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsCountDivisor], -1, domain, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsRadius);
+                Anchor($"route_{name}_end", AnchorKind.BossRoute, line[line.Count - 1], -1, domain, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsRadius);
             }
             if (map.Sea is not { } sea) return;
-            foreach (var b in sea.Batteries) Anchor("battery_" + b.Id, AnchorKind.Battery, b.At, -1, MobilityDomain.Ground, 8f);
+            foreach (var b in sea.Batteries) Anchor("battery_" + b.Id, AnchorKind.Battery, b.At, -1, MobilityDomain.Ground, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsRadius2);
             for (var i = 0; i < sea.Landings.Count; i++)
                 Anchor("landing_" + i, AnchorKind.Landing, sea.Landings[i].At, -1, MobilityDomain.Amphibious, 6f);
-            for (var i = 0; i < sea.Piers.Count; i++) Anchor("pier_" + i, AnchorKind.Pier, sea.Piers[i], -1, MobilityDomain.Ground, 6f);
-            foreach (var lane in sea.Lanes) Anchor("lane_" + lane.Id, AnchorKind.NavalLane, sea.At(0f, lane.W), -1, MobilityDomain.Naval, 6f);
+            for (var i = 0; i < sea.Piers.Count; i++) Anchor("pier_" + i, AnchorKind.Pier, sea.Piers[i], -1, MobilityDomain.Ground, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsRadius);
+            foreach (var lane in sea.Lanes) Anchor("lane_" + lane.Id, AnchorKind.NavalLane, sea.At(0f, lane.W), -1, MobilityDomain.Naval, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.ResolveAnchorsRadius);
             if (RouteGraph() is { } graph)
                 foreach (var n in graph.Nodes)
                     if (n.Kind != SeaNodeKind.Exit) Anchor("seanode_" + n.Id, AnchorKind.NavalNode, n.Position, -1, MobilityDomain.Naval, 6f);
@@ -391,7 +391,7 @@ namespace MachineBrigade.Sim.Navigation
                     _chokes.Add(new TacticalChoke
                     {
                         FromDoorway = true,
-                        Shape = length > width * 3f && road[id] * 2 >= cells[id] ? PassageShape.NarrowRoad : PassageShape.Gate,
+                        Shape = length > width * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesWidthScale && road[id] * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesRoadScale >= cells[id] ? PassageShape.NarrowRoad : PassageShape.Gate,
                         Centre = sum[id] / cells[id],
                         Through = lanes.DoorwayThrough(id),
                         OpenWidth = width,
@@ -407,7 +407,7 @@ namespace MachineBrigade.Sim.Navigation
             {
                 var covered = false;
                 foreach (var p in _chokes)
-                    if (Vector2.Distance(p.Centre, choke.Centre) < p.Reach + 4f)
+                    if (Vector2.Distance(p.Centre, choke.Centre) < p.Reach + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesReachAdd)
                     {
                         covered = true;
                         break;
@@ -419,29 +419,29 @@ namespace MachineBrigade.Sim.Navigation
                 for (var k = 0; k < 8; k++)
                 {
                     var dir = SimMath.Forward(k * MathF.PI / 8f);
-                    var width = Ray(grid, choke.Centre, dir, 30f) + Ray(grid, choke.Centre, -dir, 30f);
+                    var width = Ray(grid, choke.Centre, dir, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesMax) + Ray(grid, choke.Centre, -dir, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesMax);
                     if (width >= bestWidth) continue;
                     bestWidth = width;
                     across = dir;
                 }
-                if (stale && bestWidth > choke.Width + 2f * grid.CellSize + 2f && RubbleNear(choke.Centre, MathF.Max(choke.Width, 8f) * 0.5f + 6f))
+                if (stale && bestWidth > choke.Width + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesCellSizeScale * grid.CellSize + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesWidthAdd && RubbleNear(choke.Centre, MathF.Max(choke.Width, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesWidthFloor) * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesMaxScale + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesMaxAdd))
                 {
                     StaleChokesDropped++;
                     continue;
                 }
                 var through = new Vector2(-across.Y, across.X);
-                var half = MathF.Max(choke.Width, bestWidth) * 0.5f + 3f;
+                var half = MathF.Max(choke.Width, bestWidth) * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesMaxScale + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesMaxAdd2;
                 var water = Map.IsSea(choke.Centre + across * half) || Map.IsSea(choke.Centre - across * half) ||
                             grid.TerrainAt(choke.Centre + across * half) == TerrainTag.ShallowWater ||
                             grid.TerrainAt(choke.Centre - across * half) == TerrainTag.ShallowWater;
-                var length = MathF.Max(6f, choke.Cells * Map.Cell * Map.Cell / MathF.Max(2f, choke.Width));
+                var length = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesCellsFloor, choke.Cells * Map.Cell * Map.Cell / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesWidthFloor2, choke.Width));
                 _chokes.Add(new TacticalChoke
                 {
                     Shape = water ? PassageShape.Bridge : PassageShape.Choke,
                     Centre = choke.Centre,
                     Through = through,
-                    OpenWidth = MathF.Max(2f, MathF.Min(choke.Width, bestWidth)),
-                    Length = MathF.Min(length, 40f),
+                    OpenWidth = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesMinFloor, MathF.Min(choke.Width, bestWidth)),
+                    Length = MathF.Min(length, global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.MeasurePassagesLengthCap),
                 });
             }
             for (var i = 0; i < _chokes.Count; i++) _chokes[i].Id = i + 1;
@@ -478,21 +478,21 @@ namespace MachineBrigade.Sim.Navigation
             foreach (var c in _chokes)
             {
                 c.Type = TypeOf(c, map, grid);
-                c.UsableWidthM = c.OpenWidth + 2f * growth;
+                c.UsableWidthM = c.OpenWidth + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeChokesGrowthScale * growth;
                 c.MaxLightSideBySide = (int)MathF.Floor(c.UsableWidthM / (light.MedianWidth + margin));
                 c.MaxMediumSideBySide = (int)MathF.Floor(c.UsableWidthM / (medium.MedianWidth + margin));
                 c.MaxHeavySideBySide = (int)MathF.Floor(c.UsableWidthM / (heavy.MedianWidth + margin));
                 // AI MASTER spec 189's rule (the traffic coordinator's lanes from the open width), for a medium hull.
                 var lanesThrough = Math.Max(1, (int)MathF.Floor(c.OpenWidth / MathF.Max(1f, medium.MedianWidth + 1f)));
-                c.EstimatedThroughput = lanesThrough * MathF.Max(0.5f, medium.MedianSpeed) / MathF.Max(2f, medium.ReferenceLength + 4f);
-                c.OppositeTrafficAllowed = c.MaxMediumSideBySide >= 2;
+                c.EstimatedThroughput = lanesThrough * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeChokesMedianSpeedFloor, medium.MedianSpeed) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeChokesReferenceLengthFloor, medium.ReferenceLength + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeChokesReferenceLengthAdd);
+                c.OppositeTrafficAllowed = c.MaxMediumSideBySide >= global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeChokesMaxMediumSideBySideMin;
                 c.QueueAreaA = Queue(c, -1);
                 c.QueueAreaB = Queue(c, 1);
                 var cell = Map.CellIndex(c.Centre);
                 var clearance = cell >= 0 ? Map.Clearance[cell] : 0;
                 var largest = VehicleSizeClass.Light;
                 for (var i = 0; i < 5; i++)
-                    if (_classes[i].ClearanceCells <= Math.Max(1, clearance) && c.UsableWidthM >= _classes[i].ReferenceWidth + 2f * Tun.SideClearance)
+                    if (_classes[i].ClearanceCells <= Math.Max(1, clearance) && c.UsableWidthM >= _classes[i].ReferenceWidth + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeChokesSideClearanceScale * Tun.SideClearance)
                         largest = (VehicleSizeClass)i;
                 c.LargestClass = largest;
                 c.Critical = (lanes.At(c.Centre) & LaneFlags.Route) != 0;
@@ -504,13 +504,13 @@ namespace MachineBrigade.Sim.Navigation
         {
             foreach (var line in map.Walls)
             {
-                if (Vector2.Distance(line.Gate, c.Centre) <= line.GateWidth * 0.5f + 4f) return ChokeType.Gate;
+                if (Vector2.Distance(line.Gate, c.Centre) <= line.GateWidth * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeOfGateWidthAdd) return ChokeType.Gate;
                 foreach (var s in line.Segments)
-                    if (Vector2.Distance(s.Center, c.Centre) <= s.Length * 0.5f + 2f) return ChokeType.WallBreach;
+                    if (Vector2.Distance(s.Center, c.Centre) <= s.Length * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeOfLengthAdd) return ChokeType.WallBreach;
             }
             foreach (var rail in map.Rails)
                 foreach (var x in rail.Crossings)
-                    if (Vector2.Distance(x.Position, c.Centre) <= x.Half + 4f) return ChokeType.RailCrossing;
+                    if (Vector2.Distance(x.Position, c.Centre) <= x.Half + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeOfHalfAdd) return ChokeType.RailCrossing;
             if (grid.TerrainAt(c.Centre) == TerrainTag.ShallowWater) return ChokeType.RiverCrossing;
             if (c.Shape == PassageShape.Bridge) return ChokeType.Bridge;
             if (map.Sea is { } sea)
@@ -518,9 +518,9 @@ namespace MachineBrigade.Sim.Navigation
                 var f = sea.Frame(c.Centre);
                 if (f.Y > sea.ShoreAt(f.X) - 25f) return ChokeType.HarborThroat;
                 foreach (var pier in sea.Piers)
-                    if (Vector2.Distance(pier, c.Centre) < 20f) return ChokeType.HarborThroat;
+                    if (Vector2.Distance(pier, c.Centre) < global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeOfDistanceMax) return ChokeType.HarborThroat;
             }
-            if (c.Shape == PassageShape.NarrowRoad || (c.FromDoorway && c.Length >= c.OpenWidth * 1.5f)) return ChokeType.StreetCanyon;
+            if (c.Shape == PassageShape.NarrowRoad || (c.FromDoorway && c.Length >= c.OpenWidth * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.TypeOfOpenWidthScale)) return ChokeType.StreetCanyon;
             return ChokeType.NaturalTerrainGap;
         }
 
@@ -529,8 +529,8 @@ namespace MachineBrigade.Sim.Navigation
         {
             var spacing = SimTunables.Ai.Traffic.QueueSpacing;
             var back = c.Through * side;
-            var halfAlong = spacing * 1.5f;
-            var halfAcross = c.OpenWidth * 0.5f + 4f;
+            var halfAlong = spacing * global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.QueueSpacingScale;
+            var halfAcross = c.OpenWidth * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.QueueOpenWidthAdd;
             var centre = c.Centre + back * (c.Length * 0.5f + SimTunables.Ai.Traffic.QueueStart + halfAlong);
             var issue = "";
             if (!_world.Grid.IsWalkable(centre)) issue = "not-open-ground";
@@ -588,7 +588,7 @@ namespace MachineBrigade.Sim.Navigation
             SeaLaneDef? nearest = null;
             foreach (var l in sea.Lanes)
                 if (nearest == null || MathF.Abs(l.W - f.Y) < MathF.Abs(nearest.W - f.Y)) nearest = l;
-            if (nearest == null || MathF.Abs(nearest.W - f.Y) > radius + 12f || nearest.Patrol <= 0f) return null;
+            if (nearest == null || MathF.Abs(nearest.W - f.Y) > radius + global::MachineBrigade.Sim.Content.SimTunables.Maps.GameplayTopology.LaneStretchRadiusAdd || nearest.Patrol <= 0f) return null;
             var points = new Vector2[samples + 1];
             for (var k = 0; k < samples; k++)
             {

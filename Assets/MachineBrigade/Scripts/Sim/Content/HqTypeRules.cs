@@ -64,7 +64,7 @@ namespace MachineBrigade.Sim.Content
         // ------------------------------------------------------------------ Garrison
 
         /// <summary>Seconds to stock one squad, by HQ level, and the most stocked at once.</summary>
-        private float[] _garrisonEvery = { 60f, 60f, 60f, 60f, 60f };
+        private float[] _garrisonEvery = { global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonEvery1, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonEvery2, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonEvery3, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonEvery4, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonEvery5 };
         public int GarrisonStock { get; internal set; } = 2;
 
         /// <summary>Seconds the base region must be clear of enemies before the garrison goes back in (and is gone).</summary>
@@ -95,7 +95,7 @@ namespace MachineBrigade.Sim.Content
         }
 
         /// <summary>The most baseCP of garrison alive at once, by HQ level.</summary>
-        private int[] _garrisonCaps = { 6, 8, 10, 12, 15 };
+        private int[] _garrisonCaps = { global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonCaps1, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonCaps2, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonCaps3, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonCaps4, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.GarrisonCaps5 };
 
         // ------------------------------------------------------------------ Shield
 
@@ -110,10 +110,10 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Seconds a tower in the base must go unhit before it mends, and the share of its full health it mends a second, by HQ level.</summary>
         public float RegenDelay { get; internal set; } = 5f;
-        private float[] _regen = { 0.002f, 0.0025f, 0.003f, 0.0035f, 0.004f };
+        private float[] _regen = { global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Regen1, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Regen2, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Regen3, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Regen4, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Regen5 };
 
         /// <summary>The emergency dome: how much it absorbs (a share of the HQ's full health) by HQ level, and how long it stands.</summary>
-        private float[] _dome = { 0.08f, 0.10f, 0.12f, 0.15f, 0.18f };
+        private float[] _dome = { global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Dome1, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Dome2, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Dome3, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Dome4, global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.Dome5 };
         public float DomeSeconds { get; internal set; } = 10f;
 
         // ------------------------------------------------------------------ the AI
@@ -176,7 +176,7 @@ namespace MachineBrigade.Sim.Content
             var r = new HqTypeRules();
             if (o.Has("default") && TryParse(o.String("default"), out var d)) r.Default = d;
             r.SkillCooldown = Math.Max(1f, o.Float("skillCooldown", r.SkillCooldown));
-            r.Radius = Math.Max(5f, o.Float("radius", r.Radius));
+            r.Radius = Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.ParseFloatFloor2, o.Float("radius", r.Radius));
             if (o.Has("fortress"))
             {
                 var f = o.Object("fortress");
@@ -225,7 +225,7 @@ namespace MachineBrigade.Sim.Content
                 r.RegenDelay = Math.Max(0f, s.Float("regenDelay", r.RegenDelay));
                 r._regen = Floats(s, "regen", r._regen);
                 r._dome = Floats(s, "dome", r._dome);
-                r.DomeSeconds = Math.Max(0.5f, s.Float("domeSeconds", r.DomeSeconds));
+                r.DomeSeconds = Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bases.HqTypeRules.ParseFloatFloor4, s.Float("domeSeconds", r.DomeSeconds));
             }
             if (o.Has("ai"))
             {

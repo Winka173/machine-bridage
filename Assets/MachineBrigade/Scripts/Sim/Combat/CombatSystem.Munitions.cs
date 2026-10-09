@@ -51,7 +51,7 @@ namespace MachineBrigade.Sim.Combat
             {
                 var distance = Vector2.Distance(shooter.Position, at);
                 var flight = weapon.Projectile == ProjectileKind.Bomb && shooter.Flying && !BayStick(weapon)
-                    ? MathF.Max(0.8f, distance / MathF.Max(8f, shooter.Speed))
+                    ? MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LeadPointDistanceFloor, distance / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LeadPointSpeedFloor, shooter.Speed))
                     : distance / MathF.Max(1f, weapon.ProjectileSpeed);
                 at = target.Position + velocity * MathF.Min(cap, flight);
             }
@@ -129,9 +129,9 @@ namespace MachineBrigade.Sim.Combat
         private Vector2 FlarePoint(Vehicle flyer, MunitionRules rules)
         {
             var back = -SimMath.Forward(flyer.Heading);
-            var side = new Vector2(back.Y, -back.X) * (_world.Random.NextDouble() < 0.5 ? -1f : 1f);
+            var side = new Vector2(back.Y, -back.X) * (_world.Random.NextDouble() < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.FlarePointNextDoubleMax ? -1f : 1f);
             var reach = rules.FlareOffset + flyer.Radius;
-            return flyer.Position + Vector2.Normalize(back * 0.8f + side * 0.6f) * reach;
+            return flyer.Position + Vector2.Normalize(back * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.FlarePointBackScale + side * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.FlarePointSideScale) * reach;
         }
 
         /// <summary>

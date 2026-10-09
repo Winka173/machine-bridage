@@ -175,7 +175,7 @@ namespace MachineBrigade.Sim.Modes
             var site = _world.Map.BaseOf(siteTeam ?? team);
             _world.TryGetRally(team, out var rally);
             var away = rally.LengthSquared() > 1f ? Vector2.Normalize(rally) : -Vector2.UnitX;
-            var hqAt = site?.Hq ?? _world.ClampToMap(rally + away * 12f);
+            var hqAt = site?.Hq ?? _world.ClampToMap(rally + away * global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.EstablishAwayScale);
             var heading = site?.Heading ?? SimMath.HeadingOf(-away);
             if (catalog.Vehicles.ContainsKey(catalog.Base.HqId))
             {
@@ -564,7 +564,7 @@ namespace MachineBrigade.Sim.Modes
                 if (!v.IsAlive || v.Team != team || v.Def.ForwardDrop <= 0f || v.IsMoving || v.Stunned) continue;
                 if (_world.Time - v.StillSince < v.Def.ForwardDrop) continue;
                 var back = zone - v.Position;
-                var spot = _world.ClampToMap(v.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * 7f);
+                var spot = _world.ClampToMap(v.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.TryGetDropZoneScale);
                 var d = Vector2.Distance(spot, enemy);
                 if (d >= best) continue;
                 best = d;
@@ -626,7 +626,7 @@ namespace MachineBrigade.Sim.Modes
             // Knocked down: it can be called back in once the cooldown is over.
             slot.Structure = EntityId.None;
             slot.Down = true;
-            var cooldown = slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCooldown(def) : 30f;
+            var cooldown = slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCooldown(def) : global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseSystem.WatchTowerFalse;
             // Prompt 32 L2: the cooldown runs from the tower's fall (25 / 40 / 60 s); a Modular tower's free re-drop waits only
             // its share of it.
             slot.ReadyAt = _world.Time + cooldown * (slot.FreeCall ? slot.FreeWait : 1f);

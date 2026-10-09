@@ -195,7 +195,7 @@ namespace MachineBrigade.Sim.Content
             PropZ = o.Has("propDown") ? o.Object("propDown").Float("z", 0f) : 0f,
             Delay = o.Float("delay", 0f),
             Every = o.Float("every", 0f),
-            Times = o.Int("times", o.Has("every") ? 99 : 1),
+            Times = o.Int("times", o.Has("every") ? global::MachineBrigade.Sim.Content.SimTunables.Ai.EventTrigger.ParseHasTrue : 1),
         };
     }
 
@@ -418,7 +418,7 @@ namespace MachineBrigade.Sim.Content
             [EventLevel.Hard] = new EventDifficulty { MinDirections = 2, MaxDirections = 3, Warning = 8f, AllyShare = 0.3f, WaveScale = 1.15f, Escorts = 4, Step = 2 },
             [EventLevel.VeryHard] = new EventDifficulty
             {
-                MinDirections = 3, MaxDirections = 4, Warning = 6f, AllyShare = 0.15f, WaveScale = 1.3f, Elites = true, AllyWaves = 1, Escorts = 5, Step = 3,
+                MinDirections = global::MachineBrigade.Sim.Content.SimTunables.Ai.EventRules.LevelsMinDirections3, MaxDirections = global::MachineBrigade.Sim.Content.SimTunables.Ai.EventRules.LevelsMaxDirections3, Warning = global::MachineBrigade.Sim.Content.SimTunables.Ai.EventRules.LevelsWarning4, AllyShare = global::MachineBrigade.Sim.Content.SimTunables.Ai.EventRules.LevelsAllyShare4, WaveScale = global::MachineBrigade.Sim.Content.SimTunables.Ai.EventRules.LevelsWaveScale4, Elites = true, AllyWaves = 1, Escorts = global::MachineBrigade.Sim.Content.SimTunables.Ai.EventRules.LevelsEscorts4, Step = global::MachineBrigade.Sim.Content.SimTunables.Ai.EventRules.LevelsStep2,
             },
         };
 
@@ -433,7 +433,7 @@ namespace MachineBrigade.Sim.Content
             ["sen"] = G("sen", 5, "fpv_carrier", new[] { "edge", "air" }, "strike_drone", "fpv_carrier", "recon_drone", "ew_jammer"),
             ["quaden"] = new GeneralEventDef
             {
-                Id = "quaden", LastChapter = 10, Elite = "attack_jet", Delivery = new[] { "edge" }, Minis = new[] { "mega_gunship" },
+                Id = "quaden", LastChapter = global::MachineBrigade.Sim.Content.SimTunables.Ai.EventRules.GeneralsLastChapter, Elite = "attack_jet", Delivery = new[] { "edge" }, Minis = new[] { "mega_gunship" },
                 Roster = new[] { "attack_helicopter", "attack_jet", "strike_drone" },
             },
             ["hung"] = G("hung", 9, "heavy_tank", new[] { "edge", "landing" }, "main_battle_tank", "heavy_tank", "ifv", "aa_vehicle"),
@@ -595,7 +595,7 @@ namespace MachineBrigade.Sim.Content
         public static EventLevel From(string? difficulty, int tier = 0)
         {
             var baseLevel = Enum.TryParse<EventLevel>(difficulty ?? "Normal", true, out var l) ? l : EventLevel.Normal;
-            return (EventLevel)Math.Clamp((int)baseLevel + Math.Max(0, tier), 0, 3);
+            return (EventLevel)Math.Clamp((int)baseLevel + Math.Max(0, tier), 0, global::MachineBrigade.Sim.Content.SimTunables.Ai.EventLevels.FromBaseLevelMax);
         }
     }
 }

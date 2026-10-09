@@ -167,7 +167,7 @@ namespace MachineBrigade.Sim.Content
         public Vector2 Centre => (Min + Max) * 0.5f;
 
         /// <summary>A long battlefield (prompt 17): noticeably longer than wide.</summary>
-        public bool IsLong => Length > Width * 1.2f;
+        public bool IsLong => Length > Width * global::MachineBrigade.Sim.Content.SimTunables.Maps.MapDefinition.IsLongWidthScale;
 
         /// <summary>The point kept at least <paramref name="margin"/> inside the map's edges.</summary>
         public Vector2 Clamp(Vector2 p, float margin = 0f) =>

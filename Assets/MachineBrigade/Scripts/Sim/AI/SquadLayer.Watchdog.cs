@@ -10,7 +10,7 @@ namespace MachineBrigade.Sim.AI
     {
         private void ExplainHolds(SimWorld world)
         {
-            var span = Interval * 2f + 0.5f;
+            var span = Interval * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExplainHoldsIntervalScale + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExplainHoldsIntervalAdd;
             foreach (var s in _squads)
             {
                 CombatIdleReason reason;

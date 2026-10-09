@@ -235,7 +235,7 @@ namespace MachineBrigade.Sim.AI
             set
             {
                 // The ally thinks a quarter of an interval after the player's commander (see the constructor).
-                if (value && !_allies) _timer += DecisionInterval * 0.25f;
+                if (value && !_allies) _timer += DecisionInterval * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.AlliesDecisionIntervalScale;
                 _allies = value;
             }
         }
@@ -249,7 +249,7 @@ namespace MachineBrigade.Sim.AI
             _flankSide = new Random(seed).Next(2) == 0 ? -1f : 1f;
             // The two sides' commanders think on different steps, so their heaviest steps (orders,
             // routes for a whole group) do not land on the same one.
-            _timer = team == 1 ? DecisionInterval * 0.5f : 0f;
+            _timer = team == 1 ? DecisionInterval * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.CtorDecisionIntervalScale : 0f;
         }
 
         public void Tick(SimWorld world, float dt)
@@ -290,7 +290,7 @@ namespace MachineBrigade.Sim.AI
             var goal = Objective?.Invoke(world);
             var chase = groundContact;
             if (chase && goal.HasValue && ActiveLeash is { } leash) chase = Vector2.Distance(NearestCluster(front), goal.Value) < leash;
-            if (chase && (goal == null || NearestGround(front, out _) < 45f)) objective = NearestCluster(front);
+            if (chase && (goal == null || NearestGround(front, out _) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.TickNearestGroundMax)) objective = NearestCluster(front);
             else if (goal.HasValue) objective = goal.Value;
             else if (chase) objective = NearestCluster(front);
             else if (!world.TryGetRally(_enemyTeam, out objective)) return;
@@ -298,7 +298,7 @@ namespace MachineBrigade.Sim.AI
             {
                 // The camp itself is guarded by bastions that cannot be destroyed: press up to its edge, not into it.
                 var inward = objective.LengthSquared() > 1f ? Vector2.Normalize(-objective) : Vector2.UnitX;
-                objective += inward * (SimWorld.HomeRadius + 18f);
+                objective += inward * (SimWorld.HomeRadius + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.TickHomeRadiusAdd);
             }
             contact = groundContact;
             if (!Layered && JudgeOdds(world, front, contact))
@@ -314,7 +314,7 @@ namespace MachineBrigade.Sim.AI
                 return;
             }
             // A new objective: every fast vehicle may be sent round a flank again.
-            if (Vector2.Distance(objective, _lastObjective) > 20f) _flanked.Clear();
+            if (Vector2.Distance(objective, _lastObjective) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.TickDistanceMin) _flanked.Clear();
             _lastObjective = objective;
             var forward = Direction(front, objective);
             // Holding a point: face the threat, and stand the line a little in front of it.
@@ -322,7 +322,7 @@ namespace MachineBrigade.Sim.AI
             if (holding)
             {
                 forward = Facing!(world)!.Value;
-                objective = Clamp(world, goal!.Value + forward * 5f);
+                objective = Clamp(world, goal!.Value + forward * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.TickForwardScale);
                 ExplainLine(world, AI.CombatIdleReason.ObjectiveHold);
             }
 
@@ -354,12 +354,12 @@ namespace MachineBrigade.Sim.AI
             foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive || v.Team != _team || v.Scripted || v.IsEscort || v.Garrison) continue;
-                if (Vector2.Distance(v.Position, front) < 55f) ours += v.Def.Power * (v.Hp / v.MaxHp);
+                if (Vector2.Distance(v.Position, front) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsDistanceMax) ours += v.Def.Power * (v.Hp / v.MaxHp);
             }
             // Fixed defences do not count: they cannot chase, and the army picks the range to fight
             // them at (artillery outranges every turret). The odds are about the mobile fight.
             foreach (var e in _enemies)
-                if (!e.Def.Static && Vector2.Distance(e.Position, front) < 60f) _seen[e.Id] = (e.Def.Power * (e.Hp / e.MaxHp), world.Time, e.Position);
+                if (!e.Def.Static && Vector2.Distance(e.Position, front) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsDistanceMax2) _seen[e.Id] = (e.Def.Power * (e.Hp / e.MaxHp), world.Time, e.Position);
             // Every enemy seen near the front is remembered: out of sight is not the same as gone.
             // One in view counts as it is now; one out of view fades (half in about 45 s); one
             // known destroyed is forgotten. The patience rule still commits in the end.
@@ -368,16 +368,16 @@ namespace MachineBrigade.Sim.AI
             foreach (var (id, (power, seen, at)) in _seen)
             {
                 var age = world.Time - seen;
-                if (!world.TryGetVehicle(id, out var known) || !known.IsAlive || age > 120.0)
+                if (!world.TryGetVehicle(id, out var known) || !known.IsAlive || age > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsAgeMin)
                 {
                     _forget.Add(id);
                     continue;
                 }
                 // Only what was last seen around where the army is now.
-                if (Vector2.Distance(at, front) < 70f) theirs += power * (float)Math.Pow(0.5, age / 45.0);
+                if (Vector2.Distance(at, front) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsDistanceMax3) theirs += power * (float)Math.Pow(global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsAgeExponent, age / global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsAgeDivisor);
             }
             foreach (var id in _forget) _seen.Remove(id);
-            StrengthRatio = theirs > 0.5f ? ours / theirs : 1f;
+            StrengthRatio = theirs > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsTheirsMin ? ours / theirs : 1f;
 
             if (ActiveLeash != null)
             {
@@ -387,21 +387,21 @@ namespace MachineBrigade.Sim.AI
             if (_outmatched)
             {
                 var held = world.Time - _outmatchedSince > FallBackHold;
-                if (held && (StrengthRatio >= RecoveredRatio || theirs <= 0.5f)) _outmatched = false;
+                if (held && (StrengthRatio >= RecoveredRatio || theirs <= global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsTheirsMax)) _outmatched = false;
                 else if (world.Time - _outmatchedSince > Patience)
                 {
                     _outmatched = false;
                     _committedUntil = world.Time + CommitSeconds;
                 }
             }
-            else if (contact && theirs > 3f && StrengthRatio < OutmatchedRatio && world.Time >= _committedUntil)
+            else if (contact && theirs > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsTheirsMin2 && StrengthRatio < OutmatchedRatio && world.Time >= _committedUntil)
             {
                 _outmatched = true;
                 _outmatchedSince = world.Time;
                 // Fall back to a point we hold, else towards home, far enough to break contact.
                 var home = world.TryGetRally(_team, out var rally) ? rally : front;
                 var back = Direction(front, home);
-                var distance = MathF.Min(30f, Vector2.Distance(front, home));
+                var distance = MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.JudgeOddsDistanceCap, Vector2.Distance(front, home));
                 _fallBackPoint = Clamp(world, FallBackTo?.Invoke(world, front) ?? front + back * distance);
             }
             return _outmatched;
@@ -435,7 +435,7 @@ namespace MachineBrigade.Sim.AI
             {
                 if (!crate.IsAlive || world.Time < crate.LandsAt) continue;
                 // A crate under enemy guns is bait: nobody goes for it alone.
-                if (TowerSense && Exposed(crate.Position, 2f)) continue;
+                if (TowerSense && Exposed(crate.Position, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GrabCratesMargin)) continue;
                 if (!_crateRunners.TryGetValue(crate.Id, out var runnerId) || !world.TryGetVehicle(runnerId, out var runner) || !runner.IsAlive ||
                     runner.Team != _team)
                 {
@@ -445,8 +445,8 @@ namespace MachineBrigade.Sim.AI
                 }
                 _fast.Remove(runner);
                 _line.Remove(runner);
-                if (Vector2.Distance(runner.Position, crate.Position) < 2.5f) continue;
-                if (runner.Order.Kind == OrderKind.Move && Vector2.Distance(runner.Order.Point, crate.Position) < 2f) continue;
+                if (Vector2.Distance(runner.Position, crate.Position) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GrabCratesDistanceMax) continue;
+                if (runner.Order.Kind == OrderKind.Move && Vector2.Distance(runner.Order.Point, crate.Position) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GrabCratesDistanceMax2) continue;
                 _ids.Clear();
                 _ids.Add(runner.Id);
                 Issue(world, CommandType.Move, _ids, crate.Position);
@@ -488,37 +488,37 @@ namespace MachineBrigade.Sim.AI
                 _rearmIds.Add(v.Id);
                 Vector2? depot = null;
                 var left = v.Weapons[0].ReloadLeft > 0f ? v.Weapons[0].ReloadLeft : Combat.CombatSystem.ReloadSeconds(v.Arm(0));
-                var speed = MathF.Max(1f, v.Def.Speed * 0.8f);
+                var speed = MathF.Max(1f, v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmSpeedScale);
                 // Time in place, against the drive there and a reload three times as fast (2 s to settle).
                 var best = left;
                 void Offer(Vector2 at, float reach)
                 {
                     var d = MathF.Max(0f, Vector2.Distance(at, v.Position) - reach);
-                    if (d > DepotReach * 1.5f) return;
-                    var time = d / speed + left / 3f + 2f;
+                    if (d > DepotReach * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmDepotReachScale) return;
+                    var time = d / speed + left / global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmLeftDivisor + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmDAdd;
                     if (time >= best) return;
                     best = time;
                     depot = at;
                 }
                 foreach (var e in world.VehicleList)
-                    if (e.IsAlive && e.Team == _team && e.Def.RearmAura != null && e != v) Offer(e.Position, e.Def.RearmAura.Radius * 0.6f);
-                if (world.TryGetRally(_team, out var camp)) Offer(camp, 12f);
-                if (depot != null && Vector2.Distance(v.Position, depot.Value) > 8f && !world.InEnemyHome(depot.Value, _team))
+                    if (e.IsAlive && e.Team == _team && e.Def.RearmAura != null && e != v) Offer(e.Position, e.Def.RearmAura.Radius * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmRadiusScale);
+                if (world.TryGetRally(_team, out var camp)) Offer(camp, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmReach);
+                if (depot != null && Vector2.Distance(v.Position, depot.Value) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmDistanceMin && !world.InEnemyHome(depot.Value, _team))
                 {
-                    if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, depot.Value) > 6f)
+                    if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, depot.Value) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmDistanceMin2)
                         Issue(world, CommandType.Move, v.Id, Clamp(world, depot.Value));
                     continue;
                 }
                 var closest = NearestGround(v.Position, out var threat);
-                if (threat != null && threat.Def.Weapon.CanTarget(false) && closest < threat.Def.Weapon.Range + 4f &&
-                    world.EscapeRoute(v, threat.Position, threat.Def.Weapon.Range + 10f - closest) is { } away)
+                if (threat != null && threat.Def.Weapon.CanTarget(false) && closest < threat.Def.Weapon.Range + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmRangeAdd &&
+                    world.EscapeRoute(v, threat.Position, threat.Def.Weapon.Range + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmRangeAdd2 - closest) is { } away)
                 {
-                    if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, away) > 6f) Issue(world, CommandType.Move, v.Id, away);
+                    if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, away) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmDistanceMin2) Issue(world, CommandType.Move, v.Id, away);
                     continue;
                 }
                 // A move already under way to get out of reach finishes first; otherwise stop and reload.
-                if (v.Order.Kind == OrderKind.Move && v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > 3f &&
-                    threat != null && closest < threat.Def.Weapon.Range + 14f) continue;
+                if (v.Order.Kind == OrderKind.Move && v.HasPath && Vector2.Distance(v.Position, v.Order.Point) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmDistanceMin3 &&
+                    threat != null && closest < threat.Def.Weapon.Range + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.SendToRearmRangeAdd3) continue;
                 if (v.Order.Kind != OrderKind.Idle || v.HasPath) world.Submit(new Command(CommandType.Stop, _team, new[] { v.Id }));
             }
         }
@@ -557,7 +557,7 @@ namespace MachineBrigade.Sim.AI
                 _refitting.Remove(v.Id);
                 return false;
             }
-            if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, field.Position) > 4f)
+            if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, field.Position) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.RefitDistanceMin)
                 Issue(world, CommandType.Move, v.Id, field.Position);
             return true;
         }
@@ -569,8 +569,8 @@ namespace MachineBrigade.Sim.AI
         private void RearmInLulls(SimWorld world, Vehicle v)
         {
             if (!v.HasStores || v.Supply != SupplyState.Fighting || v.StoresShare >= Abilities.SupplySystem.LowShare || v.RearmRequested) return;
-            if (v.Target.IsValid || world.Time - v.LastFiredAt < 4.0) return;
-            var reach = v.Def.VisionRange + 15f;
+            if (v.Target.IsValid || world.Time - v.LastFiredAt < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.RearmInLullsTimeMax) return;
+            var reach = v.Def.VisionRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.RearmInLullsVisionRangeAdd;
             foreach (var e in _enemies)
                 if (Vector2.Distance(e.Position, v.Position) < reach) return;
             _ids.Clear();
@@ -596,7 +596,7 @@ namespace MachineBrigade.Sim.AI
                 if (!e.Def.Obstacle) continue;
                 var off = e.Position - front;
                 var along = Vector2.Dot(off, dir);
-                if (along < -4f || (off - dir * along).Length() > 18f) continue;
+                if (along < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BreachObstaclesAlongMax || (off - dir * along).Length() > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BreachObstaclesLengthMin) continue;
                 var d = off.Length();
                 if (d >= best) continue;
                 best = d;
@@ -604,7 +604,7 @@ namespace MachineBrigade.Sim.AI
             }
             if (block == null) return;
             foreach (var e in _enemies)
-                if (!e.Def.Obstacle && !e.Def.Passive && Vector2.Distance(e.Position, block.Position) < 25f) return;
+                if (!e.Def.Obstacle && !e.Def.Passive && Vector2.Distance(e.Position, block.Position) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.BreachObstaclesDistanceMax) return;
             _ids.Clear();
             foreach (var v in _line)
                 if (v.Target != block.Id) _ids.Add(v.Id);
@@ -640,8 +640,8 @@ namespace MachineBrigade.Sim.AI
                     if (!e.IsAlive || !e.Def.Static || e.Def.Untargetable || (e.Def.Fort == null && !e.Def.Obstacle)) continue;
                     var off = e.Position - front;
                     var along = Vector2.Dot(off, dir);
-                    if (along < -10f || along > BreacherReach) continue;
-                    var score = Vector2.Distance(e.Position, v.Position) + (off - dir * along).Length() * 1.5f - (e.Def.Obstacle ? 25f : 0f);
+                    if (along < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectBreachersAlongMax || along > BreacherReach) continue;
+                    var score = Vector2.Distance(e.Position, v.Position) + (off - dir * along).Length() * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectBreachersLengthScale - (e.Def.Obstacle ? global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectBreachersObstacleTrue : 0f);
                     // Map VA W2-A (spec O, maps.topology.aiBreachPriority, off by default): a wall segment ranks by what its fall opens.
                     if (BreachTopology.Enabled) score += BreachTopology.Ranking(world, e);
                     if (score >= best) continue;
@@ -664,7 +664,7 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
         {
-            var spot = Clamp(world, front - forward * 9f);
+            var spot = Clamp(world, front - forward * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportForwardScale);
             _ids.Clear();
             Vector2? resupply = null;
             foreach (var v in _support)
@@ -674,29 +674,29 @@ namespace MachineBrigade.Sim.AI
                 {
                     resupply ??= ResupplySpot(world, forward) ?? spot;
                     at = resupply.Value;
-                    if (Vector2.Distance(v.Position, at) < 6f) continue;
-                    if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, at) < 5f) continue;
+                    if (Vector2.Distance(v.Position, at) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportDistanceMax) continue;
+                    if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, at) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportDistanceMax2) continue;
                     Issue(world, CommandType.Move, v.Id, at);
                     continue;
                 }
                 // Prompt 17 C: a shield carrier keeps just behind the front line, its dome over the leading vehicles.
                 if (v.Def.Dome != null)
                 {
-                    var cover = world.Lanes.OffLane(Clamp(world, front - forward * 3f), 6f);
-                    if (Vector2.Distance(v.Position, cover) < 5f) continue;
-                    if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, cover) < 4f) continue;
+                    var cover = world.Lanes.OffLane(Clamp(world, front - forward * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportForwardScale2), global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportReach);
+                    if (Vector2.Distance(v.Position, cover) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportDistanceMax2) continue;
+                    if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, cover) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportDistanceMax3) continue;
                     Issue(world, CommandType.Move, v.Id, cover);
                     continue;
                 }
                 // AI MASTER P3 spec 140: an engineer takes the friend with the largest unreserved repair need.
                 if (v.Def.RepairAura != null && RepairTargetP3(world, v, spot) is { } fix)
                 {
-                    if (Vector2.Distance(v.Position, fix) > 6f && !(v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, fix) < 4f))
+                    if (Vector2.Distance(v.Position, fix) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportDistanceMin && !(v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, fix) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportDistanceMax3))
                         Issue(world, CommandType.Move, v.Id, fix);
                     continue;
                 }
-                if (Vector2.Distance(v.Position, spot) < 10f) continue;
-                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;
+                if (Vector2.Distance(v.Position, spot) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportDistanceMax4) continue;
+                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectSupportDistanceMax5) continue;
                 _ids.Add(v.Id);
             }
             if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, spot);
@@ -717,7 +717,7 @@ namespace MachineBrigade.Sim.AI
                 n++;
             }
             if (n == 0) return null;
-            var at = world.Lanes.OffLane(Clamp(world, sum / n - forward * 6f), 8f);
+            var at = world.Lanes.OffLane(Clamp(world, sum / n - forward * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ResupplySpotForwardScale), global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ResupplySpotReach);
             return Exposed(at, 2f) ? null : at;
         }
 
@@ -734,7 +734,7 @@ namespace MachineBrigade.Sim.AI
         {
             foreach (var v in vehicles)
             {
-                if (Vector2.Distance(v.Position, _fallBackPoint) < 12f) continue;
+                if (Vector2.Distance(v.Position, _fallBackPoint) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.CollectFallBackDistanceMax) continue;
                 if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, _fallBackPoint) < SameRendezvous) continue;
                 _ids.Add(v.Id);
             }
@@ -820,7 +820,7 @@ namespace MachineBrigade.Sim.AI
                 if (!e.HasStores || e.Supply == SupplyState.Fighting) continue;
                 // The nearest free fighter within reach goes after it.
                 Vehicle? hunter = null;
-                var best = 150f;
+                var best = global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.HuntRearmingBest;
                 foreach (var v in _fast)
                 {
                     if (!v.Def.Interceptor || v.Order.Kind == OrderKind.Attack) continue;
@@ -833,7 +833,7 @@ namespace MachineBrigade.Sim.AI
                 _fast.Remove(hunter);
                 Issue(world, CommandType.Attack, hunter.Id, e.Position, e.Id);
             }
-            if (aircraft < 3) return;
+            if (aircraft < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.HuntRearmingAircraftMax) return;
             Vehicle? supply = null;
             foreach (var e in _enemies)
                 if (e.IsAlive && (e.Def.Utility is { AirRepair: > 0f } || e.Def.AirRearm != null)) { supply = e; break; }
@@ -847,7 +847,7 @@ namespace MachineBrigade.Sim.AI
                     if (!strike && w.MinRange <= 0f) continue;
                     if (!w.CanTarget(false)) continue;
                     var d = Vector2.Distance(v.Position, supply.Position);
-                    if (d > w.Range + (strike ? 120f : 20f) || d < w.MinRange) continue;
+                    if (d > w.Range + (strike ? global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.HuntRearmingStrikeTrue : global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.HuntRearmingStrikeFalse) || d < w.MinRange) continue;
                     list.RemoveAt(i);
                     if (v.Order.Kind == OrderKind.Attack && v.Order.Target == supply.Id) continue;
                     Issue(world, CommandType.Attack, v.Id, supply.Position, supply.Id);
@@ -965,10 +965,10 @@ namespace MachineBrigade.Sim.AI
                 if (!Ready(v) || Busy(world, v)) continue;
                 var weapon = v.Def.Weapon;
                 // Autocannons and up plunder; a heavy machine gun (0.3 on a level-2 structure since DECISIONS 20X) does not.
-                if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) < 0.35f) continue;
-                if (NearestGround(v.Position, out _) < weapon.Range + 8f) continue;
+                if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.PlunderWithEffectiveMax) continue;
+                if (NearestGround(v.Position, out _) < weapon.Range + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.PlunderWithRangeAdd) continue;
                 Prop? best = null;
-                var bestDistance = weapon.Range + 2f;
+                var bestDistance = weapon.Range + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.PlunderWithRangeAdd2;
                 foreach (var id in buildings)
                 {
                     if (!world.TryGetProp(id, out var building) || !building.IsAlive) continue;
@@ -1005,25 +1005,25 @@ namespace MachineBrigade.Sim.AI
                 var closest = NearestGround(a.Position, out var threat);
                 // Play-test 5 (DECISIONS 20W): a siege tank does not run from what gets inside its mortar's reach: it
                 // fights it with its tank gun (it packs up for that by itself).
-                if (threat != null && closest < weapon.MinRange + 6f && a.Def.Deploy is { Siege: true } siege && siege.TankMount < a.Arms.Length &&
-                    closest <= a.Arms[siege.TankMount].Range + 4f)
+                if (threat != null && closest < weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunMinRangeAdd && a.Def.Deploy is { Siege: true } siege && siege.TankMount < a.Arms.Length &&
+                    closest <= a.Arms[siege.TankMount].Range + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunRangeAdd)
                 {
                     if (a.Order.Kind != OrderKind.Attack || a.Order.Target != threat.Id) Issue(world, CommandType.Attack, a.Id, threat.Position, threat.Id);
                     return;
                 }
-                if (threat != null && closest < weapon.MinRange + 6f)
+                if (threat != null && closest < weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunMinRangeAdd)
                 {
                     // Too close to shoot back: open the distance, by the best way out (never into the
                     // map's edge); cornered, it stays and its machine gun fights.
-                    if (world.EscapeRoute(a, threat.Position, weapon.MinRange + 14f - closest) is { } escape)
+                    if (world.EscapeRoute(a, threat.Position, weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunMinRangeAdd2 - closest) is { } escape)
                         Issue(world, CommandType.Move, a.Id, escape);
                     return;
                 }
                 // Kiting: outranging the nearest threat by 6 m or more, never let it into its own
                 // reach; back off to just beyond it, then fire again.
                 var reach = threat != null && threat.Def.Weapon.CanTarget(a.Flying) ? threat.Def.Weapon.Range : 0f;
-                if (reach > 0f && weapon.Range >= reach + 6f && closest < reach + 3f && a.Order.Kind != OrderKind.Move &&
-                    world.EscapeRoute(a, threat!.Position, reach + 10f - closest) is { } kite)
+                if (reach > 0f && weapon.Range >= reach + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunReachAdd && closest < reach + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunReachAdd2 && a.Order.Kind != OrderKind.Move &&
+                    world.EscapeRoute(a, threat!.Position, reach + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunReachAdd3 - closest) is { } kite)
                 {
                     Issue(world, CommandType.Move, a.Id, kite);
                     return;
@@ -1051,16 +1051,16 @@ namespace MachineBrigade.Sim.AI
                 // standoff only when no anchor spot exists.
                 if (AnchorStand(world, a, front, objective, forward, contact) is not { } stand)
                 {
-                    var standoff = contact || alone ? objective - forward * (weapon.Range * 0.7f) : front - forward * 18f;
-                    if (!alone && Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * 10f;
+                    var standoff = contact || alone ? objective - forward * (weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunRangeScale) : front - forward * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunForwardScale;
+                    if (!alone && Vector2.Distance(standoff, objective) < Vector2.Distance(front, objective)) standoff = front - forward * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunForwardScale2;
                     // Never into a known gun's reach: back along the line of advance until clear of it.
                     for (var step = 0; step < 8 && Exposed(standoff, StandoffMargin); step++) standoff -= forward * 6f;
                     // Guns deploy beside the roads and main routes, never in a gate: parked there they
                     // are what the rest of the army jams behind.
-                    stand = world.Lanes.OffLane(Clamp(world, standoff), 10f);
+                    stand = world.Lanes.OffLane(Clamp(world, standoff), global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunReach);
                 }
                 // Alone they attack-move, so they stop and fire at the first enemy that comes into sight.
-                if (Vector2.Distance(a.Position, stand) > 10f)
+                if (Vector2.Distance(a.Position, stand) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectGunDistanceMin)
                     Issue(world, alone && !contact ? CommandType.AttackMove : CommandType.Move, a.Id, stand);
             }
         }
@@ -1092,7 +1092,7 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>Standing at its firing spot (a move order it has as good as finished).</summary>
-        private static bool Standing(Vehicle v) => !v.HasPath || Vector2.Distance(v.Position, v.Order.Point) < 3f;
+        private static bool Standing(Vehicle v) => !v.HasPath || Vector2.Distance(v.Position, v.Order.Point) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.StandingDistanceMax;
 
         /// <summary>Firing-spot scoring: on a road, per main route through the cell, per friend parked within 7 m, open ground (another gun's booked spot is out).</summary>
         private const float SpotRoadPenalty = 12f, SpotRoutePenalty = 20f, SpotCrowdPenalty = 8f, SpotOpenBonus = 6f;
@@ -1116,7 +1116,7 @@ namespace MachineBrigade.Sim.AI
         {
             var weapon = shooter.Def.Weapon;
             var lanes = world.Lanes;
-            var low = weapon.MinRange + 2f;
+            var low = weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FiringSpotMinRangeAdd;
             Vector2? best = null;
             var bestScore = float.MaxValue;
             var start = SimMath.HeadingOf(shooter.Position - target);
@@ -1126,10 +1126,10 @@ namespace MachineBrigade.Sim.AI
             // Nearer rings (0.65, 0.55) only matter when the outer ones are all exposed or booked.
             foreach (var fraction in SpotRings)
             {
-                var distance = MathF.Max(low, weapon.Range * fraction + targetRadius * 0.5f);
+                var distance = MathF.Max(low, weapon.Range * fraction + targetRadius * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FiringSpotTargetRadiusScale);
                 if (distance > weapon.Range + targetRadius) continue;
                 // The outer ring first: a nearer ring has to be clearly better to win.
-                var ringPenalty = (0.95f - fraction) * weapon.Range * 0.5f;
+                var ringPenalty = (global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FiringSpotFractionSub - fraction) * weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FiringSpotFractionScale;
                 for (var k = 0; k < 24; k++)
                 {
                     // Bearings fan out from the side the gun is on: 0, +15, -15, +30 degrees and so on.
@@ -1139,7 +1139,7 @@ namespace MachineBrigade.Sim.AI
                     var f = lanes.At(p);
                     if ((f & LaneFlags.NoPark) != 0) continue;
                     if (pass == 0 && (f & LaneFlags.Route) != 0) continue;
-                    var score = Vector2.Distance(p, shooter.Position) + MathF.Abs(turn) * 4f + ringPenalty +
+                    var score = Vector2.Distance(p, shooter.Position) + MathF.Abs(turn) * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FiringSpotAbsScale + ringPenalty +
                                 ((f & LaneFlags.Road) != 0 ? SpotRoadPenalty : 0f) +
                                 ((f & LaneFlags.Route) != 0 ? SpotRoutePenalty * lanes.RouteCountAt(p) : 0f) -
                                 (lanes.ClearanceAt(p) >= 4 ? SpotOpenBonus : 0f);
@@ -1186,7 +1186,7 @@ namespace MachineBrigade.Sim.AI
         private bool ShellDefences(SimWorld world, Vehicle a)
         {
             var weapon = a.Def.Weapon;
-            if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) <= 0.2f) return false;
+            if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ShellDefencesEffectiveMax) return false;
             Vehicle? pick = null;
             var pickDistance = float.MaxValue;
             foreach (var d in _defences)
@@ -1204,7 +1204,7 @@ namespace MachineBrigade.Sim.AI
         {
             if (!DemolishTarget(world, out var at, out var radius, out var id)) return false;
             var weapon = a.Def.Weapon;
-            if (!weapon.CanTarget(false) || Vector2.Distance(a.Position, at) > weapon.Range + DefenceSearch * 2f) return false;
+            if (!weapon.CanTarget(false) || Vector2.Distance(a.Position, at) > weapon.Range + DefenceSearch * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ShellStructureDefenceSearchScale) return false;
             return ShellFromSafety(world, a, at, radius, id);
         }
 
@@ -1212,7 +1212,7 @@ namespace MachineBrigade.Sim.AI
         {
             var weapon = a.Def.Weapon;
             var distance = Vector2.Distance(a.Position, target) - radius;
-            var inRange = distance <= weapon.Range - 0.5f && distance >= weapon.MinRange + 1f;
+            var inRange = distance <= weapon.Range - global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ShellFromSafetyRangeSub && distance >= weapon.MinRange + 1f;
             // A wall fell and opened a breach where the gun stands: its spot is a doorway now, and it
             // moves off it to a new one rather than block the way in.
             if (a.Traffic.HasReservation && world.Lanes.NoParkAt(a.Traffic.ReservedAt))
@@ -1226,22 +1226,22 @@ namespace MachineBrigade.Sim.AI
                 return true;
             }
             if (FiringSpot(world, a, target, radius) is not { } spot) return false;
-            if (a.Order.Kind != OrderKind.Move || Vector2.Distance(a.Order.Point, spot) > 4f) Issue(world, CommandType.Move, a.Id, spot);
+            if (a.Order.Kind != OrderKind.Move || Vector2.Distance(a.Order.Point, spot) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ShellFromSafetyDistanceMin) Issue(world, CommandType.Move, a.Id, spot);
             return true;
         }
 
         /// <summary>Fast vehicles drive round the side of the fight, then attack from there.</summary>
         private void DirectFlankers(SimWorld world, Vector2 objective, Vector2 forward, bool contact)
         {
-            if (!contact || _fast.Count < 2 || _line.Count < 2)
+            if (!contact || _fast.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectFlankersCountMax || _line.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectFlankersCountMax)
             {
                 _line.AddRange(_fast); // not enough for a flank: they fight with the main body
                 return;
             }
             var side = new Vector2(-forward.Y, forward.X) * _flankSide;
-            var flankPoint = Clamp(world, objective + side * FlankOffset - forward * 6f);
+            var flankPoint = Clamp(world, objective + side * FlankOffset - forward * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectFlankersForwardScale);
             // A flank that runs into a tower's guns is no flank: they fight with the main body.
-            if (TowerSense && _defences.Count > 0 && Exposed(flankPoint, 2f))
+            if (TowerSense && _defences.Count > 0 && Exposed(flankPoint, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectFlankersMargin))
             {
                 _line.AddRange(_fast);
                 return;
@@ -1251,7 +1251,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var f in _fast)
             {
                 if (f.Order.Kind != OrderKind.Idle || Busy(world, f) || f.P4Held) continue;
-                if (!_flanked.Contains(f.Id) && Vector2.Distance(f.Position, flankPoint) < 9f) _flanked.Add(f.Id);
+                if (!_flanked.Contains(f.Id) && Vector2.Distance(f.Position, flankPoint) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectFlankersDistanceMax) _flanked.Add(f.Id);
                 if (_flanked.Contains(f.Id)) _otherIds.Add(f.Id);
                 else _ids.Add(f.Id);
             }
@@ -1289,7 +1289,7 @@ namespace MachineBrigade.Sim.AI
                 // stood there with nothing to shoot for a while goes for the nearest enemy it knows of (play-test 6).
                 _stale.Clear();
                 for (var i = _ids.Count - 1; i >= 0; i--)
-                    if (world.TryGetVehicle(_ids[i], out var there) && Vector2.Distance(there.Position, objective) < 8f)
+                    if (world.TryGetVehicle(_ids[i], out var there) && Vector2.Distance(there.Position, objective) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectMainBodyDistanceMax)
                     {
                         if (Stale(world, there)) _stale.Add(there.Id);
                         _ids.RemoveAt(i);
@@ -1302,12 +1302,12 @@ namespace MachineBrigade.Sim.AI
                 // An enemy fighting under its towers: go in only with the strength for both, else
                 // hold at the edge of their guns and let the enemy (and the artillery) come.
                 var into = Clamp(world, objective);
-                if (TowerSense && _defences.Count > 0 && Exposed(into, 2f) && !StrongEnough(world, into, lead.Position))
+                if (TowerSense && _defences.Count > 0 && Exposed(into, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectMainBodyMargin) && !StrongEnough(world, into, lead.Position))
                     into = EdgeBefore(world, into, lead.Position);
                 if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, into);
                 return;
             }
-            if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f))
+            if (_ids.Count < MathF.Ceiling(_line.Count * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectMainBodyCountScale))
             {
                 // Play-test 6: the line waits to gather, but not for ever: a vehicle idle past StaleIdle goes on.
                 _stale.Clear();
@@ -1320,10 +1320,10 @@ namespace MachineBrigade.Sim.AI
                 }
                 return;
             }
-            var goal = Clamp(world, leadDistance > BoundLength * 1.5f ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective);
+            var goal = Clamp(world, leadDistance > BoundLength * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectMainBodyBoundLengthScale ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective);
             // Into the reach of known defences only together: the next bound stops at the edge of
             // their guns until most of the line has gathered there, then everyone goes in at once.
-            if (_defences.Count > 0 && Exposed(goal, 2f))
+            if (_defences.Count > 0 && Exposed(goal, global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectMainBodyMargin))
             {
                 var edge = goal;
                 var back = Direction(goal, lead.Position);
@@ -1331,8 +1331,8 @@ namespace MachineBrigade.Sim.AI
                 edge = Clamp(world, edge);
                 var gathered = 0;
                 foreach (var v in _line)
-                    if (Vector2.Distance(v.Position, edge) < 16f) gathered++;
-                var together = gathered >= MathF.Ceiling(_line.Count * 0.8f);
+                    if (Vector2.Distance(v.Position, edge) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectMainBodyDistanceMax2) gathered++;
+                var together = gathered >= MathF.Ceiling(_line.Count * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectMainBodyCountScale2);
                 if (TowerSense)
                 {
                     // At the edge: go in once together and strong enough for the towers there (after
@@ -1368,7 +1368,7 @@ namespace MachineBrigade.Sim.AI
             var air = 0f;
             void Count(Vehicle v)
             {
-                if (Vector2.Distance(v.Position, from) >= 35f) return;
+                if (Vector2.Distance(v.Position, from) >= global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.StrongEnoughDistanceMin) return;
                 var p = v.Def.Power * (v.Hp / v.MaxHp);
                 ours += p;
                 if (v.Flying) air += p;
@@ -1379,12 +1379,12 @@ namespace MachineBrigade.Sim.AI
             var theirs = 0f;
             foreach (var d in _defences)
             {
-                var reach = GroundReach(d) + d.Radius + 8f;
+                var reach = GroundReach(d) + d.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.StrongEnoughGroundReachAdd;
                 if (Vector2.DistanceSquared(d.Position, target) < reach * reach) theirs += d.Def.Power * (d.Hp / d.MaxHp) * Threat(d, ours, fast, air);
             }
             foreach (var e in _enemies)
-                if (!e.Def.Static && !e.Flying && Vector2.Distance(e.Position, target) < 30f) theirs += e.Def.Power * (e.Hp / e.MaxHp);
-            return theirs <= 0.5f || ours >= theirs * odds;
+                if (!e.Def.Static && !e.Flying && Vector2.Distance(e.Position, target) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.StrongEnoughDistanceMax) theirs += e.Def.Power * (e.Hp / e.MaxHp);
+            return theirs <= global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.StrongEnoughTheirsMax || ours >= theirs * odds;
         }
 
         /// <summary>
@@ -1402,10 +1402,10 @@ namespace MachineBrigade.Sim.AI
                 ground |= m.Weapon.CanTarget(false);
                 sky |= m.Weapon.CanTarget(true);
             }
-            var slowCannon = d.Def.TurretTurnRate < 60f && d.Def.Weapon.Projectile == ProjectileKind.Shell && d.Def.Weapon.MinRange <= 0f;
+            var slowCannon = d.Def.TurretTurnRate < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ThreatTurretTurnRateMax && d.Def.Weapon.Projectile == ProjectileKind.Shell && d.Def.Weapon.MinRange <= 0f;
             var groundShare = (ours - air) / ours;
             var share = 0f;
-            if (ground) share += groundShare - (slowCannon ? 0.5f * fast / ours : 0f);
+            if (ground) share += groundShare - (slowCannon ? global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ThreatFastScale * fast / ours : 0f);
             if (sky) share += air / ours;
             return Math.Clamp(share, 0f, 1f);
         }
@@ -1447,7 +1447,7 @@ namespace MachineBrigade.Sim.AI
                 sum += v.Position;
                 count++;
             }
-            return count >= 2 ? sum / count : Centre(body);
+            return count >= global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.FrontOfCountMin ? sum / count : Centre(body);
         }
 
         /// <summary>
@@ -1459,16 +1459,16 @@ namespace MachineBrigade.Sim.AI
         private void GatherReinforcements(SimWorld world, Vector2 front)
         {
             _joining.Clear();
-            if (!world.TryGetRally(_team, out var home) || Vector2.Distance(front, home) < ReinforcementGap + HomeReach * 0.5f)
+            if (!world.TryGetRally(_team, out var home) || Vector2.Distance(front, home) < ReinforcementGap + HomeReach * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GatherReinforcementsHomeReachScale)
             {
                 _staged.Clear();
                 return;
             }
-            var staging = Clamp(world, home + Direction(home, front) * 22f);
+            var staging = Clamp(world, home + Direction(home, front) * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GatherReinforcementsDirectionScale);
             CollectJoining(world, home, front, _line);
             CollectJoining(world, home, front, _fast);
             // The army out in the field has to be more than these few, or they are the army.
-            if (_joining.Count == 0 || _line.Count + _fast.Count - _joining.Count < 2)
+            if (_joining.Count == 0 || _line.Count + _fast.Count - _joining.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GatherReinforcementsCountMax)
             {
                 _staged.Clear();
                 return;
@@ -1482,7 +1482,7 @@ namespace MachineBrigade.Sim.AI
             var oldest = world.Time;
             foreach (var v in _joining)
             {
-                if (Vector2.Distance(v.Position, staging) > 12f) continue;
+                if (Vector2.Distance(v.Position, staging) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GatherReinforcementsDistanceMin) continue;
                 if (!_staged.TryGetValue(v.Id, out var since)) _staged[v.Id] = since = world.Time;
                 waiting++;
                 oldest = Math.Min(oldest, since);
@@ -1498,8 +1498,8 @@ namespace MachineBrigade.Sim.AI
             {
                 _line.Remove(v);
                 _fast.Remove(v);
-                if (Vector2.Distance(v.Position, staging) < 10f) continue;
-                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, staging) < 8f) continue;
+                if (Vector2.Distance(v.Position, staging) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GatherReinforcementsDistanceMax) continue;
+                if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, staging) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.GatherReinforcementsDistanceMax2) continue;
                 _ids.Add(v.Id);
             }
             if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, staging);
@@ -1531,7 +1531,7 @@ namespace MachineBrigade.Sim.AI
                 {
                     if (!Stale(world, v)) continue;
                     var to = NearestGround(v.Position, out var near) < float.MaxValue && near != null ? near.Position : objective;
-                    if (Vector2.Distance(v.Position, to) < SameRendezvous * 0.5f) continue;
+                    if (Vector2.Distance(v.Position, to) < SameRendezvous * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.PushStaleSameRendezvousScale) continue;
                     Issue(world, CommandType.AttackMove, v.Id, Clamp(world, to));
                     _idleSince.Remove(v.Id);
                 }
@@ -1582,7 +1582,7 @@ namespace MachineBrigade.Sim.AI
             var count = 0;
             foreach (var e in _enemies)
             {
-                if (e.Flying || Vector2.Distance(e.Position, lead.Position) > 12f) continue;
+                if (e.Flying || Vector2.Distance(e.Position, lead.Position) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.NearestClusterDistanceMin) continue;
                 sum += e.Position;
                 count++;
             }
@@ -1599,7 +1599,7 @@ namespace MachineBrigade.Sim.AI
             {
                 if (!weapon.CanTarget(e.Flying)) continue;
                 var distance = Vector2.Distance(shooter.Position, e.Position);
-                if (distance < weapon.MinRange + 2f || distance > weapon.Range) continue;
+                if (distance < weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.TryFindClusterMinRangeAdd || distance > weapon.Range) continue;
                 var around = 0;
                 foreach (var other in _enemies)
                     if (other.Flying == e.Flying && Vector2.Distance(other.Position, e.Position) <= ClusterRadius) around++;
@@ -1645,7 +1645,7 @@ namespace MachineBrigade.Sim.AI
         {
             var d = to - from;
             var length = d.Length();
-            return length > 0.01f ? d / length : Vector2.UnitX;
+            return length > global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.DirectionLengthMin ? d / length : Vector2.UnitX;
         }
 
         private static Vector2 Clamp(SimWorld world, Vector2 p) => world.Map.Clamp(p, EdgeMargin);

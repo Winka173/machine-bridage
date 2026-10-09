@@ -69,10 +69,10 @@ namespace MachineBrigade.Sim.Navigation
             {
                 if (z.Tag == TerrainTag.Normal) continue;
                 // The cells whose centres lie inside [Min, Max).
-                var x0 = Math.Max(0, (int)MathF.Ceiling((z.Min.X - Origin.X) / CellSize - 0.5f));
-                var y0 = Math.Max(0, (int)MathF.Ceiling((z.Min.Y - Origin.Y) / CellSize - 0.5f));
-                var x1 = Math.Min(Width - 1, (int)MathF.Ceiling((z.Max.X - Origin.X) / CellSize - 0.5f) - 1);
-                var y1 = Math.Min(Height - 1, (int)MathF.Ceiling((z.Max.Y - Origin.Y) / CellSize - 0.5f) - 1);
+                var x0 = Math.Max(0, (int)MathF.Ceiling((z.Min.X - Origin.X) / CellSize - global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.SetTerrainXSub));
+                var y0 = Math.Max(0, (int)MathF.Ceiling((z.Min.Y - Origin.Y) / CellSize - global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.SetTerrainYSub));
+                var x1 = Math.Min(Width - 1, (int)MathF.Ceiling((z.Max.X - Origin.X) / CellSize - global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.SetTerrainXSub) - 1);
+                var y1 = Math.Min(Height - 1, (int)MathF.Ceiling((z.Max.Y - Origin.Y) / CellSize - global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.SetTerrainYSub) - 1);
                 for (var y = y0; y <= y1; y++)
                     for (var x = x0; x <= x1; x++)
                     {
@@ -123,21 +123,21 @@ namespace MachineBrigade.Sim.Navigation
         /// </summary>
         public void AddBlocker(Vector2 center, float width, float depth, float clearance)
         {
-            ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, +1);
+            ChangeRect(center, width + global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.AddBlockerClearanceScale * clearance, depth + global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.AddBlockerClearanceScale * clearance, +1);
             // (Routes planned across this ground are stale now: the movement system looks at these.)
             var half = new Vector2(width * 0.5f + clearance, depth * 0.5f + clearance);
             _closed.Add((center - half, center + half));
         }
 
         public void RemoveBlocker(Vector2 center, float width, float depth, float clearance) =>
-            ChangeRect(center, width + 2f * clearance, depth + 2f * clearance, -1);
+            ChangeRect(center, width + global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.RemoveBlockerClearanceScale * clearance, depth + global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.RemoveBlockerClearanceScale * clearance, -1);
 
         /// <summary>
         /// Prompt 31 L3: a prebuilt state's rectangle in (+1) or out (-1) without telling the routes (the load-time build and
         /// check of <see cref="NavStates"/>; a switch during the battle closes ground through <see cref="AddBlocker"/>).
         /// </summary>
         internal void Mark(NavBlock block, int delta) =>
-            ChangeRect(block.Center, block.Width + 2f * block.Clearance, block.Depth + 2f * block.Clearance, delta);
+            ChangeRect(block.Center, block.Width + global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.MarkClearanceScale * block.Clearance, block.Depth + global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.MarkClearanceScale * block.Clearance, delta);
 
         /// <summary>Blocks every cell whose centre fails <paramref name="open"/> for good (terrain outside the map's outline).</summary>
         public void BlockWhere(Func<Vector2, bool> open)
@@ -364,8 +364,8 @@ namespace MachineBrigade.Sim.Navigation
         {
             var delta = to - from;
             var length = delta.Length();
-            var side = length > 1e-5f ? new Vector2(-delta.Y, delta.X) * (CellSize * 0.25f / length) : Vector2.Zero;
-            var steps = Math.Max(1, (int)MathF.Ceiling(length / (CellSize * 0.25f)));
+            var side = length > 1e-5f ? new Vector2(-delta.Y, delta.X) * (CellSize * global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.LineOfSightCellSizeScale / length) : Vector2.Zero;
+            var steps = Math.Max(1, (int)MathF.Ceiling(length / (CellSize * global::MachineBrigade.Sim.Content.SimTunables.Maps.NavGrid.LineOfSightCellSizeScale)));
             for (var i = 0; i <= steps; i++)
             {
                 var p = from + delta * (i / (float)steps);

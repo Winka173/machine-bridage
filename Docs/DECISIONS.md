@@ -22094,3 +22094,33 @@ Owner 06/10 (Docs/prompts/requests_vi.md), branch feature/barrels; scope narrowe
   now runs (it crashed on cerberus before) and shows older SIMULTANEOUS models missing from MUZZLES.
 - Checks: glb_check (accepted, 0 errors), quality_gate battleship pass, runtime_node_audit 0 new hard, budget_audit 0 hard,
   dotnet build Sim 0 errors. No tests or Unity runs.
+
+## Pack 2 pass 2 (09/10)
+
+Owner 09/10 ("xuất toàn bộ các hằng số còn thiếu ra file data"): balance pack 2 pass 2 (Docs/prompts/export_pack2_vi.txt §1,
+§2, §3, §6). Branch feature/pack2-pass2 (worktree MachineBrigade-bal) from lead b70288428. Theory only: no Unity, no tests, no
+export.py. Full report: Docs/export/CHANGES.md "Gói 2 lượt 2 (09/10)".
+- Tool: Tools/export/literal_to_tunable.py drives the Roslyn tool Tools/export/mbconst (plan / move / check / status / drop).
+  mbconst gained: a column-exact token pick, signed moves ("-x" replaced whole, key = -x), --static-init (literals inside
+  static readonly tables / expressions replaced in place), --param-defaults ("T x = lit" -> "T? x = null" + "(x ?? key)": names
+  kept so named arguments still bind; the checker undoes the pattern, requires every read wrapped and rebuilds the tree),
+  table key names (row id + path: longBarrelTop3, reyesLinesDamageAircraft, rebuild2Cooldown), Sim/AI/** in the ai lane, and
+  output to new generated files SimTunables.Pass2.<Domain>.cs (pass-1 Pack2 files untouched; the bosses one holds hand-written
+  AI MASTER fields the generator cannot round-trip). Registered in SimTunables.Pack2.cs Pack2Entries.
+- Policy (literal_to_tunable.py, written as rules with a reason each): a scan_constants "co" row moves when the Roslyn scan
+  calls it gameplay; it stays when proven math / geometry (half-extents, centring, epsilons, zero-length guards, smoothstep,
+  sqrt 2, octile), index / structure (stage ids, case labels, patterns, table dimensions, rarity bounds), presentation (radio,
+  toasts, front map, decision-log text), infrastructure (hash mix, RNG salts, cache caps, sentinels, capacities, logs), tool
+  (sandbox lab, stress scenes, topology audits) or meta (after-battle coins, daily missions). Rows the scan misfiled by name
+  ("Format" in Formation, "Mix" in EnemyMix, data-read fallbacks, parse clamps, unreachable gameplay data) move anyway; doubt
+  counts as gameplay (§3.1). Game/Match: only Sim-affecting numbers (gear tables, gear rolls, mode session setups, VehicleFit).
+- Result: 3 607 literals (3 608 reads) -> 3 357 new keys (tunables.json 864 -> 4 221): weapons 308, vehicles 1 046, bosses 284,
+  bases / towers 99, modes + campaign 492, AI + maps + rest 1 379; 686 left with a reason in Tools/export/pack2/pass2/excluded.csv;
+  scan_constants "co" left: 0 (it now marks the excluded rows "khong"). 11 moves undone with `drop` (FrontMap drawing, decision
+  log reason counts); 26 math sites moved before their rule existed are kept (same value, listed in CHANGES).
+- Proof (§2.2, base b70288428 -> head): a-e PASS (2 026 hunks literal-only, 0 type changes, 52 compile-time folds now at run
+  time, single float ops); Roslyn Sim + Game compile 0 errors / 0 new warnings; dotnet build Tools/simbuild/Sim.csproj 0 errors;
+  the check now also compiles Editor + EditMode tests with dotnet against the Unity 6 DLLs: 0 new errors; every tunables.json
+  leaf mapped by Tools/export/core/tunables.py. Commit per domain after its check.
+- Open: static readonly tables read their keys once at first use (an edit applies if LoadCatalog ran first); key names are
+  generated (file:line in "code"); ReplayHashTests baseline and TunablesTests are the owner's runs (commands in CHANGES).

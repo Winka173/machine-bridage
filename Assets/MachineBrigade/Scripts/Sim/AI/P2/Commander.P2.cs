@@ -47,13 +47,13 @@ namespace MachineBrigade.Sim.AI
             var u = 0f;
             if (world.TryGetRally(Team, out var home))
                 foreach (var e in intel.Events)
-                    if (e.Kind is IntelEventKind.Threat or IntelEventKind.ObjectivePressure && e.Priority >= 60f && Vector2.Distance(e.Centre, home) < 50f) u = MathF.Max(u, 1f);
+                    if (e.Kind is IntelEventKind.Threat or IntelEventKind.ObjectivePressure && e.Priority >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.UpdateUrgencyPriorityMin && Vector2.Distance(e.Centre, home) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.UpdateUrgencyDistanceMax) u = MathF.Max(u, 1f);
             if (world.Intel.Objectives is { } objectives)
             {
                 var lost = 0;
                 foreach (var p in objectives.Points)
                     if (p.Owner == EnemyTeam) lost++;
-                if (objectives.Points.Count > 0) u = MathF.Max(u, 0.5f * lost / objectives.Points.Count);
+                if (objectives.Points.Count > 0) u = MathF.Max(u, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.UpdateUrgencyLostScale * lost / objectives.Points.Count);
             }
             if (world.Intel.Objectives is Modes.ShowdownMode showdown)
             {
@@ -61,7 +61,7 @@ namespace MachineBrigade.Sim.AI
                 if (left < Tun.ModeDoctrine.UrgencyEndSeconds) u = MathF.Max(u, 1f - left / MathF.Max(1f, Tun.ModeDoctrine.UrgencyEndSeconds));
             }
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && v.Def.Boss && v.Team == EnemyTeam && v.Phase >= 2) u = MathF.Max(u, 0.5f);
+                if (v.IsAlive && v.Def.Boss && v.Team == EnemyTeam && v.Phase >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.UpdateUrgencyPhaseMin) u = MathF.Max(u, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.UpdateUrgencyUFloor);
             _urgency = Math.Clamp(u, 0f, 1f);
         }
 
@@ -157,7 +157,7 @@ namespace MachineBrigade.Sim.AI
         {
             var list = new List<Squad>();
             var (min, max) = world.Doctrine.ReserveShareOf(Team);
-            if (max <= 0f || squads.Count < 2 || total <= 0f || !home.HasValue || CurrentTactic.Modules.HoldBase) return list;
+            if (max <= 0f || squads.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PickReserveCountMax || total <= 0f || !home.HasValue || CurrentTactic.Modules.HoldBase) return list;
             var d = world.Doctrine.For(Team);
             var candidates = new List<Squad>();
             foreach (var s in squads)
@@ -187,7 +187,7 @@ namespace MachineBrigade.Sim.AI
         /// <summary>The reserve's place: a third of the way from home to the main objective, on open ground off the routes.</summary>
         private static Vector2 ReserveSpot(SimWorld world, Vector2 home, Vector2 target)
         {
-            var p = world.Map.Clamp(Vector2.Lerp(home, target, 0.35f), 8f);
+            var p = world.Map.Clamp(Vector2.Lerp(home, target, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ReserveSpotHomeLerp), global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ReserveSpotMargin);
             return world.Lanes.OffLane(p, 12f);
         }
 
@@ -203,16 +203,16 @@ namespace MachineBrigade.Sim.AI
             foreach (var e in intel.Events)
             {
                 if (e.Kind != IntelEventKind.Threat || e.Priority < 70f || e.Confidence < 0.5f) continue;
-                if (home is { } h && Vector2.Distance(e.Centre, h) < 60f) return e.Centre;
+                if (home is { } h && Vector2.Distance(e.Centre, h) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ReserveTriggerDistanceMax) return e.Centre;
                 if (d.ReserveEmergencyOnly) continue;
                 foreach (var s in Squads.Squads)
-                    if (!s.IsReserve && Vector2.Distance(s.Centre, e.Centre) < 50f) return e.Centre;
+                    if (!s.IsReserve && Vector2.Distance(s.Centre, e.Centre) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ReserveTriggerDistanceMax2) return e.Centre;
             }
             if (d.ReserveEmergencyOnly) return null;
             foreach (var s in Squads.Squads)
             {
                 if (s.IsReserve || s.State != SquadState.Combat) continue;
-                var (own, enemy) = intel.StrengthAround(s.Centre, MathF.Max(40f, s.Reach));
+                var (own, enemy) = intel.StrengthAround(s.Centre, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.ReserveTriggerReachFloor, s.Reach));
                 if (enemy > 0f && own / enemy < 0.6f) return s.Centre;
             }
             return null;
@@ -224,7 +224,7 @@ namespace MachineBrigade.Sim.AI
             float air = 0f, armour = 0f, all = 0f;
             foreach (var c in intel.Contacts)
             {
-                if (Vector2.Distance(c.Position, at) > 80f) continue;
+                if (Vector2.Distance(c.Position, at) > global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.DemandDistanceMin) continue;
                 all += c.Strength;
                 if (c.Flying) air += c.Strength;
                 else if (c.Group == ForceGroup.Armour) armour += c.Strength;
@@ -249,7 +249,7 @@ namespace MachineBrigade.Sim.AI
                 if (role == DoctrineRole.Recon) recon = 1f;
             }
             var roleFit = (aa * demand.aa + at * demand.at + recon * demand.recon) * 10f;
-            var distanceFit = 10f * (1f - Math.Clamp(Vector2.Distance(s.Centre, to) / 300f, 0f, 1f));
+            var distanceFit = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AssignmentScoreClampScale * (1f - Math.Clamp(Vector2.Distance(s.Centre, to) / global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AssignmentScoreDistanceDivisor, 0f, 1f));
             var current = s.Task.Kind == TaskKind.Primary ? 5f : 0f;
             var topology = world.Topology;
             var domain = 0f;

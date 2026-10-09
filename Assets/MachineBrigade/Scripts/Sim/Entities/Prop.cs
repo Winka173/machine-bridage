@@ -20,7 +20,7 @@ namespace MachineBrigade.Sim.Entities
             Width = sideways ? def.Depth : def.Width;
             Depth = sideways ? def.Width : def.Depth;
             // A diagonal prop (a bridge across a diagonal river) keeps the square that bounds it.
-            if (rotation % 90 != 0) Width = Depth = (def.Width + def.Depth) * 0.70710677f;
+            if (rotation % 90 != 0) Width = Depth = (def.Width + def.Depth) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Prop.CtorWidthScale;
         }
 
         public EntityId Id { get; }
@@ -37,7 +37,7 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Footprint along Y after rotation.</summary>
         public float Depth { get; }
 
-        public float Radius => MathF.Max(Width, Depth) * 0.5f;
+        public float Radius => MathF.Max(Width, Depth) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Prop.RadiusMaxScale;
         public ArmorClass Armor => Def.Armor;
         public TargetKind Kind => Def.Kind;
         public ArmourLevels Armour => Def.Armour;

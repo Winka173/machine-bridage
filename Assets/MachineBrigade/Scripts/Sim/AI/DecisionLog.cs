@@ -200,7 +200,7 @@ namespace MachineBrigade.Sim.AI
                 if (kind == DecisionKind.Action) TotalActions++;
                 else if (kind == DecisionKind.State) TotalStates++;
                 else if (kind == DecisionKind.Target) TotalTargets++;
-                while (_recent.Count > 0 && now - _recent.Peek().at > 60.0) _recent.Dequeue();
+                while (_recent.Count > 0 && now - _recent.Peek().at > global::MachineBrigade.Sim.Content.SimTunables.Ai.Churn.AddNowMin) _recent.Dequeue();
             }
 
             public (int, int, int) LastMinute(double now)
@@ -208,7 +208,7 @@ namespace MachineBrigade.Sim.AI
                 int a = 0, s = 0, t = 0;
                 foreach (var (at, kind) in _recent)
                 {
-                    if (now - at > 60.0) continue;
+                    if (now - at > global::MachineBrigade.Sim.Content.SimTunables.Ai.Churn.LastMinuteNowMin) continue;
                     if (kind == DecisionKind.Action) a++;
                     else if (kind == DecisionKind.State) s++;
                     else if (kind == DecisionKind.Target) t++;

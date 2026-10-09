@@ -63,7 +63,7 @@ namespace MachineBrigade.Sim.Modes
         }
 
         /// <summary>How close a side's ground vehicles must stand to take a site (the view's capture ring).</summary>
-        public float CaptureRadius => N("captureRadius", 10f);
+        public float CaptureRadius => N("captureRadius", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.CaptureRadiusFallback);
 
         private float N(string key, float fallback) => _world.Catalog.Neutrals.Get(key, fallback);
 
@@ -123,7 +123,7 @@ namespace MachineBrigade.Sim.Modes
                 switch (s.Def.Kind)
                 {
                     case "radar":
-                        _world.Strikes.AddScan(s.Team, s.Def.At, N("radar.radius", 45f), Interval * 2f);
+                        _world.Strikes.AddScan(s.Team, s.Def.At, N("radar.radius", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.StepFallback), Interval * global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.StepIntervalScale);
                         break;
                     case "workshop":
                         Mend(s, step);
@@ -157,16 +157,16 @@ namespace MachineBrigade.Sim.Modes
                 // Its gun destroyed: abandoned, usable again after a while.
                 s.Team = -1;
                 s.Gun = EntityId.None;
-                s.RebuildAt = _world.Time + N("aa.rebuild", 60f);
+                s.RebuildAt = _world.Time + N("aa.rebuild", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.CaptureFallback);
             }
             if (_world.Time < s.RebuildAt) return;
-            var side = Holder(s.Def.At, N("captureRadius", 10f));
+            var side = Holder(s.Def.At, N("captureRadius", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.CaptureFallback2));
             if (side < 0 || side == s.Team)
             {
                 if (side < 0) s.Progress = 0f;
                 return;
             }
-            s.Progress = s.ProgressTeam == side ? s.Progress + dt / N("captureSeconds", 8f) : dt / N("captureSeconds", 8f);
+            s.Progress = s.ProgressTeam == side ? s.Progress + dt / N("captureSeconds", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.CaptureFallback3) : dt / N("captureSeconds", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.CaptureFallback3);
             s.ProgressTeam = side;
             if (s.Progress < 1f) return;
             s.Team = side;
@@ -186,8 +186,8 @@ namespace MachineBrigade.Sim.Modes
 
         private void Mend(Site s, float dt)
         {
-            var radius = N("workshop.radius", 14f);
-            var rate = N("workshop.repair", 0.015f);
+            var radius = N("workshop.radius", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.MendFallback);
+            var rate = N("workshop.repair", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.MendFallback2);
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Team != s.Team || v.Flying || v.Def.Static || v.Def.Boss || v.Hp >= v.MaxHp) continue;
@@ -200,8 +200,8 @@ namespace MachineBrigade.Sim.Modes
 
         private void Resupply(Site s, float dt)
         {
-            var radius = N("ammo.radius", 14f);
-            var every = N("ammo.seconds", 6f);
+            var radius = N("ammo.radius", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.ResupplyFallback);
+            var every = N("ammo.seconds", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.ResupplyFallback2);
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Team != s.Team || v.Def.Static || !v.NeedsAmmo) continue;
@@ -216,7 +216,7 @@ namespace MachineBrigade.Sim.Modes
         private void Blow(Site s)
         {
             s.Gone = true;
-            _world.Damage.Splash(s.Def.At, N("ammo.blast", 14f), N("ammo.damage", 300f), DamageType.HighExplosive, Teams.Environment, EntityId.None);
+            _world.Damage.Splash(s.Def.At, N("ammo.blast", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.BlowFallback), N("ammo.damage", global::MachineBrigade.Sim.Content.SimTunables.Modes.NeutralSystem.BlowFallback2), DamageType.HighExplosive, Teams.Environment, EntityId.None);
         }
     }
 

@@ -186,7 +186,7 @@ namespace MachineBrigade.Sim.Sandbox
                 supports.RemoveAll(id => !catalog.TryGetSupport(id, out _));
                 _unlimited[team] = side.Cp < 0f;
                 var start = _unlimited[team] ? UnlimitedCp : side.Cp;
-                var economy = new TeamEconomy(team, start, income: _unlimited[team] ? 0f : side.Income, bank: _unlimited[team] ? UnlimitedCp : MathF.Max(30f, side.Cp),
+                var economy = new TeamEconomy(team, start, income: _unlimited[team] ? 0f : side.Income, bank: _unlimited[team] ? UnlimitedCp : MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxBattle.SetupCpFloor, side.Cp),
                     vehicles: deck, supports: supports) { VehicleCap = SandboxRules.VehicleCap };
                 world.EnableEconomy(economy);
                 _cooldowns[team] = side.Cooldowns;
@@ -279,7 +279,7 @@ namespace MachineBrigade.Sim.Sandbox
             var id = u.Elite && catalog.EliteVariant(u.Def) is { } elite ? elite : u.Def;
             if (!catalog.Vehicles.TryGetValue(id, out var def)) return null;
             var v = world.SpawnBoosted(id, u.Team, u.Position, SimMath.DegToRad(u.Heading), Boost?.Invoke(u, def));
-            v.Hp = MathF.Max(1f, v.MaxHp * Math.Clamp(u.Hp, 1, 100) / 100f);
+            v.Hp = MathF.Max(1f, v.MaxHp * Math.Clamp(u.Hp, 1, global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxBattle.PlaceHpMax) / global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxBattle.PlaceMaxHpDivisor);
             if (u.Ammo < 100) SetAmmo(v, u.Ammo);
             if (u.Immortal) _immortal.Add(v.Id.Value);
             if (u.Boss is { } boss && def.Boss)

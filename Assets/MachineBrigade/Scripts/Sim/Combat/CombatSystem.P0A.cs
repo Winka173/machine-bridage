@@ -189,7 +189,7 @@ namespace MachineBrigade.Sim.Combat
             {
                 // Spec 89: AimPenalty = exp(-AimSeconds / 4).
                 var aim = AimSeconds(v, index, other.Position);
-                if (aim > 0f) worth *= MathF.Exp(-aim / MathF.Max(0.1f, AimTau));
+                if (aim > 0f) worth *= MathF.Exp(-aim / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P0AWorthAimTauFloor, AimTau));
                 // Spec 45: the current target +15 % for 1.5 s after it was acquired.
                 var state = v.Weapons[index];
                 if (state.Target == other.Id && now - state.AcquiredAt < StickSeconds) worth *= 1f + StickBonus;
@@ -197,7 +197,7 @@ namespace MachineBrigade.Sim.Combat
             // Spec 46 + Part H: ThreatToObjective, weighted against ThreatToSelf (the old score's threat factors).
             var objective = ThreatToObjective(v, other);
             if (objective > 0f)
-                worth *= 1f + objective * SimTunables.Ai.Targeting.ThreatToObjectiveWeight / MathF.Max(0.01f, SimTunables.Ai.Targeting.ThreatToSelfWeight);
+                worth *= 1f + objective * SimTunables.Ai.Targeting.ThreatToObjectiveWeight / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P0AWorthThreatToSelfWeightFloor, SimTunables.Ai.Targeting.ThreatToSelfWeight);
             // Part B B2 / B3.
             // AI MASTER P2: Part B B4-B13 role ladders (via DoctrineWorth) and Part I mode target weights.
             worth *= DoctrineWorth(v, other, weapon) * P2ModeWorth(v, other, weapon);
@@ -233,7 +233,7 @@ namespace MachineBrigade.Sim.Combat
         internal bool OverkillExempt(Vehicle v, Vehicle other)
         {
             if (other.HasParts && _world.Bosses.IsFocused(v.Team, other.Id)) return true;
-            if (v.Gear != null && v.Gear.Has(TraitId.Executioner) && other.Hp < other.MaxHp * 0.3f) return true;
+            if (v.Gear != null && v.Gear.Has(TraitId.Executioner) && other.Hp < other.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.OverkillExemptMaxHpScale) return true;
             if (v.ManualOrder && v.Order.Kind == OrderKind.Attack && v.Order.Target == other.Id) return true;
             if (other.Def.Boss || Worth(other) >= SimTunables.Ai.Targeting.OverkillDangerWorth) return true;
             return false;
@@ -257,16 +257,16 @@ namespace MachineBrigade.Sim.Combat
                     if (point.Owner == other.Team) continue;
                     var reach = point.Def.Radius + other.Radius;
                     if (Vector2.DistanceSquared(point.Def.Position, other.Position) > reach * reach) continue;
-                    threat = MathF.Max(threat, point.Owner == v.Team ? 1f : 0.7f);
+                    threat = MathF.Max(threat, point.Owner == v.Team ? 1f : global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ThreatToObjectiveOwnerFalse);
                 }
             var shotAt = _world.TryGetVehicle(other.Target, out var victim) && victim.Team == v.Team ? victim : null;
             // Escort: the unit damaging the convoy outranks a distant heavy.
             if (_world.ConvoySafeZone != null && other.Def.Weapon.Damage > 0f)
                 foreach (var truck in _world.ConvoySafeZone())
                 {
-                    if (shotAt != null && Vector2.DistanceSquared(shotAt.Position, truck) < 9f) return 1f;
-                    var reach = other.Def.Weapon.Range + 2f;
-                    if (Vector2.DistanceSquared(truck, other.Position) <= reach * reach) threat = MathF.Max(threat, 0.5f);
+                    if (shotAt != null && Vector2.DistanceSquared(shotAt.Position, truck) < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ThreatToObjectiveDistanceSquaredMax) return 1f;
+                    var reach = other.Def.Weapon.Range + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ThreatToObjectiveRangeAdd;
+                    if (Vector2.DistanceSquared(truck, other.Position) <= reach * reach) threat = MathF.Max(threat, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ThreatToObjectiveThreatFloor);
                 }
             // Defend: a breacher threatening the gate or wall rises sharply.
             if ((other.Def.Breacher || other.Def.WallBreaker) && _world.HasWalls)
@@ -287,10 +287,10 @@ namespace MachineBrigade.Sim.Combat
                     return 1f;
                 if (v.Order.Kind == OrderKind.Attack && v.Order.Target != other.Id && _world.TryGetVehicle(v.Order.Target, out var mine) && mine.Def.Static &&
                     Vector2.Distance(mine.Position, other.Position) <= other.Def.Weapon.Range + mine.Radius)
-                    threat = MathF.Max(threat, 0.8f);
+                    threat = MathF.Max(threat, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ThreatToObjectiveThreatFloor2);
             }
             // Anything shooting at one of our structures (a base, a wall, a defence).
-            if (shotAt != null && shotAt.Def.Static) threat = MathF.Max(threat, 0.6f);
+            if (shotAt != null && shotAt.Def.Static) threat = MathF.Max(threat, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ThreatToObjectiveThreatFloor3);
             return threat;
         }
 

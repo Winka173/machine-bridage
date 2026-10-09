@@ -48,7 +48,7 @@ namespace MachineBrigade.Sim.Combat
                 }
                 var at = RoundAt(round);
                 var weapon = v.Def.Weapon;
-                v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, SimMath.HeadingOf(at - v.Position), 720f * dt);
+                v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, SimMath.HeadingOf(at - v.Position), global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.EngageIncomingDtScale * dt);
                 _world.Emit(SimEvent.PointDefence(v, weapon, at, RoundHeight(round), BurstRoundsPerStep));
                 if (now - v.PdSince + 1e-6 < v.PdBurst) continue;
                 // The burst has run: the round is down, one interceptor's worth spent (the old one-shot rules).
@@ -116,7 +116,7 @@ namespace MachineBrigade.Sim.Combat
             var done = p.Flight > 0f ? Math.Clamp(1f - p.TimeLeft / p.Flight, 0f, 1f) : 1f;
             // Play-test 13 (lane C): the weapon's flight profile sets the arc (ballistic, lofted, direct).
             var share = p.Weapon.ArcShare;
-            return 1.5f + Vector2.Distance(p.Origin, p.AimPoint) * share * 4f * done * (1f - done);
+            return global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.RoundHeightDistanceAdd + Vector2.Distance(p.Origin, p.AimPoint) * share * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.RoundHeightDistanceScale * done * (1f - done);
         }
 
         /// <summary>Takes a round out of the air before it lands (its expected damage off its target's books).</summary>
@@ -129,7 +129,7 @@ namespace MachineBrigade.Sim.Combat
             p.TimeLeft = 0f;
             if (p.Incoming > 0f && _incoming.TryGetValue(p.Target, out var due))
             {
-                if (due - p.Incoming > 0.01f) _incoming[p.Target] = due - p.Incoming;
+                if (due - p.Incoming > global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.RemoveRoundDueMin) _incoming[p.Target] = due - p.Incoming;
                 else _incoming.Remove(p.Target);
             }
         }

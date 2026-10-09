@@ -99,7 +99,7 @@ namespace MachineBrigade.Sim.AI
                 var normal = Dir(own, goal);
                 var centre = Vector2.Lerp(own, goal, 0.6f);
                 var (f, e) = intel.StrengthAround(centre, cell * 3f);
-                AddFinal(centre, normal, f, e, 60f, 0.3f, now);
+                AddFinal(centre, normal, f, e, global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.RebuildWidth, global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.RebuildConfidence, now);
             }
         }
 
@@ -108,7 +108,7 @@ namespace MachineBrigade.Sim.AI
             var centre = Vector2.Zero;
             foreach (var c in cells) centre += intel.CellCentre(c);
             centre /= cells.Count;
-            var radius = cell * 3f;
+            var radius = cell * global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddSegmentCellScale;
             // Own and enemy weight round it give the normal (own -> enemy); remembered threat counts for the enemy (recent combat).
             Vector2 ownSum = Vector2.Zero, enemySum = Vector2.Zero;
             float own = 0f, enemy = 0f;
@@ -122,7 +122,7 @@ namespace MachineBrigade.Sim.AI
                 if (x < 0 || y < 0 || x >= intel.Columns || y >= intel.Rows) continue;
                 var i = y * intel.Columns + x;
                 var p = intel.CellCentre(i);
-                var e = MathF.Max(intel.Enemy[i], 0.5f * memory.ThreatMemory(p, now));
+                var e = MathF.Max(intel.Enemy[i], global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddSegmentThreatMemoryScale * memory.ThreatMemory(p, now));
                 ownSum += p * intel.Own[i];
                 enemySum += p * e;
                 own += intel.Own[i];
@@ -140,24 +140,24 @@ namespace MachineBrigade.Sim.AI
             var width = hi - lo + cell;
             // A choke on the segment narrows what can actually fight there (spec 126).
             foreach (var ch in world.Topology.Chokes)
-                if (Vector2.Distance(ch.Centre, centre) <= radius) width = MathF.Min(width, MathF.Max(ch.Width, 4f));
+                if (Vector2.Distance(ch.Centre, centre) <= radius) width = MathF.Min(width, MathF.Max(ch.Width, global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddSegmentWidthFloor));
             // Confidence: the contacts behind it.
             float sum = 0f, w = 0f;
             foreach (var c in intel.Contacts)
             {
-                if (Vector2.Distance(c.Position, centre) > radius * 1.5f) continue;
-                sum += c.Confidence(world.Time, intel.ConfidenceDecay) * MathF.Max(0.1f, c.Strength);
-                w += MathF.Max(0.1f, c.Strength);
+                if (Vector2.Distance(c.Position, centre) > radius * global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddSegmentRadiusScale) continue;
+                sum += c.Confidence(world.Time, intel.ConfidenceDecay) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddSegmentStrengthFloor, c.Strength);
+                w += MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddSegmentStrengthFloor, c.Strength);
             }
-            AddFinal(centre, normal, own, enemy, width, w > 0f ? sum / w : 0.4f, now);
+            AddFinal(centre, normal, own, enemy, width, w > 0f ? sum / w : global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddSegmentWFalse, now);
         }
 
         private void AddFinal(Vector2 centre, Vector2 normal, float own, float enemy, float width, float confidence, double now)
         {
             var since = now;
             for (var i = 0; i < _previous.Count; i++)
-                if (Vector2.Distance(_previous[i].Centre, centre) < 12f) since = Math.Min(since, _previousSince[i]);
-            _segments.Add(new FrontSegment(centre, normal, own, enemy, (float)Math.Clamp((now - since) / 10.0, 0.0, 1.0), width, confidence));
+                if (Vector2.Distance(_previous[i].Centre, centre) < global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddFinalDistanceMax) since = Math.Min(since, _previousSince[i]);
+            _segments.Add(new FrontSegment(centre, normal, own, enemy, (float)Math.Clamp((now - since) / global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.AddFinalNowDivisor, 0.0, 1.0), width, confidence));
             _since.Add(since);
         }
 
@@ -197,7 +197,7 @@ namespace MachineBrigade.Sim.AI
             {
                 var s = _segments[i];
                 if (s.EnemyPressure <= 0f) continue;
-                var ratio = s.EnemyPressure / MathF.Max(0.1f, s.FriendlyPressure);
+                var ratio = s.EnemyPressure / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.FrontlineModel.WeakestFriendlyPressureFloor, s.FriendlyPressure);
                 if (ratio > bestRatio)
                 {
                     bestRatio = ratio;

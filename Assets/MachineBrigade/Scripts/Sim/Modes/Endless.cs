@@ -70,6 +70,6 @@ namespace MachineBrigade.Sim.Modes
         public static int BadgeAt(int steps, bool bosses = false) => Array.IndexOf(bosses ? BossBadges : WaveBadges, steps) >= 0 ? steps : 0;
 
         /// <summary>Survival: what a wave brings: 2 a main boss, 1 a mini boss, 0 none.</summary>
-        public static int BossOfWave(int wave) => wave <= 0 ? 0 : wave % BossEvery == 0 ? 2 : wave % MiniBossEvery == 0 ? 1 : 0;
+        public static int BossOfWave(int wave) => wave <= 0 ? 0 : wave % BossEvery == 0 ? global::MachineBrigade.Sim.Content.SimTunables.Modes.EndlessRules.BossOfWaveWaveTrue : wave % MiniBossEvery == 0 ? 1 : 0;
     }
 }

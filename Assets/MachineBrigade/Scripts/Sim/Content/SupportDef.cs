@@ -89,7 +89,7 @@ namespace MachineBrigade.Sim.Content
             DamageType = damageType;
             Tier = tier;
             Length = Guard.NonNegative(length, id, nameof(length));
-            BlastRadius = blastRadius > 0f ? blastRadius : Math.Min(radius, 6f);
+            BlastRadius = blastRadius > 0f ? blastRadius : Math.Min(radius, global::MachineBrigade.Sim.Content.SimTunables.Ai.SupportDef.CtorRadiusCap);
         }
 
         public string Id { get; }

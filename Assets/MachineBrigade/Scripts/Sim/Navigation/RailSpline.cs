@@ -38,7 +38,7 @@ namespace MachineBrigade.Sim.Navigation
         public float Length { get; }
 
         /// <summary>Half the stretch of rail it covers, either side of <see cref="S"/>.</summary>
-        public float Half => MathF.Max(Width, Depth) * 0.5f;
+        public float Half => MathF.Max(Width, Depth) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailCrossingDef.HalfMaxScale;
     }
 
     /// <summary>
@@ -90,14 +90,14 @@ namespace MachineBrigade.Sim.Navigation
 
         /// <summary>Whether an end of the play stretch is an entry gate (the rail runs on out of the map there) rather than a buffer stop.</summary>
         public bool GateAtFrom => PlayFrom > 0.01f;
-        public bool GateAtTo => PlayTo < Length - 0.01f;
+        public bool GateAtTo => PlayTo < Length - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSpline.GateAtToLengthSub;
 
         public IReadOnlyList<RailCrossingDef> Crossings { get; }
 
         private int SegmentAt(float s)
         {
             if (s <= 0f) return 0;
-            if (s >= Length) return _points.Length - 2;
+            if (s >= Length) return _points.Length - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSpline.SegmentAtLengthSub;
             int lo = 0, hi = _points.Length - 1;
             while (hi - lo > 1)
             {

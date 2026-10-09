@@ -90,7 +90,7 @@ namespace MachineBrigade.Sim.Entities
             var d = p - Centre;
             if (!Rect)
             {
-                var dir = d.LengthSquared() > 0.01f ? Vector2.Normalize(d) : fallback;
+                var dir = d.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BigZone.ExitsLengthSquaredMin ? Vector2.Normalize(d) : fallback;
                 return (Centre + dir * (Radius + margin), Centre - dir * (Radius + margin));
             }
             var across = new Vector2(Axis.Y, -Axis.X);

@@ -32,7 +32,7 @@ namespace MachineBrigade.Sim.Bosses
             if (Vector2.DistanceSquared(v.Position, v.TrailFrom) < trail.Every * trail.Every) return;
             v.TrailFrom = v.Position;
             // Behind the hull, where it has just been.
-            var at = _world.ClampToMap(v.Position - SimMath.Forward(v.Heading) * (v.Def.Length * 0.5f + trail.Radius * 0.5f));
+            var at = _world.ClampToMap(v.Position - SimMath.Forward(v.Heading) * (v.Def.Length * 0.5f + trail.Radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.TrailRadiusScale));
             var own = 0;
             var oldest = -1;
             for (var i = 0; i < _trails.Count; i++)
@@ -49,7 +49,7 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>Twice a second: the patches set enemy ground vehicles in them burning, and go out in time.</summary>
         private void StepTrails(double now)
         {
-            if (_trails.Count == 0 || _world.Tick % 10 != 5) return;
+            if (_trails.Count == 0 || _world.Tick % global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepTrailsTickMod != global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepTrailsTickIs) return;
             for (var i = _trails.Count - 1; i >= 0; i--)
             {
                 var (at, until, radius, dps, source) = _trails[i];

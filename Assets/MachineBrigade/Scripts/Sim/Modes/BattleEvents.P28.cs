@@ -70,7 +70,7 @@ namespace MachineBrigade.Sim.Modes
         {
             Content.StallPolicy.Off => 0,
             Content.StallPolicy.ObjectiveStallOnly => 1,
-            _ => 4,
+            _ => global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.MaxTierStallValue,
         };
 
         /// <summary>The side the tier-3 barrage and tier-4 reveal push: the attacker when one side defends, else the passive one.</summary>

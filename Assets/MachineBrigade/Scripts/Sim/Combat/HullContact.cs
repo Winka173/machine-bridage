@@ -22,7 +22,7 @@ namespace MachineBrigade.Sim.Combat
         public static bool Big(VehicleDef def) => def.Boss || Edge(def) + def.HullHalf >= BigFrom;
 
         /// <summary>The hull's half width: the capsule's radius.</summary>
-        public static float Edge(VehicleDef def) => MathF.Max(0.5f, def.Width * 0.5f);
+        public static float Edge(VehicleDef def) => MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.HullContact.EdgeWidthFloor, def.Width * 0.5f);
 
         /// <summary>
         /// The point on the edge of a capsule (spine <paramref name="half"/> either way of <paramref name="centre"/>

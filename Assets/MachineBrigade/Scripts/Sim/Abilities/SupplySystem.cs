@@ -89,7 +89,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (!v.IsAlive || !v.HasStores) continue;
                 // Danger a few times a second (every fifth step, spread over the aircraft).
-                if (((v.Id.Value + tick) % 5) == 0)
+                if (((v.Id.Value + tick) % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.StepValueMod) == 0)
                 {
                     v.InDanger = Exposure(v.Team, v.Position, 0f, true) > 0f;
                     if (v.InDanger) v.DangerAt = now;
@@ -117,7 +117,7 @@ namespace MachineBrigade.Sim.Abilities
 
                 case SupplyState.Leaving:
                     // The holding pattern follows the front on the way too.
-                    if (v.RearmAt == RearmSite.Holding && ((v.Id.Value + _world.Tick) % 20) == 0) v.HoldPoint = HoldingPoint(v);
+                    if (v.RearmAt == RearmSite.Holding && ((v.Id.Value + _world.Tick) % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.DecideValueMod) == 0) v.HoldPoint = HoldingPoint(v);
                     if (Vector2.Distance(v.Position, v.HoldPoint) <= Arrive(v))
                     {
                         v.Supply = SupplyState.Holding;
@@ -131,7 +131,7 @@ namespace MachineBrigade.Sim.Abilities
                         Return(v);
                         return;
                     }
-                    if (v.RearmAt == RearmSite.Holding && ((v.Id.Value + _world.Tick) % 20) == 0) v.HoldPoint = HoldingPoint(v);
+                    if (v.RearmAt == RearmSite.Holding && ((v.Id.Value + _world.Tick) % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.DecideValueMod) == 0) v.HoldPoint = HoldingPoint(v);
                     // A site gone (the pad destroyed, the carrier moved off): back to the holding pattern.
                     if (v.RearmAt != RearmSite.Holding && !SiteStands(v)) ChooseSite(v);
                     return;
@@ -160,7 +160,7 @@ namespace MachineBrigade.Sim.Abilities
             // In its run: close to it and heading at it (the pass finishes once it pulls through).
             var to = run.Position - v.Position;
             var ahead = Vector2.Dot(SimMath.Forward(v.Heading), to);
-            return !(ahead > 0f && to.Length() < v.Arms[0].Range * 1.4f);
+            return !(ahead > 0f && to.Length() < v.Arms[0].Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.CanBreakOffRangeScale);
         }
 
         /// <summary>Back to half its stores (a bomber two thirds of its bombs) with something to attack; or full and nothing to wait for.</summary>
@@ -172,7 +172,7 @@ namespace MachineBrigade.Sim.Abilities
             if (HasWork(v)) return true;
             // Full with nothing in sight: an aircraft on guard goes back to its post; one sent at the
             // enemy waits here, ready, rather than circle the battlefield for nothing.
-            return share >= 0.999f && v.Order.Kind is OrderKind.Idle or OrderKind.Move or OrderKind.Retreat;
+            return share >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.ReadyToFightShareMin && v.Order.Kind is OrderKind.Idle or OrderKind.Move or OrderKind.Retreat;
         }
 
         /// <summary>A target for it: its ordered one, or a known enemy it can hit near its orders or its post.</summary>
@@ -181,7 +181,7 @@ namespace MachineBrigade.Sim.Abilities
             if (v.Order.Kind == OrderKind.Attack) return _world.TryGetTarget(v.Order.Target, out var t) && t.IsAlive;
             if (v.Order.Kind is OrderKind.Move or OrderKind.Retreat) return true;
             var around = v.Order.Kind == OrderKind.AttackMove ? v.Order.Point : v.SupplyGuard;
-            var reach = MathF.Max(v.Def.VisionRange, 50f) + (v.Def.Interceptor ? v.Def.Weapon.Range * 1.4f : 20f);
+            var reach = MathF.Max(v.Def.VisionRange, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HasWorkVisionRangeFloor) + (v.Def.Interceptor ? v.Def.Weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HasWorkRangeScale : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HasWorkInterceptorFalse);
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Invulnerable || e.Def.Untargetable || !e.IsVisibleTo(v.Team)) continue;
@@ -218,7 +218,7 @@ namespace MachineBrigade.Sim.Abilities
         private static float Arrive(Vehicle v) => v.Def.FixedWing ? Orbit(v) + 8f : 4f;
 
         /// <summary>The circle an aeroplane flies round its holding pattern (as its idle circle round a post).</summary>
-        internal static float Orbit(Vehicle v) => v.Def.FixedWing ? MathF.Max(14f, v.Def.Speed / v.Def.TurnRate * 1.6f) : 0f;
+        internal static float Orbit(Vehicle v) => v.Def.FixedWing ? MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.OrbitSpeedFloor, v.Def.Speed / v.Def.TurnRate * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.OrbitSpeedScale) : 0f;
 
         // ------------------------------------------------------------------ where to rearm
 
@@ -229,7 +229,7 @@ namespace MachineBrigade.Sim.Abilities
         private void ChooseSite(Vehicle v)
         {
             var hold = HoldingPoint(v);
-            var speed = MathF.Max(4f, v.Def.Speed);
+            var speed = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.ChooseSiteSpeedFloor, v.Def.Speed);
             var missing = 1f - v.StoresShare;
             var rearm = MathF.Max(1f, v.Def.RearmTime) * missing;
             float Time(Vector2 at, float rate) => Vector2.Distance(v.Position, at) / speed + rearm / rate;
@@ -247,8 +247,8 @@ namespace MachineBrigade.Sim.Abilities
             if (Hq(v.Team, out var hq)) Offer(RearmSite.Headquarters, hq.Position, HqRate, true);
             if (!v.Def.FixedWing && Carrier(v, out var carrier)) Offer(RearmSite.AmmoCarrier, carrier.Position, CarrierRate, false);
             // Needing both mending and stores: a place that mends when it is not much slower.
-            var hurt = v.Hp < v.MaxHp * 0.6f;
-            var pick = hurt && healBest.time <= best.time * 1.5f + 5f ? healBest : best;
+            var hurt = v.Hp < v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.ChooseSiteMaxHpScale;
+            var pick = hurt && healBest.time <= best.time * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.ChooseSiteTimeScale + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.ChooseSiteTimeAdd ? healBest : best;
             v.RearmAt = pick.site;
             v.HoldPoint = pick.at;
             if (v.Supply == SupplyState.Holding && Vector2.Distance(v.Position, v.HoldPoint) > Arrive(v)) v.Supply = SupplyState.Leaving;
@@ -294,7 +294,7 @@ namespace MachineBrigade.Sim.Abilities
         internal bool Carrier(Vehicle v, out Vehicle carrier)
         {
             carrier = null!;
-            var best = MathF.Max(40f, v.Def.Speed * 5f);
+            var best = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.CarrierSpeedFloor, v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.CarrierSpeedScale);
             foreach (var m in _world.VehicleList)
             {
                 if (!m.IsAlive || m.Team != v.Team || m.Def.AirRearm == null) continue;
@@ -329,18 +329,18 @@ namespace MachineBrigade.Sim.Abilities
             }
             var home = _world.TryGetRally(v.Team, out var rally) ? rally : anchor;
             var back = home - anchor;
-            if (back.LengthSquared() < 25f)
+            if (back.LengthSquared() < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointLengthSquaredMax)
             {
                 // At home already: away from the enemy's side.
                 back = _world.TryGetRally(1 - Math.Clamp(v.Team, 0, 1), out var theirs) ? home - theirs : -SimMath.Forward(v.Heading);
             }
-            back = back.LengthSquared() > 0.01f ? Vector2.Normalize(back) : -SimMath.Forward(v.Heading);
+            back = back.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointLengthSquaredMin ? Vector2.Normalize(back) : -SimMath.Forward(v.Heading);
             var orbit = Orbit(v);
-            var far = MathF.Max(30f, v.Def.Speed * HoldFlight);
-            var edge = orbit + (v.Def.FixedWing ? v.Def.Speed / v.Def.TurnRate * 1.3f + 4f : 6f);
+            var far = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointSpeedFloor, v.Def.Speed * HoldFlight);
+            var edge = orbit + (v.Def.FixedWing ? v.Def.Speed / v.Def.TurnRate * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointSpeedScale + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointSpeedAdd : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointFixedWingFalse);
             // At least a second and a half of flight behind a friendly line, two seconds with none (it
             // then measures from where it broke off, over the fight).
-            var near = MathF.Min(far, anchor == from ? v.Def.Speed * 2f : MathF.Max(20f, v.Def.Speed * 1.2f));
+            var near = MathF.Min(far, anchor == from ? v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointSpeedScale2 : MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointSpeedFloor2, v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.HoldingPointSpeedScale3));
             var best = ClampInside(anchor + back * near, edge);
             var bestExposure = float.MaxValue;
             for (var d = near; d <= far + 0.1f; d += 8f)
@@ -393,7 +393,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (w.Damage <= 0f || !w.CanTarget(true) || e.Weapons[i].Ammo == 0) continue;
                 // A machine gun is not anti-air; flak, AA missiles and a fighter's weapons are.
                 if (!Combat.CombatSystem.IsAntiAir(w) && !e.Def.Interceptor) continue;
-                reach = MathF.Max(reach, w.Range * (e.Def.Interceptor ? 1.2f : 1f));
+                reach = MathF.Max(reach, w.Range * (e.Def.Interceptor ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.AirReachInterceptorTrue : 1f));
             }
             return reach;
         }
@@ -445,7 +445,7 @@ namespace MachineBrigade.Sim.Abilities
             switch (v.RearmAt)
             {
                 case RearmSite.LandingPad:
-                    return Pad(v.Team, out var pad, out var branch) && Vector2.Distance(pad.Position, v.Position) <= pad.Def.Utility!.AirReach + 2f ? PadRate * branch : 1f;
+                    return Pad(v.Team, out var pad, out var branch) && Vector2.Distance(pad.Position, v.Position) <= pad.Def.Utility!.AirReach + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SupplySystem.SiteRateAirReachAdd ? PadRate * branch : 1f;
                 case RearmSite.Headquarters:
                     return Hq(v.Team, out var hq) && Vector2.Distance(hq.Position, v.Position) <= HqReach ? HqRate : 1f;
                 case RearmSite.AmmoCarrier:

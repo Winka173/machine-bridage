@@ -139,7 +139,7 @@ namespace MachineBrigade.Sim.AI
         {
             if (_builtTick == _world.Tick) return;
             _builtTick = _world.Tick;
-            _cell = Math.Clamp(Tun.Budget.SpatialCell, 4f, 40f);
+            _cell = Math.Clamp(Tun.Budget.SpatialCell, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSpatialIndex.EnsureSpatialCellMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSpatialIndex.EnsureSpatialCellMax);
             foreach (var list in _cells.Values)
             {
                 list.Clear();

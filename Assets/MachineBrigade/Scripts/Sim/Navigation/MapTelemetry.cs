@@ -65,12 +65,12 @@ namespace MachineBrigade.Sim.Navigation
         internal void Step(SimWorld world)
         {
             if (!Tun.Telemetry || world.Time < _next) return;
-            _next = world.Time + Math.Max(0.1f, Tun.TelemetrySeconds);
+            _next = world.Time + Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTelemetry.StepTelemetrySecondsFloor, Tun.TelemetrySeconds);
             Samples++;
             var topology = world.GameplayTopology;
             var lanes = topology.Lanes;
             var approaches = Tun.TelemetryApproaches ? topology.ObjectiveApproaches : null;
-            var since = world.Time - Math.Max(0.1f, Tun.TelemetrySeconds);
+            var since = world.Time - Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTelemetry.StepTelemetrySecondsFloor, Tun.TelemetrySeconds);
             foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive) continue;
@@ -99,7 +99,7 @@ namespace MachineBrigade.Sim.Navigation
                         {
                             if (set.Team != v.Team) continue;
                             foreach (var a in set.Approaches)
-                                if (a.DistanceTo(v.Position) < 6f) _approachSamples[a.Id] = _approachSamples.TryGetValue(a.Id, out var m) ? m + 1 : 1;
+                                if (a.DistanceTo(v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTelemetry.StepDistanceToMax) _approachSamples[a.Id] = _approachSamples.TryGetValue(a.Id, out var m) ? m + 1 : 1;
                         }
                     if (v.Traffic.WaitingForGate) ChokeQueueSeconds += Tun.TelemetrySeconds;
                     foreach (var p in world.Map.Points)
@@ -109,10 +109,10 @@ namespace MachineBrigade.Sim.Navigation
                     }
                     // A heavy hull sent where its size class cannot drive (each new order once).
                     if (v.Order.Kind != OrderKind.Idle && GameplayTopology.ClassOf(v.Def) >= VehicleSizeClass.Heavy &&
-                        (!_orderSeen.TryGetValue(v.Id.Value, out var seen) || Vector2.DistanceSquared(seen, v.Order.Point) > 4f))
+                        (!_orderSeen.TryGetValue(v.Id.Value, out var seen) || Vector2.DistanceSquared(seen, v.Order.Point) > global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTelemetry.StepDistanceSquaredMin))
                     {
                         _orderSeen[v.Id.Value] = v.Order.Point;
-                        if (!topology.SizeClassReaches(v.Def, v.Position, v.Order.Point, 4f)) HeavyRouteFailures++;
+                        if (!topology.SizeClassReaches(v.Def, v.Position, v.Order.Point, global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTelemetry.StepRadius)) HeavyRouteFailures++;
                     }
                 }
                 if (v.Def.Boss)
@@ -120,7 +120,7 @@ namespace MachineBrigade.Sim.Navigation
                     if (v.HasPath)
                     {
                         var goal = v.Path[v.Path.Count - 1];
-                        if (_bossGoal.TryGetValue(v.Id.Value, out var old) && Vector2.DistanceSquared(old, goal) > 4f) BossRouteReplans++;
+                        if (_bossGoal.TryGetValue(v.Id.Value, out var old) && Vector2.DistanceSquared(old, goal) > global::MachineBrigade.Sim.Content.SimTunables.Maps.MapTelemetry.StepDistanceSquaredMin) BossRouteReplans++;
                         _bossGoal[v.Id.Value] = goal;
                     }
                     if (v.Brain is { } brain)

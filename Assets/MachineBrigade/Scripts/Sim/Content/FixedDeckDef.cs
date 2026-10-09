@@ -58,11 +58,11 @@ namespace MachineBrigade.Sim.Content
     /// </summary>
     public sealed class FixedDeckDef
     {
-        public const int VehicleSlots = 8;
-        public const int SupportSlots = 2;
+        public static int VehicleSlots => global::MachineBrigade.Sim.Content.SimTunables.Ai.FixedDeckDef.VehicleSlots;
+        public static int SupportSlots => global::MachineBrigade.Sim.Content.SimTunables.Ai.FixedDeckDef.SupportSlots;
 
         /// <summary>At most this many loaned cards a mission (c1m01, the first battle, has four: DECISIONS).</summary>
-        public const int MaxLoaned = 2;
+        public static int MaxLoaned => global::MachineBrigade.Sim.Content.SimTunables.Ai.FixedDeckDef.MaxLoaned;
 
         public IReadOnlyList<string> Vehicles { get; set; } = Array.Empty<string>();
         public IReadOnlyList<string> Supports { get; set; } = Array.Empty<string>();

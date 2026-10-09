@@ -21,7 +21,7 @@ namespace MachineBrigade.Sim.Modes
         public static double RowGap => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.RowGap;
 
         /// <summary>Half a tick: a row's due time sits half a tick early, so float sums never push it to the next tick.</summary>
-        private const double HalfTick = 0.025;
+        private static double HalfTick => global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HalfTick;
 
         /// <summary>Whether reinforcements of a spawn point's kind drive in through its gate (the others drop, land or fly).</summary>
         internal static bool DrivesIn(SpawnKind kind) => kind is SpawnKind.Edge or SpawnKind.Rail or SpawnKind.Sea or SpawnKind.Behind;
@@ -30,7 +30,7 @@ namespace MachineBrigade.Sim.Modes
         private static Vector2 GateSpot(SimWorld world, Vector2 gate, Vector2 inward, int index)
         {
             var across = new Vector2(-inward.Y, inward.X);
-            return world.ClampToMap(gate + across * ((index % 4) - 1.5f) * 5f);
+            return world.ClampToMap(gate + across * ((index % global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.GateSpotIndexMod) - global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.GateSpotIndexSub) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.GateSpotAcrossScale);
         }
 
         /// <summary>A later row: it comes through the gate <paramref name="row"/> x <see cref="RowGap"/> seconds from now.</summary>
@@ -45,7 +45,7 @@ namespace MachineBrigade.Sim.Modes
         private static float IngressLength(SimWorld world, Vector2 spot, Vector2 inward)
         {
             foreach (var g in world.Map.EntryGates)
-                if (Vector2.DistanceSquared(g.Position, spot) < 12f * 12f) return g.VisualIngressLength;
+                if (Vector2.DistanceSquared(g.Position, spot) < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.IngressLengthScale * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.IngressLengthScale) return g.VisualIngressLength;
             return EntryGate.At(world.Map, "", EntryGateKind.Edge, spot, inward).VisualIngressLength;
         }
 
@@ -65,7 +65,7 @@ namespace MachineBrigade.Sim.Modes
                 var gate = g.Point.Gate;
                 var at = gate?.Position ?? g.Point.Position;
                 var inward = g.Point.Inward;
-                for (var i = 0; i < g.Units.Count && i < 4; i++)
+                for (var i = 0; i < g.Units.Count && i < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.AnnounceIngressIMax; i++)
                 {
                     if (!world.Catalog.Vehicles.TryGetValue(g.Units[i], out var def) || def.Flying) continue;
                     var spot = GateSpot(world, at, inward, i);

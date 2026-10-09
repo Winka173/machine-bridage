@@ -14,7 +14,7 @@ namespace MachineBrigade.Game.Match
     public static partial class Gear
     {
         /// <summary>Sub-stats a piece of each rarity carries.</summary>
-        public static readonly int[] SubCount = { 0, 1, 2, 2, 2 };
+        public static readonly int[] SubCount = { global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.SubCount1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.SubCount2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.SubCount3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.SubCount4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.SubCount5 };
 
         /// <summary>Levels at which every sub-stat grows by a quarter of its base roll.</summary>
         public static readonly int[] SubBumpLevels = { 5, 10, 15, 20 };
@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         {
             var cap = LevelCap[Mathf.Clamp(item.rarity, 0, LevelCap.Length - 1)];
             var level = Mathf.Clamp(item.level, 1, cap);
-            return 0.4f + 0.6f * (level - 1) / Mathf.Max(1, cap - 1);
+            return global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.LevelShareLevelAdd + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.LevelShareLevelScale * (level - 1) / Mathf.Max(1, cap - 1);
         }
 
         /// <summary>The base type's implicit line now (grows with level like the main stat, unless it is a flat one).</summary>
@@ -85,12 +85,12 @@ namespace MachineBrigade.Game.Match
         {
             var def = GearCatalog.Sub((StatId)sub.stat);
             if (def == null || item.rarity < 1) return 0f;
-            var top = def.Values[Mathf.Clamp(item.rarity - 1, 0, def.Values.Length - 1)] * Mathf.Clamp(sub.roll, 0.6f, 1f);
+            var top = def.Values[Mathf.Clamp(item.rarity - 1, 0, def.Values.Length - 1)] * Mathf.Clamp(sub.roll, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.SubValueRollMin, 1f);
             return top * (1f + 0.25f * SubBumps(item)) / (1f + 0.25f * item.rarity);
         }
 
         /// <summary>Where a sub-stat's roll landed between its worst and best (0 to 1): the roll-quality bar.</summary>
-        public static float SubQuality(GearSub sub) => Mathf.Clamp01((sub.roll - 0.6f) / 0.4f);
+        public static float SubQuality(GearSub sub) => Mathf.Clamp01((sub.roll - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.SubQualityRollSub) / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.SubQualityRollDivisor);
 
         /// <summary>A piece's trait with its numbers at the piece's rarity (Epic or Legendary), or none.</summary>
         public static GearTrait TraitOf(GearItem item)
@@ -176,7 +176,7 @@ namespace MachineBrigade.Game.Match
 
             public BrandDef Brand { get; }
             public int Count { get; }
-            public bool TwoPiece => Count >= 2;
+            public bool TwoPiece => Count >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SetChip.TwoPieceCountMin;
             public bool FourPiece => Count >= 4;
         }
 
@@ -277,7 +277,7 @@ namespace MachineBrigade.Game.Match
                         break;
                     }
                 }
-                item.subs.Add(new GearSub { stat = (int)pick.Stat, roll = 0.6f + 0.4f * (float)rng.NextDouble() });
+                item.subs.Add(new GearSub { stat = (int)pick.Stat, roll = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.FillSubsNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Gear.FillSubsNextDoubleScale * (float)rng.NextDouble() });
             }
         }
 

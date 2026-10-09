@@ -107,7 +107,7 @@ namespace MachineBrigade.Sim.AI
         public static float Uptime(float distance, float reach, float closing, float horizon)
         {
             if (horizon <= 0f) return 0f;
-            var t = MathF.Max(0f, distance - reach) / MathF.Max(0.5f, closing);
+            var t = MathF.Max(0f, distance - reach) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatForecaster.UptimeClosingFloor, closing);
             return Math.Clamp((horizon - t) / horizon, Tun.Forecast.UptimeFloor, 1f);
         }
 
@@ -231,7 +231,7 @@ namespace MachineBrigade.Sim.AI
                 CongestionCost = MathF.Max(0f, congestion) * Tun.Planning.CongestionWeight,
                 UncertaintyRisk = Math.Clamp(unknownShare, 0f, 1f) * Tun.Planning.UncertaintyWeight,
                 OpportunityGain = MathF.Max(0f, opportunity),
-                RepeatPenalty = Math.Clamp(repeatPenalty, 0f, 0.9f),
+                RepeatPenalty = Math.Clamp(repeatPenalty, 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.ShallowPlanner.ScoreRepeatPenaltyMax),
             };
             c.Utility = Utility(c);
             return c;
@@ -376,7 +376,7 @@ namespace MachineBrigade.Sim.AI
         public void Fail(long key, float severity, double now)
         {
             var range = Tun.Planning.RepeatPenalty;
-            var p = range.Length >= 2 ? range[0] + (range[1] - range[0]) * Math.Clamp(severity, 0f, 1f) : 0.35f;
+            var p = range.Length >= global::MachineBrigade.Sim.Content.SimTunables.Ai.RepetitionMemory.FailLengthMin ? range[0] + (range[1] - range[0]) * Math.Clamp(severity, 0f, 1f) : global::MachineBrigade.Sim.Content.SimTunables.Ai.RepetitionMemory.FailLengthFalse;
             _failed[key] = (MathF.Max(p, Penalty(key, now)), now);
         }
 
@@ -384,15 +384,15 @@ namespace MachineBrigade.Sim.AI
         {
             if (!_failed.TryGetValue(key, out var f)) return 0f;
             var age = (float)(now - f.at);
-            return age < 0f ? f.penalty : f.penalty * MathF.Pow(0.5f, age / MathF.Max(1f, Tun.Planning.RepeatHalfLifeS));
+            return age < 0f ? f.penalty : f.penalty * MathF.Pow(global::MachineBrigade.Sim.Content.SimTunables.Ai.RepetitionMemory.PenaltyAgeExponent, age / MathF.Max(1f, Tun.Planning.RepeatHalfLifeS));
         }
 
         public void Prune(double now)
         {
-            if (_failed.Count < 64) return;
+            if (_failed.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.RepetitionMemory.PruneCountMax) return;
             var old = new List<long>();
             foreach (var kv in _failed)
-                if (Penalty(kv.Key, now) < 0.01f) old.Add(kv.Key);
+                if (Penalty(kv.Key, now) < global::MachineBrigade.Sim.Content.SimTunables.Ai.RepetitionMemory.PrunePenaltyMax) old.Add(kv.Key);
             foreach (var k in old) _failed.Remove(k);
         }
     }
@@ -426,8 +426,8 @@ namespace MachineBrigade.Sim.AI
         public static ProbeOutcome Judge(float seenEnemy, float antiTankThreat, float probeStrength, float lossShare, bool blocked, bool arrived, bool timeUp)
         {
             if (blocked) return ProbeOutcome.Blocked;
-            var p = MathF.Max(0.5f, probeStrength);
-            if (antiTankThreat / p >= Tun.Probe.AtThreat || lossShare >= 0.34f) return ProbeOutcome.Threat;
+            var p = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProbeRules.JudgeProbeStrengthFloor, probeStrength);
+            if (antiTankThreat / p >= Tun.Probe.AtThreat || lossShare >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProbeRules.JudgeLossShareMin) return ProbeOutcome.Threat;
             if ((arrived || timeUp) && seenEnemy / p < Tun.Probe.LowResistance) return ProbeOutcome.Exploit;
             return timeUp ? ProbeOutcome.Inconclusive : ProbeOutcome.Pending;
         }
@@ -436,7 +436,7 @@ namespace MachineBrigade.Sim.AI
         public static Vector2 EnvelopeGoal(Vector2 from, Vector2? enemy, Vector2 goal, float reach)
         {
             if (enemy is not { } e) return goal;
-            var keep = Tun.Probe.Envelope * MathF.Max(5f, reach);
+            var keep = Tun.Probe.Envelope * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProbeRules.EnvelopeGoalReachFloor, reach);
             if (Vector2.Distance(goal, e) >= keep) return goal;
             var away = goal - e;
             if (away.LengthSquared() < 0.01f) away = from - e;
@@ -456,7 +456,7 @@ namespace MachineBrigade.Sim.AI
         {
             var w = Tun.Feint.Weights;
             float W(int i) => i < w.Length ? w[i] : 0f;
-            return (contestsSecondary ? W(0) : 0f) + Math.Clamp(unknownShare, 0f, 1f) * W(1) + (threatensFlank ? W(2) : 0f) + (pinsArc ? W(3) : 0f);
+            return (contestsSecondary ? W(0) : 0f) + Math.Clamp(unknownShare, 0f, 1f) * W(1) + (threatensFlank ? W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FeintRules.UtilityI) : 0f) + (pinsArc ? W(global::MachineBrigade.Sim.Content.SimTunables.Ai.FeintRules.UtilityI2) : 0f);
         }
 
         public static bool Allowed(int level, bool tacticFits, float urgency, float utility) =>
@@ -535,7 +535,7 @@ namespace MachineBrigade.Sim.AI
         public static int[] Assign(Vector2 centre, float radius, IReadOnlyList<Vector2> members, int sectors, Vector2 axis,
             Func<Vector2, bool>? blocked, float[]? extraCost, out Vector2[] exits)
         {
-            sectors = Math.Clamp(sectors, 1, 8);
+            sectors = Math.Clamp(sectors, 1, global::MachineBrigade.Sim.Content.SimTunables.Ai.EscapeSectors.AssignSectorsMax);
             var n = members.Count;
             var result = new int[n];
             exits = new Vector2[n];
@@ -579,7 +579,7 @@ namespace MachineBrigade.Sim.AI
                 // Members of one sector stand side by side along the ring (4 m apart), never on one point.
                 var lateral = new Vector2(-dirs[best].Y, dirs[best].X);
                 var slot = used[best];
-                var offset = slot == 0 ? 0f : ((slot + 1) / 2) * 4f * (slot % 2 == 1 ? 1f : -1f);
+                var offset = slot == 0 ? 0f : ((slot + 1) / 2) * global::MachineBrigade.Sim.Content.SimTunables.Ai.EscapeSectors.AssignSlotScale * (slot % 2 == 1 ? 1f : -1f);
                 exits[i] = points[best] + lateral * offset;
                 used[best]++;
             }
@@ -611,7 +611,7 @@ namespace MachineBrigade.Sim.AI
         private readonly Dictionary<int, (int seen, int[] hits)> _patterns = new();
 
         /// <summary>A pattern key: the boss and the ring's size class.</summary>
-        public static int Signature(int source, float radius) => unchecked(source * 131 + (int)MathF.Round(radius / 4f));
+        public static int Signature(int source, float radius) => unchecked(source * global::MachineBrigade.Sim.Content.SimTunables.Ai.PatternMemory.SignatureSourceScale + (int)MathF.Round(radius / global::MachineBrigade.Sim.Content.SimTunables.Ai.PatternMemory.SignatureRadiusDivisor));
 
         public void Seen(int signature)
         {
@@ -664,8 +664,8 @@ namespace MachineBrigade.Sim.AI
         {
             var w = Tun.BossTactics.WeakpointWeights;
             float W(int i) => i < w.Length ? w[i] : 0f;
-            return W(0) * MathF.Max(0f, disabledDps) + (utilityPart ? W(1) : 0f) + W(2) * Math.Clamp(phaseUtility, 0f, 1f) +
-                   W(3) * (1f - Math.Clamp(healthShareLeft, 0f, 1f)) - distance * 0.01f;
+            return W(0) * MathF.Max(0f, disabledDps) + (utilityPart ? W(1) : 0f) + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.WeakpointUtility.ScoreI) * Math.Clamp(phaseUtility, 0f, 1f) +
+                   W(global::MachineBrigade.Sim.Content.SimTunables.Ai.WeakpointUtility.ScoreI2) * (1f - Math.Clamp(healthShareLeft, 0f, 1f)) - distance * global::MachineBrigade.Sim.Content.SimTunables.Ai.WeakpointUtility.ScoreDistanceScale;
         }
 
         /// <summary>A part kind that names an APS, shield, radar, jammer or sensor.</summary>
@@ -713,7 +713,7 @@ namespace MachineBrigade.Sim.AI
         public static float Delay(int unitId, int eventId)
         {
             var w = Tun.Stagger.Window;
-            if (w.Length < 2) return w.Length == 1 ? w[0] : 0f;
+            if (w.Length < global::MachineBrigade.Sim.Content.SimTunables.Ai.HumanStagger.DelayLengthMax) return w.Length == 1 ? w[0] : 0f;
             var ms = (int)MathF.Round((w[1] - w[0]) * 1000f);
             return w[0] + (ms > 0 ? Hash(unitId, eventId) % (uint)(ms + 1) : 0u) / 1000f;
         }
@@ -726,7 +726,7 @@ namespace MachineBrigade.Sim.AI
 
         public static int Plans(int level) => At(Tun.Planning.PlansByLevel, level);
         public static int Depth(int level) => At(Tun.Planning.DepthByLevel, level);
-        public static int Sectors(int level) => Math.Clamp(At(Tun.BossTactics.SectorsByLevel, level), 1, 8);
+        public static int Sectors(int level) => Math.Clamp(At(Tun.BossTactics.SectorsByLevel, level), 1, global::MachineBrigade.Sim.Content.SimTunables.Ai.DifficultyGate.SectorsAtMax);
         public static bool Probe(int level) => level >= Tun.Gating.ProbeLevel;
         public static bool Feint(int level, bool tacticFits) => level >= Tun.Gating.FeintLevel || (tacticFits && level >= 1);
         public static bool Adaptation(int level) => level >= Tun.Gating.AdaptationLevel;
@@ -741,7 +741,7 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Spec 175 AirRiskMap: risk of a leg = mean + half the max of the anti-air threat sampled along it.</summary>
         public static float LegRisk(Func<Vector2, float> threatAt, Vector2 a, Vector2 b, int samples)
         {
-            samples = Math.Max(2, samples);
+            samples = Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.AirRules.LegRiskSamplesFloor, samples);
             float sum = 0f, max = 0f;
             for (var i = 0; i < samples; i++)
             {
@@ -749,14 +749,14 @@ namespace MachineBrigade.Sim.AI
                 sum += t;
                 max = MathF.Max(max, t);
             }
-            return sum / samples + max * 0.5f;
+            return sum / samples + max * global::MachineBrigade.Sim.Content.SimTunables.Ai.AirRules.LegRiskMaxScale;
         }
 
         /// <summary>Spec 177: attackers on one aircraft: enough to reach the TTK goal, 1-2 (never six on one weak target).</summary>
         public static int Attackers(float targetHp, float dpsPerAttacker, float ttkGoal, int max)
         {
             if (dpsPerAttacker <= 0f) return 1;
-            var need = (int)MathF.Ceiling(targetHp / MathF.Max(1e-3f, dpsPerAttacker * MathF.Max(0.5f, ttkGoal)));
+            var need = (int)MathF.Ceiling(targetHp / MathF.Max(1e-3f, dpsPerAttacker * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.AirRules.AttackersTtkGoalFloor, ttkGoal)));
             return Math.Clamp(need, 1, Math.Max(1, max));
         }
 
@@ -773,7 +773,7 @@ namespace MachineBrigade.Sim.AI
         {
             var turn = (int)Math.Floor(now / Math.Max(1.0, Tun.AirOps.CapPatrolS));
             var a = HumanStagger.Unit(fighterId, 7) * MathF.PI * 2f + turn * MathF.PI * 0.5f;
-            return zone + new Vector2(MathF.Cos(a), MathF.Sin(a)) * Tun.AirOps.CapRadius * 0.5f;
+            return zone + new Vector2(MathF.Cos(a), MathF.Sin(a)) * Tun.AirOps.CapRadius * global::MachineBrigade.Sim.Content.SimTunables.Ai.AirRules.PatrolPointCapRadiusScale;
         }
     }
 
@@ -831,7 +831,7 @@ namespace MachineBrigade.Sim.AI
 
         public void Prune(double now)
         {
-            if (_claims.Count < 32) return;
+            if (_claims.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.IntentOwnership.PruneCountMax) return;
             var old = new List<int>();
             foreach (var kv in _claims)
                 if (kv.Value.until <= now) old.Add(kv.Key);

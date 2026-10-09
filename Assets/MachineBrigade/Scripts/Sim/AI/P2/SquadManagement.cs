@@ -108,7 +108,7 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         private void EnlistOne(SimWorld world, TeamIntel intel, Vehicle v)
         {
-            var fast = v.Def.Speed >= 11f;
+            var fast = v.Def.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.EnlistOneSpeedMin;
             Squad? best = null;
             var bestDistance = Tun.Squads.ReinforceReach;
             foreach (var s in _squads)
@@ -203,24 +203,24 @@ namespace MachineBrigade.Sim.AI
             var component = GroundComponent(world, v.Position);
             Vector2? best = null;
             var bestScore = float.MinValue;
-            var backs = new[] { Tun.Squads.RendezvousBack, Tun.Squads.RendezvousBack + 4f, Tun.Squads.RendezvousBack - 3f };
+            var backs = new[] { Tun.Squads.RendezvousBack, Tun.Squads.RendezvousBack + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RendezvousRendezvousBackAdd, Tun.Squads.RendezvousBack - global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RendezvousRendezvousBackSub };
             var laterals = new[] { 0f, 8f, -8f, 16f, -16f };
             foreach (var b in backs)
                 foreach (var l in laterals)
                 {
-                    var p = world.Map.Clamp(predicted - forward * b + side * l, 6f);
+                    var p = world.Map.Clamp(predicted - forward * b + side * l, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RendezvousMargin);
                     if (!world.Grid.IsWalkable(p) || world.Lanes.NoParkAt(p)) continue;
                     if (component > 0 && GroundComponent(world, p) != component) continue;
                     var threat = intel.ThreatAt(ThreatKind.AntiTank, p) + intel.ThreatAt(ThreatKind.Artillery, p) + intel.ThreatAt(ThreatKind.Splash, p);
                     var route = (world.Lanes.At(p) & LaneFlags.Route) != 0 ? 1f : 0f;
-                    var score = -threat * 2f - route * 3f - MathF.Abs(l) * 0.05f - MathF.Abs(b - Tun.Squads.RendezvousBack) * 0.1f;
+                    var score = -threat * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RendezvousThreatScale - route * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RendezvousRouteScale - MathF.Abs(l) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RendezvousAbsScale - MathF.Abs(b - Tun.Squads.RendezvousBack) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RendezvousAbsScale2;
                     if (score > bestScore)
                     {
                         bestScore = score;
                         best = p;
                     }
                 }
-            return best ?? world.Map.Clamp(predicted - forward * Tun.Squads.RendezvousBack, 6f);
+            return best ?? world.Map.Clamp(predicted - forward * Tun.Squads.RendezvousBack, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RendezvousMargin);
         }
 
         /// <summary>Spec 23: reinforcements are received inside the receive radius (or at the rendezvous with the squad near).</summary>
@@ -237,7 +237,7 @@ namespace MachineBrigade.Sim.AI
                     continue;
                 }
                 var toSquad = Vector2.Distance(v.Position, s.Centre);
-                var atPoint = Vector2.Distance(v.Position, p.Rendezvous) <= 6f && Vector2.Distance(s.Centre, p.Rendezvous) <= 20f;
+                var atPoint = Vector2.Distance(v.Position, p.Rendezvous) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ServePendingDistanceMax && Vector2.Distance(s.Centre, p.Rendezvous) <= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ServePendingDistanceMax2;
                 if (s.MemberList.Count == 0 || toSquad <= Tun.Squads.ReceiveRadius || atPoint || now - p.Since >= Tun.Squads.PendingTimeout)
                 {
                     s.PendingList.RemoveAt(i);
@@ -252,13 +252,13 @@ namespace MachineBrigade.Sim.AI
                     continue;
                 }
                 // The squad moved on: a new rendezvous at its predicted position (never chasing the centroid itself).
-                if (Vector2.Distance(s.Centre, p.Rendezvous) > 30f || (!v.IsMoving && v.Order.Kind == OrderKind.Idle))
+                if (Vector2.Distance(s.Centre, p.Rendezvous) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ServePendingDistanceMin || (!v.IsMoving && v.Order.Kind == OrderKind.Idle))
                 {
-                    var at = Vector2.Distance(s.Centre, p.Rendezvous) > 30f ? Rendezvous(world, intel, s, v) : p.Rendezvous;
+                    var at = Vector2.Distance(s.Centre, p.Rendezvous) > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ServePendingDistanceMin ? Rendezvous(world, intel, s, v) : p.Rendezvous;
                     s.PendingList[i] = new PendingMember(p.Id, at, p.Since);
                     world.Submit(new Command(CommandType.Move, _commander.Team, new[] { p.Id }, at));
                 }
-                world.CombatWatch.Explain(p.Id, CombatIdleReason.WaitingFormation, Interval * 2f + 0.5f);
+                world.CombatWatch.Explain(p.Id, CombatIdleReason.WaitingFormation, Interval * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ServePendingIntervalScale + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ServePendingIntervalAdd);
             }
         }
 
@@ -310,7 +310,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in s.MemberList)
                 if (world.TryGetVehicle(id, out var v))
                 {
-                    full += MathF.Max(0.5f, v.Def.Power);
+                    full += MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnderstrengthPowerFloor, v.Def.Power);
                     left += TeamIntel.StrengthOf(v);
                 }
             var mean = full / s.MemberList.Count;
@@ -323,7 +323,7 @@ namespace MachineBrigade.Sim.AI
         {
             if (a.Kind != b.Kind) return false;
             if (a.Objective.HasValue != b.Objective.HasValue) return false;
-            return !a.Objective.HasValue || Vector2.Distance(a.Objective.Value, b.Objective!.Value) < 30f;
+            return !a.Objective.HasValue || Vector2.Distance(a.Objective.Value, b.Objective!.Value) < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CompatibleTasksDistanceMax;
         }
 
         private static MobilityDomain DomainOf(SimWorld world, Squad s)
@@ -367,7 +367,7 @@ namespace MachineBrigade.Sim.AI
             RebuildColumn(world, s);
             var part = new Squad(_nextId++, s.Fast) { Centre = s.Centre, Goal = s.Goal, Task = s.Task, LifecycleSince = world.Time };
             var order = new List<EntityId>(s.ColumnOrderList);
-            for (var i = 1; i < order.Count; i += 2)
+            for (var i = 1; i < order.Count; i += global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SplitI)
             {
                 s.MemberList.Remove(order[i]);
                 Insert(part.MemberList, order[i]);
@@ -397,7 +397,7 @@ namespace MachineBrigade.Sim.AI
                 SetLifecycle(world, s, SquadLifecycle.Dissolving);
                 return;
             }
-            if (s.Lifecycle == SquadLifecycle.Reorganizing && world.Time - s.LifecycleSince < 3.0) return;
+            if (s.Lifecycle == SquadLifecycle.Reorganizing && world.Time - s.LifecycleSince < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UpdateLifecycleTimeMax) return;
             SquadLifecycle next;
             if (s.MemberList.Count < MinSquad) next = s.Action == SquadAction.Join ? SquadLifecycle.Dissolving : SquadLifecycle.Forming;
             else if (s.Cohesion < Tun.Squads.CohesionRecover || s.Action == SquadAction.Regroup) next = SquadLifecycle.Rallying;
@@ -452,10 +452,10 @@ namespace MachineBrigade.Sim.AI
                 distance += Math.Clamp(1f - MathF.Max(0f, d - GatheredRadius) / span, 0f, 1f);
                 // Route progress: firing, at its slot, or closing on the squad's goal.
                 var toGoal = Vector2.Distance(v.Position, s.Goal);
-                var closing = s.GoalDistance.TryGetValue(v.Id, out var before) && toGoal < before - 0.3f;
+                var closing = s.GoalDistance.TryGetValue(v.Id, out var before) && toGoal < before - global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CohesionOfBeforeSub;
                 s.GoalDistance[v.Id] = toGoal;
-                var atSlot = !v.HasPath || Vector2.Distance(v.Position, v.Order.Point) < 15f;
-                if (now - v.LastFiredAt < 3.0 || atSlot || closing) progress += 1f;
+                var atSlot = !v.HasPath || Vector2.Distance(v.Position, v.Order.Point) < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CohesionOfDistanceMax;
+                if (now - v.LastFiredAt < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CohesionOfNowMax || atSlot || closing) progress += 1f;
             }
             if (n == 0) return 1f;
             // Role coverage: rear roles (artillery, AA, EW, repair) within reach of a front / middle member; with none, mutual support.
@@ -479,7 +479,7 @@ namespace MachineBrigade.Sim.AI
                 }
             }
             var coverage = n == 1 ? 1f : covered / (float)Math.Max(1, rear);
-            return W(0) * distance / n + W(1) * coverage + W(2) * progress / n;
+            return W(0) * distance / n + W(1) * coverage + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CohesionOfI) * progress / n;
         }
 
         /// <summary>Spec 68: the squad's combat power against the local mix (normalised: a fresh main battle tank is about 1).</summary>
@@ -503,12 +503,12 @@ namespace MachineBrigade.Sim.AI
             {
                 if (!world.TryGetVehicle(id, out var v)) continue;
                 var weapon = v.Def.Weapon;
-                var dps = weapon.Damage * MathF.Max(1, weapon.Burst) / MathF.Max(0.2f, weapon.Cooldown);
-                var effect = sample != null ? MathF.Max(0.05f, world.Damage.Estimate(weapon, v, sample)) : 1f;
-                var survive = v.Hp / 100f * (1f + v.Armour.Front * 0.25f);
+                var dps = weapon.Damage * MathF.Max(1, weapon.Burst) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PowerOfCooldownFloor, weapon.Cooldown);
+                var effect = sample != null ? MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PowerOfEstimateFloor, world.Damage.Estimate(weapon, v, sample)) : 1f;
+                var survive = v.Hp / global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PowerOfHpDivisor * (1f + v.Armour.Front * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PowerOfFrontScale);
                 var state = world.Components.Of(v);
                 var availability = (v.OutOfAmmo ? 0.2f : 1f) * (state.MainGunLost ? 0.4f : 1f) * (v.DeployBusy ? 0.7f : 1f);
-                var range = Math.Clamp(weapon.Range / 40f, 0.5f, 1.5f);
+                var range = Math.Clamp(weapon.Range / global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PowerOfRangeDivisor, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PowerOfRangeMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PowerOfRangeMax);
                 var mobility = goalComponent > 0 && GroundComponent(world, v.Position) != goalComponent && MapTopology.DomainOf(v.Def) == MobilityDomain.Ground ? 0.3f : 1f;
                 total += dps * effect * survive * availability * range * mobility;
             }
@@ -532,10 +532,10 @@ namespace MachineBrigade.Sim.AI
             var chokes = world.Topology.Chokes;
             Vector2? best = null;
             var bestScore = float.MinValue;
-            foreach (var back in new[] { 0f, 8f, 16f })
-                foreach (var lat in new[] { 0f, 8f, -8f })
+            foreach (var back in new[] { 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointBack2, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointBack3 })
+                foreach (var lat in new[] { 0f, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointLat2, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointLat3 })
                 {
-                    var p = world.Map.Clamp(s.Centre + away * back + side * lat, 6f);
+                    var p = world.Map.Clamp(s.Centre + away * back + side * lat, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointMargin);
                     if (!world.Grid.IsWalkable(p) || world.Lanes.NoParkAt(p)) continue;
                     var c = GroundComponent(world, p);
                     if (components.Count == 1 && !components.Contains(c)) continue;
@@ -543,8 +543,8 @@ namespace MachineBrigade.Sim.AI
                     var route = (world.Lanes.At(p) & LaneFlags.Route) != 0 ? 1f : 0f;
                     var choke = 0f;
                     foreach (var ch in chokes)
-                        if (Vector2.Distance(ch.Centre, p) < ch.Width * 0.5f + 4f) choke = 1f;
-                    var score = -splash * 3f - route * 2f - choke * 3f - back * 0.05f - MathF.Abs(lat) * 0.02f;
+                        if (Vector2.Distance(ch.Centre, p) < ch.Width * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointWidthAdd) choke = 1f;
+                    var score = -splash * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointSplashScale - route * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointRouteScale - choke * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointChokeScale - back * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointBackScale - MathF.Abs(lat) * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RegroupPointAbsScale;
                     if (score > bestScore)
                     {
                         bestScore = score;
@@ -578,7 +578,7 @@ namespace MachineBrigade.Sim.AI
             var slow = float.MaxValue;
             foreach (var id in s.MemberList)
                 if (world.TryGetVehicle(id, out var v)) slow = MathF.Min(slow, v.Def.Speed);
-            return slow == float.MaxValue ? 5f : slow;
+            return slow == float.MaxValue ? global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlowestSpeedSlowTrue : slow;
         }
 
         /// <summary>Part F2: the share of members with a crippled engine.</summary>

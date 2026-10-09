@@ -33,7 +33,7 @@ namespace MachineBrigade.Sim
             if (!Map.Contains(slot) || !Grid.IsWalkable(slot)) return false;
             if (!Traffic.Corridors.Compose(corridor, v.Position, slot, _corridorBuffer)) return false;
             v.SetOrder(new Order(kind, slot, Core.EntityId.None));
-            v.RepathTimer = 0.5f;
+            v.RepathTimer = global::MachineBrigade.Sim.Content.SimTunables.Ai.SimWorld.IssueAlongCorridorRepathTimer;
             v.SetPath(_corridorBuffer, slot);
             v.Traffic.CorridorId = corridor.Id;
             Traffic.Stats.CorridorRoutes++;

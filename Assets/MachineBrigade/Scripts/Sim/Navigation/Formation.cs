@@ -27,28 +27,28 @@ namespace MachineBrigade.Sim.Navigation
             var slots = new List<Vector2>(count);
             if (count <= 0) return slots;
             var near = region > 0;
-            if (grid.TryNearestInRegion(center, region, 16, out var first))
+            if (grid.TryNearestInRegion(center, region, global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsMaxRings, out var first))
             {
-                if (lanes != null && lanes.NoParkAt(first) && lanes.TryParkable(first, 12f, out var beside) &&
+                if (lanes != null && lanes.NoParkAt(first) && lanes.TryParkable(first, global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsReach, out var beside) &&
                     (region <= 0 || grid.RegionOf(beside) == region)) first = beside;
                 slots.Add(first);
             }
             else near = false;
             // How far over the ground each cell is from the first slot (out to where the rings may go):
             // walked only once a slot is not in plain line of the first one (in the open it never is).
-            var rings = (int)MathF.Ceiling(MathF.Sqrt(count / 3f)) + 3;
-            var walkReach = MathF.Min(80f, rings * spacing + 8f);
+            var rings = (int)MathF.Ceiling(MathF.Sqrt(count / global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsCountDivisor)) + global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsCeilingAdd;
+            var walkReach = MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsRingsCap, rings * spacing + global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsRingsAdd);
             var walked = false;
             var origin = near ? first : center;
 
-            for (var ring = 1; slots.Count < count && ring <= 24; ring++)
+            for (var ring = 1; slots.Count < count && ring <= global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsRingMax; ring++)
             {
-                var around = 6 * ring;
+                var around = global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsRingScale * ring;
                 for (var k = 0; k < around && slots.Count < count; k++)
                 {
-                    var angle = k * SimMath.Tau / around + ring * 0.5f;
+                    var angle = k * SimMath.Tau / around + ring * global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsRingScale2;
                     var candidate = center + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * spacing);
-                    if (!grid.IsWalkable(candidate) || !IsFree(slots, candidate, spacing * 0.8f)) continue;
+                    if (!grid.IsWalkable(candidate) || !IsFree(slots, candidate, spacing * global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.SlotsSpacingScale)) continue;
                     if (lanes != null && lanes.NoParkAt(candidate)) continue;
                     if (near && !grid.LineOfSight(origin, candidate))
                     {
@@ -136,7 +136,7 @@ namespace MachineBrigade.Sim.Navigation
                         var b = order[j].Position;
                         var now = Vector2.Distance(a, si) + Vector2.Distance(b, sj);
                         var then = Vector2.Distance(a, sj) + Vector2.Distance(b, si);
-                        if (then >= now - 0.5f) continue;
+                        if (then >= now - global::MachineBrigade.Sim.Content.SimTunables.Maps.Formation.UntangleNowSub) continue;
                         result[order[i].Id] = sj;
                         result[order[j].Id] = si;
                         si = sj;

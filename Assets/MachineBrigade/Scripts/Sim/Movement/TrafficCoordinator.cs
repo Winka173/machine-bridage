@@ -37,14 +37,14 @@ namespace MachineBrigade.Sim.Movement
         public float Length { get; internal set; }
 
         /// <summary>How far round the centre counts as in the passage (half its length, half its width, plus a hull).</summary>
-        public float Reach => MathF.Max(Length, Width) * 0.5f + 3f;
+        public float Reach => MathF.Max(Length, Width) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Passage.ReachMaxScale + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Passage.ReachMaxAdd;
 
         /// <summary>Hulls side by side through it (spec 189: usable width / average unit width).</summary>
         public int Lanes(float hullWidth) => Math.Max(1, (int)MathF.Floor(Width / MathF.Max(1f, hullWidth + 1f)));
 
         /// <summary>Spec 189: units a second through it, at the average speed and length of the units.</summary>
         public float Throughput(float hullWidth, float hullLength, float speed) =>
-            Lanes(hullWidth) * MathF.Max(0.5f, speed) / MathF.Max(2f, hullLength + 4f);
+            Lanes(hullWidth) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Passage.ThroughputSpeedFloor, speed) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Passage.ThroughputHullLengthFloor, hullLength + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Passage.ThroughputHullLengthAdd);
 
         /// <summary>The way a move along <paramref name="dir"/> goes through it: +1, -1, or 0 (across).</summary>
         public int DirectionOf(Vector2 dir)
@@ -72,7 +72,7 @@ namespace MachineBrigade.Sim.Movement
             var row = slot / 2;
             var side = (slot & 1) == 0 ? 1f : -1f;
             var entry = Centre + back * (Length * 0.5f + SimTunables.Ai.Traffic.QueueStart);
-            return entry + back * (row * SimTunables.Ai.Traffic.QueueSpacing) + right * side * (Width * 0.5f + 3f);
+            return entry + back * (row * SimTunables.Ai.Traffic.QueueSpacing) + right * side * (Width * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Passage.QueuePointWidthAdd);
         }
 
         // Per side (0, 1, other): the reservation (spec 31) and its waiting list; predicted arrivals (spec 188).
@@ -282,12 +282,12 @@ namespace MachineBrigade.Sim.Movement
         internal void Step()
         {
             var tick = _world.Tick;
-            if (tick % 20 == 0 || !_built) EnsureBuilt();
-            if (tick % 10 == 3) ExpireReservations();
-            if (tick % 10 == 5) RefreshExits();
-            if (tick % 10 == 7) PredictArrivals();
-            if (tick % 40 == 11) SweepPassing();
-            if (tick % 20 == 13) ExpireCongestion();
+            if (tick % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickMod == 0 || !_built) EnsureBuilt();
+            if (tick % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickMod2 == global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickIs) ExpireReservations();
+            if (tick % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickMod2 == global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickIs2) RefreshExits();
+            if (tick % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickMod2 == global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickIs3) PredictArrivals();
+            if (tick % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickMod3 == global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickIs4) SweepPassing();
+            if (tick % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickMod == global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.StepTickIs5) ExpireCongestion();
             Corridors.Step();
         }
 
@@ -309,7 +309,7 @@ namespace MachineBrigade.Sim.Movement
                 p.Id = i + 1;
                 foreach (var o in old)
                 {
-                    if (Vector2.DistanceSquared(o.Centre, p.Centre) > 4f) continue;
+                    if (Vector2.DistanceSquared(o.Centre, p.Centre) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.EnsureBuiltDistanceSquaredMin) continue;
                     for (var t = 0; t < Teams; t++)
                     {
                         p.Holder[t] = o.Holder[t];
@@ -367,7 +367,7 @@ namespace MachineBrigade.Sim.Movement
                     foreach (var p in _passages)
                     {
                         var t = Math.Clamp(Vector2.Dot(p.Centre - a, dir), 0f, length);
-                        if (Vector2.DistanceSquared(a + dir * t, p.Centre) > p.Reach * p.Reach * 0.5f || t >= bestAlong) continue;
+                        if (Vector2.DistanceSquared(a + dir * t, p.Centre) > p.Reach * p.Reach * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.FirstPassageAlongReachScale || t >= bestAlong) continue;
                         if (p.DirectionOf(dir) == 0 && p.Kind != PassageKind.Choke) continue;
                         best = p;
                         bestAlong = t;
@@ -561,7 +561,7 @@ namespace MachineBrigade.Sim.Movement
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Flying || v.Def.Static || v.Def.Naval != null || !v.HasPath) continue;
-                var reach = MathF.Max(4f, v.Def.Speed * v.SpeedFactor * window);
+                var reach = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.PredictArrivalsSpeedFloor, v.Def.Speed * v.SpeedFactor * window);
                 var p = FirstPassageAlong(v.Position, v.Path, v.PathIndex, reach, out _, out _);
                 v.Traffic.NextPassage = p?.Id ?? 0;
                 if (p != null) p.Arrivals[TeamSlot(v.Team)]++;
@@ -575,7 +575,7 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>Spec 189: the wait for <paramref name="ahead"/> units before one through the passage (an ETA adds it).</summary>
         public static float QueueDelay(Passage passage, int ahead, float hullWidth, float hullLength, float speed) =>
-            ahead / MathF.Max(0.05f, passage.Throughput(hullWidth, hullLength, speed));
+            ahead / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.QueueDelayThroughputFloor, passage.Throughput(hullWidth, hullLength, speed));
 
         public int ArrivalsAt(Passage passage, int team) => passage.Arrivals[TeamSlot(team)];
 
@@ -649,7 +649,7 @@ namespace MachineBrigade.Sim.Movement
                 var b = key % 1_000_003L;
                 if (!_world.TryGetVehicle(new EntityId((int)a), out var va) || !_world.TryGetVehicle(new EntityId((int)b), out var vb) ||
                     !va.IsAlive || !vb.IsAlive ||
-                    Vector2.Distance(va.Position, vb.Position) > SimTunables.Ai.Navigation.PassingRelease * (va.Def.HullBound + vb.Def.HullBound + 2f))
+                    Vector2.Distance(va.Position, vb.Position) > SimTunables.Ai.Navigation.PassingRelease * (va.Def.HullBound + vb.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.SweepPassingHullBoundAdd))
                     _passingDrop.Add(key);
             }
             foreach (var key in _passingDrop) _passing.Remove(key);
@@ -687,7 +687,7 @@ namespace MachineBrigade.Sim.Movement
             {
                 if (e.Team != team || !e.InExitBox(p)) continue;
                 var away = p - e.Centre;
-                var dir = away.LengthSquared() > 0.25f ? Vector2.Normalize(away) : e.Inward;
+                var dir = away.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.OutOfExitLengthSquaredMin ? Vector2.Normalize(away) : e.Inward;
                 var q = _world.ClampToMap(e.Centre + dir * e.RallyRadius);
                 return _world.Grid.IsWalkable(q) ? q : p;
             }
@@ -720,7 +720,7 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>The friendly splash spacing: the strongest known enemy blast (at least 6 m).</summary>
         private float SplashSpacing(int team)
         {
-            return MathF.Max(6f, _world.Intel.Peek(team)?.EnemySplash ?? 0f);
+            return MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.SplashSpacingEnemySplashFloor, _world.Intel.Peek(team)?.EnemySplash ?? 0f);
         }
 
         /// <summary>A side's units should keep the wider splash spacing (spec 87).</summary>
@@ -784,7 +784,7 @@ namespace MachineBrigade.Sim.Movement
         public void AddCongestion(int team, Vector2 at)
         {
             _congestion.Add((TeamSlot(team), at, SimTunables.Ai.Navigation.CongestionRadius, _world.Time + SimTunables.Ai.Navigation.CongestionSeconds));
-            Corridors.MarkDirtyNear(team, at, SimTunables.Ai.Navigation.CongestionRadius + 6f);
+            Corridors.MarkDirtyNear(team, at, SimTunables.Ai.Navigation.CongestionRadius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficCoordinator.AddCongestionCongestionRadiusAdd);
         }
 
         private void ExpireCongestion() => _congestion.RemoveAll(c => _world.Time >= c.until);

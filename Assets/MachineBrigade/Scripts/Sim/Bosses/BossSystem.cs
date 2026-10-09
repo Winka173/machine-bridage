@@ -104,7 +104,7 @@ namespace MachineBrigade.Sim.Bosses
                     // Nothing on the ground to go under: look again in a moment.
                     if (!b.Sea && BiggestGroup(v, out _) < 1)
                     {
-                        v.BurrowNext = now + 3.0;
+                        v.BurrowNext = now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BoreNowAdd;
                         return;
                     }
                     v.Burrow = Vehicle.BurrowState.Diving;
@@ -126,7 +126,7 @@ namespace MachineBrigade.Sim.Bosses
                 case Vehicle.BurrowState.Under:
                 {
                     // Follows the group as it moves (checked every step: the group is cheap to find).
-                    if (!b.Sea && _world.Tick % 10 == 0 && BiggestGroup(v, out var goal) > 0) v.BurrowGoal = goal;
+                    if (!b.Sea && _world.Tick % global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BoreTickMod == 0 && BiggestGroup(v, out var goal) > 0) v.BurrowGoal = goal;
                     var to = v.BurrowGoal - v.Position;
                     var distance = to.Length();
                     var stepLength = b.Speed * dt;
@@ -164,7 +164,7 @@ namespace MachineBrigade.Sim.Bosses
             if (_world.Map.Sea is not { } sea || v.Def.Naval is not { } naval || sea.Lane(naval.LaneFor(v.Phase)) is not { } lane) return v.Position;
             var f = sea.Frame(v.Position);
             var u = f.X;
-            for (var k = 0; k < 6 && MathF.Abs(u - f.X) < lane.Patrol * 0.5f; k++) u = ((float)_world.Random.NextDouble() * 2f - 1f) * lane.Patrol;
+            for (var k = 0; k < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SeaGoalKMax && MathF.Abs(u - f.X) < lane.Patrol * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SeaGoalPatrolScale; k++) u = ((float)_world.Random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SeaGoalNextDoubleScale - 1f) * lane.Patrol;
             return sea.At(u, lane.W);
         }
 
@@ -183,7 +183,7 @@ namespace MachineBrigade.Sim.Bosses
                 foreach (var o in _world.VehicleList)
                 {
                     if (!o.IsAlive || o.Team != e.Team || o.Flying || o.Def.Static) continue;
-                    if (Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;
+                    if (Vector2.DistanceSquared(o.Position, e.Position) > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BiggestGroupScale * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BiggestGroupScale) continue;
                     weight += MathF.Max(1f, o.Def.CpCost);
                     n++;
                     sum += o.Position;
@@ -216,7 +216,7 @@ namespace MachineBrigade.Sim.Bosses
                     e.ClearPath();
                     e.Speed = 0f;
                 }
-                _world.Damage.Apply(e, core ? b.Damage : b.Damage * 0.4f, DamageType.HighExplosive, info);
+                _world.Damage.Apply(e, core ? b.Damage : b.Damage * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.QuakeDamageScale, DamageType.HighExplosive, info);
             }
             _world.Emit(SimEvent.Exploded(v.Position, ExplosionDef.TwoLayer(0f, b.Radius, ExplosionTier.Ultimate), v.Id));
         }
@@ -243,7 +243,7 @@ namespace MachineBrigade.Sim.Bosses
             var count = l.Min + (l.Max > l.Min ? _world.Random.Next(l.Max - l.Min + 1) : 0);
             for (var k = 0; k < count; k++)
             {
-                var id = l.Units[(v.Landings * 3 + k) % l.Units.Count];
+                var id = l.Units[(v.Landings * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.LandLandingsScale + k) % l.Units.Count];
                 var spot = ramp + forward * (3f + 4f * (k / 2)) + right * ((k % 2 == 0 ? -1f : 1f) * 3f);
                 _spawns.Add((id, v.Team, _world.ClampToMap(spot), v.Heading));
             }
@@ -301,8 +301,8 @@ namespace MachineBrigade.Sim.Bosses
                 if (!o.IsAlive || o.Flying || o.Team == v.Team) continue;
                 var offset = o.Position - v.Position;
                 var t = Vector2.Dot(offset, along);
-                if (t < 0f || t > length + 6f) continue;
-                if ((offset - along * t).Length() > o.Radius + 1.2f) continue;
+                if (t < 0f || t > length + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PierceLineLengthAdd) continue;
+                if ((offset - along * t).Length() > o.Radius + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PierceLineRadiusAdd) continue;
                 _slugLine.Add((t, o));
             }
             _slugLine.Sort((x, y) => x.t != y.t ? x.t.CompareTo(y.t) : x.v.Id.Value.CompareTo(y.v.Id.Value));
@@ -312,7 +312,7 @@ namespace MachineBrigade.Sim.Bosses
                 var hit = _slugLine[k].v;
                 last = hit.Position;
                 if (b.PierceDamage > 0f)
-                    _world.Damage.Queue(hit.Position, new ExplosionDef(b.PierceDamage, 2.5f, 0f, ExplosionTier.Large), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+                    _world.Damage.Queue(hit.Position, new ExplosionDef(b.PierceDamage, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PierceLineRadius, 0f, ExplosionTier.Large), b.Warn, v.Team, v, HitKind.Strike, v.Id);
             }
             return last;
         }

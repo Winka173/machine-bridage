@@ -10,7 +10,7 @@ namespace MachineBrigade.Sim.Content
     {
         public WeaponDef(string id, DamageType damageType, float damage, float cooldown, float range,
             float minRange, float projectileSpeed, float splashRadius, float spread, ExplosionTier impactTier,
-            ProjectileKind projectile = ProjectileKind.Shell, int burst = 1, float burstInterval = 0.1f,
+            ProjectileKind projectile = ProjectileKind.Shell, int burst = 1, float? burstInterval = null,
             TargetLayers targets = TargetLayers.Ground)
         {
             Id = Guard.Id(id);
@@ -26,7 +26,7 @@ namespace MachineBrigade.Sim.Content
             ImpactTier = impactTier;
             Projectile = projectile;
             Burst = burst >= 1 ? burst : throw new ArgumentException($"Weapon '{id}': burst must be at least 1.");
-            BurstInterval = Guard.NonNegative(burstInterval, id, nameof(burstInterval));
+            BurstInterval = Guard.NonNegative((burstInterval ?? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.CtorBurstInterval), id, nameof(burstInterval));
             Targets = targets != TargetLayers.None ? targets : throw new ArgumentException($"Weapon '{id}': targets must not be empty.");
         }
 
@@ -79,7 +79,7 @@ namespace MachineBrigade.Sim.Content
         /// Seconds to reload the whole magazine in place: <see cref="Reload"/>, else two fifths of
         /// the time it takes to fire it off, between 10 and 28 s.
         /// </summary>
-        public float MagazineReload => Reload > 0f ? Reload : Math.Clamp(Ammo * Cooldown * 0.4f, 10f, 28f);
+        public float MagazineReload => Reload > 0f ? Reload : Math.Clamp(Ammo * Cooldown * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.MagazineReloadAmmoScale, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.MagazineReloadAmmoMin, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.MagazineReloadAmmoMax);
 
         /// <summary>How big the impact is drawn against its tier's size (a fortress gun's shell lands bigger than a tank's).</summary>
         public float ImpactScale { get; internal set; } = 1f;
@@ -123,7 +123,7 @@ namespace MachineBrigade.Sim.Content
         public float CycleSeconds => Clip > 0 ? (Clip - 1) * Cooldown + ClipReload : Cooldown + (Burst - 1) * BurstInterval;
 
         /// <summary>Damage a second over a whole cycle (reload included), before damage tables and bonuses.</summary>
-        public float SustainedDps => Damage * RoundsPerCycle / MathF.Max(0.05f, CycleSeconds);
+        public float SustainedDps => Damage * RoundsPerCycle / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.SustainedDpsCycleSecondsFloor, CycleSeconds);
 
         /// <summary>Gap between rounds a view draws inside one step: a fast salvo's interval, a magazine's cadence; 0 for neither.</summary>
         public float RoundGap => Burst > 1 ? BurstInterval : Clip > 0 ? Cooldown : 0f;
@@ -257,7 +257,7 @@ namespace MachineBrigade.Sim.Content
         /// Made to kill armour: a kinetic dart or slug, a shaped charge or a beam that pierces level 3 or more
         /// (what the roles, the commander and the base cover count as anti-tank).
         /// </summary>
-        public bool AntiArmour => Penetration >= 3 && DamageType is DamageType.Kinetic or DamageType.ShapedCharge or DamageType.Energy;
+        public bool AntiArmour => Penetration >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.AntiArmourPenetrationMin && DamageType is DamageType.Kinetic or DamageType.ShapedCharge or DamageType.Energy;
 
         /// <summary>
         /// A round that strikes sparks off armour when it lands (a tank gun's round, an armour-piercing cannon
@@ -308,8 +308,8 @@ namespace MachineBrigade.Sim.Content
         internal WeaponDef Tuned(float range, float cooldown, float projectileSpeed, float splashRadius, float spread, float burstInterval,
             TargetLayers targets, int ammo, float reload, ClusterDef? cluster, float damage = -1f, int burst = -1, ProjectileKind? projectile = null)
         {
-            var copy = new WeaponDef(Id, DamageType, damage >= 0f ? damage : Damage, MathF.Max(0.01f, cooldown), MathF.Max(range, MinRange + 0.5f), MinRange,
-                MathF.Max(0.1f, projectileSpeed), MathF.Max(0f, splashRadius), MathF.Max(0f, spread), ImpactTier, projectile ?? Projectile,
+            var copy = new WeaponDef(Id, DamageType, damage >= 0f ? damage : Damage, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.TunedCooldownFloor, cooldown), MathF.Max(range, MinRange + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.TunedMinRangeAdd), MinRange,
+                MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WeaponDef.TunedProjectileSpeedFloor, projectileSpeed), MathF.Max(0f, splashRadius), MathF.Max(0f, spread), ImpactTier, projectile ?? Projectile,
                 burst >= 1 ? burst : Burst, MathF.Max(0f, burstInterval), targets)
             {
                 Ammo = ammo,
@@ -401,7 +401,7 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public int Penetration { get; internal set; } = DefaultPenetration;
 
-        public const int DefaultPenetration = 2;
+        public static int DefaultPenetration => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.ClusterDef.DefaultPenetration;
     }
 
     public sealed class ExplosionDef
@@ -532,8 +532,8 @@ namespace MachineBrigade.Sim.Content
             FixedWing = flying && fixedWing;
             Model = Id;
             ArmyCost = CpCost;
-            Width = flying ? radius * 2f : radius * 1.6f;
-            Length = flying ? radius * 2f : radius * 2.7f;
+            Width = flying ? radius * 2f : radius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.CtorRadiusScale2;
+            Length = flying ? radius * 2f : radius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.CtorRadiusScale3;
         }
 
         /// <summary>A fixed defence (gun turret, bunker, tower): it never moves, is never pushed and is never bought.</summary>
@@ -661,7 +661,7 @@ namespace MachineBrigade.Sim.Content
         public float HullHalf => MathF.Max(0f, (Length - Width) * 0.5f);
 
         /// <summary>Collision capsule radius (a little inside the hull, so parked vehicles can touch).</summary>
-        public float HullRadius => Width * 0.46f;
+        public float HullRadius => Width * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.HullRadiusWidthScale;
 
         /// <summary>Radius of a circle around the whole capsule.</summary>
         public float HullBound => HullHalf + HullRadius;
@@ -794,7 +794,7 @@ namespace MachineBrigade.Sim.Content
         /// never bought (defences, mission units) an estimate from their toughness. Bosses count
         /// as nothing here, because the army fights them whatever the odds.
         /// </summary>
-        public float Power => Boss ? 0f : Elite ? MaxHp / 150f : CpCost > 0 ? CpCost : Fort is { } fort ? FortPower(fort) : Static ? MaxHp / 250f : MaxHp / 150f;
+        public float Power => Boss ? 0f : Elite ? MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.PowerMaxHpDivisor : CpCost > 0 ? CpCost : Fort is { } fort ? FortPower(fort) : Static ? MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.PowerMaxHpDivisor2 : MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.PowerMaxHpDivisor;
 
         /// <summary>
         /// A base structure's worth in CP for the AI's odds: an HQ 14, a large tower 11, a medium one
@@ -805,7 +805,7 @@ namespace MachineBrigade.Sim.Content
         {
             if (fort.Kind == FortKind.Hq) return 14f;
             if (fort.Kind == FortKind.Utility || Passive) return 1f;
-            return fort.Size switch { SlotSize.Large => 11f, SlotSize.Medium => 7f, _ => 4f };
+            return fort.Size switch { SlotSize.Large => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.FortPowerSizeValue, SlotSize.Medium => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.FortPowerSizeValue2, _ => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.FortPowerSizeValue3 };
         }
 
         /// <summary>Model to draw (defaults to the id; a convoy truck borrows the civilian truck).</summary>
@@ -930,7 +930,7 @@ namespace MachineBrigade.Sim.Content
         public float Collapse { get; set; }
 
         /// <summary>Terrain (rock, earth) that no weapon can realistically destroy; never an attack target.</summary>
-        public bool Indestructible => MaxHp >= 100000f;
+        public bool Indestructible => MaxHp >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.PropDef.IndestructibleMaxHpMin;
 
         /// <summary>Set for explosive props (barrels, fuel tanks) that detonate when destroyed.</summary>
         public ExplosionDef? Explosion { get; }

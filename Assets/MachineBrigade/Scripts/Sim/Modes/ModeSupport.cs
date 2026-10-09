@@ -52,7 +52,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 // Unattended points drift back to their owner's full hold (or to neutral).
                 var rest = point.Owner == TeamA ? 1f : point.Owner == TeamB ? -1f : 0f;
-                point.Progress = SimMath.MoveTowards(point.Progress, rest, dt / (captureSeconds * 3f));
+                point.Progress = SimMath.MoveTowards(point.Progress, rest, dt / (captureSeconds * global::MachineBrigade.Sim.Content.SimTunables.Modes.PointCapture.TickCaptureSecondsScale));
             }
 
             // Ownership flips only at a full hold; crossing zero neutralises the point first.
@@ -213,7 +213,7 @@ namespace MachineBrigade.Sim.Modes
             // It goes up again once nobody is standing on its footing.
             if (world.Time < site.BuildAt) return;
             foreach (var v in world.VehicleList)
-                if (v.IsAlive && !v.Flying && Vector2.DistanceSquared(v.Position, site.Spot) < 36f) return;
+                if (v.IsAlive && !v.Flying && Vector2.DistanceSquared(v.Position, site.Spot) < global::MachineBrigade.Sim.Content.SimTunables.Modes.Outposts.TickNeutralDistanceSquaredMax) return;
             Raise(world, site, Teams.Hostile);
         }
 
@@ -278,7 +278,7 @@ namespace MachineBrigade.Sim.Modes
         private static Vector2 SpotFor(SimWorld world, ObjectiveState point, Vector2 across)
         {
             var centre = point.Def.Position;
-            var reach = point.Def.Radius + 3f;
+            var reach = point.Def.Radius + global::MachineBrigade.Sim.Content.SimTunables.Modes.Outposts.SpotForRadiusAdd;
             var start = MathF.Atan2(across.Y, across.X);
             for (var ring = 0; ring < 3; ring++)
                 for (var i = 0; i < 16; i++)
@@ -286,8 +286,8 @@ namespace MachineBrigade.Sim.Modes
                     // Alternate sides of the lane, working round from square across it.
                     var step = (i + 1) / 2 * (i % 2 == 0 ? 1 : -1);
                     var angle = start + (i % 4 < 2 ? 0f : MathF.PI) + step * (MathF.PI / 8f);
-                    var at = centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (reach + ring * 3f);
-                    if (Open(world, at, 3f)) return at;
+                    var at = centre + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (reach + ring * global::MachineBrigade.Sim.Content.SimTunables.Modes.Outposts.SpotForRingScale);
+                    if (Open(world, at, global::MachineBrigade.Sim.Content.SimTunables.Modes.Outposts.SpotForRoom)) return at;
                 }
             return centre + across * reach;
         }

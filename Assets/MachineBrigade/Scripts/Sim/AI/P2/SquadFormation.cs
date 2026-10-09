@@ -37,7 +37,7 @@ namespace MachineBrigade.Sim.AI
                 _ => Placement.Middle,
             };
             if (p == Placement.Middle && v.Def.Class == UnitClass.Heavy) p = Placement.Front;
-            if (p == Placement.Middle && !fastSquad && v.Def.Speed >= 11f) p = Placement.Outer;
+            if (p == Placement.Middle && !fastSquad && v.Def.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.PlacementOfSpeedMin) p = Placement.Outer;
             if (p == Placement.Front)
             {
                 var state = world.Components.Of(v);
@@ -87,15 +87,15 @@ namespace MachineBrigade.Sim.AI
         /// <summary>The widest a formation stands across its facing (spec 22's requiredFormationWidth).</summary>
         internal float RequiredWidth(SimWorld world, Squad s, FormationMode mode)
         {
-            var radius = 1.5f;
+            var radius = global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RequiredWidthRadius;
             foreach (var id in s.MemberList)
                 if (world.TryGetVehicle(id, out var v)) radius = MathF.Max(radius, v.Radius);
             var n = Math.Max(1, s.MemberList.Count);
             var spacing = SpacingOf(world, s, mode);
             return mode switch
             {
-                FormationMode.Travel => radius * 2f + 2f,
-                FormationMode.Flank => n * spacing * 0.7f + radius * 2f,
+                FormationMode.Travel => radius * 2f + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RequiredWidthRadiusAdd,
+                FormationMode.Flank => n * spacing * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.RequiredWidthNScale + radius * 2f,
                 FormationMode.Regroup => RingRadius(n, spacing, radius) * 2f + radius * 2f,
                 _ => (n - 1) * spacing + radius * 2f,
             };
@@ -114,7 +114,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var c in world.Topology.Chokes)
             {
                 var along = Math.Clamp(Vector2.Dot(c.Centre - s.Centre, dir), 0f, length);
-                if (Vector2.Distance(s.Centre + dir * along, c.Centre) < c.Width * 0.5f + 6f) narrowest = MathF.Min(narrowest, c.Width);
+                if (Vector2.Distance(s.Centre + dir * along, c.Centre) < c.Width * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ChokeAheadWidthAdd) narrowest = MathF.Min(narrowest, c.Width);
             }
             return narrowest;
         }
@@ -191,9 +191,9 @@ namespace MachineBrigade.Sim.AI
         private float SpacingOf(SimWorld world, Squad s, FormationMode mode) => mode switch
         {
             FormationMode.Spread => SpreadDistance(world, s),
-            FormationMode.Hold => 9f,
-            FormationMode.Regroup => 5f,
-            _ => 6f,
+            FormationMode.Hold => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SpacingOfModeValue,
+            FormationMode.Regroup => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SpacingOfModeValue2,
+            _ => global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SpacingOfModeValue3,
         };
 
         /// <summary>
@@ -224,17 +224,17 @@ namespace MachineBrigade.Sim.AI
                     var i = 0;
                     foreach (var t in tags)
                     {
-                        slots.Add((goal - facing * (i * spacing * 0.7f) + side * sign * (i * spacing * 0.7f), t));
+                        slots.Add((goal - facing * (i * spacing * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FormationSlotsIScale) + side * sign * (i * spacing * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FormationSlotsIScale), t));
                         i++;
                     }
                     var r = 0;
                     foreach (var p in places)
-                        if (p == Placement.Rear) slots.Add((goal - facing * (Tun.Formation.RearRow + r * spacing * 0.7f) - side * sign * (r++ * spacing * 0.5f), p));
+                        if (p == Placement.Rear) slots.Add((goal - facing * (Tun.Formation.RearRow + r * spacing * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FormationSlotsRScale) - side * sign * (r++ * spacing * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FormationSlotsSpacingScale), p));
                     break;
                 }
                 case FormationMode.Regroup:
                 {
-                    var radius = 1.5f;
+                    var radius = global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FormationSlotsRadius;
                     foreach (var v in order) radius = MathF.Max(radius, v.Radius);
                     var ring = RingRadius(n, spacing, radius);
                     for (var i = 0; i < n; i++)
@@ -263,7 +263,7 @@ namespace MachineBrigade.Sim.AI
                     for (var k = 0; k < m; k++)
                     {
                         var x = (k - (m - 1) * 0.5f) * spacing;
-                        var arc = mode == FormationMode.Hold ? x * x / 120f : 0f;
+                        var arc = mode == FormationMode.Hold ? x * x / global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.FormationSlotsXDivisor : 0f;
                         slots.Add((goal + side * x + facing * arc, row[k]));
                     }
                     var rear = 0;
@@ -305,7 +305,7 @@ namespace MachineBrigade.Sim.AI
                         pick[i] = k;
                         used[k] = true;
                     }
-            for (var pass = 0; pass < 2; pass++)
+            for (var pass = 0; pass < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.AssignSlotsPassMax; pass++)
                 for (var i = 0; i < n; i++)
                 {
                     if (pick[i] >= 0) continue;
@@ -350,7 +350,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var v in order)
                 if (now < v.Traffic.LoosenUntil)
                 {
-                    spacing += 2f;
+                    spacing += global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlotsP2Spacing;
                     break;
                 }
             var places = new List<Placement>();
@@ -362,7 +362,7 @@ namespace MachineBrigade.Sim.AI
             // Packets: a choke narrower than the formation needs (spec 22), a crowded passage (G.2), smaller under splash (162).
             // A passage reserved through P1's TrafficCoordinator makes its own packets / queue: these only without one.
             var packetSize = 0;
-            if (plan.Passage == null && mode == FormationMode.Travel && order.Count > 2)
+            if (plan.Passage == null && mode == FormationMode.Travel && order.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlotsP2CountMin)
             {
                 var choke = ChokeAhead(world, s, goal);
                 var narrow = !float.IsInfinity(choke) && RequiredWidth(world, s, FormationMode.Travel) > Tun.Formation.ChokeShare * choke;
@@ -385,7 +385,7 @@ namespace MachineBrigade.Sim.AI
                 if (packetSize > 0 && i >= packetSize)
                 {
                     var packet = i / packetSize;
-                    s.ReleaseAt[v.Id] = now + packet * Math.Clamp(Tun.Formation.PacketDelay, 2f, 4f);
+                    s.ReleaseAt[v.Id] = now + packet * Math.Clamp(Tun.Formation.PacketDelay, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlotsP2PacketDelayMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlotsP2PacketDelayMax);
                     world.Submit(new Command(CommandType.Stop, _commander.Team, new[] { v.Id }));
                     s.Progress[v.Id] = (v.Position, now, 0);
                     continue;
@@ -394,7 +394,7 @@ namespace MachineBrigade.Sim.AI
                 var k = pick[i];
                 var slot = k >= 0 ? slots[k].at : goal;
                 if (k >= 0) s.SlotOf[v.Id] = k;
-                slot = world.Map.Clamp(slot, 4f);
+                slot = world.Map.Clamp(slot, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlotsP2Margin);
                 if (!world.Grid.IsWalkable(slot)) slot = goal;
                 // Part D: a TD / MBT holding ground takes the best firing position near its slot (hull-down first).
                 if (mode == FormationMode.Hold && !urgent && places[i] is Placement.Front or Placement.Middle)
@@ -402,13 +402,13 @@ namespace MachineBrigade.Sim.AI
                     var role = CombatRoleDoctrine.RoleOf(world, v);
                     if (role is DoctrineRole.TankDestroyer or DoctrineRole.MainBattle)
                     {
-                        var aim = threat ?? goal + facing * MathF.Max(20f, s.Reach * 0.8f);
+                        var aim = threat ?? goal + facing * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlotsP2ReachFloor, s.Reach * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlotsP2ReachScale);
                         slot = FiringPositionScorer.Best(world, v, slot, aim, aim, role);
                     }
                 }
                 var final = slot;
                 // Spec 159: morph through the halfway point, never a snap across the formation.
-                if (morph && s.LastSlot.TryGetValue(v.Id, out var before)) slot = Vector2.Lerp(before, final, 0.5f);
+                if (morph && s.LastSlot.TryGetValue(v.Id, out var before)) slot = Vector2.Lerp(before, final, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.SlotsP2BeforeLerp);
                 s.LastSlot[v.Id] = final;
                 IssueSlot(world, s, v, i, slot, type, plan);
                 s.Progress[v.Id] = (v.Position, now, 0);

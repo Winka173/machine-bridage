@@ -36,7 +36,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (lane != null && lane.Patrol > 0f)
                 {
                     var u = sea.Frame(v.Position).X;
-                    b.RouteProgress = SimMath.Clamp01((u * v.NavalDir + lane.Patrol) / (2f * lane.Patrol));
+                    b.RouteProgress = SimMath.Clamp01((u * v.NavalDir + lane.Patrol) / (global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossMissionController.UpdatePatrolScale * lane.Patrol));
                 }
                 return;
             }

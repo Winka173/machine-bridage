@@ -23,7 +23,7 @@ namespace MachineBrigade.Sim.AI
     /// </summary>
     public sealed class CoordinationState
     {
-        private const int MaxShells = 256;
+        private static int MaxShells => global::MachineBrigade.Sim.Content.SimTunables.Ai.CoordinationState.MaxShells;
         private readonly SimWorld _world;
         private readonly TeamCoordination?[] _teams = new TeamCoordination?[3];
         private readonly List<Shell> _shells = new();
@@ -65,7 +65,7 @@ namespace MachineBrigade.Sim.AI
             if (e.Kind == SimEventKind.VehicleDestroyed)
             {
                 if (!_world.TryGetVehicle(e.Entity, out var v)) return;
-                var value = v.Def.Boss ? v.MaxHp / 150f : MathF.Max(0.5f, v.Def.Power);
+                var value = v.Def.Boss ? v.MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Ai.CoordinationState.ObserveMaxHpDivisor : MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.CoordinationState.ObservePowerFloor, v.Def.Power);
                 for (var t = 0; t < _teams.Length; t++)
                 {
                     var tc = _teams[t];
@@ -92,7 +92,7 @@ namespace MachineBrigade.Sim.AI
             if (_shells.Count >= MaxShells) _shells.RemoveAt(0);
             _shotCount.TryGetValue(shooter.Id.Value, out var n);
             _shotCount[shooter.Id.Value] = n + 1;
-            _shells.Add(new Shell(shooter.Team, e.Position, e.Target, _world.Time + MathF.Max(0f, e.Value), shooter.Id.Value * 131 + n));
+            _shells.Add(new Shell(shooter.Team, e.Position, e.Target, _world.Time + MathF.Max(0f, e.Value), shooter.Id.Value * global::MachineBrigade.Sim.Content.SimTunables.Ai.CoordinationState.ObserveValueScale + n));
         }
 
         /// <summary>Lands the shells due (once per sim time, whichever AI side asks first).</summary>
@@ -209,7 +209,7 @@ namespace MachineBrigade.Sim.AI
         public float LostShare { get; }
 
         /// <summary>Opens when the observed loss is at least <paramref name="share"/> of the local power before it.</summary>
-        public static bool Opens(float lost, float remaining, float share) => lost > 0f && lost / MathF.Max(0.01f, lost + MathF.Max(0f, remaining)) >= share;
+        public static bool Opens(float lost, float remaining, float share) => lost > 0f && lost / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.CounterattackWindow.OpensLostFloor, lost + MathF.Max(0f, remaining)) >= share;
     }
 
     /// <summary>Spec 225: the advanced metrics a side counts (the lead's runs read them).</summary>

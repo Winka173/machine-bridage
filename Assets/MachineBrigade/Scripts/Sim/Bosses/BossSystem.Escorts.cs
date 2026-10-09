@@ -33,7 +33,7 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>Escort orders and helper effects are worked out this often (ticks).</summary>
         private static int EscortTicks => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.EscortTicks;
 
-        private static float EscortSeconds => EscortTicks * 0.05f;
+        private static float EscortSeconds => EscortTicks * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.EscortSecondsEscortTicksScale;
 
         /// <summary>A boss's escorts and how many of its waves have come.</summary>
         private sealed class EscortGroup
@@ -193,7 +193,7 @@ namespace MachineBrigade.Sim.Bosses
                     sent++;
                 }
             if (sent == 0) return;
-            if (wave.Halt > 0f) _world.Status.Slow(g.Boss, 0.95f, wave.Halt);
+            if (wave.Halt > 0f) _world.Status.Slow(g.Boss, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SendShare, wave.Halt);
             if (wave.Radio != null) _world.Emit(SimEvent.RadioMessage(wave.Radio, g.Boss.Team));
         }
 
@@ -286,13 +286,13 @@ namespace MachineBrigade.Sim.Bosses
             }
             var to = nearest != null ? nearest.Position - boss.Position
                 : _world.TryGetRally(boss.Team == 0 ? 1 : 0, out var rally) ? rally - boss.Position : SimMath.Forward(boss.Heading);
-            return to.LengthSquared() > 0.01f ? Vector2.Normalize(to) : SimMath.Forward(boss.Heading);
+            return to.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ThreatDirectionLengthSquaredMin ? Vector2.Normalize(to) : SimMath.Forward(boss.Heading);
         }
 
         /// <summary>The point where a ray from <paramref name="from"/> along <paramref name="dir"/> meets the map's edge (a little inside).</summary>
         private Vector2 EdgePoint(Vector2 from, Vector2 dir)
         {
-            var limit = _world.Map.HalfSize - 4f;
+            var limit = _world.Map.HalfSize - global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.EdgePointHalfSizeSub;
             var t = float.MaxValue;
             if (MathF.Abs(dir.X) > 1e-4f) t = MathF.Min(t, ((dir.X > 0 ? limit : -limit) - from.X) / dir.X);
             if (MathF.Abs(dir.Y) > 1e-4f) t = MathF.Min(t, ((dir.Y > 0 ? limit : -limit) - from.Y) / dir.Y);
@@ -342,10 +342,10 @@ namespace MachineBrigade.Sim.Bosses
                 var v = m.Unit;
                 if (!v.IsAlive || v.Def.Static || v.Stunned) continue;
                 var home = SlotPoint(g, boss, m.Slot, m.Index, m.Role);
-                var reach = m.Role == EscortRole.Raid ? leash * 1.6f : leash;
+                var reach = m.Role == EscortRole.Raid ? leash * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.GuideLeashScale : leash;
                 // AI MASTER P0-C (spec 66): a station on an outer ring keeps its leash beyond the ring (else it is ordered home
                 // again every look, and a guard there never takes anything on).
-                reach = MathF.Max(reach, Vector2.Distance(home, boss.Position) + 6f);
+                reach = MathF.Max(reach, Vector2.Distance(home, boss.Position) + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.GuideDistanceAdd);
                 var out_ = Vector2.Distance(v.Position, boss.Position);
                 if (m.Role is EscortRole.Guard or EscortRole.Raid)
                 {
@@ -359,8 +359,8 @@ namespace MachineBrigade.Sim.Bosses
                 }
                 else Help(g, m, now, rules);
                 // Back to its station (past the leash it drops what it was chasing).
-                var far = Vector2.Distance(v.Position, home) > 6f;
-                var moved = !m.HasOrder || Vector2.Distance(m.Ordered, home) > 4f;
+                var far = Vector2.Distance(v.Position, home) > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.GuideDistanceMin;
+                var moved = !m.HasOrder || Vector2.Distance(m.Ordered, home) > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.GuideDistanceMin2;
                 if (out_ > reach || (far && (moved || v.Order.Kind != OrderKind.Move)))
                 {
                     Steer(v, CommandType.Move, home, EntityId.None);
@@ -383,7 +383,7 @@ namespace MachineBrigade.Sim.Bosses
                 var d = Vector2.Distance(e.Position, boss.Position);
                 if (d > reach) continue;
                 var attacking = e.Target == boss.Id || e.Order.Target == boss.Id || boss.LastAttacker == e.Id;
-                var score = d + Vector2.Distance(e.Position, guard.Position) * 0.5f - (attacking ? 30f : 0f);
+                var score = d + Vector2.Distance(e.Position, guard.Position) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ThreatDistanceScale - (attacking ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ThreatAttackingTrue : 0f);
                 if (score >= bestScore) continue;
                 bestScore = score;
                 best = e;
@@ -413,7 +413,7 @@ namespace MachineBrigade.Sim.Bosses
                     {
                         if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || !e.IsVisibleTo(v.Team)) continue;
                         if (Vector2.DistanceSquared(e.Position, v.Position) > sight * sight) continue;
-                        _world.Status.Mark(e, rules.SpotBonus, EscortSeconds * 2.5f, v.Team, 0f);
+                        _world.Status.Mark(e, rules.SpotBonus, EscortSeconds * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.HelpEscortSecondsScale, v.Team, 0f);
                         if (++marked >= 6) break;
                     }
                     return;
@@ -434,7 +434,7 @@ namespace MachineBrigade.Sim.Bosses
             if (v.IsAlive || m.Index < 0) return;
             var team = v.LastAttackerTeam;
             m.Index = -1;
-            if (team < 0 || team == v.Team || _world.Time - v.LastHitTime > 10.0 || !_world.TryGetEconomy(team, out var economy)) return;
+            if (team < 0 || team == v.Team || _world.Time - v.LastHitTime > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PaidTimeMin || !_world.TryGetEconomy(team, out var economy)) return;
             var rules = _world.Catalog.EscortRules;
             var cp = m.Role is EscortRole.Guard or EscortRole.Raid ? rules.Bounty : rules.HelperBounty;
             if (cp <= 0f) return;

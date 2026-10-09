@@ -28,7 +28,7 @@ namespace MachineBrigade.Sim
         /// stream, so adding or reordering a draw in one never shifts another's (or the battle's own), and a replay of
         /// the same seed draws the same numbers. Layers: 0 commander, 1 squads, 2 units, 3 tactic choice; free above.
         /// </summary>
-        public Random AiRandom(int team, int layer) => new(unchecked(Seed * 7919 + (team + 3) * 104729 + layer * 1299709));
+        public Random AiRandom(int team, int layer) => new(unchecked(Seed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SimWorld.AiRandomSeedScale + (team + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SimWorld.AiRandomTeamAdd) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SimWorld.AiRandomTeamScale + layer * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SimWorld.AiRandomLayerScale));
 
         /// <summary>
         /// Prompt 28 E.1: sets a tower's targeting mode (the Base screen and a tap on the tower in battle): the data's

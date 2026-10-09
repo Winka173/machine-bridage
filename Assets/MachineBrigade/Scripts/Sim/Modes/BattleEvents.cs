@@ -34,8 +34,8 @@ namespace MachineBrigade.Sim.Modes
         {
             _random = new Random(seed * 7919 + 13);
             _raids = raids;
-            _nextCrate = 45 + _random.NextDouble() * 30;
-            _nextRaid = 80 + _random.NextDouble() * 45;
+            _nextCrate = global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.CtorNextDoubleAdd + _random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.CtorNextDoubleScale;
+            _nextRaid = global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.CtorNextDoubleAdd2 + _random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.CtorNextDoubleScale2;
         }
 
         public void Tick(SimWorld world, float dt)
@@ -44,13 +44,13 @@ namespace MachineBrigade.Sim.Modes
             var now = world.Time;
             if (now >= _nextCrate)
             {
-                _nextCrate = now + 70 + _random.NextDouble() * 40;
+                _nextCrate = now + global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.TickNowAdd + _random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.TickNextDoubleScale;
                 DropCrate(world, now);
             }
             if (_raids && now >= _nextRaid)
             {
                 // No fight worth bombing yet: look again shortly.
-                _nextRaid = Raid(world) ? now + 120 + _random.NextDouble() * 70 : now + 20;
+                _nextRaid = Raid(world) ? now + global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.TickNowAdd2 + _random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.TickNextDoubleScale2 : now + global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.TickNowAdd3;
             }
             UpdateCrates(world, dt, now);
             // Prompt 28 I.6: rising pressure on a battle standing still.
@@ -63,16 +63,16 @@ namespace MachineBrigade.Sim.Modes
             var a = ArmyCentre(world, 0);
             var b = ArmyCentre(world, 1);
             var middle = a != null && b != null ? (a.Value + b.Value) * 0.5f : world.Map.Centre;
-            for (var attempt = 0; attempt < 20; attempt++)
+            for (var attempt = 0; attempt < global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.DropCrateAttemptMax; attempt++)
             {
                 var map = world.Map;
-                var spread = attempt < 10 ? 0.1f : 0.225f;
-                var at = (attempt < 10 ? middle : map.Centre) + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * spread,
+                var spread = attempt < global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.DropCrateAttemptMax2 ? global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.DropCrateAttemptTrue : global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.DropCrateAttemptFalse;
+                var at = (attempt < global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.DropCrateAttemptMax2 ? middle : map.Centre) + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * spread,
                     (float)(_random.NextDouble() * 2 - 1) * map.Length * spread);
                 if (!world.Grid.IsWalkable(at)) continue;
                 var clear = true;
                 foreach (var team in world.Map.Teams)
-                    if (Vector2.Distance(team.Rally, at) < 40f) clear = false;
+                    if (Vector2.Distance(team.Rally, at) < global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.DropCrateDistanceMax) clear = false;
                 if (!clear) continue;
                 var crate = new Crate(new EntityId(_nextId++), at, now + CrateFall, now + CrateFall + CrateLife);
                 world.CrateList.Add(crate);
@@ -119,7 +119,7 @@ namespace MachineBrigade.Sim.Modes
                 if (world.TryGetEconomy(holder, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + CrateCp);
                 foreach (var v in world.VehicleList)
                 {
-                    if (!v.IsAlive || v.Team != holder || v.Def.Boss || Vector2.Distance(v.Position, crate.Position) > 25f) continue;
+                    if (!v.IsAlive || v.Team != holder || v.Def.Boss || Vector2.Distance(v.Position, crate.Position) > global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.UpdateCratesDistanceMin) continue;
                     var amount = world.Gear.Heal(v, v.MaxHp * CrateRepair);
                     if (amount <= 0f) continue;
                     world.Announce(SimEvent.RepairedBy(v, amount));
@@ -139,7 +139,7 @@ namespace MachineBrigade.Sim.Modes
                 if (!a.IsAlive || a.Flying || a.Team != 0) continue;
                 var score = 0;
                 foreach (var b in world.VehicleList)
-                    if (b.IsAlive && !b.Flying && b.Team == 1 && Vector2.Distance(a.Position, b.Position) < 35f) score++;
+                    if (b.IsAlive && !b.Flying && b.Team == 1 && Vector2.Distance(a.Position, b.Position) < global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.RaidDistanceMax) score++;
                 if (score <= bestScore) continue;
                 bestScore = score;
                 best = a.Position;
@@ -153,7 +153,7 @@ namespace MachineBrigade.Sim.Modes
                     if (!a.IsAlive || a.Flying || a.Team < 0 || a.Def.Static) continue;
                     var count = 0;
                     foreach (var b in world.VehicleList)
-                        if (b.IsAlive && !b.Flying && b.Team >= 0 && Vector2.Distance(a.Position, b.Position) < 25f) count++;
+                        if (b.IsAlive && !b.Flying && b.Team >= 0 && Vector2.Distance(a.Position, b.Position) < global::MachineBrigade.Sim.Content.SimTunables.Modes.BattleEvents.RaidDistanceMax2) count++;
                     if (count <= most) continue;
                     most = count;
                     best = a.Position;

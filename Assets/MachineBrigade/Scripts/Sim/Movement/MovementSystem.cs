@@ -244,7 +244,7 @@ namespace MachineBrigade.Sim.Movement
         {
             var front = v.Position + forward * v.Def.HullHalf;
             var probe = v.Position + forward * (v.Def.HullHalf + reach);
-            var width = v.Def.HullRadius * 0.85f;
+            var width = v.Def.HullRadius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BlockerHullRadiusScale;
             var span = v.Def.HullBound + reach + _maxBound;
             Vehicle? nearest = null;
             var nearestAhead = float.MaxValue;
@@ -337,7 +337,7 @@ namespace MachineBrigade.Sim.Movement
                 // Never idle in a gate, a gap or their mouths (a post there would close the way for
                 // everyone): stand beside it, and make that the post.
                 var lanes = _world.Lanes;
-                if (!v.HasPath && v.RepathTimer <= 0f && lanes.NoParkAt(v.Position) && TryStandBeside(v.Position, 16f, out var aside))
+                if (!v.HasPath && v.RepathTimer <= 0f && lanes.NoParkAt(v.Position) && TryStandBeside(v.Position, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.UpdateGuardReach, out var aside))
                 {
                     v.GuardPoint = aside;
                     _world.PathTo(v, aside);
@@ -357,7 +357,7 @@ namespace MachineBrigade.Sim.Movement
 
             var threat = GuardThreat(v);
             var fromPost = Vector2.Distance(v.Position, v.GuardPoint);
-            if (threat != null && fromPost <= GuardLeash + 4f)
+            if (threat != null && fromPost <= GuardLeash + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.UpdateGuardGuardLeashAdd)
             {
                 v.Engaged = threat.Id;
                 CloseIn(v, threat);
@@ -365,7 +365,7 @@ namespace MachineBrigade.Sim.Movement
             }
 
             v.Engaged = EntityId.None;
-            if (fromPost > 2f && !v.HasPath && v.RepathTimer <= 0f) _world.PathTo(v, v.GuardPoint);
+            if (fromPost > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.UpdateGuardFromPostMin && !v.HasPath && v.RepathTimer <= 0f) _world.PathTo(v, v.GuardPoint);
         }
 
         /// <summary>
@@ -390,7 +390,7 @@ namespace MachineBrigade.Sim.Movement
         {
             var grid = _world.Grid;
             var here = grid.RegionOf(v.Position);
-            if (here == 0 && grid.TryNearestWalkable(v.Position, 3, out var open)) here = grid.RegionOf(open);
+            if (here == 0 && grid.TryNearestWalkable(v.Position, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GoalSealedMaxRings, out var open)) here = grid.RegionOf(open);
             return here != 0 && grid.RegionOf(v.Order.Point) != here;
         }
 
@@ -400,7 +400,7 @@ namespace MachineBrigade.Sim.Movement
             // swings back and forth at its edge.
             var weapon = v.Def.Weapon;
             // A fighter on combat air patrol reaches out much further for enemy aircraft.
-            var reach = GuardLeash + weapon.Range * (v.Def.Interceptor ? 2.4f : 0.9f);
+            var reach = GuardLeash + weapon.Range * (v.Def.Interceptor ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GuardThreatInterceptorTrue : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.GuardThreatInterceptorFalse);
             if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
                 attacker.IsAlive && !attacker.Invulnerable && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) && (!attacker.Flying || HuntsAircraft(v)) &&
                 Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach && !OffPost(v, attacker) && !Unreachable(v, attacker))
@@ -430,7 +430,7 @@ namespace MachineBrigade.Sim.Movement
             var weapon = v.Def.Weapon;
             // (A fixed defence does not come for it: only vehicles make it take cover.)
             if (weapon.Targets == TargetLayers.Air && !v.Flying &&
-                _world.FindNearestEnemy(v, v.Def.VisionRange * 0.7f, requireVisible: true, layers: TargetLayers.Ground, mobileOnly: true) != null)
+                _world.FindNearestEnemy(v, v.Def.VisionRange * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.UpdateAttackMoveVisionRangeScale, requireVisible: true, layers: TargetLayers.Ground, mobileOnly: true) != null)
             {
                 // Anti-aircraft missiles cannot fight tanks: hold behind the line while ground enemies
                 // are close, turning only on aircraft.
@@ -509,7 +509,7 @@ namespace MachineBrigade.Sim.Movement
         private Vehicle? BombTarget(Vehicle v)
         {
             var weapon = v.Def.Weapon;
-            var reach = MathF.Max(v.Def.VisionRange, 60f);
+            var reach = MathF.Max(v.Def.VisionRange, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BombTargetVisionRangeFloor);
             Vehicle? best = null;
             var bestScore = 0f;
             foreach (var e in _world.VehicleList)
@@ -517,7 +517,7 @@ namespace MachineBrigade.Sim.Movement
                 if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || e.Invulnerable || e.Def.Untargetable || !e.IsVisibleTo(v.Team)) continue;
                 var d = Vector2.Distance(e.Position, v.Position);
                 if (d > reach) continue;
-                var score = _world.Combat.BombWorth(v.Team, e, weapon) * MathF.Sqrt(Math.Clamp(Combat.CombatSystem.Worth(e), 2f, 25f)) / (1f + d / 200f);
+                var score = _world.Combat.BombWorth(v.Team, e, weapon) * MathF.Sqrt(Math.Clamp(Combat.CombatSystem.Worth(e), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BombTargetWorthMin, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BombTargetWorthMax)) / (1f + d / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BombTargetDDivisor);
                 if (score <= bestScore) continue;
                 best = e;
                 bestScore = score;
@@ -533,7 +533,7 @@ namespace MachineBrigade.Sim.Movement
         private void StayBehindArmour(Vehicle v)
         {
             Vehicle? escort = null;
-            var nearest = 30f;
+            var nearest = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StayBehindArmourNearest;
             foreach (var other in _world.VehicleList)
             {
                 if (other == v || !other.IsAlive || other.Team != v.Team || other.Flying || other.Def.Static) continue;
@@ -551,16 +551,16 @@ namespace MachineBrigade.Sim.Movement
             var threat = _world.FindNearestEnemy(escort, v.Def.VisionRange, requireVisible: true, layers: TargetLayers.Ground);
             var back = threat != null ? escort.Position - threat.Position : v.Position - escort.Position;
             back = back.LengthSquared() > 0.01f ? Vector2.Normalize(back) : SimMath.Forward(escort.Heading + MathF.PI);
-            var spot = escort.Position + back * (escort.Def.HullBound + v.Def.HullBound + 5f);
-            if (_world.Lanes.NoParkAt(spot) && TryStandBeside(spot, 10f, out var beside)) spot = beside;
-            if (Vector2.Distance(spot, v.Position) < 4f)
+            var spot = escort.Position + back * (escort.Def.HullBound + v.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StayBehindArmourHullBoundAdd);
+            if (_world.Lanes.NoParkAt(spot) && TryStandBeside(spot, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StayBehindArmourReach, out var beside)) spot = beside;
+            if (Vector2.Distance(spot, v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StayBehindArmourDistanceMax)
             {
                 v.ClearPath();
                 return;
             }
-            if (v.RepathTimer <= 0f && (!v.HasPath || Vector2.Distance(v.PathGoal, spot) > 4f))
+            if (v.RepathTimer <= 0f && (!v.HasPath || Vector2.Distance(v.PathGoal, spot) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StayBehindArmourDistanceMin))
             {
-                v.RepathTimer = RepathInterval * 2f;
+                v.RepathTimer = RepathInterval * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StayBehindArmourRepathIntervalScale;
                 _world.PathTo(v, _world.ClampToMap(spot));
             }
         }
@@ -590,10 +590,10 @@ namespace MachineBrigade.Sim.Movement
                 foreach (var m in e.Def.Mounts)
                 {
                     if (m.Weapon.CanTarget(true)) aa = MathF.Max(aa, m.Weapon.Range);
-                    if (m.Weapon.CanTarget(true) && (Combat.CombatSystem.IsAntiAir(m.Weapon) || m.Weapon.Penetration >= 2))
+                    if (m.Weapon.CanTarget(true) && (Combat.CombatSystem.IsAntiAir(m.Weapon) || m.Weapon.Penetration >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StandoffPenetrationMin))
                         made = MathF.Max(made, m.Weapon.Range);
                 }
-                if (aa > 0f && aa < reach - 2f) _shortAa.Add((e.Position, aa));
+                if (aa > 0f && aa < reach - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StandoffReachSub) _shortAa.Add((e.Position, aa));
                 // Play-test 6: guns and missiles that hurt a helicopter (flak, SAMs, autocannons), not a tank's machine gun.
                 if (made > 0f) _airDefence.Add((e.Position, made));
             }
@@ -614,7 +614,7 @@ namespace MachineBrigade.Sim.Movement
             if (gun < reach && _world.Time - v.StandoffSince >= StandoffOpening)
             {
                 var toward = v.Position - target.Position;
-                var close = target.Position + (toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : Vector2.UnitX) * (gun * 0.85f + target.Radius);
+                var close = target.Position + (toward.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StandoffLengthSquaredMin ? Vector2.Normalize(toward) : Vector2.UnitX) * (gun * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StandoffGunScale + target.Radius);
                 var covered = false;
                 foreach (var (p, r) in _airDefence)
                     if (Vector2.Distance(close, p) < r + StandoffMargin || Vector2.Distance(v.Position, p) < r + StandoffMargin) covered = true;
@@ -630,7 +630,7 @@ namespace MachineBrigade.Sim.Movement
                 var ring = reach * share + target.Radius;
                 for (var k = -4; k <= 4; k++)
                 {
-                    var spot = _world.ClampToMap(target.Position + SimMath.Forward(bearing + k * SimMath.DegToRad(22.5f)) * ring);
+                    var spot = _world.ClampToMap(target.Position + SimMath.Forward(bearing + k * SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StandoffDegrees)) * ring);
                     var exposure = Exposure(spot);
                     var score = exposure * 10f + MathF.Abs(k);
                     if (score >= bestScore) continue;
@@ -640,7 +640,7 @@ namespace MachineBrigade.Sim.Movement
                 }
             }
             // In the band and no better placed anywhere on the rings: hold and fire.
-            if (distance <= reach * 0.97f && distance >= reach * 0.6f && Exposure(v.Position) <= bestExposure + 0.5f &&
+            if (distance <= reach * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StandoffReachScale && distance >= reach * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StandoffReachScale2 && Exposure(v.Position) <= bestExposure + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StandoffBestExposureAdd &&
                 _world.HasLineOfFire(v, target, v.Def.Weapon))
             {
                 if (double.IsPositiveInfinity(v.StandoffSince)) v.StandoffSince = _world.Time;
@@ -695,7 +695,7 @@ namespace MachineBrigade.Sim.Movement
                 reach = MathF.Min(reach, w.Range);
             }
             // Play-test 6: a standoff helicopter that has come in goes all the way to its cannon's reach.
-            return v.Def.Standoff ? reach : MathF.Max(reach, main * 0.6f);
+            return v.Def.Standoff ? reach : MathF.Max(reach, main * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.HoverReachMainScale);
         }
 
         /// <summary>Metres a standoff helicopter keeps beyond the reach of anti-air it outranges.</summary>
@@ -724,7 +724,7 @@ namespace MachineBrigade.Sim.Movement
                 if (v.RepathTimer > 0f && v.HasPath) return;
                 v.RepathTimer = RepathInterval;
                 // Back off by the best way out; cornered, hold and let the machine gun fight.
-                if (_world.EscapeRoute(v, target.Position, weapon.MinRange + 8f - distance) is { } escape) _world.PathTo(v, escape);
+                if (_world.EscapeRoute(v, target.Position, weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CloseInMinRangeAdd - distance) is { } escape) _world.PathTo(v, escape);
                 return;
             }
             // In range and in the clear: hold here. In range but behind cover: keep driving (the
@@ -734,7 +734,7 @@ namespace MachineBrigade.Sim.Movement
             var reach = v.Flying && !v.Def.FixedWing && !v.Def.Boss ? HoverReach(v, target) : weapon.Range;
             // Prompt 17 C: dug in, it reaches further (and does not pack up for what it can already hit).
             if (v.Deploy == DeployState.Deployed) reach *= v.RangeFactor;
-            if (distance <= reach * 0.9f && clear)
+            if (distance <= reach * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CloseInReachScale && clear)
             {
                 // Never stop in the doorway, nor in the road with friends coming up behind: step
                 // off to the side first (a short drive; the turret keeps firing), or roll on through
@@ -745,13 +745,13 @@ namespace MachineBrigade.Sim.Movement
                     if (v.RepathTimer <= 0f && TryOffLaneSpot(v, target, out var spot))
                     {
                         _world.PathTo(v, spot);
-                        v.RepathTimer = RepathInterval * 3f;
+                        v.RepathTimer = RepathInterval * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CloseInRepathIntervalScale;
                         v.Traffic.OffLaneUntil = _world.Time + OffLaneSeconds;
                         return;
                     }
                     if (noPark)
                     {
-                        if (!v.HasPath && v.RepathTimer <= 0f && TryStandBeside(v.Position, 16f, out var beside))
+                        if (!v.HasPath && v.RepathTimer <= 0f && TryStandBeside(v.Position, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CloseInReach, out var beside))
                         {
                             _world.PathTo(v, beside);
                             v.Traffic.OffLaneUntil = _world.Time + OffLaneSeconds;
@@ -764,7 +764,7 @@ namespace MachineBrigade.Sim.Movement
             }
             // A fixed defence's ground is closed to routes, so a route ends a few metres short of it:
             // a weapon of very short reach (a car bomb's charge) drives the last metres straight at it.
-            if (!v.Flying && !v.HasPath && target is Vehicle { BlocksRoutes: true } && distance <= weapon.Range + 4f)
+            if (!v.Flying && !v.HasPath && target is Vehicle { BlocksRoutes: true } && distance <= weapon.Range + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CloseInRangeAdd)
             {
                 _single.Clear();
                 _single.Add(target.Position);
@@ -773,7 +773,7 @@ namespace MachineBrigade.Sim.Movement
                 return;
             }
             var goalDrift = Vector2.Distance(v.PathGoal, target.Position);
-            if (v.RepathTimer <= 0f && (!v.HasPath || goalDrift > 4f || (!clear && v.PathCompleted)))
+            if (v.RepathTimer <= 0f && (!v.HasPath || goalDrift > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CloseInGoalDriftMin || (!clear && v.PathCompleted)))
             {
                 v.RepathTimer = RepathInterval;
                 // A route just planned round parked hulls is kept a moment (it would be planned straight back through them).
@@ -783,7 +783,7 @@ namespace MachineBrigade.Sim.Movement
         }
 
         /// <summary>Play-test 14 (lane G): seconds a <see cref="VehicleDef.HoldsToFire"/> warship stays halted after its guns go quiet.</summary>
-        private const double HoldToFireSeconds = 2.5;
+        private static double HoldToFireSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.HoldToFireSeconds;
 
         private void Drive(Vehicle v, float dt)
         {
@@ -808,7 +808,7 @@ namespace MachineBrigade.Sim.Movement
                 }
                 if (_world.Time < v.Traffic.HoldUntil)
                 {
-                    v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
+                    v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale * dt);
                     TryAdvance(v, v.Speed * dt);
                     return;
                 }
@@ -820,7 +820,7 @@ namespace MachineBrigade.Sim.Movement
             {
                 v.Traffic.WaitingOnYield = false;
                 v.Traffic.WaitingForGate = false;
-                v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * 2f * dt);
+                v.Speed = SimMath.MoveTowards(v.Speed, 0f, def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale * dt);
                 TryAdvance(v, v.Speed * dt);
                 // Play-test 14: a rail boss never turns off its track to fire.
                 if (def.Frame?.Move == BossMove.Rail) return;
@@ -838,9 +838,9 @@ namespace MachineBrigade.Sim.Movement
                         v.Heading = SimMath.RotateTowards(v.Heading, bearing, def.TurnRate * v.TurnFactor * dt);
                 }
                 // Prompt 28 D.4: a standing ground vehicle with directional armour turns its front to the biggest threat.
-                else if (!def.Flying && v.FaceHeading is { } face && v.Speed < 0.1f &&
+                else if (!def.Flying && v.FaceHeading is { } face && v.Speed < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedMax &&
                          (v.Brain == null || Bosses.BossMovementController.GrantAlignment(_world, v, face, Bosses.HullReason.ArmourFacing)))
-                    v.Heading = SimMath.RotateTowards(v.Heading, face, def.TurnRate * v.TurnFactor * 0.5f * dt);
+                    v.Heading = SimMath.RotateTowards(v.Heading, face, def.TurnRate * v.TurnFactor * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveTurnRateScale * dt);
                 return;
             }
 
@@ -850,7 +850,7 @@ namespace MachineBrigade.Sim.Movement
             var distance = toWaypoint.Length();
             // Aircraft keep apart in the air, so a flight sent to one point spreads round it: when
             // others of the flight crowd the destination, anywhere within their own size of it is there.
-            var arrive = isFinal ? (def.Flying && CrowdedInAir(v, waypoint) ? ArriveFinal + v.Radius * 0.9f : ArriveFinal) : ArriveWaypoint;
+            var arrive = isFinal ? (def.Flying && CrowdedInAir(v, waypoint) ? ArriveFinal + v.Radius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveRadiusScale : ArriveFinal) : ArriveWaypoint;
             if (distance <= arrive)
             {
                 Vehicle.PathTrace?.Invoke(v, $"Arrive {v.PathIndex}/{v.Path.Count} d{distance:0.0}");
@@ -862,7 +862,7 @@ namespace MachineBrigade.Sim.Movement
             {
                 // A helicopter slides the last metres sideways rather than turning: with a slow
                 // turn it could otherwise circle its destination for ever.
-                v.Speed = SimMath.MoveTowards(v.Speed, MathF.Min(def.Speed * v.SpeedFactor, MathF.Max(1f, distance * 1.2f)), def.Speed * 2f * dt);
+                v.Speed = SimMath.MoveTowards(v.Speed, MathF.Min(def.Speed * v.SpeedFactor, MathF.Max(1f, distance * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveDistanceScale)), def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale * dt);
                 var slide = toWaypoint / distance * MathF.Min(distance, v.Speed * dt);
                 if (_world.Map.Contains(v.Position + slide)) v.Position += slide;
                 return;
@@ -872,14 +872,14 @@ namespace MachineBrigade.Sim.Movement
             var slowFor = float.MaxValue;
             var wasWaiting = v.Traffic.WaitingOnYield;
             v.Traffic.WaitingOnYield = false;
-            if (!def.Flying && distance > 1.5f)
+            if (!def.Flying && distance > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveDistanceMin)
             {
                 // A short doorway held by traffic the other way: wait short of it (one way at a time).
                 GateCheck(v, toWaypoint / distance, ref slowFor);
                 // Look ahead for a hull in the way. Follow a friend going the same way; steer round
                 // anything parked, crossing or hostile instead of shoving into it.
                 var forward = SimMath.Forward(v.Heading);
-                var blocker = Blocker(v, forward, 1.2f + v.Speed * 0.7f);
+                var blocker = Blocker(v, forward, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedAdd + v.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale2);
                 // Convoy trucks and bosses have right of way over their own side: the others
                 // make room (they yield far more), so these keep to their route.
                 if (blocker != null && blocker.Team == v.Team && (v.Scripted || v.Def.Boss)) blocker = null;
@@ -891,7 +891,7 @@ namespace MachineBrigade.Sim.Movement
                 if (blocker != null)
                 {
                     var sameWay = Vector2.Dot(SimMath.Forward(blocker.Heading), forward) > 0.4f;
-                    if (blocker.Team == v.Team && blocker.IsMoving && sameWay) slowFor = blocker.Speed * 0.9f;
+                    if (blocker.Team == v.Team && blocker.IsMoving && sameWay) slowFor = blocker.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale3;
                     else
                     {
                         // Steer away from the side the blocker is on (headings turn clockwise), and
@@ -901,16 +901,16 @@ namespace MachineBrigade.Sim.Movement
                         {
                             var offset = blocker.Position - v.Position;
                             var onLeft = forward.X * offset.Y - forward.Y * offset.X > 0f;
-                            var oncoming = blocker.IsMoving && Vector2.Dot(SimMath.Forward(blocker.Heading), forward) < -0.5f;
+                            var oncoming = blocker.IsMoving && Vector2.Dot(SimMath.Forward(blocker.Heading), forward) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveDotMax;
                             v.AvoidSide = oncoming || onLeft ? 1f : -1f;
                         }
                         v.AvoidUntil = _world.Time + AvoidSeconds;
-                        slowFor = def.Speed * 0.5f;
+                        slowFor = def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale4;
                     }
                 }
                 // Play-test 14 (lane J): a burning hulk in the way never makes way: steer round it, as round a parked enemy.
                 else if (_world.Wrecks.GroundCount > 0 && _world.Wrecks.Ahead(v.Position, v.Position + forward * def.HullHalf,
-                             v.Position + forward * (def.HullHalf + 1.2f + v.Speed * 0.7f), def.HullRadius * 0.85f, false, out var wreck))
+                             v.Position + forward * (def.HullHalf + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveHullHalfAdd + v.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale2), def.HullRadius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveHullRadiusScale, false, out var wreck))
                 {
                     if (_world.Time >= v.AvoidUntil)
                     {
@@ -918,18 +918,18 @@ namespace MachineBrigade.Sim.Movement
                         v.AvoidSide = forward.X * offset.Y - forward.Y * offset.X > 0f ? 1f : -1f;
                     }
                     v.AvoidUntil = _world.Time + AvoidSeconds;
-                    slowFor = MathF.Min(slowFor, def.Speed * 0.5f);
+                    slowFor = MathF.Min(slowFor, def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale4);
                 }
             }
             // AI MASTER P1 (spec 34-36): ORCA-lite round the moving hulls near it, the pair's passing side fixed.
-            if (!def.Flying && distance > 1.5f) desired += OrcaTurn(v, desired);
+            if (!def.Flying && distance > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveDistanceMin) desired += OrcaTurn(v, desired);
             // The detour fades out over a moment after the way last looked blocked. Dropping it
             // the instant the blocker leaves the look-ahead turned the hull straight back at it,
             // then away again: a wag every few steps.
             if (!def.Flying && _world.Time < v.AvoidUntil)
-                desired += AvoidTurn(v, desired, v.AvoidSide * AvoidAngle * (float)Math.Min(1.0, (v.AvoidUntil - _world.Time) / (AvoidSeconds * 0.5)));
+                desired += AvoidTurn(v, desired, v.AvoidSide * AvoidAngle * (float)Math.Min(1.0, (v.AvoidUntil - _world.Time) / (AvoidSeconds * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAvoidSecondsScale)));
             var misalignment = MathF.Abs(SimMath.WrapAngle(desired - v.Heading));
-            if (isFinal && distance < SettleDistance && MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(toWaypoint) - v.Heading)) > 1.2f)
+            if (isFinal && distance < SettleDistance && MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(toWaypoint) - v.Heading)) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAbsMin)
             {
                 // The destination is beside or behind the hull and only a few metres off: close
                 // enough. Driving on would only circle it (a slow-turning tank cannot tighten
@@ -944,19 +944,19 @@ namespace MachineBrigade.Sim.Movement
             // hold the heading and let the vehicle roll in. While cruising, slivers of
             // misalignment (a shove from a neighbour shifting the bearing a degree) are not worth
             // a turn; a vehicle slowed or stopped (against a wall corner) always corrects.
-            var cruising = v.Speed > def.Speed * 0.3f;
-            if ((!isFinal || distance > 2.5f || misalignment > 0.6f) && (def.Flying || !cruising || misalignment > HeadingDeadBand))
+            var cruising = v.Speed > def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveSpeedScale5;
+            if ((!isFinal || distance > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveDistanceMin2 || misalignment > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveMisalignmentMin) && (def.Flying || !cruising || misalignment > HeadingDeadBand))
                 v.Heading = SimMath.RotateTowards(v.Heading, desired, def.TurnRate * v.TurnFactor * dt);
 
             // Slow right down for sharp turns so tanks pivot instead of drawing wide arcs.
             var alignment = MathF.Cos(MathF.Min(misalignment, MathF.PI * 0.5f));
             // Play-test 14 (lane H): a slow-turning warship (holds to fire) all but stops to come round, as a big ship does,
             // rather than drawing a wide circle round its waypoint.
-            var targetSpeed = def.Speed * v.SpeedFactor * MathF.Max(alignment, def.Flying && !def.HoldsToFire ? 0.4f : 0.15f);
+            var targetSpeed = def.Speed * v.SpeedFactor * MathF.Max(alignment, def.Flying && !def.HoldsToFire ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveFlyingTrue : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveFlyingFalse);
             // Roll in slowly, and pivot (tracks can turn on the spot) rather than orbit the point.
-            if (isFinal) targetSpeed = MathF.Min(targetSpeed, MathF.Max(misalignment > 0.6f ? 0.3f : 1.5f, distance * 1.5f));
+            if (isFinal) targetSpeed = MathF.Min(targetSpeed, MathF.Max(misalignment > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveMisalignmentMin ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveMisalignmentTrue : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveMisalignmentFalse, distance * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveDistanceScale2));
             targetSpeed = MathF.Min(targetSpeed, slowFor);
-            var acceleration = def.Speed / (targetSpeed > v.Speed ? 1.2f : 0.5f);
+            var acceleration = def.Speed / (targetSpeed > v.Speed ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveTargetSpeedTrue : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveTargetSpeedFalse);
             v.Speed = SimMath.MoveTowards(v.Speed, targetSpeed, acceleration * dt);
 
             if (!TryAdvance(v, v.Speed * dt) && (def.Flying || !Sidestep(v, SimMath.HeadingOf(toWaypoint), dt))) v.Speed = 0f;
@@ -997,7 +997,7 @@ namespace MachineBrigade.Sim.Movement
             // The map's middle and half extents (a long battlefield's are its own, prompt 17).
             var centre = _world.Map.Centre;
             float halfX = _world.Map.Width * 0.5f, halfZ = _world.Map.Length * 0.5f;
-            var margin = turnRadius * 1.3f + 4f;
+            var margin = turnRadius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneTurnRadiusAdd;
             var circling = false;
             var turnBoost = 1f;
             var chasingJet = false;
@@ -1008,9 +1008,9 @@ namespace MachineBrigade.Sim.Movement
                 // short-range anti-aircraft round it. The circle is kept inside the map (a target
                 // near the edge is circled from the inside), and its centre glides to a new target
                 // at a few metres a second, so the turn never jerks.
-                var radius = MathF.Max(turnRadius * 1.15f, def.OrbitRadius > 0f ? def.OrbitRadius : def.Weapon.Range * 0.62f);
-                var limitX = MathF.Max(0f, halfX - radius - 4f);
-                var limitZ = MathF.Max(0f, halfZ - radius - 4f);
+                var radius = MathF.Max(turnRadius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale2, def.OrbitRadius > 0f ? def.OrbitRadius : def.Weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneRangeScale);
+                var limitX = MathF.Max(0f, halfX - radius - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneHalfXSub);
+                var limitZ = MathF.Max(0f, halfZ - radius - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneHalfZSub);
                 var want = new Vector2(Math.Clamp(target.Position.X, centre.X - limitX, centre.X + limitX),
                     Math.Clamp(target.Position.Y, centre.Y - limitZ, centre.Y + limitZ));
                 if (!v.Orbiting)
@@ -1053,9 +1053,9 @@ namespace MachineBrigade.Sim.Movement
                     if (!v.RunExtending)
                     {
                         // Pull through once too close to keep the nose on it, or once it slips behind (not a jet on its tail).
-                        if (distance < MathF.Max(6f, range * 0.3f) || (tail == null && ahead < 0f && distance < range * 0.6f)) v.RunExtending = true;
+                        if (distance < MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneRangeFloor, range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneRangeScale2) || (tail == null && ahead < 0f && distance < range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneRangeScale3)) v.RunExtending = true;
                     }
-                    else if (distance > MathF.Max(range * 0.85f, turnRadius * 2.2f))
+                    else if (distance > MathF.Max(range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneRangeScale4, turnRadius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale3))
                     {
                         v.RunExtending = false;
                         v.BreakAway = false;
@@ -1067,33 +1067,33 @@ namespace MachineBrigade.Sim.Movement
                     if (tail != null && !v.RunExtending && !(behind && distance < range * TailClose))
                         goal = tail.Position - SimMath.Forward(tail.Heading) * (range * ChaseShare);
                     var gap = distance - target.Radius;
-                    v.OnTail = tail != null && behind && !v.RunExtending && gap <= range && ahead > distance * 0.9f;
+                    v.OnTail = tail != null && behind && !v.RunExtending && gap <= range && ahead > distance * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneDistanceScale;
                     // Play-test 6 (DECISIONS 21F): in the jet's rear cone and close, it follows the jet's turns (it no longer
                     // drops off the tail when the jet turns back from the map's edge).
                     if (tail != null && behind && !v.RunExtending && distance < range * TailClose) turnBoost = TailTurn;
                     chasingJet = tail != null && !v.RunExtending;
-                    if (!v.RunExtending && mover != null && gap < range * 1.3f && ahead > distance * 0.6f)
+                    if (!v.RunExtending && mover != null && gap < range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneRangeScale5 && ahead > distance * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneDistanceScale2)
                     {
                         // Behind a fast jet: match its speed to keep it on the nose at a little over half
                         // the guns' reach (the cannon streams for as long as it stays there).
-                        var want = (mover.Speed + (gap - range * ChaseShare) * 1.5f) / MathF.Max(1f, def.Speed * v.SpeedFactor);
-                        throttle = Math.Clamp(want, def.Vtol ? 0.3f : 0.45f, 1f);
+                        var want = (mover.Speed + (gap - range * ChaseShare) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneGapScale) / MathF.Max(1f, def.Speed * v.SpeedFactor);
+                        throttle = Math.Clamp(want, def.Vtol ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneVtolTrue : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneVtolFalse, 1f);
                     }
                     else if (!v.RunExtending && def.AttackHold > 0f && mover == null)
                     {
                         // Coming in for a hold: easing off from half as far again as its reach, so it
                         // is at half speed when the hold begins.
-                        throttle = Math.Clamp((gap - range) / range + 0.5f, 0.5f, 1f);
+                        throttle = Math.Clamp((gap - range) / range + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneGapAdd, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneGapMin, 1f);
                     }
                     // Throttle back through the attack run for more time on the target; full power to
                     // extend and come round.
-                    else if (!v.RunExtending && distance < range * 1.1f) throttle = 0.8f;
+                    else if (!v.RunExtending && distance < range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneRangeScale6) throttle = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneThrottle;
                 }
             }
             else if (v.HasPath)
             {
                 goal = v.Path[v.Path.Count - 1];
-                if (Vector2.Distance(v.Position, goal) < MathF.Max(8f, turnRadius))
+                if (Vector2.Distance(v.Position, goal) < MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneTurnRadiusFloor, turnRadius))
                 {
                     v.PathIndex = v.Path.Count;
                     v.PathCompleted = true;
@@ -1101,7 +1101,7 @@ namespace MachineBrigade.Sim.Movement
             }
             else
             {
-                goal = OrbitPoint(v, MathF.Max(14f, turnRadius * 1.6f));
+                goal = OrbitPoint(v, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneTurnRadiusFloor2, turnRadius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale4));
             }
 
             if (!circling) v.Orbiting = false;
@@ -1113,7 +1113,7 @@ namespace MachineBrigade.Sim.Movement
             if (!circling && !chasingJet && nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), fromCentre) > 0f) goal = centre;
 
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * v.TurnFactor * turnBoost * dt);
-            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor * throttle, def.Speed * 0.8f * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor * throttle, def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveAeroplaneSpeedScale * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
         }
 
@@ -1167,7 +1167,7 @@ namespace MachineBrigade.Sim.Movement
         {
             away = SimMath.Forward(v.Heading);
             throttle = 1f;
-            var from = distance > 0.1f ? (v.Position - enemy.Position) / distance : -away;
+            var from = distance > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DogfightDistanceMin ? (v.Position - enemy.Position) / distance : -away;
             // Balance pack (lane B, rule D, locked "no retreat on health, aircraft too"): a damaged jet no longer breaks
             // off on its health; it fights on (it still defends when out-placed, below).
             v.BreakingOff = false;
@@ -1182,14 +1182,14 @@ namespace MachineBrigade.Sim.Movement
             var theirs = Vector2.Dot(away, -from);
             if (v.Defending)
             {
-                if (distance > range * DefendOut || theirs > 0.6f) v.Defending = false;
+                if (distance > range * DefendOut || theirs > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DogfightTheirsMin) v.Defending = false;
             }
-            else if (distance < range * DefendIn && !(mine > 0.5f && theirs > 0.5f) && !enemy.Defending &&
+            else if (distance < range * DefendIn && !(mine > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DogfightMineMin && theirs > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DogfightTheirsMin2) && !enemy.Defending &&
                      (theirs < mine - AspectMargin || (MathF.Abs(theirs - mine) <= AspectMargin && v.Id.Value > enemy.Id.Value)))
                 v.Defending = true;
             if (!v.Defending) return false;
             // Straight out, bending away from the enemy, weaving a little either side.
-            var weave = MathF.Sin((float)_world.Time * 1.6f + v.Id.Value) * 0.6f;
+            var weave = MathF.Sin((float)_world.Time * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DogfightTimeScale + v.Id.Value) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DogfightSinScale;
             var side = new Vector2(-away.Y, away.X);
             away = Vector2.Normalize(away * 2f + from + side * weave);
             throttle = DefendPower;
@@ -1230,16 +1230,16 @@ namespace MachineBrigade.Sim.Movement
             var distance = toTarget.Length();
             var gap = distance - target.Radius;
             var off = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(toTarget) - v.Heading));
-            var pullThrough = MathF.Max(5f, reach * 0.2f);
+            var pullThrough = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldReachFloor, reach * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldReachScale);
             if (now >= v.HoldUntil)
             {
-                if (v.RunExtending || now < v.HoldReadyAt || gap > reach * 0.95f || distance < pullThrough + 3f ||
+                if (v.RunExtending || now < v.HoldReadyAt || gap > reach * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldReachScale2 || distance < pullThrough + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldPullThroughAdd ||
                     (!def.Vtol && off > HoldCone) || FastMover(v, target) != null)
                     return false;
                 v.HoldUntil = now + HoldSeconds(v, target);
             }
             // It got away (a jet flying on, a helicopter moving off): the chase goes on.
-            if (gap > reach * 1.25f)
+            if (gap > reach * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldReachScale3)
             {
                 v.HoldUntil = now;
                 v.HoldReadyAt = now + HoldRest;
@@ -1255,22 +1255,22 @@ namespace MachineBrigade.Sim.Movement
             }
             var cruise = def.Speed * v.SpeedFactor;
             float want;
-            if (hover) want = Math.Clamp((gap - reach * HoverShare) * 1.5f, 0f, cruise * 0.5f);
+            if (hover) want = Math.Clamp((gap - reach * HoverShare) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldGapScale, 0f, cruise * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldCruiseScale);
             else
             {
                 // Paced to reach the target as the hold runs out.
-                var left = (float)Math.Max(0.3, v.HoldUntil - now);
+                var left = (float)Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldHoldUntilFloor, v.HoldUntil - now);
                 want = Math.Clamp((distance - pullThrough) / left, cruise * (flak ? HangFastest : HangSlowest), cruise * HangFastest);
             }
-            v.Speed = SimMath.MoveTowards(v.Speed, want, def.Speed * 1.1f * dt);
-            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(toTarget), def.TurnRate * v.TurnFactor * 1.4f * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, want, def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldSpeedScale * dt);
+            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(toTarget), def.TurnRate * v.TurnFactor * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldTurnRateScale * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
             v.InAttackHold = true;
             if (now + dt >= v.HoldUntil)
             {
                 // Play-test 6 (DECISIONS 21F): on an aircraft (a helicopter it hangs on) with its cannon, out of flak, it holds
                 // on for another spell while it keeps the target in reach, firing until it dies or gets away.
-                if (target is Vehicle { Flying: true } && TailGun(v, flying: true) >= 0 && !flak && (hover || distance > pullThrough * 2f))
+                if (target is Vehicle { Flying: true } && TailGun(v, flying: true) >= 0 && !flak && (hover || distance > pullThrough * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.AttackHoldPullThroughScale))
                     v.HoldUntil = now + dt + HoldSeconds(v, target);
                 else EndHold(v, now + dt, hover);
             }
@@ -1286,7 +1286,7 @@ namespace MachineBrigade.Sim.Movement
             var hold = v.Def.AttackHold;
             var gun = v.Arms[0];
             if (TailGun(v, target is Vehicle { Flying: true }) == 0)
-                hold = MathF.Max(hold, (gun.Clip - 1) * gun.Cooldown + 0.6f);
+                hold = MathF.Max(hold, (gun.Clip - 1) * gun.Cooldown + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.HoldSecondsClipAdd);
             return hold;
         }
 
@@ -1322,7 +1322,7 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>The target is a jet flying fast (not hovering or crawling in its own hold): it is chased, not held on.</summary>
         private static Vehicle? FastMover(Vehicle v, IDamageable target) =>
-            target is Vehicle jet && jet.Def.FixedWing && jet.Speed > v.Def.Speed * 0.35f ? jet : null;
+            target is Vehicle jet && jet.Def.FixedWing && jet.Speed > v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FastMoverSpeedScale ? jet : null;
 
         /// <summary>An enemy anti-aircraft gun (not a guided missile) has this aircraft within its reach and a little more.</summary>
         private bool UnderFlak(Vehicle v)
@@ -1335,7 +1335,7 @@ namespace MachineBrigade.Sim.Movement
                 {
                     var w = mount.Weapon;
                     if (w.Guided || !w.CanTarget(true) || !Combat.CombatSystem.IsAntiAir(w)) continue;
-                    var reach = w.Range + 6f;
+                    var reach = w.Range + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.UnderFlakRangeAdd;
                     if (d2 < reach * reach) return true;
                 }
             }
@@ -1347,9 +1347,9 @@ namespace MachineBrigade.Sim.Movement
         {
             var from = v.Position - centre;
             var distance = from.Length();
-            var outward = distance > 0.1f ? from / distance : SimMath.Forward(v.Heading);
+            var outward = distance > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OrbitAroundDistanceMin ? from / distance : SimMath.Forward(v.Heading);
             var tangent = new Vector2(-outward.Y, outward.X);
-            var pull = Math.Clamp((radius - distance) / radius, -1f, 1f) * 1.4f;
+            var pull = Math.Clamp((radius - distance) / radius, -1f, 1f) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OrbitAroundClampScale;
             var direction = Vector2.Normalize(tangent + outward * pull);
             return v.Position + direction * 10f;
         }
@@ -1366,13 +1366,13 @@ namespace MachineBrigade.Sim.Movement
             var distance = Vector2.Distance(v.Position, at);
             // An aeroplane flies there and then circles it (its circle pulls it round; routing it back to
             // the centre each time it swung wide would wag its nose); a helicopter hovers on the spot.
-            var near = v.Def.FixedWing ? Abilities.SupplySystem.Orbit(v) * 2f + 10f : 2.5f;
+            var near = v.Def.FixedWing ? Abilities.SupplySystem.Orbit(v) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SteerToRearmOrbitScale + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SteerToRearmOrbitAdd : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SteerToRearmFixedWingFalse;
             if (distance <= near)
             {
-                if (v.HasPath && (!v.Def.FixedWing || distance < Abilities.SupplySystem.Orbit(v) + 4f)) v.ClearPath();
+                if (v.HasPath && (!v.Def.FixedWing || distance < Abilities.SupplySystem.Orbit(v) + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SteerToRearmOrbitAdd2)) v.ClearPath();
                 return;
             }
-            if (!v.HasPath || Vector2.Distance(v.PathGoal, at) > 8f) _world.PathTo(v, at);
+            if (!v.HasPath || Vector2.Distance(v.PathGoal, at) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SteerToRearmDistanceMin) _world.PathTo(v, at);
         }
 
         /// <summary>The strafing-run target: an ordered one, else the current or last engaged enemy.</summary>
@@ -1393,7 +1393,7 @@ namespace MachineBrigade.Sim.Movement
                 return ordered;
             var weapon = v.Def.Weapon;
             if (_world.TryGetVehicle(v.RunTarget, out var run) && run.IsAlive && !run.Invulnerable && run.IsVisibleTo(v.Team) &&
-                weapon.CanTarget(run.Flying) && Vector2.Distance(run.Position, v.Position) < weapon.Range * 2.5f && !OffPost(v, run))
+                weapon.CanTarget(run.Flying) && Vector2.Distance(run.Position, v.Position) < weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.RunTargetRangeScale && !OffPost(v, run))
                 return run;
             v.RunExtending = false;
             if (_world.TryGetVehicle(v.Target, out var current) && current.IsAlive && !OffPost(v, current))
@@ -1419,9 +1419,9 @@ namespace MachineBrigade.Sim.Movement
         {
             var from = v.Position - v.GuardPoint;
             var distance = from.Length();
-            var outward = distance > 0.1f ? from / distance : SimMath.Forward(v.Heading);
+            var outward = distance > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OrbitPointDistanceMin ? from / distance : SimMath.Forward(v.Heading);
             var tangent = new Vector2(-outward.Y, outward.X);
-            var pull = Math.Clamp((radius - distance) / radius, -1f, 1f) * 1.2f;
+            var pull = Math.Clamp((radius - distance) / radius, -1f, 1f) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OrbitPointClampScale;
             var direction = Vector2.Normalize(tangent + outward * pull);
             return v.Position + direction * 10f;
         }
@@ -1436,8 +1436,8 @@ namespace MachineBrigade.Sim.Movement
         {
             // Still swinging round towards the waypoint: pivot on the spot first (tracks can).
             if (MathF.Abs(SimMath.WrapAngle(v.Heading - towards)) > 0.6f) return false;
-            var step = MathF.Max(v.Speed, v.Def.Speed * 0.3f) * dt;
-            var probe = MathF.Max(1.5f, v.Def.HullRadius + 0.5f);
+            var step = MathF.Max(v.Speed, v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SidestepSpeedScale) * dt;
+            var probe = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SidestepHullRadiusFloor, v.Def.HullRadius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SidestepHullRadiusAdd);
             // Keep to the side chosen a moment ago (else the side the hull leans to), so it edges
             // one way round the obstacle instead of hesitating between the two.
             var lean = _world.Time < v.SlideUntil ? v.SlideSide : SimMath.WrapAngle(v.Heading - towards) >= 0f ? 1f : -1f;
@@ -1450,11 +1450,11 @@ namespace MachineBrigade.Sim.Movement
                     if (!_world.Grid.IsWalkable(v.Position + direction * probe) || HullNear(v, v.Position + direction * probe)) continue;
                     if (!TryPlace(v, v.Position + direction * step)) continue;
                     v.Heading = SimMath.RotateTowards(v.Heading, bearing, v.Def.TurnRate * v.TurnFactor * dt);
-                    v.Speed = MathF.Min(MathF.Max(v.Speed, v.Def.Speed * 0.3f), v.Def.Speed * 0.6f);
+                    v.Speed = MathF.Min(MathF.Max(v.Speed, v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SidestepSpeedScale), v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SidestepSpeedScale2);
                     if (k > 0)
                     {
                         v.SlideSide = side == 0 ? lean : -lean;
-                        v.SlideUntil = _world.Time + 1.5;
+                        v.SlideUntil = _world.Time + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SidestepTimeAdd;
                     }
                     return true;
                 }
@@ -1491,9 +1491,9 @@ namespace MachineBrigade.Sim.Movement
             for (var ring = 1; ring <= 2; ring++)
             for (var k = 0; k < 16; k++)
             {
-                var p = v.Position + SimMath.Forward(k * SimMath.Tau / 16f) * (2.5f * ring + v.Def.HullRadius);
+                var p = v.Position + SimMath.Forward(k * SimMath.Tau / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryDetourKDivisor) * (global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryDetourRingScale * ring + v.Def.HullRadius);
                 if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || !grid.LineOfSight(v.Position, p)) continue;
-                var score = Vector2.Distance(p, next) + (grid.LineOfSight(p, next) ? 0f : 12f);
+                var score = Vector2.Distance(p, next) + (grid.LineOfSight(p, next) ? 0f : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryDetourLineOfSightFalse);
                 if (score >= best) continue;
                 best = score;
                 detour = p;
@@ -1572,7 +1572,7 @@ namespace MachineBrigade.Sim.Movement
             var t = v.Traffic;
             if (!t.QueueBehind.IsValid) return false;
             if (_world.Time < t.QueueUntil && _world.TryGetVehicle(t.QueueBehind, out var ahead) && ahead.IsAlive &&
-                Vector2.Distance(ahead.Position, v.Position) < ahead.Def.HullBound + v.Def.HullBound + 8f)
+                Vector2.Distance(ahead.Position, v.Position) < ahead.Def.HullBound + v.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StillQueuedHullBoundAdd)
             {
                 PostYield(v, ahead, 0);
                 return true;
@@ -1602,11 +1602,11 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>Other ground hulls pressed close round this one.</summary>
         private bool Crowded(Vehicle v)
         {
-            var reach = v.Def.HullBound * 2f + 1.5f;
+            var reach = v.Def.HullBound * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CrowdedHullBoundScale + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CrowdedHullBoundAdd;
             foreach (var other in _ground)
                 if (other != v && other.IsAlive && Vector2.DistanceSquared(other.Position, v.Position) < reach * reach) return true;
             // Play-test 14 (lane J): a burning hulk on the spot counts too (its goal was where a vehicle died).
-            return _world.Wrecks.GroundCount > 0 && _world.Wrecks.Blocks(v.Position, v.Def.HullBound + 1.5f, false);
+            return _world.Wrecks.GroundCount > 0 && _world.Wrecks.Blocks(v.Position, v.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CrowdedHullBoundAdd, false);
         }
 
         /// <summary>
@@ -1621,7 +1621,7 @@ namespace MachineBrigade.Sim.Movement
             for (var k = 0; k < 10; k++)
             {
                 var angle = start + k * (SimMath.Tau / 10f);
-                var reach = 3.5f + 2.5f * (float)_world.Random.NextDouble();
+                var reach = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryUnjamNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryUnjamNextDoubleScale * (float)_world.Random.NextDouble();
                 var p = _world.ClampToMap(v.Position + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
                 if (!_world.Map.Contains(p) || !_world.Grid.IsWalkable(p)) continue;
                 var room = float.MaxValue;
@@ -1734,9 +1734,9 @@ namespace MachineBrigade.Sim.Movement
         /// </summary>
         private static void Brake(Vehicle v, Vector2 push, float share)
         {
-            if (v.Flying || v.Speed <= 0f || share < 0.2f) return;
+            if (v.Flying || v.Speed <= 0f || share < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BrakeShareMax) return;
             var against = -Vector2.Dot(SimMath.Forward(v.Heading), push);
-            if (against > 0.3f) v.Speed *= 1f - 0.5f * MathF.Min(1f, against) * share;
+            if (against > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BrakeAgainstMin) v.Speed *= 1f - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.BrakeMinScale * MathF.Min(1f, against) * share;
         }
 
         /// <summary>How readily a vehicle gives way: parked more than moving, bosses hardly, defences never.</summary>

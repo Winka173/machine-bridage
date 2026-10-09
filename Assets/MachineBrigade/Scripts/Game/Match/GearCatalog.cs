@@ -145,7 +145,7 @@ namespace MachineBrigade.Game.Match
         public GearTrait At(Rarity rarity)
         {
             var v = rarity >= Rarity.Legendary ? Legendary : Epic;
-            return new GearTrait(Id, v.Length > 0 ? v[0] : 0f, v.Length > 1 ? v[1] : 0f, v.Length > 2 ? v[2] : 0f);
+            return new GearTrait(Id, v.Length > 0 ? v[0] : 0f, v.Length > 1 ? v[1] : 0f, v.Length > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TraitDef.AtLengthMin ? v[2] : 0f);
         }
     }
 
@@ -255,90 +255,90 @@ namespace MachineBrigade.Game.Match
         public static readonly BaseTypeDef[] Bases =
         {
             // Weapon: main stat +damage.
-            new("long_barrel", GearSlot.Weapon, StatId.Range, V(0.02f, 0.03f, 0.04f, 0.06f, 0.08f)),
+            new("long_barrel", GearSlot.Weapon, StatId.Range, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LongBarrelTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LongBarrelTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LongBarrelTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LongBarrelTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LongBarrelTop5)),
             // Prompt 15 C.9: a level of penetration at the top (part levels below it), not a share against heavy vehicles.
-            new("tungsten_penetrator", GearSlot.Weapon, StatId.Penetration, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
-            new("he_frag_filler", GearSlot.Weapon, StatId.Splash, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
-            new("proximity_fuze", GearSlot.Weapon, StatId.DamageVsAir, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
-            new("bunker_buster", GearSlot.Weapon, StatId.DamageVsStructure, V(0.06f, 0.09f, 0.13f, 0.18f, 0.24f)),
+            new("tungsten_penetrator", GearSlot.Weapon, StatId.Penetration, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TungstenPenetratorTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TungstenPenetratorTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TungstenPenetratorTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TungstenPenetratorTop4, 1f)),
+            new("he_frag_filler", GearSlot.Weapon, StatId.Splash, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeFragFillerTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeFragFillerTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeFragFillerTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeFragFillerTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeFragFillerTop5)),
+            new("proximity_fuze", GearSlot.Weapon, StatId.DamageVsAir, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProximityFuzeTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProximityFuzeTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProximityFuzeTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProximityFuzeTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProximityFuzeTop5)),
+            new("bunker_buster", GearSlot.Weapon, StatId.DamageVsStructure, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BunkerBusterTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BunkerBusterTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BunkerBusterTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BunkerBusterTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BunkerBusterTop5)),
             // Gear balance 04/10: Range 0.08/0.10/0.12 -> 0.07/0.09/0.10, Speed drawback -0.05/-0.06/-0.07 -> -0.03/-0.04/-0.05
             // (long_barrel = clean range, heavy_barrel = more range for some mobility).
-            new("heavy_barrel", GearSlot.Weapon, StatId.Range, V(0f, 0f, 0.07f, 0.09f, 0.1f))
-                { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, -0.03f, -0.04f, -0.05f), MinRarity = 2 },
+            new("heavy_barrel", GearSlot.Weapon, StatId.Range, V(0f, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeavyBarrelTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeavyBarrelTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeavyBarrelTop5))
+                { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeavyBarrelPenaltyTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeavyBarrelPenaltyTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeavyBarrelPenaltyTop5), MinRarity = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HeavyBarrelMinRarity },
             // Prompt 8: rounds for flank shots, and airburst rounds against drones and what flies at it
             // (the Hyper-Velocity Charge's place: its extra shell speed was hard to feel).
-            new("flanking_rounds", GearSlot.Weapon, StatId.DamageFlank, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
-            new("airburst_rounds", GearSlot.Weapon, StatId.DamageVsDrone, V(0.08f, 0.12f, 0.18f, 0.24f, 0.3f)),
+            new("flanking_rounds", GearSlot.Weapon, StatId.DamageFlank, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FlankingRoundsTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FlankingRoundsTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FlankingRoundsTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FlankingRoundsTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FlankingRoundsTop5)),
+            new("airburst_rounds", GearSlot.Weapon, StatId.DamageVsDrone, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AirburstRoundsTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AirburstRoundsTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AirburstRoundsTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AirburstRoundsTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AirburstRoundsTop5)),
 
             // Loader: main stat +fire rate.
-            new("carousel_autoloader", GearSlot.Loader, StatId.MagazineReload, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
+            new("carousel_autoloader", GearSlot.Loader, StatId.MagazineReload, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CarouselAutoloaderTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CarouselAutoloaderTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CarouselAutoloaderTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CarouselAutoloaderTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CarouselAutoloaderTop5)),
             new("extended_ammo_rack", GearSlot.Loader, StatId.Magazine, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f)),
-            new("belt_feed", GearSlot.Loader, StatId.SecondaryFireRate, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
-            new("salvo_rack", GearSlot.Loader, StatId.SalvoInterval, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f)),
+            new("belt_feed", GearSlot.Loader, StatId.SecondaryFireRate, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BeltFeedTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BeltFeedTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BeltFeedTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BeltFeedTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BeltFeedTop5)),
+            new("salvo_rack", GearSlot.Loader, StatId.SalvoInterval, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SalvoRackTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SalvoRackTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SalvoRackTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SalvoRackTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SalvoRackTop5)),
             // Gear balance 04/10: FireRate 0.10/0.12/0.15 -> 0.08/0.10/0.12, Spread drawback -0.10/-0.12/-0.14 -> -0.08/-0.10/-0.12.
             // Gear targets 04/10 (owner): effective fire rate (the Loader's own main stat x MainScale + the implicit, top level)
             // Rare / Epic / Legendary 8 / 10 / 11 %: main 0.08 / 0.11 / 0.14 x 0.25 + implicit 0.06 / 0.0725 / 0.075 (was 0.16 / 0.21 / 0.26).
-            new("hair_trigger", GearSlot.Loader, StatId.FireRate, V(0f, 0f, 0.06f, 0.0725f, 0.075f))
-                { Penalty = StatId.Spread, PenaltyTop = V(0f, 0f, -0.08f, -0.1f, -0.12f), MinRarity = 2, MainScale = 0.25f },
+            new("hair_trigger", GearSlot.Loader, StatId.FireRate, V(0f, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HairTriggerTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HairTriggerTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HairTriggerTop5))
+                { Penalty = StatId.Spread, PenaltyTop = V(0f, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HairTriggerPenaltyTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HairTriggerPenaltyTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HairTriggerPenaltyTop5), MinRarity = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HairTriggerMinRarity, MainScale = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HairTriggerMainScale },
             // Prompt 8: an empty launcher gets part of its magazine back at once, once a life.
             new("spare_magazine", GearSlot.Loader, StatId.SpareMagazine, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)) { Flat = true },
 
             // Armour: main stat +health.
-            new("composite_addon", GearSlot.Armor, StatId.ResistShapedCharge, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
-            new("spall_liner", GearSlot.Armor, StatId.ResistHighExplosive, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
+            new("composite_addon", GearSlot.Armor, StatId.ResistShapedCharge, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CompositeAddonTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CompositeAddonTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CompositeAddonTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CompositeAddonTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CompositeAddonTop5)),
+            new("spall_liner", GearSlot.Armor, StatId.ResistHighExplosive, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpallLinerTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpallLinerTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpallLinerTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpallLinerTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpallLinerTop5)),
             // Prompt 15 C.9: a level of side and rear armour at the top.
-            new("applique_steel", GearSlot.Armor, StatId.ArmourSide, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
-            new("fire_retardant_hull", GearSlot.Armor, StatId.ResistFire, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
+            new("applique_steel", GearSlot.Armor, StatId.ArmourSide, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AppliqueSteelTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AppliqueSteelTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AppliqueSteelTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AppliqueSteelTop4, 1f)),
+            new("fire_retardant_hull", GearSlot.Armor, StatId.ResistFire, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRetardantHullTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRetardantHullTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRetardantHullTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRetardantHullTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRetardantHullTop5)),
             // Prompt 15 C.9: an aircraft's armoured cockpit tub: armour all round. Gear balance 04/10: 0.40-1.00 -> 0.25-0.65
             // (all faces, so lighter than the Applique Steel's side and rear level).
-            new("armoured_tub", GearSlot.Armor, StatId.ArmourAll, V(0.25f, 0.35f, 0.45f, 0.55f, 0.65f)),
+            new("armoured_tub", GearSlot.Armor, StatId.ArmourAll, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ArmouredTubTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ArmouredTubTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ArmouredTubTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ArmouredTubTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ArmouredTubTop5)),
             // Gear targets 04/10 (owner): Legendary health 24 % (was 0.14 x 1.8 = 25.2 %, over the 25 % cap): MainScale 1.8 -> 12/7.
             new("monolith_plate", GearSlot.Armor, StatId.Count, V(0f, 0f, 0f, 0f, 0f))
-                { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, -0.04f, -0.05f, -0.06f), MinRarity = 2, MainScale = 1.7142857f, NoSubs = true },
+                { Penalty = StatId.Speed, PenaltyTop = V(0f, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MonolithPlatePenaltyTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MonolithPlatePenaltyTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MonolithPlatePenaltyTop5), MinRarity = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MonolithPlateMinRarity, MainScale = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MonolithPlateMainScale, NoSubs = true },
             // Gear balance 04/10 (new): a light counter to energy weapons, a resistance liner like the Spall Liner (main stat
             // health, not plating). It only cuts energy damage after the energy has gone past any shield, as before.
-            new("energy_dissipation_liner", GearSlot.Armor, StatId.ResistEnergy, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
+            new("energy_dissipation_liner", GearSlot.Armor, StatId.ResistEnergy, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.EnergyDissipationLinerTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.EnergyDissipationLinerTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.EnergyDissipationLinerTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.EnergyDissipationLinerTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.EnergyDissipationLinerTop5)),
             // Prompt 8: enemy missiles must come closer to lock on.
-            new("radar_absorbent_coating", GearSlot.Armor, StatId.LockRange, V(0.06f, 0.09f, 0.13f, 0.16f, 0.2f)),
+            new("radar_absorbent_coating", GearSlot.Armor, StatId.LockRange, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RadarAbsorbentCoatingTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RadarAbsorbentCoatingTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RadarAbsorbentCoatingTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RadarAbsorbentCoatingTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RadarAbsorbentCoatingTop5)),
 
             // Armour, plating base types: main stat less damage taken.
-            new("frontal_wedge", GearSlot.Armor, StatId.ResistFrontal, V(0.05f, 0.08f, 0.11f, 0.15f, 0.18f)) { Plating = true },
-            new("slat_cage", GearSlot.Armor, StatId.ResistRocket, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)) { Plating = true },
-            new("overhead_screen", GearSlot.Armor, StatId.ResistIndirect, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)) { Plating = true },
+            new("frontal_wedge", GearSlot.Armor, StatId.ResistFrontal, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FrontalWedgeTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FrontalWedgeTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FrontalWedgeTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FrontalWedgeTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FrontalWedgeTop5)) { Plating = true },
+            new("slat_cage", GearSlot.Armor, StatId.ResistRocket, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SlatCageTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SlatCageTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SlatCageTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SlatCageTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SlatCageTop5)) { Plating = true },
+            new("overhead_screen", GearSlot.Armor, StatId.ResistIndirect, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OverheadScreenTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OverheadScreenTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OverheadScreenTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OverheadScreenTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OverheadScreenTop5)) { Plating = true },
             // The Mine Rollers renamed (prompt 8 I.8): blasts and mines, so it works in every battle.
-            new("underbelly_armor", GearSlot.Armor, StatId.ResistBlast, V(0.05f, 0.08f, 0.11f, 0.15f, 0.18f)) { Plating = true },
+            new("underbelly_armor", GearSlot.Armor, StatId.ResistBlast, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.UnderbellyArmorTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.UnderbellyArmorTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.UnderbellyArmorTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.UnderbellyArmorTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.UnderbellyArmorTop5)) { Plating = true },
 
             // Engine: main stat +speed.
             // The Turbocharger and the Turret Drive merged (prompt 8 I.8): hull and turret turn faster.
-            new("drivetrain", GearSlot.Engine, StatId.TurnRate, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f))
-                { Implicit2 = StatId.TurretRate, Top2 = V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f) },
-            new("transit_gearbox", GearSlot.Engine, StatId.TransitSpeed, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
+            new("drivetrain", GearSlot.Engine, StatId.TurnRate, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop5))
+                { Implicit2 = StatId.TurretRate, Top2 = V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop2N1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop2N2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop2N3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop2N4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DrivetrainTop2N5) },
+            new("transit_gearbox", GearSlot.Engine, StatId.TransitSpeed, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TransitGearboxTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TransitGearboxTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TransitGearboxTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TransitGearboxTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TransitGearboxTop5)),
             // Gear balance 04/10: Speed 0.10/0.12/0.15 -> 0.08/0.10/0.12, Health drawback -0.04/-0.05/-0.06 -> -0.03/-0.04/-0.05.
             // Gear targets 04/10 (owner): effective speed (the Engine's own main stat x MainScale + the implicit, top level)
             // Rare / Epic / Legendary 8 / 10 / 12 %: main 0.05 / 0.065 / 0.08 x 0.5 + implicit 0.055 / 0.0675 / 0.08 (was 0.13 / 0.165 / 0.20).
-            new("overtuned_engine", GearSlot.Engine, StatId.Speed, V(0f, 0f, 0.055f, 0.0675f, 0.08f))
-                { Penalty = StatId.Health, PenaltyTop = V(0f, 0f, -0.03f, -0.04f, -0.05f), MinRarity = 2, MainScale = 0.5f },
+            new("overtuned_engine", GearSlot.Engine, StatId.Speed, V(0f, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OvertunedEngineTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OvertunedEngineTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OvertunedEngineTop5))
+                { Penalty = StatId.Health, PenaltyTop = V(0f, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OvertunedEnginePenaltyTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OvertunedEnginePenaltyTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OvertunedEnginePenaltyTop5), MinRarity = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OvertunedEngineMinRarity, MainScale = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.OvertunedEngineMainScale },
             // Prompt 8: faster in reverse, and it backs off nose-on from enemies that close in.
-            new("reverse_gearbox", GearSlot.Engine, StatId.ReverseSpeed, V(0.15f, 0.2f, 0.28f, 0.34f, 0.4f)),
+            new("reverse_gearbox", GearSlot.Engine, StatId.ReverseSpeed, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReverseGearboxTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReverseGearboxTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReverseGearboxTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReverseGearboxTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReverseGearboxTop5)),
 
             // Repair: main stat regeneration out of combat.
-            new("toolbox", GearSlot.Repair, StatId.RegenDelay, V(1f, 1.5f, 2f, 2.5f, 3f)),
-            new("crew_drills", GearSlot.Repair, StatId.Cooldowns, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
-            new("fire_extinguisher", GearSlot.Repair, StatId.StatusDuration, V(0.1f, 0.18f, 0.26f, 0.34f, 0.42f)),
+            new("toolbox", GearSlot.Repair, StatId.RegenDelay, V(1f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ToolboxTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ToolboxTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ToolboxTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ToolboxTop5)),
+            new("crew_drills", GearSlot.Repair, StatId.Cooldowns, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CrewDrillsTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CrewDrillsTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CrewDrillsTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CrewDrillsTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CrewDrillsTop5)),
+            new("fire_extinguisher", GearSlot.Repair, StatId.StatusDuration, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireExtinguisherTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireExtinguisherTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireExtinguisherTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireExtinguisherTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireExtinguisherTop5)),
             // Gear balance 04/10 (new): more from support and repairers instead of self-repair (RepairReceived cap stays 0.10).
             new("field_service_interface", GearSlot.Repair, StatId.RepairReceived, V(0.02f, 0.03f, 0.04f, 0.06f, 0.08f)),
 
             // Optics: main stat +vision.
-            new("laser_rangefinder", GearSlot.Optics, StatId.SpreadLong, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
+            new("laser_rangefinder", GearSlot.Optics, StatId.SpreadLong, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserRangefinderTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserRangefinderTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserRangefinderTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserRangefinderTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserRangefinderTop5)),
             new("gun_stabiliser", GearSlot.Optics, StatId.SpreadMoving, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f)),
-            new("commanders_periscope", GearSlot.Optics, StatId.StillVision, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
+            new("commanders_periscope", GearSlot.Optics, StatId.StillVision, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CommandersPeriscopeTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CommandersPeriscopeTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CommandersPeriscopeTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CommandersPeriscopeTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CommandersPeriscopeTop5)),
             new("camouflage_net", GearSlot.Optics, StatId.Camouflage, V(0.05f, 0.08f, 0.11f, 0.15f, 0.18f)),
             // Prompt 8 I.8: the capture rate stays, and a little more sight for the modes with no points.
-            new("signal_relay", GearSlot.Optics, StatId.CaptureRate, V(0.1f, 0.15f, 0.2f, 0.25f, 0.3f))
-                { Implicit2 = StatId.Vision, Top2 = V(0.03f, 0.04f, 0.06f, 0.08f, 0.1f) },
+            new("signal_relay", GearSlot.Optics, StatId.CaptureRate, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop5))
+                { Implicit2 = StatId.Vision, Top2 = V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop2N1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop2N2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop2N3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop2N4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SignalRelayTop2N5) },
             // Prompt 8: a smoke screen when an anti-tank missile locks on (every 20 s); the radius.
             // Play-test 14 lane I: hidden (the player's smoke gear waits; see BaseTypeDef.Hidden).
-            new("laser_warning", GearSlot.Optics, StatId.LaserWarning, V(6f, 6.5f, 7f, 7.5f, 8f)) { Flat = true, Hidden = true },
+            new("laser_warning", GearSlot.Optics, StatId.LaserWarning, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserWarningTop1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserWarningTop2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserWarningTop3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserWarningTop4, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LaserWarningTop5)) { Flat = true, Hidden = true },
         };
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace MachineBrigade.Game.Match
         public static readonly ModuleDef[] Modules =
         {
             // Prompt 15 C.9: reactive armour cuts shaped charges hard and nothing else (it was 12-18 % of everything).
-            new(SpecialModule.ReactiveArmor, Ground, 0.4f, 0.55f),
+            new(SpecialModule.ReactiveArmor, Ground, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReactiveArmorEpic, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReactiveArmorLegendary),
             new(SpecialModule.AutoRepair, Any, 0.012f, 0.018f),
             new(SpecialModule.VeteranCrew, Armed, 0.08f, 0.12f),
             // Play-test 14 lane I: hidden (the player's smoke gear waits; see ModuleDef.Hidden).
@@ -359,7 +359,7 @@ namespace MachineBrigade.Game.Match
             new(SpecialModule.FlareDispenser, Flying | VehicleNeed.Flares, 3f, 4f, 25f, 18f),
             new(SpecialModule.DroneEscort, Any, 1f, 2f, 25f, 20f),
             new(SpecialModule.EmpPayload, Any, 2f, 3f, 10f, 14f),
-            new(SpecialModule.MineDispenser, Ground, 2f, 3f, 20f, 15f),
+            new(SpecialModule.MineDispenser, Ground, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MineDispenserEpic, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MineDispenserLegendary, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MineDispenserEpic2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MineDispenserLegendary2),
             new(SpecialModule.WarProfiteer, Armed, 0.5f, 0.8f),
             new(SpecialModule.RallyHorn, Any, 0.06f, 0.1f, 12f, 15f),
             new(SpecialModule.AegisDome, Any, 2f, 3f),
@@ -383,22 +383,22 @@ namespace MachineBrigade.Game.Match
             new(TraitId.SuppressiveFire, GearSlot.Weapon, Armed, V(0.1f), V(0.15f)),
             // Loader
             new(TraitId.HullDownCrew, GearSlot.Loader, Armed | Ground, V(0.1f), V(0.15f)),
-            new(TraitId.KillReload, GearSlot.Loader, Armed, V(0.25f), V(0.4f)),
+            new(TraitId.KillReload, GearSlot.Loader, Armed, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.KillReloadEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.KillReloadLegendary1)),
             new(TraitId.RapidResponse, GearSlot.Loader, Armed, V(1.4f, 18f), V(1.6f, 14f)),
             new(TraitId.OverpressureChamber, GearSlot.Loader, Armed, V(5f), V(4f)),
             new(TraitId.HotSwap, GearSlot.Loader, VehicleNeed.Magazine, V(0.25f), V(0.4f)),
-            new(TraitId.SkywardPintle, GearSlot.Loader, VehicleNeed.SecondaryGun | Ground, V(0.6f), V(0.8f)),
+            new(TraitId.SkywardPintle, GearSlot.Loader, VehicleNeed.SecondaryGun | Ground, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SkywardPintleEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SkywardPintleLegendary1)),
             new(TraitId.Vengeance, GearSlot.Loader, Armed, V(0.15f, 15f, 5f), V(0.2f, 15f, 5f)),
             // Armour and plating
-            new(TraitId.AegisBarrier, GearSlot.Armor, Any, V(0.1f, 20f), V(0.15f, 16f)),
-            new(TraitId.Unbreakable, GearSlot.Armor, Any, V(1.5f), V(2.5f)),
-            new(TraitId.GuardianLink, GearSlot.Armor, VehicleNeed.Heavy | Ground, V(0.15f), V(0.25f)),
-            new(TraitId.DarkCrown, GearSlot.Armor, Any, V(0.03f, 0.02f), V(0.04f, 0.03f)),
-            new(TraitId.AdaptivePlating, GearSlot.Armor, Any, V(0.05f), V(0.06f)),
-            new(TraitId.ReactiveBlocks, GearSlot.Armor, Ground, V(3f, 20f), V(4f, 15f)),
-            new(TraitId.AblativeLayer, GearSlot.Armor, Any, V(0.2f), V(0.3f)),
-            new(TraitId.AngledGlacis, GearSlot.Armor, Ground, V(6f), V(5f)),
-            new(TraitId.SiegeAnchor, GearSlot.Armor, Ground, V(0.15f, 0.08f), V(0.2f, 0.12f)),
+            new(TraitId.AegisBarrier, GearSlot.Armor, Any, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisBarrierEpic1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisBarrierEpic2), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisBarrierLegendary1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisBarrierLegendary2)),
+            new(TraitId.Unbreakable, GearSlot.Armor, Any, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.UnbreakableEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.UnbreakableLegendary1)),
+            new(TraitId.GuardianLink, GearSlot.Armor, VehicleNeed.Heavy | Ground, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.GuardianLinkEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.GuardianLinkLegendary1)),
+            new(TraitId.DarkCrown, GearSlot.Armor, Any, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DarkCrownEpic1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DarkCrownEpic2), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DarkCrownLegendary1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DarkCrownLegendary2)),
+            new(TraitId.AdaptivePlating, GearSlot.Armor, Any, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AdaptivePlatingEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AdaptivePlatingLegendary1)),
+            new(TraitId.ReactiveBlocks, GearSlot.Armor, Ground, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReactiveBlocksEpic1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReactiveBlocksEpic2), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReactiveBlocksLegendary1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ReactiveBlocksLegendary2)),
+            new(TraitId.AblativeLayer, GearSlot.Armor, Any, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AblativeLayerEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AblativeLayerLegendary1)),
+            new(TraitId.AngledGlacis, GearSlot.Armor, Ground, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AngledGlacisEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AngledGlacisLegendary1)),
+            new(TraitId.SiegeAnchor, GearSlot.Armor, Ground, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SiegeAnchorEpic1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SiegeAnchorEpic2), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SiegeAnchorLegendary1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SiegeAnchorLegendary2)),
             // Engine
             new(TraitId.NitroDash, GearSlot.Engine, Any, V(1.6f, 25f), V(1.8f, 18f)),
             new(TraitId.ShootAndScoot, GearSlot.Engine, Armed | Ground, V(0.4f, 0.15f), V(0.6f, 0.25f)),
@@ -412,12 +412,12 @@ namespace MachineBrigade.Game.Match
             new(TraitId.CombatWelder, GearSlot.Repair, Any, V(0.4f), V(0.6f)),
             new(TraitId.SalvageTeam, GearSlot.Repair, Armed, V(0.08f), V(0.12f)),
             new(TraitId.AmmoCarrier, GearSlot.Repair, Any, V(0.3f, 12f), V(0.5f, 16f)),
-            new(TraitId.DamageControl, GearSlot.Repair, Any, V(15f), V(10f)),
+            new(TraitId.DamageControl, GearSlot.Repair, Any, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageControlEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageControlLegendary1)),
             // Optics
             new(TraitId.ThermalImager, GearSlot.Optics, Any, V(0.6f), V(1f)),
             new(TraitId.LaserDesignator, GearSlot.Optics, VehicleNeed.HitsGround, V(0.08f, 4f), V(0.12f, 6f)),
             new(TraitId.GhillieMode, GearSlot.Optics, Armed | Ground, V(0.25f, 4f), V(0.4f, 3f)),
-            new(TraitId.CounterBatteryRadar, GearSlot.Optics, Any, V(0.15f, 80f, 5f), V(0.25f, 100f, 8f)),
+            new(TraitId.CounterBatteryRadar, GearSlot.Optics, Any, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CounterBatteryRadarEpic1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CounterBatteryRadarEpic2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CounterBatteryRadarEpic3), V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CounterBatteryRadarLegendary1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CounterBatteryRadarLegendary2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CounterBatteryRadarLegendary3)),
             new(TraitId.EwJammer, GearSlot.Optics, Any, V(2f, 15f, 12f), V(3f, 12f, 16f)),
             // Widened (prompt 8 I.1): every gun whose rounds fly unguided leads a moving target, not the artillery alone.
             new(TraitId.FireControlComputer, GearSlot.Optics, VehicleNeed.Unguided, V(0.5f), V(0.75f)),
@@ -425,29 +425,29 @@ namespace MachineBrigade.Game.Match
 
         public static readonly SubDef[] Subs =
         {
-            new(StatId.DamageVsLight, V(0.03f, 0.04f, 0.05f, 0.06f), new[] { GearSlot.Weapon, GearSlot.Loader, GearSlot.Optics }),
-            new(StatId.DamageVsHeavy, V(0.03f, 0.04f, 0.05f, 0.06f), new[] { GearSlot.Weapon, GearSlot.Loader, GearSlot.Optics }),
-            new(StatId.DamageVsAir, V(0.04f, 0.05f, 0.06f, 0.08f), new[] { GearSlot.Weapon, GearSlot.Loader, GearSlot.Optics }),
-            new(StatId.DamageVsStructure, V(0.04f, 0.06f, 0.08f, 0.1f), new[] { GearSlot.Weapon, GearSlot.Loader }),
-            new(StatId.FireRate, V(0.015f, 0.02f, 0.03f, 0.04f), new[] { GearSlot.Weapon }),
-            new(StatId.Damage, V(0.015f, 0.02f, 0.03f, 0.04f), new[] { GearSlot.Loader, GearSlot.Optics }),
-            new(StatId.Range, V(0.02f, 0.025f, 0.03f, 0.04f), new[] { GearSlot.Weapon, GearSlot.Optics }),
-            new(StatId.Vision, V(0.03f, 0.04f, 0.05f, 0.06f), new[] { GearSlot.Optics, GearSlot.Engine }),
+            new(StatId.DamageVsLight, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsLightValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsLightValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsLightValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsLightValues4), new[] { GearSlot.Weapon, GearSlot.Loader, GearSlot.Optics }),
+            new(StatId.DamageVsHeavy, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsHeavyValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsHeavyValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsHeavyValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsHeavyValues4), new[] { GearSlot.Weapon, GearSlot.Loader, GearSlot.Optics }),
+            new(StatId.DamageVsAir, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsAirValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsAirValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsAirValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsAirValues4), new[] { GearSlot.Weapon, GearSlot.Loader, GearSlot.Optics }),
+            new(StatId.DamageVsStructure, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsStructureValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsStructureValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsStructureValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageVsStructureValues4), new[] { GearSlot.Weapon, GearSlot.Loader }),
+            new(StatId.FireRate, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRateValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRateValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRateValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.FireRateValues4), new[] { GearSlot.Weapon }),
+            new(StatId.Damage, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.DamageValues4), new[] { GearSlot.Loader, GearSlot.Optics }),
+            new(StatId.Range, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RangeValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RangeValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RangeValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RangeValues4), new[] { GearSlot.Weapon, GearSlot.Optics }),
+            new(StatId.Vision, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.VisionValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.VisionValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.VisionValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.VisionValues4), new[] { GearSlot.Optics, GearSlot.Engine }),
             new(StatId.Spread, V(0.04f, 0.06f, 0.08f, 0.1f), new[] { GearSlot.Weapon, GearSlot.Optics }),
-            new(StatId.ProjectileSpeed, V(0.04f, 0.06f, 0.08f, 0.1f), new[] { GearSlot.Weapon, GearSlot.Loader }),
+            new(StatId.ProjectileSpeed, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProjectileSpeedValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProjectileSpeedValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProjectileSpeedValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ProjectileSpeedValues4), new[] { GearSlot.Weapon, GearSlot.Loader }),
             new(StatId.Magazine, V(0.05f, 0.08f, 0.1f, 0.12f), new[] { GearSlot.Loader }),
-            new(StatId.MagazineReload, V(0.04f, 0.06f, 0.08f, 0.1f), new[] { GearSlot.Loader, GearSlot.Repair }),
-            new(StatId.Health, V(0.02f, 0.03f, 0.04f, 0.05f), new[] { GearSlot.Armor, GearSlot.Repair, GearSlot.Engine }),
-            new(StatId.ResistKinetic, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
-            new(StatId.ResistShapedCharge, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
-            new(StatId.ResistHighExplosive, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
-            new(StatId.ResistFire, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
-            new(StatId.ResistFragmentation, V(0.03f, 0.04f, 0.06f, 0.08f), new[] { GearSlot.Armor }, 0.2f),
-            new(StatId.Speed, V(0.015f, 0.02f, 0.03f, 0.04f), new[] { GearSlot.Engine, GearSlot.Armor }),
-            new(StatId.TurretRate, V(0.05f, 0.08f, 0.1f, 0.12f), new[] { GearSlot.Engine, GearSlot.Optics }),
-            new(StatId.CaptureRate, V(0.05f, 0.08f, 0.1f, 0.12f), new[] { GearSlot.Engine, GearSlot.Optics }),
-            new(StatId.Cooldowns, V(0.03f, 0.05f, 0.07f, 0.09f), new[] { GearSlot.Repair, GearSlot.Optics }),
-            new(StatId.Regen, V(0.001f, 0.0015f, 0.002f, 0.0025f), new[] { GearSlot.Repair, GearSlot.Armor }),
+            new(StatId.MagazineReload, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MagazineReloadValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MagazineReloadValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MagazineReloadValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.MagazineReloadValues4), new[] { GearSlot.Loader, GearSlot.Repair }),
+            new(StatId.Health, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HealthValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HealthValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HealthValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HealthValues4), new[] { GearSlot.Armor, GearSlot.Repair, GearSlot.Engine }),
+            new(StatId.ResistKinetic, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistKineticValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistKineticValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistKineticValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistKineticValues4), new[] { GearSlot.Armor }, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistKineticWeight),
+            new(StatId.ResistShapedCharge, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistShapedChargeValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistShapedChargeValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistShapedChargeValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistShapedChargeValues4), new[] { GearSlot.Armor }, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistShapedChargeWeight),
+            new(StatId.ResistHighExplosive, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistHighExplosiveValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistHighExplosiveValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistHighExplosiveValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistHighExplosiveValues4), new[] { GearSlot.Armor }, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistHighExplosiveWeight),
+            new(StatId.ResistFire, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFireValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFireValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFireValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFireValues4), new[] { GearSlot.Armor }, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFireWeight),
+            new(StatId.ResistFragmentation, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFragmentationValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFragmentationValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFragmentationValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFragmentationValues4), new[] { GearSlot.Armor }, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.ResistFragmentationWeight),
+            new(StatId.Speed, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpeedValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpeedValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpeedValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpeedValues4), new[] { GearSlot.Engine, GearSlot.Armor }),
+            new(StatId.TurretRate, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TurretRateValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TurretRateValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TurretRateValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.TurretRateValues4), new[] { GearSlot.Engine, GearSlot.Optics }),
+            new(StatId.CaptureRate, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CaptureRateValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CaptureRateValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CaptureRateValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CaptureRateValues4), new[] { GearSlot.Engine, GearSlot.Optics }),
+            new(StatId.Cooldowns, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CooldownsValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CooldownsValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CooldownsValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.CooldownsValues4), new[] { GearSlot.Repair, GearSlot.Optics }),
+            new(StatId.Regen, V(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RegenValues1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RegenValues2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RegenValues3, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.RegenValues4), new[] { GearSlot.Repair, GearSlot.Armor }),
         };
 
         /// <summary>The brand index of Bulwark Engineering (tower pieces only).</summary>
@@ -456,21 +456,21 @@ namespace MachineBrigade.Game.Match
         /// <summary>Gear balance 04/10: two-piece lines vulcan 0.25 -> 0.15, hivemind 0.15 -> 0.10, quartermaster and phoenix 0.10 -> 0.06 (four-piece behaviours unchanged).</summary>
         public static readonly BrandDef[] Brands =
         {
-            new(1, "ironclad", StatId.Health, 0.06f, new GearTrait(TraitId.SetBulwark, 0.15f)),
-            new(2, "kestrel", StatId.Speed, 0.05f, new GearTrait(TraitId.SetHitAndRun, 0.2f, 0.5f)),
-            new(3, "vulcan", StatId.BurnDamage, 0.15f, new GearTrait(TraitId.SetFirestorm, 0.1f, 6f)),
-            new(4, "longbow", StatId.Range, 0.05f, new GearTrait(TraitId.SetDeepStrike, 0.15f)),
-            new(5, "aegis", StatId.DamageTaken, 0.05f, new GearTrait(TraitId.SetSharedShield, 0.12f, 25f, 12f)),
+            new(1, "ironclad", StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.IroncladValue, new GearTrait(TraitId.SetBulwark, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.IroncladFourPieceSetBulwark)),
+            new(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.KestrelIndex, "kestrel", StatId.Speed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.KestrelValue, new GearTrait(TraitId.SetHitAndRun, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.KestrelFourPieceASetHitAndRun, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.KestrelFourPieceBSetHitAndRun)),
+            new(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.VulcanIndex, "vulcan", StatId.BurnDamage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.VulcanValue, new GearTrait(TraitId.SetFirestorm, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.VulcanFourPieceASetFirestorm, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.VulcanFourPieceBSetFirestorm)),
+            new(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LongbowIndex, "longbow", StatId.Range, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LongbowValue, new GearTrait(TraitId.SetDeepStrike, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.LongbowFourPieceSetDeepStrike)),
+            new(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisIndex, "aegis", StatId.DamageTaken, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisValue, new GearTrait(TraitId.SetSharedShield, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisFourPieceASetSharedShield, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisFourPieceBSetSharedShield, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.AegisFourPieceCSetSharedShield)),
             new(6, "stormfront", StatId.ResistFragmentation, 0.1f, new GearTrait(TraitId.SetStrafingRun, 4f, 30f)),
-            new(7, "hivemind", StatId.SummonPower, 0.1f, new GearTrait(TraitId.SetSwarm, 10f)),
+            new(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HivemindIndex, "hivemind", StatId.SummonPower, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HivemindValue, new GearTrait(TraitId.SetSwarm, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HivemindFourPieceSetSwarm)),
             new(8, "quartermaster", StatId.RepairReceived, 0.06f, new GearTrait(TraitId.SetSalvageRights, 0.2f, 0.1f)),
-            new(9, "spectre", StatId.Vision, 0.08f, new GearTrait(TraitId.SetGhostNet, 0.15f)),
-            new(10, "hammerfall", StatId.DamageVsStructure, 0.08f, new GearTrait(TraitId.SetHeavyRound, 5f, 1f)),
+            new(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpectreIndex, "spectre", StatId.Vision, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpectreValue, new GearTrait(TraitId.SetGhostNet, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.SpectreFourPieceSetGhostNet)),
+            new(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HammerfallIndex, "hammerfall", StatId.DamageVsStructure, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HammerfallValue, new GearTrait(TraitId.SetHeavyRound, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.HammerfallFourPieceASetHeavyRound, 1f)),
             // Prompt 8.
             new(11, "phoenix", StatId.RepairReceived, 0.06f, new GearTrait(TraitId.SetPhoenix, 0.1f, 8f)),
-            new(12, "wolfpack", StatId.Count, 0f, new GearTrait(TraitId.SetPackFocus, 0.15f))
+            new(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.WolfpackIndex, "wolfpack", StatId.Count, 0f, new GearTrait(TraitId.SetPackFocus, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.WolfpackFourPieceSetPackFocus))
                 { TwoPiece = new GearTrait(TraitId.SetPackHunt, 0.04f, 15f, 3f) },
-            new(BulwarkBrand, "bulwark", StatId.Health, 0.1f, new GearTrait(TraitId.SetBulwarkPost, 20f)) { TowerOnly = true },
+            new(BulwarkBrand, "bulwark", StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BulwarkValue, new GearTrait(TraitId.SetBulwarkPost, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BulwarkFourPieceSetBulwarkPost)) { TowerOnly = true },
         };
 
         /// <summary>The brands a vehicle piece may roll (the first ones, before the tower brand).</summary>
@@ -483,56 +483,56 @@ namespace MachineBrigade.Game.Match
         {
             var caps = new float[(int)StatId.Count];
             void Set(StatId id, float cap) => caps[(int)id] = cap;
-            Set(StatId.Damage, 0.25f);
-            Set(StatId.FireRate, 0.15f);
-            Set(StatId.Health, 0.25f);
-            Set(StatId.Speed, 0.15f);
+            Set(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.FireRate, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap2);
+            Set(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.Speed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap2);
             Set(StatId.Regen, 0.02f);
-            Set(StatId.DamageTaken, 0.2f);
-            Set(StatId.DamageVsLight, 0.25f);
-            Set(StatId.DamageVsHeavy, 0.25f);
-            Set(StatId.DamageVsAir, 0.25f);
-            Set(StatId.DamageVsStructure, 0.3f);
-            Set(StatId.Range, 0.12f);
-            Set(StatId.Vision, 0.25f);
+            Set(StatId.DamageTaken, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap4);
+            Set(StatId.DamageVsLight, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.DamageVsHeavy, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.DamageVsAir, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.DamageVsStructure, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
+            Set(StatId.Range, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap6);
+            Set(StatId.Vision, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
             Set(StatId.Spread, 0.3f);
-            Set(StatId.ProjectileSpeed, 0.3f);
+            Set(StatId.ProjectileSpeed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
             Set(StatId.Magazine, 0.4f);
-            Set(StatId.MagazineReload, 0.3f);
+            Set(StatId.MagazineReload, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
             for (var r = StatId.ResistKinetic; r <= StatId.ResistFragmentation; r++) Set(r, 0.3f);
             // Prompt 15 C.9: energy's resistance; penetration and armour in levels (a whole level at most).
             Set(StatId.ResistEnergy, 0.3f);
             Set(StatId.Penetration, 1f);
             Set(StatId.ArmourSide, 1f);
             Set(StatId.ArmourAll, 1f);
-            Set(StatId.TurnRate, 0.3f);
-            Set(StatId.TurretRate, 0.3f);
-            Set(StatId.CaptureRate, 0.5f);
-            Set(StatId.Cooldowns, 0.25f);
-            Set(StatId.Splash, 0.3f);
-            Set(StatId.SecondaryFireRate, 0.3f);
-            Set(StatId.SalvoInterval, 0.35f);
+            Set(StatId.TurnRate, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
+            Set(StatId.TurretRate, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
+            Set(StatId.CaptureRate, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap8);
+            Set(StatId.Cooldowns, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.Splash, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
+            Set(StatId.SecondaryFireRate, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
+            Set(StatId.SalvoInterval, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap9);
             Set(StatId.ResistRocket, 0.3f);
             Set(StatId.ResistIndirect, 0.3f);
-            Set(StatId.ResistMine, 0.6f);
+            Set(StatId.ResistMine, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap10);
             Set(StatId.ResistFrontal, 0.25f);
-            Set(StatId.TransitSpeed, 0.25f);
-            Set(StatId.StillVision, 0.25f);
+            Set(StatId.TransitSpeed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.StillVision, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
             Set(StatId.Camouflage, 0.25f);
-            Set(StatId.RegenDelay, 3f);
-            Set(StatId.StatusDuration, 0.5f);
+            Set(StatId.RegenDelay, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap11);
+            Set(StatId.StatusDuration, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap8);
             Set(StatId.SpreadLong, 0.3f);
             Set(StatId.SpreadMoving, 0.35f);
-            Set(StatId.BurnDamage, 0.25f);
+            Set(StatId.BurnDamage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
             Set(StatId.SummonPower, 0.15f);
             Set(StatId.RepairReceived, 0.1f);
-            Set(StatId.DamageFlank, 0.25f);
-            Set(StatId.DamageVsDrone, 0.3f);
+            Set(StatId.DamageFlank, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.DamageVsDrone, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
             Set(StatId.SpareMagazine, 1f);
-            Set(StatId.LockRange, 0.25f);
-            Set(StatId.LaserWarning, 8f);
-            Set(StatId.ReverseSpeed, 0.5f);
-            Set(StatId.ResistBlast, 0.3f);
+            Set(StatId.LockRange, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap);
+            Set(StatId.LaserWarning, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap13);
+            Set(StatId.ReverseSpeed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap8);
+            Set(StatId.ResistBlast, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearCatalog.BuildCapsCap5);
             return caps;
         }
 

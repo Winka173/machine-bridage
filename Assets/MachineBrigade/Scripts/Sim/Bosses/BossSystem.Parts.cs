@@ -62,8 +62,8 @@ namespace MachineBrigade.Sim.Bosses
                 if (boss.PartBroken[i] || !Reaches(shooter, boss, i, weapon)) continue;
                 var distance = Vector2.Distance(boss.PartPosition(i), shooter.Position);
                 float score;
-                if (locked) score = (boss.BodyShut ? boss.BigAttack?.Def.UsesPart(parts[i].Id) ?? false : parts[i].Kind == boss.Def.PartLock?.Kind) ? 1000f - distance : -500f - distance;
-                else score = utility ? WeakpointP4(shooter, boss, i, distance) : Danger(shooter, boss, i) - distance * 0.01f;
+                if (locked) score = (boss.BodyShut ? boss.BigAttack?.Def.UsesPart(parts[i].Id) ?? false : parts[i].Kind == boss.Def.PartLock?.Kind) ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ChoosePartDistanceSub - distance : global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ChoosePartDistanceSub2 - distance;
+                else score = utility ? WeakpointP4(shooter, boss, i, distance) : Danger(shooter, boss, i) - distance * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ChoosePartDistanceScale;
                 if (score <= bestScore) continue;
                 bestScore = score;
                 best = i;
@@ -86,7 +86,7 @@ namespace MachineBrigade.Sim.Bosses
         private float Danger(Vehicle shooter, Vehicle boss, int i)
         {
             var part = boss.Def.Parts[i];
-            if (shooter.Def.Class == UnitClass.TankHunter) return boss.PartHealth(i) / MathF.Max(1f, boss.MaxHp) * 100f;
+            if (shooter.Def.Class == UnitClass.TankHunter) return boss.PartHealth(i) / MathF.Max(1f, boss.MaxHp) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.DangerPartHealthScale;
             var antiAir = shooter.Def.Class == UnitClass.AntiAir || CombatSystem.IsAntiAir(shooter.Weapon);
             var reach = Vector2.Distance(boss.Position, shooter.Position);
             var toShooter = 0f;
@@ -103,7 +103,7 @@ namespace MachineBrigade.Sim.Bosses
                     toShooter += dps * _world.Damage.Estimate(w, boss, shooter);
             }
             var score = (antiAir ? toAir : toShooter) + all * 0.15f;
-            if (part.Skills.Count > 0 || part.Stops.Count > 0) score += 8f;
+            if (part.Skills.Count > 0 || part.Stops.Count > 0) score += global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.DangerScore;
             // Prompt 18: a part that carries the big attack counts too, far more while it charges (break it in time).
             if (boss.BigAttack is { } big && big.Def.UsesPart(part.Id)) score += big.Stage == BigStage.Charging ? 60f : 8f;
             return score;
@@ -116,11 +116,11 @@ namespace MachineBrigade.Sim.Bosses
         /// </summary>
         private float GroundFirepower(WeaponDef w) =>
             w.CanTarget(false) ? w.Damage * MathF.Max(_world.Catalog.Damage.Effective(w, 1, TargetKind.Ground),
-                _world.Catalog.Damage.Effective(w, 3, TargetKind.Ground)) : 0f;
+                _world.Catalog.Damage.Effective(w, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.GroundFirepowerArmour, TargetKind.Ground)) : 0f;
 
         /// <summary>A weapon's damage a second on paper (its volley or magazine over its cycle).</summary>
         internal static float Firepower(WeaponDef w) =>
-            w.Damage * Math.Max(1, w.RoundsPerCycle) / MathF.Max(0.1f, w.CycleSeconds);
+            w.Damage * Math.Max(1, w.RoundsPerCycle) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FirepowerCycleSecondsFloor, w.CycleSeconds);
 
         // ================================================================== the part order
 
@@ -186,7 +186,7 @@ namespace MachineBrigade.Sim.Bosses
             if (!(full > 0f)) return 0f;
             var lost = MathF.Min(boss.PartFrac[i] * full, damage);
             boss.PartFrac[i] -= lost / full;
-            if (boss.PartFrac[i] * full <= 0.01f) Break(boss, i, hit);
+            if (boss.PartFrac[i] * full <= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.DamagePartPartFracMax) Break(boss, i, hit);
             return lost;
         }
 
@@ -205,7 +205,7 @@ namespace MachineBrigade.Sim.Bosses
             Recompute(boss);
             var at = boss.PartPosition(i);
             _world.Emit(SimEvent.PartLost(boss, i, at, part.Id));
-            _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, MathF.Max(3f, part.Radius * 1.4f), 0f, ExplosionTier.Huge), boss.Id));
+            _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BreakRadiusFloor, part.Radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BreakRadiusScale), 0f, ExplosionTier.Huge), boss.Id));
             // The body takes 30 % of the part's full health (none on the airship: its hull has the lock).
             if (part.BreakDamage > 0f && boss.IsAlive)
                 _world.Damage.Apply(boss, boss.PartFullHealth(i) * part.BreakDamage, DamageType.HighExplosive,
@@ -236,7 +236,7 @@ namespace MachineBrigade.Sim.Bosses
                 var part = boss.Def.Parts[i];
                 var score = 0f;
                 foreach (var m in part.Mounts) score += GroundFirepower(boss.Arms[m]);
-                if (part.Skills.Count > 0 || part.Stops.Count > 0) score += 0.5f;
+                if (part.Skills.Count > 0 || part.Stops.Count > 0) score += global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PatchScore;
                 if (score <= bestScore) continue;
                 bestScore = score;
                 best = i;
@@ -244,7 +244,7 @@ namespace MachineBrigade.Sim.Bosses
             if (best < 0) return -1;
             boss.PartBroken[best] = false;
             boss.PartPatched[best] = true;
-            boss.PartFrac[best] = Math.Clamp(share, 0.05f, 1f);
+            boss.PartFrac[best] = Math.Clamp(share, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PatchShareMin, 1f);
             Recompute(boss);
             _world.Emit(SimEvent.PartBack(boss, best, boss.PartPosition(best), boss.Def.Parts[best].Id));
             return best;
@@ -326,7 +326,7 @@ namespace MachineBrigade.Sim.Bosses
                 {
                     if (part.Affects.Count > 0 && !Contains(part.Affects, m)) continue;
                     boss.MountSpread[m] *= part.Spread;
-                    boss.MountFail[m] = MathF.Min(0.9f, boss.MountFail[m] + part.Fail);
+                    boss.MountFail[m] = MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.RecomputeMountFailCap, boss.MountFail[m] + part.Fail);
                 }
                 foreach (var stop in part.Stops)
                     switch (stop)

@@ -18,31 +18,31 @@ namespace MachineBrigade.Game.Match
         public static readonly BaseTypeDef[] TowerBases =
         {
             // Weapon: main stat +damage (the ammunition hoist: +rate of fire).
-            new("fortress_barrel", GearSlot.TowerWeapon, NoBranch, StatId.Range, V(0.02f, 0.03f, 0.04f, 0.06f, 0.08f)),
+            new("fortress_barrel", GearSlot.TowerWeapon, NoBranch, StatId.Range, V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FortressBarrelTop1, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FortressBarrelTop2, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FortressBarrelTop3, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FortressBarrelTop4, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FortressBarrelTop5)),
             // Prompt 15 C.9: a level of penetration at the top.
-            new("sabot_rounds", GearSlot.TowerWeapon, NoBranch, StatId.Penetration, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
-            new("flak_proximity_fuze", GearSlot.TowerWeapon, NoBranch, StatId.DamageVsAir, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
-            new("airburst_shells", GearSlot.TowerWeapon, NoBranch, StatId.Splash, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
+            new("sabot_rounds", GearSlot.TowerWeapon, NoBranch, StatId.Penetration, V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.SabotRoundsTop1, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.SabotRoundsTop2, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.SabotRoundsTop3, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.SabotRoundsTop4, 1f)),
+            new("flak_proximity_fuze", GearSlot.TowerWeapon, NoBranch, StatId.DamageVsAir, V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FlakProximityFuzeTop1, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FlakProximityFuzeTop2, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FlakProximityFuzeTop3, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FlakProximityFuzeTop4, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.FlakProximityFuzeTop5)),
+            new("airburst_shells", GearSlot.TowerWeapon, NoBranch, StatId.Splash, V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AirburstShellsTop1, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AirburstShellsTop2, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AirburstShellsTop3, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AirburstShellsTop4, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AirburstShellsTop5)),
             // Gear balance 04/10: ProjectileSpeed 0.08/0.12/0.16/0.20/0.25 -> 0.06/0.09/0.12/0.15/0.18 (main FireRate unchanged).
-            new("ammo_hoist", GearSlot.TowerWeapon, NoBranch, StatId.ProjectileSpeed, V(0.06f, 0.09f, 0.12f, 0.15f, 0.18f)) { Main = StatId.FireRate },
+            new("ammo_hoist", GearSlot.TowerWeapon, NoBranch, StatId.ProjectileSpeed, V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHoistTop1, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHoistTop2, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHoistTop3, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHoistTop4, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHoistTop5)) { Main = StatId.FireRate },
 
             // Structure: main stat +health (screens: less damage taken; the engineer bay: repairs out of combat).
             new("reinforced_concrete", GearSlot.TowerStructure, NoBranch, StatId.ResistHighExplosive, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
             new("composite_casemate", GearSlot.TowerStructure, NoBranch, StatId.ResistShapedCharge, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
-            new("blast_walls", GearSlot.TowerStructure, NoBranch, StatId.ResistIndirect, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)) { Plating = true },
+            new("blast_walls", GearSlot.TowerStructure, NoBranch, StatId.ResistIndirect, V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.BlastWallsTop1, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.BlastWallsTop2, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.BlastWallsTop3, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.BlastWallsTop4, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.BlastWallsTop5)) { Plating = true },
             new("slat_screens", GearSlot.TowerStructure, NoBranch, StatId.ResistRocket, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)) { Plating = true },
-            new("engineer_bay", GearSlot.TowerStructure, NoBranch, StatId.RegenDelay, V(1f, 1.5f, 2f, 2.5f, 3f)) { Main = StatId.Regen },
+            new("engineer_bay", GearSlot.TowerStructure, NoBranch, StatId.RegenDelay, V(1f, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.EngineerBayTop2, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.EngineerBayTop3, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.EngineerBayTop4, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.EngineerBayTop5)) { Main = StatId.Regen },
             // Gear balance 04/10 (new): energy damage cut after it has gone past any shield (energy still bypasses shields).
             new("grounding_mesh", GearSlot.TowerStructure, NoBranch, StatId.ResistEnergy, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
 
             // Systems: main stat +vision (traverse motors: turret turn rate; ammunition handling: magazine reload).
             new("search_radar", GearSlot.TowerSystems, NoBranch, StatId.SpreadLong, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)),
             new("traverse_motors", GearSlot.TowerSystems, NoBranch, StatId.Spread, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f))
-                { Main = StatId.TurretRate, MainScale = 1.5f },
+                { Main = StatId.TurretRate, MainScale = global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.TraverseMotorsMainScale },
             // Gear balance 04/10: Magazine 0.10-0.30 -> 0.08-0.24. Gear targets 04/10 (owner): effective magazine reload
             // 10 / 15 / 20 / 25 / 30 %: no MainScale (was 1.25: 3.75-17.5 %), the main line 0.03-0.14 plus a second implicit.
             new("ammo_handling", GearSlot.TowerSystems, NoBranch, StatId.Magazine, V(0.08f, 0.12f, 0.16f, 0.2f, 0.24f))
-                { Main = StatId.MagazineReload, Implicit2 = StatId.MagazineReload, Top2 = V(0.07f, 0.1f, 0.12f, 0.14f, 0.16f) },
+                { Main = StatId.MagazineReload, Implicit2 = StatId.MagazineReload, Top2 = V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHandlingTop2N1, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHandlingTop2N2, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHandlingTop2N3, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHandlingTop2N4, global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.AmmoHandlingTop2N5) },
         };
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace MachineBrigade.Game.Match
             new(TraitId.AegisBarrier, GearSlot.TowerStructure, NoBranch, V(0.1f, 20f), V(0.15f, 16f)),
             new(TraitId.AblativeLayer, GearSlot.TowerStructure, NoBranch, V(0.2f), V(0.3f)),
             // Systems
-            new(TraitId.TowerCounterBattery, GearSlot.TowerSystems, NoBranch, V(4f), V(6f)),
+            new(TraitId.TowerCounterBattery, GearSlot.TowerSystems, NoBranch, V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.TowerCounterBatteryEpic1), V(global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.TowerCounterBatteryLegendary1)),
             new(TraitId.TowerBackupGenerator, GearSlot.TowerSystems, NoBranch, V(0.5f), V(1f)) { Need = TowerNeed.Armed },
             new(TraitId.LaserDesignator, GearSlot.TowerSystems, NoBranch, V(0.08f, 4f), V(0.12f, 6f)) { Need = TowerNeed.Armed },
         };
@@ -103,7 +103,7 @@ namespace MachineBrigade.Game.Match
             // Built from scratch, not from StatCap: static fields in the parts of a partial class
             // initialise in no set order.
             var caps = BuildCaps();
-            caps[(int)StatId.Range] = 0.1f;
+            caps[(int)StatId.Range] = global::MachineBrigade.Sim.Content.SimTunables.Bases.GearCatalog.BuildTowerCapsCaps;
             caps[(int)StatId.Regen] = 0.01f;
             return caps;
         }

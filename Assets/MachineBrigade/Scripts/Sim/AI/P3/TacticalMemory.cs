@@ -21,7 +21,7 @@ namespace MachineBrigade.Sim.AI
     /// </summary>
     public sealed class TacticalMemory
     {
-        private const int MaxMarks = 64;
+        private static int MaxMarks => global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.MaxMarks;
         private float[] _threat = Array.Empty<float>();
         private double[] _threatAt = Array.Empty<double>();
         private float[] _threatHalf = Array.Empty<float>();
@@ -48,7 +48,7 @@ namespace MachineBrigade.Sim.AI
         public IReadOnlyList<Mark> Deaths => _deaths;
         public IReadOnlyList<Mark> EnemyLosses => _enemyLosses;
 
-        private static float Decay(double age, float halfLife) => age <= 0 ? 1f : MathF.Pow(0.5f, (float)(age / MathF.Max(0.1f, halfLife)));
+        private static float Decay(double age, float halfLife) => age <= 0 ? 1f : MathF.Pow(global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.DecayAgeExponent, (float)(age / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.DecayHalfLifeFloor, halfLife)));
 
         // ------------------------------------------------------------------------------------------------ spec 128
 
@@ -121,7 +121,7 @@ namespace MachineBrigade.Sim.AI
             {
                 var dist = Vector2.Distance(d.At, p);
                 if (dist > r) continue;
-                sum += d.Value / 10f * Decay(now - d.Time, Tun.Memory.DeathHalfLifeS) * (1f - 0.5f * dist / r);
+                sum += d.Value / global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.DeathDangerValueDivisor * Decay(now - d.Time, Tun.Memory.DeathHalfLifeS) * (1f - global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.DeathDangerDistScale * dist / r);
             }
             return sum;
         }
@@ -130,7 +130,7 @@ namespace MachineBrigade.Sim.AI
         public float DeathAlong(Vector2 from, Vector2 to, double now)
         {
             if (_deaths.Count == 0) return 0f;
-            var step = MathF.Max(2f, Tun.Memory.DeathRadius * 0.5f);
+            var step = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.DeathAlongDeathRadiusFloor, Tun.Memory.DeathRadius * global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.DeathAlongDeathRadiusScale);
             var n = Math.Max(1, (int)(Vector2.Distance(from, to) / step));
             var max = 0f;
             for (var i = 0; i <= n; i++) max = MathF.Max(max, DeathDanger(Vector2.Lerp(from, to, i / (float)n), now));
@@ -180,7 +180,7 @@ namespace MachineBrigade.Sim.AI
         public static float UnknownModifier(Content.TacticModules m)
         {
             var k = Tun.Memory.UnknownRisk;
-            if (k.Length < 4) return 0.6f;
+            if (k.Length < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.UnknownModifierLengthMax) return global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.UnknownModifierUnknownModifier;
             if (m.Stance == Content.FireStance.HoldFire) return k[3];
             if (m.Pace >= 1.2f) return k[0];
             if (m.Standoff || m.Bounding) return k[2];
@@ -201,10 +201,10 @@ namespace MachineBrigade.Sim.AI
 
         internal void PruneRoutes(double now)
         {
-            if (_failed.Count < 64) return;
+            if (_failed.Count < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.PruneRoutesCountMax) return;
             var old = new List<long>();
             foreach (var kv in _failed)
-                if (RoutePenalty(kv.Key, now) < 0.02f) old.Add(kv.Key);
+                if (RoutePenalty(kv.Key, now) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalMemory.PruneRoutesRoutePenaltyMax) old.Add(kv.Key);
             foreach (var k in old) _failed.Remove(k);
         }
     }

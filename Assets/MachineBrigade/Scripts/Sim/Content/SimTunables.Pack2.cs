@@ -38,6 +38,16 @@ namespace MachineBrigade.Sim.Content
             foreach (var e in MapTopologyW1A) yield return e;
             // Map / visual / audio W2-A (lane A): objective approaches, choke re-measure, AI topology hooks (SimTunables.MapTopologyW2A.cs).
             foreach (var e in MapTopologyW2A) yield return e;
+            // Balance pack 2 pass 2 (09/10): the rest of the gameplay literals, moved by Tools/export/literal_to_tunable.py
+            // (SimTunables.Pass2.<Domain>.cs, generated).
+            foreach (var e in Pass2Weapons) yield return e;
+            foreach (var e in Pass2Vehicles) yield return e;
+            foreach (var e in Pass2Bosses) yield return e;
+            foreach (var e in Pass2Bases) yield return e;
+            foreach (var e in Pass2Modes) yield return e;
+            foreach (var e in Pass2Ai) yield return e;
+            foreach (var e in Pass2Campaign) yield return e;
+            foreach (var e in Pass2Maps) yield return e;
         }
     }
 }

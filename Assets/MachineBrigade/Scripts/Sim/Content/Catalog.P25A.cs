@@ -271,7 +271,7 @@ namespace MachineBrigade.Sim.Content
                 var o = v.Object("blastWall");
                 def.BlastWall = new BlastWallDef
                 {
-                    Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.BlastWall.RadiusM)), Cut = Math.Clamp(o.Float("cut", global::MachineBrigade.Sim.Content.SimTunables.Bases.BlastWall.CutShare), 0f, 0.9f),
+                    Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.BlastWall.RadiusM)), Cut = Math.Clamp(o.Float("cut", global::MachineBrigade.Sim.Content.SimTunables.Bases.BlastWall.CutShare), 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatMax),
                     Cone = Math.Clamp(o.Float("cone", global::MachineBrigade.Sim.Content.SimTunables.Bases.BlastWall.ConeDeg), 5f, 90f) * MathF.PI / 180f,
                 };
             }
@@ -283,7 +283,7 @@ namespace MachineBrigade.Sim.Content
                 var o = v.Object("fireControl");
                 def.FireControl = new FireControlDef
                 {
-                    Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.FireControl.RadiusM)), Damage = Math.Clamp(o.Float("damage", global::MachineBrigade.Sim.Content.SimTunables.Bases.FireControl.DamageShare), 0f, 1f), Focus = Math.Clamp(o.Float("focus", global::MachineBrigade.Sim.Content.SimTunables.Bases.FireControl.Focus), 1f, 10f),
+                    Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.FireControl.RadiusM)), Damage = Math.Clamp(o.Float("damage", global::MachineBrigade.Sim.Content.SimTunables.Bases.FireControl.DamageShare), 0f, 1f), Focus = Math.Clamp(o.Float("focus", global::MachineBrigade.Sim.Content.SimTunables.Bases.FireControl.Focus), 1f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatMax4),
                 };
             }
             if (v.Has("hangar"))
@@ -291,7 +291,7 @@ namespace MachineBrigade.Sim.Content
                 var o = v.Object("hangar");
                 def.Hangar = new HangarDef
                 {
-                    Units = o.StringArray("units"), Every = MathF.Max(5f, o.Float("every", global::MachineBrigade.Sim.Content.SimTunables.Bases.Hangar.EverySeconds)), Alive = Math.Max(1, o.Int("alive", global::MachineBrigade.Sim.Content.SimTunables.Bases.Hangar.Alive)),
+                    Units = o.StringArray("units"), Every = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatFloor3, o.Float("every", global::MachineBrigade.Sim.Content.SimTunables.Bases.Hangar.EverySeconds)), Alive = Math.Max(1, o.Int("alive", global::MachineBrigade.Sim.Content.SimTunables.Bases.Hangar.Alive)),
                     Post = MathF.Max(5f, o.Float("post", global::MachineBrigade.Sim.Content.SimTunables.Bases.Hangar.PostM)), Budget = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bases.Hangar.Budget, o.Float("budget", 0f)),
                 };
             }
@@ -310,12 +310,12 @@ namespace MachineBrigade.Sim.Content
             if (v.Has("searchlight"))
             {
                 var o = v.Object("searchlight");
-                def.Searchlight = new SearchlightDef { Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.Searchlight.RadiusM)), Dazzle = Math.Clamp(o.Float("dazzle", global::MachineBrigade.Sim.Content.SimTunables.Bases.Searchlight.DazzleShare), 0f, 0.9f) };
+                def.Searchlight = new SearchlightDef { Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.Searchlight.RadiusM)), Dazzle = Math.Clamp(o.Float("dazzle", global::MachineBrigade.Sim.Content.SimTunables.Bases.Searchlight.DazzleShare), 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatMax) };
             }
             if (v.Has("balloon"))
             {
                 var o = v.Object("balloon");
-                def.Balloon = new BalloonDef { Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.Balloon.RadiusM)), Scatter = Math.Clamp(o.Float("scatter", global::MachineBrigade.Sim.Content.SimTunables.Bases.Balloon.ScatterShare), 0f, 5f) };
+                def.Balloon = new BalloonDef { Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.Balloon.RadiusM)), Scatter = Math.Clamp(o.Float("scatter", global::MachineBrigade.Sim.Content.SimTunables.Bases.Balloon.ScatterShare), 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatMax5) };
             }
             if (v.Has("sightJammer"))
             {
@@ -325,7 +325,7 @@ namespace MachineBrigade.Sim.Content
             if (v.Has("shelter"))
             {
                 var o = v.Object("shelter");
-                def.Shelter = new ShelterDef { Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.Shelter.RadiusM)), Cut = Math.Clamp(o.Float("cut", global::MachineBrigade.Sim.Content.SimTunables.Bases.Shelter.CutShare), 0f, 0.9f) };
+                def.Shelter = new ShelterDef { Radius = MathF.Max(1f, o.Float("radius", global::MachineBrigade.Sim.Content.SimTunables.Bases.Shelter.RadiusM)), Cut = Math.Clamp(o.Float("cut", global::MachineBrigade.Sim.Content.SimTunables.Bases.Shelter.CutShare), 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatMax) };
             }
             if (v.Has("flares"))
             {
@@ -341,8 +341,8 @@ namespace MachineBrigade.Sim.Content
                 var o = v.Object("microwave");
                 def.Microwave = new MicrowaveDef
                 {
-                    Range = MathF.Max(1f, o.Float("range", global::MachineBrigade.Sim.Content.SimTunables.Bases.Microwave.RangeM)), Arc = Math.Clamp(o.Float("arc", global::MachineBrigade.Sim.Content.SimTunables.Bases.Microwave.ArcDeg), 5f, 360f) * 0.5f * MathF.PI / 180f,
-                    Cooldown = MathF.Max(0.5f, o.Float("cooldown", global::MachineBrigade.Sim.Content.SimTunables.Bases.Microwave.CooldownSeconds)),
+                    Range = MathF.Max(1f, o.Float("range", global::MachineBrigade.Sim.Content.SimTunables.Bases.Microwave.RangeM)), Arc = Math.Clamp(o.Float("arc", global::MachineBrigade.Sim.Content.SimTunables.Bases.Microwave.ArcDeg), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatMin2, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatMax6) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AClampScale * MathF.PI / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AClampDivisor,
+                    Cooldown = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatFloor4, o.Float("cooldown", global::MachineBrigade.Sim.Content.SimTunables.Bases.Microwave.CooldownSeconds)),
                 };
             }
             if (v.Has("droneHunt")) def.DroneHunt = new DroneHuntDef { Reach = MathF.Max(1f, v.Object("droneHunt").Float("reach", global::MachineBrigade.Sim.Content.SimTunables.Bases.DroneHunt.ReachM)) };
@@ -351,14 +351,14 @@ namespace MachineBrigade.Sim.Content
                 var o = v.Object("paradrop");
                 def.Paradrop = new ParadropDef
                 {
-                    Proxy = o.String("proxy"), Fall = MathF.Max(1f, o.Float("fall", global::MachineBrigade.Sim.Content.SimTunables.Bases.Paradrop.FallSeconds)), Height = MathF.Max(5f, o.Float("height", global::MachineBrigade.Sim.Content.SimTunables.Bases.Paradrop.HeightM)),
+                    Proxy = o.String("proxy"), Fall = MathF.Max(1f, o.Float("fall", global::MachineBrigade.Sim.Content.SimTunables.Bases.Paradrop.FallSeconds)), Height = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatFloor3, o.Float("height", global::MachineBrigade.Sim.Content.SimTunables.Bases.Paradrop.HeightM)),
                     BaseKeepOut = MathF.Max(0f, o.Float("baseKeepOut", global::MachineBrigade.Sim.Content.SimTunables.Bases.Paradrop.BaseKeepOutM)),
                 };
             }
             if (v.Has("reconPass"))
             {
                 var o = v.Object("reconPass");
-                def.ReconPass = new ReconPassDef { Width = MathF.Max(2f, o.Float("width", global::MachineBrigade.Sim.Content.SimTunables.Bases.ReconPass.WidthM)), Seconds = MathF.Max(1f, o.Float("seconds", global::MachineBrigade.Sim.Content.SimTunables.Bases.ReconPass.Seconds)) };
+                def.ReconPass = new ReconPassDef { Width = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Catalog.ParseP25AFloatFloor5, o.Float("width", global::MachineBrigade.Sim.Content.SimTunables.Bases.ReconPass.WidthM)), Seconds = MathF.Max(1f, o.Float("seconds", global::MachineBrigade.Sim.Content.SimTunables.Bases.ReconPass.Seconds)) };
             }
             def.TurretArc = v.Has("turretArc") ? Math.Clamp(v.Float("turretArc", 180f), 5f, 180f) * MathF.PI / 180f : 0f;
             def.SmokeSight = v.Bool("smokeSight", false);

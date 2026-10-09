@@ -59,7 +59,7 @@ namespace MachineBrigade.Sim.Movement
                 return false;
             }
             // Its own fights stay near the leader.
-            if (_world.TryGetVehicle(v.Engaged, out var engaged) && Vector2.Distance(engaged.Position, leader.Position) > wing.Decoy * 2f) v.Engaged = EntityId.None;
+            if (_world.TryGetVehicle(v.Engaged, out var engaged) && Vector2.Distance(engaged.Position, leader.Position) > wing.Decoy * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingDecoyScale) v.Engaged = EntityId.None;
             var def = v.Def;
             var forward = SimMath.Forward(leader.Heading);
             var right = new Vector2(forward.Y, -forward.X);
@@ -73,18 +73,18 @@ namespace MachineBrigade.Sim.Movement
             {
                 // A tight circle at its slowest round a hovering or slow leader.
                 want = def.Speed * SlowCircle;
-                goal = OrbitAround(v, leader.Position, MathF.Max(12f, want / def.TurnRate * 1.3f));
+                goal = OrbitAround(v, leader.Position, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingWantFloor, want / def.TurnRate * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingWantScale));
             }
             else
             {
                 // Far off: straight for the slot; close: along the leader's line, easing into the slot.
-                goal = gap > 14f ? slot : slot + forward * 20f + (slot - v.Position) * 0.5f;
-                want = leader.Speed + (gap - 2f) * 0.8f;
+                goal = gap > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingGapMin ? slot : slot + forward * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingForwardScale + (slot - v.Position) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingSlotScale;
+                want = leader.Speed + (gap - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingGapSub) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingGapScale;
             }
             var top = def.Speed * v.SpeedFactor;
-            var speed = Math.Clamp(want, def.Speed * 0.35f, top);
+            var speed = Math.Clamp(want, def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingSpeedScale, top);
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * v.TurnFactor * dt);
-            v.Speed = SimMath.MoveTowards(v.Speed, speed, def.Speed * 0.8f * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, speed, def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FlyWingSpeedScale2 * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
             v.InAttackHold = false;
             v.Orbiting = false;
@@ -98,7 +98,7 @@ namespace MachineBrigade.Sim.Movement
         private EntityId ChooseLeader(Vehicle v, WingmanDef wing)
         {
             if (_world.TryGetVehicle(v.WingLeader, out var current) && current.IsAlive && current.Def.Manned &&
-                Vector2.Distance(current.Position, v.Position) <= wing.Follow * 1.2f) return current.Id;
+                Vector2.Distance(current.Position, v.Position) <= wing.Follow * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ChooseLeaderFollowScale) return current.Id;
             Vehicle? best = null;
             var bestScore = float.MaxValue;
             foreach (var other in _world.VehicleList)
@@ -149,7 +149,7 @@ namespace MachineBrigade.Sim.Movement
             {
                 if (start.Team == team) continue;
                 var toward = start.Rally - middle;
-                if (toward.LengthSquared() > 1f) return _world.ClampToMap(middle + Vector2.Normalize(toward) * 30f);
+                if (toward.LengthSquared() > 1f) return _world.ClampToMap(middle + Vector2.Normalize(toward) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FrontPointNormalizeScale);
             }
             return middle;
         }
@@ -166,7 +166,7 @@ namespace MachineBrigade.Sim.Movement
                 if (v.Arms[i].Projectile == ProjectileKind.Bomb && v.Weapons[i].Ammo != 0) bombs = true;
             if (!bombs) return null;
             Vehicle? best = null;
-            var bestDistance = v.Def.VisionRange * 1.5f;
+            var bestDistance = v.Def.VisionRange * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.SeadTargetVisionRangeScale;
             foreach (var other in _world.VehicleList)
             {
                 if (!other.IsAlive || other.Team == v.Team || other.Team < 0 || other.Flying || other.Invulnerable || !other.IsVisibleTo(v.Team) ||

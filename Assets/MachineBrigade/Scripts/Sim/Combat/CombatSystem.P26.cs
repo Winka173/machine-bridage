@@ -23,7 +23,7 @@ namespace MachineBrigade.Sim.Combat
         private float P26Worth(Vehicle v, Vehicle other, WeaponDef weapon)
         {
             if (!v.Def.Boss || other.Flying || weapon.Beam || weapon.Targets == TargetLayers.Air) return 1f;
-            var worth = Math.Clamp(Worth(other), 2f, 25f);
+            var worth = Math.Clamp(Worth(other), global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P26WorthWorthMin, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P26WorthWorthMax);
             if (weapon.SplashRadius >= CrowdFrom)
             {
                 // What stands in the core round this target, by worth, over the target's own.
@@ -32,7 +32,7 @@ namespace MachineBrigade.Sim.Combat
                 foreach (var e in _world.VehicleList)
                 {
                     if (e == other || !e.IsAlive || e.Flying || e.Team != other.Team || e.Def.Static && e.Def.Obstacle) continue;
-                    if (Vector2.DistanceSquared(e.Position, other.Position) <= (core + e.Radius) * (core + e.Radius)) crowd += Math.Clamp(Worth(e), 1f, 25f);
+                    if (Vector2.DistanceSquared(e.Position, other.Position) <= (core + e.Radius) * (core + e.Radius)) crowd += Math.Clamp(Worth(e), 1f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.P26WorthWorthMax);
                 }
                 return Math.Clamp(crowd / worth, 1f, CrowdMax);
             }

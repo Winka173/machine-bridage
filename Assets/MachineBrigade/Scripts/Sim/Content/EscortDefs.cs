@@ -159,7 +159,7 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>How many escorts of a boss may be alive at once at a difficulty (Easy 4 ... Iron 6).</summary>
         public int CapFor(string? difficulty) =>
-            difficulty != null && Caps.TryGetValue(difficulty, out var cap) ? cap : Caps.TryGetValue("Normal", out var normal) ? normal : 5;
+            difficulty != null && Caps.TryGetValue(difficulty, out var cap) ? cap : Caps.TryGetValue("Normal", out var normal) ? normal : global::MachineBrigade.Sim.Content.SimTunables.Bosses.EscortRules.CapForTryGetValueFalse;
 
         /// <summary>Boss Rush: this many fewer alive (at least <see cref="BossRushMin"/>), so a fight does not drag.</summary>
         public int BossRushCut { get; internal set; } = 2;
@@ -244,7 +244,7 @@ namespace MachineBrigade.Sim.Content
                 if (r.Has("cap"))
                 {
                     var caps = r.Object("cap");
-                    foreach (var key in caps.Keys) rules.Caps[key] = Math.Max(1, caps.Int(key, 5));
+                    foreach (var key in caps.Keys) rules.Caps[key] = Math.Max(1, caps.Int(key, global::MachineBrigade.Sim.Content.SimTunables.Bosses.Catalog.ParseEscortsFallback11));
                 }
                 EscortRules = rules;
             }

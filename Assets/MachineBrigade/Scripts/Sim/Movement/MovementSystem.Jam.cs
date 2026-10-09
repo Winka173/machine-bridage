@@ -48,7 +48,7 @@ namespace MachineBrigade.Sim.Movement
                           (t.WaitingForGate && now - t.GateWaitStarted < GateWaitMax) ||
                           (t.QueueBehind.IsValid && now < t.QueueUntil);
             var intent = v.HasPath;
-            var engaging = (v.Target.IsValid || v.Engaged.IsValid) && now - v.LastFiredAt < 1.5;
+            var engaging = (v.Target.IsValid || v.Engaged.IsValid) && now - v.LastFiredAt < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TrackJamNowMax;
             var remaining = intent ? RemainingLength(v) : 0f;
             var actual = jam.SampleCount < 0 ? MathF.Abs(v.Speed) : Vector2.Distance(v.Position, jam.SamplePos) / dtEval;
             var samePath = jam.SampleCount == v.Path.Count && !float.IsNaN(jam.SampleRemaining) &&
@@ -80,7 +80,7 @@ namespace MachineBrigade.Sim.Movement
             {
                 case JamStage.Soft:
                     // More room and a looser formation for a moment; pressed among hulls, a side-step.
-                    t.LoosenUntil = now + 4.0;
+                    t.LoosenUntil = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.RunJamStageNowAdd;
                     if (v.HasPath && Crowded(v) && TryLocalWaypoint(v, 2.5f, 3.5f, out var aside))
                     {
                         v.Path.Insert(v.PathIndex, aside);
@@ -163,7 +163,7 @@ namespace MachineBrigade.Sim.Movement
         private string EmergencyStage(Vehicle v)
         {
             var t = v.Traffic;
-            t.FormationBreakUntil = _world.Time + 8.0;
+            t.FormationBreakUntil = _world.Time + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.EmergencyStageTimeAdd;
             var stats = _world.Traffic.Stats;
             var distance = SimTunables.Ai.Navigation.EmergencyReverseM;
             var move = JamPolicy.Emergency(v.Def, v.OnRail, CanReverse(v, distance));
@@ -197,7 +197,7 @@ namespace MachineBrigade.Sim.Movement
             var grid = _world.Grid;
             var next = v.HasPath ? v.Path[v.PathIndex] : v.Position + SimMath.Forward(v.Heading) * 8f;
             var way = next - v.Position;
-            var dir = way.LengthSquared() > 0.25f ? Vector2.Normalize(way) : SimMath.Forward(v.Heading);
+            var dir = way.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryLocalWaypointLengthSquaredMin ? Vector2.Normalize(way) : SimMath.Forward(v.Heading);
             var right = new Vector2(dir.Y, -dir.X);
             var blocker = RecentBlocker(v, 3.0);
             int side;
@@ -218,7 +218,7 @@ namespace MachineBrigade.Sim.Movement
                 {
                     var p = v.Position + dir * along + right * (s * lateral);
                     if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || !grid.LineOfSight(v.Position, p)) continue;
-                    if (Vector2.DistanceSquared(p, next) > 4f && !grid.LineOfSight(p, next)) continue;
+                    if (Vector2.DistanceSquared(p, next) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryLocalWaypointDistanceSquaredMin && !grid.LineOfSight(p, next)) continue;
                     if (HullAt(v, p) != null) continue;
                     if (_world.Wrecks.GroundCount > 0 && _world.Wrecks.Blocks(p, v.Def.HullBound, false)) continue;
                     spot = p;
@@ -315,7 +315,7 @@ namespace MachineBrigade.Sim.Movement
         {
             var t = v.Traffic;
             var def = v.Def;
-            var preferred = MathF.Max(MathF.Abs(v.Speed), def.Speed * v.SpeedFactor * 0.5f);
+            var preferred = MathF.Max(MathF.Abs(v.Speed), def.Speed * v.SpeedFactor * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OrcaTurnSpeedScale);
             var forward = SimMath.Forward(desired);
             t.DesiredVelocity = forward * def.Speed * v.SpeedFactor;
             if (!SimTunables.Ai.Navigation.OrcaLite || v.Flying)
@@ -328,7 +328,7 @@ namespace MachineBrigade.Sim.Movement
             t.SafeVelocity = t.DesiredVelocity;
             if (InDoorway(v)) return 0f;
             var horizon = SimTunables.Ai.Navigation.AvoidanceHorizonGroundS;
-            var reach = (preferred + def.Speed) * horizon + def.HullBound + _maxBound + 2f;
+            var reach = (preferred + def.Speed) * horizon + def.HullBound + _maxBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OrcaTurnPreferredAdd;
             var max = Math.Min(_neighbours.Length, Math.Max(1, SimTunables.Ai.Navigation.OrcaNeighbours));
             var count = 0;
             for (var i = LowerBound(v.Position.X - reach); i < _ground.Count; i++)
@@ -371,7 +371,7 @@ namespace MachineBrigade.Sim.Movement
                 var combined = TrafficSteering.MinSeparation(def.HullRadius, o.Def.HullRadius, splash && o.Team == v.Team,
                     t.InColumn && o.Traffic.InColumn);
                 // A capsule is longer than its radius: the nose-to-tail half of the longer hull counts too.
-                combined += MathF.Min(def.HullHalf, o.Def.HullHalf) * 0.5f;
+                combined += MathF.Min(def.HullHalf, o.Def.HullHalf) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OrcaTurnMinScale;
                 var otherVel = SimMath.Forward(o.Heading) * o.Speed;
                 var theirs = o.Team == v.Team ? traffic.RightOfWay(o) : mine;
                 sum += TrafficSteering.Avoid(v.Position, selfVel, def.HullRadius, mine, (int)v.Id.Value,
@@ -400,7 +400,7 @@ namespace MachineBrigade.Sim.Movement
         /// </summary>
         private void ResolveDeadlocks()
         {
-            if (!JamStagesOn || _world.Tick % Math.Max(1, SimTunables.Ai.Traffic.DeadlockTicks) != 7) return;
+            if (!JamStagesOn || _world.Tick % Math.Max(1, SimTunables.Ai.Traffic.DeadlockTicks) != global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ResolveDeadlocksTickIs) return;
             _waitIndex.Clear();
             _waitNodes.Clear();
             _waitNext.Clear();
@@ -416,7 +416,7 @@ namespace MachineBrigade.Sim.Movement
                 _waitNext.Add(-1);
                 _waitMark.Add(0);
             }
-            if (_waitNodes.Count < 2) return;
+            if (_waitNodes.Count < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ResolveDeadlocksCountMax) return;
             for (var i = 0; i < _waitNodes.Count; i++)
             {
                 var target = WaitsFor(_waitNodes[i], now);
@@ -441,7 +441,7 @@ namespace MachineBrigade.Sim.Movement
                     _cycle.Add(_waitNodes[c]);
                     c = _waitNext[c];
                 } while (c != i && _cycle.Count <= _waitNodes.Count);
-                if (_cycle.Count >= 2) BreakCycle();
+                if (_cycle.Count >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ResolveDeadlocksCountMin) BreakCycle();
             }
         }
 
@@ -449,7 +449,7 @@ namespace MachineBrigade.Sim.Movement
         {
             var t = v.Traffic;
             if (t.QueueBehind.IsValid && now < t.QueueUntil && _world.TryGetVehicle(t.QueueBehind, out var q) && q.IsAlive) return q;
-            if (t.Jam.Stage >= JamStage.Soft && v.HasPath && RecentBlocker(v, 2.0) is { } b && b.Team == v.Team && !b.Def.Static) return b;
+            if (t.Jam.Stage >= JamStage.Soft && v.HasPath && RecentBlocker(v, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.WaitsForMaxAge) is { } b && b.Team == v.Team && !b.Def.Static) return b;
             return null;
         }
 
@@ -512,9 +512,9 @@ namespace MachineBrigade.Sim.Movement
             var since = _world.Time - t.OrderAt;
             if (since < SimTunables.Ai.Navigation.AnomalyAccelS + 0.25 || since > 3.0) return;
             string? code = null;
-            if (v.HasPath && MathF.Abs(v.Speed) < 0.1f && !v.Engaged.IsValid && !(v.Def.HoldsToFire && _world.Time - v.LastFiredAt < HoldToFireSeconds))
+            if (v.HasPath && MathF.Abs(v.Speed) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CheckAnomalyAbsMax && !v.Engaged.IsValid && !(v.Def.HoldsToFire && _world.Time - v.LastFiredAt < HoldToFireSeconds))
                 code = "ANOMALY_NO_ACCEL";
-            else if (!v.HasPath && !v.PathQueued && !v.PathCompleted && _world.Time - t.PathFailedAt < 3.0)
+            else if (!v.HasPath && !v.PathQueued && !v.PathCompleted && _world.Time - t.PathFailedAt < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.CheckAnomalyTimeMax)
                 code = "ANOMALY_NO_PATH";
             if (code == null) return;
             t.AnomalyLogged = true;

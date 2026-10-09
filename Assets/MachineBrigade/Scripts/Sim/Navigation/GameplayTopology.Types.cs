@@ -51,7 +51,7 @@ namespace MachineBrigade.Sim.Navigation
         public int ClearanceCells { get; }
 
         /// <summary>The room (m) a hull of the class needs to pivot: half its diagonal.</summary>
-        public float TurnRadius => 0.5f * MathF.Sqrt(ReferenceLength * ReferenceLength + ReferenceWidth * ReferenceWidth);
+        public float TurnRadius => global::MachineBrigade.Sim.Content.SimTunables.Maps.SizeClassInfo.TurnRadiusSqrtScale * MathF.Sqrt(ReferenceLength * ReferenceLength + ReferenceWidth * ReferenceWidth);
     }
 
     /// <summary>Map spec C / D: what a topology anchor is.</summary>
@@ -206,7 +206,7 @@ namespace MachineBrigade.Sim.Navigation
         public int Component { get; internal set; }
 
         /// <summary>How far round the centre counts as in it (the traffic passage's reach).</summary>
-        public float Reach => MathF.Max(Length, OpenWidth) * 0.5f + 3f;
+        public float Reach => MathF.Max(Length, OpenWidth) * global::MachineBrigade.Sim.Content.SimTunables.Maps.TacticalChoke.ReachMaxScale + global::MachineBrigade.Sim.Content.SimTunables.Maps.TacticalChoke.ReachMaxAdd;
 
         public bool Contains(Vector2 p)
         {

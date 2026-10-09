@@ -56,7 +56,7 @@ namespace MachineBrigade.Sim.Content
         public const int OverpenetrationSteps = 4;
 
         /// <summary>Splash 04/10: 110 / 108 / 105 / 100 / 85 / 65 / 45 / 25 / 0 (balance.json damageTable.splashFalloff says the same).</summary>
-        private static readonly float[] DefaultSplash = { 1.10f, 1.08f, 1.05f, 1.00f, 0.85f, 0.65f, 0.45f, 0.25f, 0f };
+        private static readonly float[] DefaultSplash = { global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash1, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash2, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash3, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash4, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash5, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash6, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash7, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash8, global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash9 };
 
         /// <summary>Overpenetration 04/10: 100 / 95 / 85 / 75 (balance.json damageTable.overpenetration says the same).</summary>
         private static readonly float[] DefaultOver = { 1.00f, 0.95f, 0.85f, 0.75f };
@@ -95,7 +95,7 @@ namespace MachineBrigade.Sim.Content
             return full;
         }
 
-        public DamageTable(float[,] types, float[]? penetration = null, float thermobaricStructure = 2f, float[]? topAttack = null,
+        public DamageTable(float[,] types, float[]? penetration = null, float? thermobaricStructure = null, float[]? topAttack = null,
             float[]? splashFalloff = null, float[]? overpenetration = null)
         {
             if (types.GetLength(0) != DamageTypeCount || types.GetLength(1) != KindCount)
@@ -105,7 +105,7 @@ namespace MachineBrigade.Sim.Content
             _types = (float[,])types.Clone();
             _pen = Expand(penetration ?? DefaultPenetration, "penetration");
             _top = Expand(topAttack ?? DefaultTopAttack, "topAttack");
-            ThermobaricStructure = Guard.NonNegative(thermobaricStructure, "damageTable", "thermobaric");
+            ThermobaricStructure = Guard.NonNegative((thermobaricStructure ?? global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.CtorThermobaricStructure), "damageTable", "thermobaric");
             _splash = Fixed(splashFalloff, DefaultSplash, SplashSteps, "splashFalloff");
             _over = Fixed(overpenetration, DefaultOver, OverpenetrationSteps, "overpenetration");
         }
@@ -226,12 +226,12 @@ namespace MachineBrigade.Sim.Content
             if (distance <= core)
             {
                 var p = distance / core;
-                return p <= 0.25f ? 1 : p <= 0.5f ? 2 : 3;
+                return p <= global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.SplashStepAtPMax ? 1 : p <= global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.SplashStepAtPMax2 ? 2 : 3;
             }
             if (edge > core && distance < edge)
             {
                 var p = (distance - core) / (edge - core);
-                return p <= 0.25f ? 4 : p <= 0.5f ? 5 : p <= 0.75f ? 6 : 7;
+                return p <= global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.SplashStepAtPMax ? 4 : p <= global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.SplashStepAtPMax2 ? 5 : p <= global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.SplashStepAtPMax3 ? 6 : 7;
             }
             return SplashSteps - 1;
         }

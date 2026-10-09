@@ -45,7 +45,7 @@ namespace MachineBrigade.Sim.AI
         {
             if (PlanningP4(world) is not { } tp) return;
             var now = world.Time;
-            tp.Ownership.Claim(gun.Id.Value, IntentOwner.Tactical, now + 2.0, now);
+            tp.Ownership.Claim(gun.Id.Value, IntentOwner.Tactical, now + global::MachineBrigade.Sim.Content.SimTunables.Ai.TacticalAi.ClaimGunP4NowAdd, now);
         }
     }
 }

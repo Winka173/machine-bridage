@@ -59,7 +59,7 @@ namespace MachineBrigade.Sim.AI
             var speedLeft = MathF.Min(v.PartSpeed, 1f - slow);
             var crippled = v.Def.Speed > 0f && !v.Def.Static && speedLeft < Tun.ComponentState.EngineCrippledShare;
             var mask = 0;
-            for (var i = 0; i < v.Def.Mounts.Count && i < 31; i++)
+            for (var i = 0; i < v.Def.Mounts.Count && i < global::MachineBrigade.Sim.Content.SimTunables.Ai.ComponentState.OfIMax; i++)
                 if (i >= v.MountOff.Length || !v.MountOff[i]) mask |= 1 << i;
             return new ComponentState(mainLost, crippled, v.RadarOff, v.Aps != null && v.ApsOff, mask);
         }

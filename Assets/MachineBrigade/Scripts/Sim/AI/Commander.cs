@@ -38,21 +38,21 @@ namespace MachineBrigade.Sim.AI
         /// <summary>The difficulty's skill, its reaction delay scaled from the catalog's Normal value (params.reactionDelay).</summary>
         public static AiSkill For(AiDifficulty difficulty, AiParams ai)
         {
-            var p = ai.Has("params.reactionDelay") ? ai.Param("params.reactionDelay") : new AiParam(0.8f, 0.3f, 1.5f, "", "");
+            var p = ai.Has("params.reactionDelay") ? ai.Param("params.reactionDelay") : new AiParam(global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForValue, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForMin, global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForMax, "", "");
             float normal = p.Value, min = p.Min, max = p.Max;
             return difficulty switch
             {
-                AiDifficulty.Easy => new AiSkill { Level = 0, ReactionDelay = max, DecayScale = 1.5f, Spread = 0.5f, Flank = 0.5f, Focus = 0f },
+                AiDifficulty.Easy => new AiSkill { Level = 0, ReactionDelay = max, DecayScale = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForDecayScale, Spread = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForSpread, Flank = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForFlank, Focus = 0f },
                 AiDifficulty.Hard => new AiSkill
                 {
                     Level = 2,
-                    ReactionDelay = normal - (normal - min) * 0.6f, DecayScale = 0.85f, Flank = 1.3f, Focus = 1.3f,
+                    ReactionDelay = normal - (normal - min) * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForNormalScale, DecayScale = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForDecayScale2, Flank = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForFlank2, Focus = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForFocus,
                     Switching = TacticSwitching.WhenLosing,
                 },
                 AiDifficulty.VeryHard => new AiSkill
                 {
                     Level = 3,
-                    ReactionDelay = min, DecayScale = 0.6f, Flank = 1.3f, Focus = 1.3f, Switching = TacticSwitching.Counter,
+                    ReactionDelay = min, DecayScale = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForDecayScale3, Flank = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForFlank2, Focus = global::MachineBrigade.Sim.Content.SimTunables.Ai.AiSkill.ForFocus, Switching = TacticSwitching.Counter,
                 },
                 _ => new AiSkill { ReactionDelay = normal },
             };
@@ -111,7 +111,7 @@ namespace MachineBrigade.Sim.AI
             Tactic = tactic;
             _objective = objective;
             Squads = new SquadLayer(this);
-            _timer = team == 1 ? 0.5f : 0f;
+            _timer = team == 1 ? global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.CtorTeamTrue : 0f;
         }
 
         public int Team { get; }
@@ -161,11 +161,11 @@ namespace MachineBrigade.Sim.AI
         private float AttackThresholdBase(Squad? s)
         {
             var ai = _world?.Catalog.Ai;
-            if (ai == null) return 1.2f;
+            if (ai == null) return global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AttackThresholdBaseAttackThresholdBase;
             var t = (s != null ? TacticFor(s) : CurrentTactic).Modules.AttackThreshold ?? ai.AttackThreshold;
             if (double.IsNaN(_fullSince) || _world == null || !AdvancePressure(_world, Team)) return t;
-            var low = ai.Get("economy.useOrLoseThreshold", 0.9f);
-            var ramp = MathF.Max(1f, ai.Get("economy.useOrLoseRamp", 30f));
+            var low = ai.Get("economy.useOrLoseThreshold", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AttackThresholdBaseFallback);
+            var ramp = MathF.Max(1f, ai.Get("economy.useOrLoseRamp", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.AttackThresholdBaseFallback2));
             var k = (float)Math.Clamp((_world.Time - _fullSince) / ramp, 0.0, 1.0);
             return MathF.Min(t, t + (low - t) * k);
         }
@@ -268,7 +268,7 @@ namespace MachineBrigade.Sim.AI
         {
             var intel = world.Intel.For(Team);
             intel.Decay = world.Catalog.Ai.ConfidenceDecay * Skill.DecayScale;
-            world.AiLog.WarnPerMinute = world.Catalog.Ai.Get("world.churnWarn", 6f);
+            world.AiLog.WarnPerMinute = world.Catalog.Ai.Get("world.churnWarn", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PassFallback);
             Squads.Enlist(world, pool);
             UseOrLose(world);
             Plan(world, intel);
@@ -294,10 +294,10 @@ namespace MachineBrigade.Sim.AI
             // The plan is held for its minimum commitment unless an emergency (B.5).
             var emergency = Emergency(world, intel);
             if (Intent.PrimaryObjective == null || emergency || now - _planSince >= ai.MinCommit ||
-                (objective.HasValue && Intent.PrimaryObjective.HasValue && Vector2.Distance(objective.Value, Intent.PrimaryObjective.Value) < 5f))
+                (objective.HasValue && Intent.PrimaryObjective.HasValue && Vector2.Distance(objective.Value, Intent.PrimaryObjective.Value) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PlanDistanceMax))
             {
                 if (objective.HasValue != Intent.PrimaryObjective.HasValue ||
-                    (objective.HasValue && Vector2.Distance(objective.Value, Intent.PrimaryObjective!.Value) >= 5f))
+                    (objective.HasValue && Vector2.Distance(objective.Value, Intent.PrimaryObjective!.Value) >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PlanDistanceMin))
                 {
                     _planSince = now;
                     world.AiLog.Add(new DecisionEntry(now, Team, AiLayer.Commander, 0, DecisionKind.Plan,
@@ -312,12 +312,12 @@ namespace MachineBrigade.Sim.AI
 
             // Waiting conditions: air superiority waits for the enemy's aircraft to be gone; firepower for its barrages.
             WaitingForAir = m.WaitAir && (intel.EnemyComposition[(int)ForceGroup.Helicopter] + intel.EnemyComposition[(int)ForceGroup.Plane]) >
-                0.05f * MathF.Max(1f, intel.EnemyTotal);
+                global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PlanMaxScale * MathF.Max(1f, intel.EnemyTotal);
             var prep = Math.Max(m.ArtilleryPrep, (int)ai.ArtilleryPrep);
             if (prep > 0 && ArtilleryCentre(world).HasValue)
             {
                 if (double.IsNaN(_prepStart)) _prepStart = now;
-                WaitingForArtillery = now - _prepStart < prep * 8.0;
+                WaitingForArtillery = now - _prepStart < prep * global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PlanPrepScale;
             }
             else WaitingForArtillery = false;
 
@@ -339,7 +339,7 @@ namespace MachineBrigade.Sim.AI
             }
             else reason = $"ratio {own / enemyThere:0.00} < {threshold:0.00}";
             foreach (var e in intel.Events)
-                if (e.Kind is IntelEventKind.Window or IntelEventKind.Opportunity && e.Confidence >= 0.5f && Vector2.Distance(e.Centre, target) < 80f &&
+                if (e.Kind is IntelEventKind.Window or IntelEventKind.Opportunity && e.Confidence >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PlanConfidenceMin && Vector2.Distance(e.Centre, target) < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PlanDistanceMax2 &&
                     now - e.Created >= Skill.ReactionDelay)
                 {
                     open = true;
@@ -363,7 +363,7 @@ namespace MachineBrigade.Sim.AI
             world.AiLog.Record(new Why
             {
                 Layer = AiLayer.Commander, Team = Team, Subject = 0, Time = now, Choice = Intent.TacticalIntent,
-                Score = own / MathF.Max(0.01f, enemyThere), Context = $"{Tactic}; window {(Intent.AttackWindow ? "open" : "shut")} ({Intent.WindowReason})",
+                Score = own / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.PlanEnemyThereFloor, enemyThere), Context = $"{Tactic}; window {(Intent.AttackWindow ? "open" : "shut")} ({Intent.WindowReason})",
                 Events = why,
             });
         }
@@ -401,7 +401,7 @@ namespace MachineBrigade.Sim.AI
             if (intel.EnemyTotal > 0f && intel.OwnTotal < intel.EnemyTotal * 0.6f)
             {
                 if (double.IsNaN(_losingSince)) _losingSince = world.Time;
-                if (world.Time - _losingSince >= 20.0)
+                if (world.Time - _losingSince >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SwitchTacticTimeMin)
                 {
                     var next = _seenEnemyTactic != null ? Counter(data, _seenEnemyTactic) : null;
                     next ??= Tactic == "depth" ? "attrition" : "depth";
@@ -488,7 +488,7 @@ namespace MachineBrigade.Sim.AI
             if (world.AiProfile.SpendPressure && economy.Cp >= economy.Bank - 1f) return false;
             if (_massing && economy.Cp < 6f) _massing = false;
             if (!_massing && economy.Cp >= economy.Bank * 0.9f) _massing = true;
-            return !_massing && economy.VehicleCount >= 4;
+            return !_massing && economy.VehicleCount >= global::MachineBrigade.Sim.Content.SimTunables.Ai.AiCommander.SavingUpVehicleCountMin;
         }
 
         /// <summary>
@@ -617,7 +617,7 @@ namespace MachineBrigade.Sim.AI
                     IntelEventKind.Window => "aihint.window",
                     _ => "aihint.losingPoint",
                 };
-                if (_last.TryGetValue(k, out var at) && world.Time - at < 20.0) continue;
+                if (_last.TryGetValue(k, out var at) && world.Time - at < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiHints.NextTimeMax) continue;
                 if (best == null || e.Priority > best.Priority)
                 {
                     best = e;
@@ -626,7 +626,7 @@ namespace MachineBrigade.Sim.AI
             }
             if (squads != null && key == null)
                 foreach (var s in squads.Squads)
-                    if (s.Progress.Count > 0 && Stuck(s) && !(_last.TryGetValue("aihint.stuck", out var st) && world.Time - st < 20.0))
+                    if (s.Progress.Count > 0 && Stuck(s) && !(_last.TryGetValue("aihint.stuck", out var st) && world.Time - st < global::MachineBrigade.Sim.Content.SimTunables.Ai.AiHints.NextTimeMax))
                     {
                         _last["aihint.stuck"] = world.Time;
                         return new Hint("aihint.stuck", s.Centre, world.Time);

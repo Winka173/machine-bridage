@@ -17,7 +17,7 @@ namespace MachineBrigade.Sim.Content
         public const int Max = 5;
 
         /// <summary>The thickest plate a tower, a building or a vehicle's side, rear and roof may have; <see cref="Max"/> is for bosses and a vehicle's front.</summary>
-        public const int MaxUnit = 4;
+        public static int MaxUnit => global::MachineBrigade.Sim.Content.SimTunables.Weapons.ArmourLevels.MaxUnit;
 
         /// <summary>
         /// Armour/Pen 5 (04/10, DECISIONS "Armour/Pen 5 and splash/overpen 04/10"): the thickest level a face may carry. A boss any
@@ -49,7 +49,7 @@ namespace MachineBrigade.Sim.Content
         };
 
         /// <summary>A vehicle's default faces from its front: side one less, rear and roof two less, none under 0.</summary>
-        public static ArmourLevels Vehicle(int front) => new(front, front - 1, front - 2, front - 2);
+        public static ArmourLevels Vehicle(int front) => new(front, front - 1, front - global::MachineBrigade.Sim.Content.SimTunables.Weapons.ArmourLevels.VehicleFrontSub, front - global::MachineBrigade.Sim.Content.SimTunables.Weapons.ArmourLevels.VehicleFrontSub);
 
         /// <summary>The same level all round (most towers, buildings and aircraft).</summary>
         public static ArmourLevels Uniform(int level) => new(level, level, level, level);
@@ -63,14 +63,14 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The levels a broad class stood for before prompt 15 (hand-built test units, old data).</summary>
         public static ArmourLevels OfClass(ArmorClass armor) => armor switch
         {
-            ArmorClass.Heavy => Vehicle(3),
+            ArmorClass.Heavy => Vehicle(global::MachineBrigade.Sim.Content.SimTunables.Weapons.ArmourLevels.OfClassFront),
             ArmorClass.Light => Vehicle(1),
-            ArmorClass.Structure => Uniform(2),
+            ArmorClass.Structure => Uniform(global::MachineBrigade.Sim.Content.SimTunables.Weapons.ArmourLevels.OfClassLevel),
             _ => Uniform(0),
         };
 
         /// <summary>The broad class these levels stand for on the ground: heavy from front level 3.</summary>
-        public ArmorClass GroundClass => Front >= 3 ? ArmorClass.Heavy : ArmorClass.Light;
+        public ArmorClass GroundClass => Front >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.ArmourLevels.GroundClassFrontMin ? ArmorClass.Heavy : ArmorClass.Light;
 
         private static int Clamp(int level) => Math.Clamp(level, 0, Max);
 
@@ -105,7 +105,7 @@ namespace MachineBrigade.Sim.Content
         public static ArmorFace FaceFrom(Vector2 at, float heading, Vector2 from)
         {
             var toShooter = from - at;
-            if (toShooter.LengthSquared() < 0.01f) return ArmorFace.Front;
+            if (toShooter.LengthSquared() < global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.FaceFromLengthSquaredMax) return ArmorFace.Front;
             var off = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(toShooter) - heading));
             return off <= FrontArc ? ArmorFace.Front : off >= MathF.PI - RearArc ? ArmorFace.Rear : ArmorFace.Side;
         }
@@ -143,8 +143,8 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public static int DefaultPenetration(DamageType type) => type switch
         {
-            DamageType.ShapedCharge => 4,
-            DamageType.Energy => 2,
+            DamageType.ShapedCharge => global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationTypeValue,
+            DamageType.Energy => global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationTypeValue2,
             _ => 1,
         };
 
@@ -160,26 +160,26 @@ namespace MachineBrigade.Sim.Content
             var size = w.Size;
             switch (w.Family)
             {
-                case "mg": return size >= 12f ? 1 : 0;
+                case "mg": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin ? 1 : 0;
                 case "autocannon":
-                    if (w.DamageType == DamageType.Fragmentation) return size >= 30f ? 2 : 1;
-                    return size >= 57f ? 3 : 2;
-                case "grenade": return 2;
-                case "tank_gun": return size >= 120f ? 4 : size >= 76f ? 3 : 2;
-                case "howitzer": return size >= 200f ? 4 : size >= 150f ? 3 : 2;
-                case "mortar": return size >= 200f ? 4 : 2;
-                case "rocket": return size >= 200f ? 3 : 2;
-                case "atgm": return size >= 26f ? 4 : 3;
-                case "aa_missile": return size >= 20f ? 3 : 2;
-                case "bomb": return size >= 900f ? 4 : size >= 500f ? 3 : 2;
-                case "cruise": return 3;
-                case "ballistic": return 4;
-                case "drone": return w.DamageType == DamageType.ShapedCharge ? (size >= 3f ? 4 : 3) : 3;
-                case "flame": return size >= 3f ? 2 : 1;
-                case "laser": return size >= 150f ? 3 : 2;
-                case "railgun": return 4;
-                case "melee": return 3;
-                case "special": return 4;
+                    if (w.DamageType == DamageType.Fragmentation) return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin2 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue : 1;
+                    return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin3 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse;
+                case "grenade": return global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationDefaultPenetration;
+                case "tank_gun": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin4 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue3 : size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin5 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse;
+                case "howitzer": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin6 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue3 : size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin7 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse;
+                case "mortar": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin6 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue3 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse;
+                case "rocket": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin6 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse;
+                case "atgm": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin8 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue3 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse2;
+                case "aa_missile": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin9 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse;
+                case "bomb": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin10 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue3 : size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin11 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse;
+                case "cruise": return global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationDefaultPenetration2;
+                case "ballistic": return global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationDefaultPenetration3;
+                case "drone": return w.DamageType == DamageType.ShapedCharge ? (size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin12 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue3 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse2) : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationDamageTypeFalse;
+                case "flame": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin12 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue : 1;
+                case "laser": return size >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeMin7 ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeTrue2 : global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationSizeFalse;
+                case "railgun": return global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationDefaultPenetration3;
+                case "melee": return global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationDefaultPenetration2;
+                case "special": return global::MachineBrigade.Sim.Content.SimTunables.Weapons.Armour.DefaultPenetrationDefaultPenetration3;
                 default: return DefaultPenetration(w.DamageType);
             }
         }

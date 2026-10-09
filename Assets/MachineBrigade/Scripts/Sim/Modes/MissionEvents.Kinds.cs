@@ -64,7 +64,7 @@ namespace MachineBrigade.Sim.Modes
         private sealed class WeatherPlan
         {
             public string To = "Storm";
-            public float Seconds = 25f;
+            public float Seconds = global::MachineBrigade.Sim.Content.SimTunables.Campaign.WeatherPlan.Seconds;
             public float From = 1f, Target = 1f;
         }
 
@@ -150,7 +150,7 @@ namespace MachineBrigade.Sim.Modes
                 {
                     var to = e.Word("to") ?? "Storm";
                     s.Variant = to.ToLowerInvariant();
-                    s.Plan = new WeatherPlan { To = to, Seconds = Math.Clamp(e.Number("seconds", 25f), 20f, 30f) };
+                    s.Plan = new WeatherPlan { To = to, Seconds = Math.Clamp(e.Number("seconds", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareFallback), global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareNumberMin, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareNumberMax) };
                     return true;
                 }
                 case MissionEventKind.CounterBattery:
@@ -194,7 +194,7 @@ namespace MachineBrigade.Sim.Modes
             if (roster.Count == 0) return units;
             for (var k = 0; k < size; k++)
             {
-                var id = roster[(s.Index * 3 + s.Fired * 5 + k) % roster.Count];
+                var id = roster[(s.Index * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.ComposeIndexScale + s.Fired * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.ComposeFiredScale + k) % roster.Count];
                 if (Difficulty.Elites && k % 3 == 2 && world.Catalog.EliteVariant(id) is { } elite) id = elite;
                 units.Add(id);
             }
@@ -207,16 +207,16 @@ namespace MachineBrigade.Sim.Modes
         {
             var e = s.Def;
             var roster = RosterFor(world, e);
-            var size = Math.Min(WaveSize(e, 6f), Room(world, Enemy));
+            var size = Math.Min(WaveSize(e, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareWaveFallback), Room(world, Enemy));
             if (roster.Count == 0 || size <= 0) return false;
             var d = Difficulty;
-            var count = e.Has("directions") ? Math.Max(1, e.Whole("directions", 2)) : d.MinDirections + _random.Next(d.MaxDirections - d.MinDirections + 1);
+            var count = e.Has("directions") ? Math.Max(1, e.Whole("directions", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareWaveFallback2)) : d.MinDirections + _random.Next(d.MaxDirections - d.MinDirections + 1);
             var bearings = Spawns!.Bearings(SpawnSide.Enemy);
             if (bearings.Count == 0) return false;
             // Front first, then the flanks in either order, the rear last (Very Hard's fourth direction).
             var ordered = new List<SpawnBearing>();
             if (bearings.Contains(SpawnBearing.Front)) ordered.Add(SpawnBearing.Front);
-            var flanks = _random.Next(2) == 0 ? new[] { SpawnBearing.Left, SpawnBearing.Right } : new[] { SpawnBearing.Right, SpawnBearing.Left };
+            var flanks = _random.Next(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareWaveMaxValue) == 0 ? new[] { SpawnBearing.Left, SpawnBearing.Right } : new[] { SpawnBearing.Right, SpawnBearing.Left };
             foreach (var f in flanks)
                 if (bearings.Contains(f)) ordered.Add(f);
             if (bearings.Contains(SpawnBearing.Rear)) ordered.Add(SpawnBearing.Rear);
@@ -287,7 +287,7 @@ namespace MachineBrigade.Sim.Modes
             if (target == null && world.Bases.Of(Player) is { HqFallen: false } camp && world.TryGetVehicle(camp.Hq, out var hq) && hq.IsAlive) target = hq;
             if (target == null) return false;
             var roster = RosterFor(world, s.Def, groundOnly: true);
-            var size = Math.Min(WaveSize(s.Def, 4f), Room(world, Enemy));
+            var size = Math.Min(WaveSize(s.Def, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareRaidFallback), Room(world, Enemy));
             if (roster.Count == 0 || size <= 0) return false;
             // In from the edge nearest the target (not the rear: never out of the player's own camp).
             SpawnPoint? best = null;
@@ -316,7 +316,7 @@ namespace MachineBrigade.Sim.Modes
             var d = Difficulty;
             if (d.AllyWaves >= 0 && AllyWaves >= d.AllyWaves) return false;
             // E.1: chapter 12's Total Offensive has a cap of its own (the enemy's); every other wave the allies' one.
-            var room = Math.Min(e.Whole("max", 12), Room(world, Player, e.Whole("cap", Rules.AllyCap)));
+            var room = Math.Min(e.Whole("max", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareAlliesFallback), Room(world, Player, e.Whole("cap", Rules.AllyCap)));
             if (e.Flag("line", false)) return PrepareLine(world, s, room);
             // Its rosters: "rosters" (one group each: the Total Offensive's old allies), else "roster", else the Accord's.
             var rosters = new List<List<string>>();
@@ -423,9 +423,9 @@ namespace MachineBrigade.Sim.Modes
             var ahead = foe - centre;
             ahead = ahead.LengthSquared() > 1f ? Vector2.Normalize(ahead) : Vector2.UnitY;
             var across = new Vector2(-ahead.Y, ahead.X);
-            var line = world.ClampToMap(centre + ahead * e.Number("ahead", 16f));
+            var line = world.ClampToMap(centre + ahead * e.Number("ahead", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareLineFallback));
             var plan = new LinePlan { Facing = ahead };
-            var spacing = e.Number("spacing", 10f);
+            var spacing = e.Number("spacing", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareLineFallback2);
             for (var k = 0; k < towers.Count; k++)
             {
                 var spot = world.ClampToMap(line + across * ((k - (towers.Count - 1) * 0.5f) * spacing));
@@ -447,7 +447,7 @@ namespace MachineBrigade.Sim.Modes
             return best > 0f ? best : e.Number("strength", 40f);
         }
 
-        private float Estimate(SimWorld world, EventState s) => Strength(world.Catalog, Compose(world, s, RosterFor(world, s.Def), WaveSize(s.Def, 6f)));
+        private float Estimate(SimWorld world, EventState s) => Strength(world.Catalog, Compose(world, s, RosterFor(world, s.Def), WaveSize(s.Def, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.EstimateFallback)));
 
         /// <summary>Vehicles of the roster adding up as close to a strength as they can (the biggest that fit first), at most <paramref name="room"/>.</summary>
         internal static List<string> Fill(SimWorld world, IReadOnlyList<string> roster, float target, int room)
@@ -594,7 +594,7 @@ namespace MachineBrigade.Sim.Modes
         {
             var e = s.Def;
             var roster = RosterFor(world, e, groundOnly: true);
-            var size = Math.Min(Math.Max(1, e.Whole("size", 4)), Room(world, Enemy));
+            var size = Math.Min(Math.Max(1, e.Whole("size", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareCeasefireFallback)), Room(world, Enemy));
             if (roster.Count == 0 || size <= 0) return false;
             var point = PickPoint(SpawnBearing.Front, new[] { "edge" })?.Point ?? PickPoint(SpawnBearing.Left, new[] { "edge" })?.Point;
             if (point == null) return false;
@@ -637,7 +637,7 @@ namespace MachineBrigade.Sim.Modes
                 to = left ?? right;
             }
             if (from == null || to == null) return false;
-            if (_random.Next(2) == 0) (from, to) = (to, from);
+            if (_random.Next(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareCrossingMaxValue) == 0) (from, to) = (to, from);
             s.Variant ??= type == "neutral" ? null : type;
             s.Plan = new ConvoyPlan { Type = type, From = from.Position, To = to.Position };
             s.Where = from.Position;
@@ -648,13 +648,13 @@ namespace MachineBrigade.Sim.Modes
         private bool PrepareCrate(SimWorld world, EventState s)
         {
             var map = world.Map;
-            for (var attempt = 0; attempt < 24; attempt++)
+            for (var attempt = 0; attempt < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareCrateAttemptMax; attempt++)
             {
-                var at = map.Centre + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * 0.2f, (float)(_random.NextDouble() * 2 - 1) * map.Length * 0.2f);
+                var at = map.Centre + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareCrateNextDoubleScale2, (float)(_random.NextDouble() * 2 - 1) * map.Length * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareCrateNextDoubleScale2);
                 if (!world.Grid.IsWalkable(at) || world.Grid.RegionOf(at) != world.Grid.MainRegion) continue;
                 var clear = true;
                 foreach (var team in map.Teams)
-                    if (Vector2.Distance(team.Rally, at) < 40f) clear = false;
+                    if (Vector2.Distance(team.Rally, at) < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PrepareCrateDistanceMax) clear = false;
                 if (!clear) continue;
                 s.Where = at;
                 return true;
@@ -671,7 +671,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 case MissionEventKind.MiniBoss when s.Plan is SurfacePlan up:
                 {
-                    if (Seen(world, up.At) && s.Tries < 5) return Outcome.Retry;
+                    if (Seen(world, up.At) && s.Tries < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenTriesMax) return Outcome.Retry;
                     var boss = Arrive(world, s, up.Def, Enemy, up.At, up.Facing, false);
                     Line(world, s, "start", boss.Id);
                     return Outcome.Done;
@@ -684,7 +684,7 @@ namespace MachineBrigade.Sim.Modes
                     var places = new List<Vector2>();
                     foreach (var g in plan.Groups)
                     {
-                        if (!Spawns!.TryPlace(world, g.Point, Rules.NearSight, Player, out var at) && s.Tries < 5) return Outcome.Retry;
+                        if (!Spawns!.TryPlace(world, g.Point, Rules.NearSight, Player, out var at) && s.Tries < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenTriesMax) return Outcome.Retry;
                         places.Add(at);
                     }
                     for (var i = 0; i < plan.Groups.Count; i++)
@@ -723,13 +723,13 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.Barrage:
                 {
                     var support = e.Word("support") ?? "scripted_barrage"; // balance final: scripted, not the card
-                    var salvos = Math.Max(1, e.Whole("salvos", 3));
-                    var radius = e.Number("radius", 18f);
+                    var salvos = Math.Max(1, e.Whole("salvos", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFallback));
+                    var radius = e.Number("radius", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFallback2);
                     for (var k = 0; k < salvos; k++)
                     {
                         var angle = (float)(_random.NextDouble() * SimMath.Tau);
                         var at = world.ClampToMap(s.Where + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * radius * (float)Math.Sqrt(_random.NextDouble()));
-                        _strikes.Add((world.Time + k * 1.5, support, Enemy, at, at + Vector2.UnitX));
+                        _strikes.Add((world.Time + k * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenKScale, support, Enemy, at, at + Vector2.UnitX));
                     }
                     return Outcome.Done;
                 }
@@ -753,11 +753,11 @@ namespace MachineBrigade.Sim.Modes
                     world.TryGetRally(Player, out var home);
                     var along = at - home;
                     along = along.LengthSquared() > 1f ? Vector2.Normalize(along) : Vector2.UnitX;
-                    var count = Math.Max(1, e.Whole(air ? "passes" : "salvos", air ? 1 : 3));
+                    var count = Math.Max(1, e.Whole(air ? "passes" : "salvos", air ? 1 : global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenAirFalse));
                     for (var k = 0; k < count; k++)
                     {
-                        var start = support.IsLine ? at - along * (support.Length * 0.5f) : at + new Vector2((k % 2) * 6f - 3f, (k / 2) * 6f - 3f) * (k > 0 ? 1f : 0f);
-                        _strikes.Add((world.Time + k * (air ? 3.0 : 1.5), id, Player, world.ClampToMap(start), start + along));
+                        var start = support.IsLine ? at - along * (support.Length * 0.5f) : at + new Vector2((k % 2) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenKScale2 - global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenKSub, (k / global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenKDivisor) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenKScale2 - global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenKSub) * (k > 0 ? 1f : 0f);
+                        _strikes.Add((world.Time + k * (air ? global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenAirTrue : global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenAirFalse2), id, Player, world.ClampToMap(start), start + along));
                     }
                     Notice(world, s, "start", support.Delay);
                     Line(world, s, "start");
@@ -773,11 +773,11 @@ namespace MachineBrigade.Sim.Modes
                     return StartConvoy(world, s);
                 case MissionEventKind.LootDrop:
                 {
-                    var crate = new Crate(new EntityId(900000 + _crateIds++), s.Where, world.Time + 5.0, world.Time + 55.0);
+                    var crate = new Crate(new EntityId(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenAdd + _crateIds++), s.Where, world.Time + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenTimeAdd, world.Time + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenTimeAdd2);
                     world.CrateList.Add(crate);
                     _crates.Add(crate);
-                    world.Emit(SimEvent.CrateIncoming(crate, 5f));
-                    Notice(world, s, "start", 5f);
+                    world.Emit(SimEvent.CrateIncoming(crate, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenSeconds));
+                    Notice(world, s, "start", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenSeconds);
                     s.EndsAt = crate.ExpiresAt;
                     return Outcome.Running;
                 }
@@ -786,7 +786,7 @@ namespace MachineBrigade.Sim.Modes
                     if (world.Catalog.TryGetSupport(e.Word("support") ?? "repair_drop", out var drop))
                     {
                         world.Strikes.Launch(drop, Player, s.Where, s.Where + Vector2.UnitX);
-                        s.EndsAt = world.Time + drop.Delay + 0.5;
+                        s.EndsAt = world.Time + drop.Delay + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenTimeAdd3;
                     }
                     else s.EndsAt = world.Time;
                     Notice(world, s, "start", 0f);
@@ -795,15 +795,15 @@ namespace MachineBrigade.Sim.Modes
                 }
                 case MissionEventKind.IntelReveal:
                 {
-                    var seconds = e.Number("seconds", 8f);
-                    world.Strikes.AddScan(Player, s.Where, e.Number("radius", 30f), seconds);
+                    var seconds = e.Number("seconds", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFallback4);
+                    world.Strikes.AddScan(Player, s.Where, e.Number("radius", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFallback5), seconds);
                     Notice(world, s, "start", seconds);
                     Line(world, s, "start");
                     return Outcome.Done;
                 }
                 case MissionEventKind.Blackout:
                 {
-                    var seconds = e.Number("seconds", 20f);
+                    var seconds = e.Number("seconds", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFallback6);
                     world.Blackout(Player, world.Time + seconds);
                     s.EndsAt = world.Time + seconds;
                     Notice(world, s, "start", seconds);
@@ -822,9 +822,9 @@ namespace MachineBrigade.Sim.Modes
                 {
                     // Prompt 18's big-attack rules, small: the ring on the ground for the rod's fall, then one kinetic hit.
                     var look = e.Word("look") ?? "leviathan_shell";
-                    var fall = MathF.Max(0.5f, e.Number("fall", 4f));
+                    var fall = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenNumberFloor, e.Number("fall", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFallback7));
                     if (world.Catalog.TryGetSupport(look, out var ring)) world.Emit(SimEvent.StrikeWarning(Enemy, ring, s.Where, s.Where, fall));
-                    _rods.Add((world.Time + fall, s.Where, e.Number("radius", 6f), e.Number("damage", 900f), look, s.Index));
+                    _rods.Add((world.Time + fall, s.Where, e.Number("radius", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFallback8), e.Number("damage", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFallback9), look, s.Index));
                     return Outcome.Done;
                 }
                 case MissionEventKind.WeatherShift:
@@ -832,9 +832,9 @@ namespace MachineBrigade.Sim.Modes
                     var plan = (WeatherPlan)s.Plan!;
                     var from = _weatherNow ?? _host.Def.Weather;
                     var sight = Rules.WeatherSight;
-                    var ratio = (sight.TryGetValue(plan.To, out var to) ? to : 1f) / MathF.Max(0.1f, sight.TryGetValue(from, out var was) ? was : 1f);
+                    var ratio = (sight.TryGetValue(plan.To, out var to) ? to : 1f) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenFloor, sight.TryGetValue(from, out var was) ? was : 1f);
                     plan.From = world.WeatherSight;
-                    plan.Target = Math.Clamp(world.WeatherSight * ratio, 0.5f, 1.3f);
+                    plan.Target = Math.Clamp(world.WeatherSight * ratio, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenWeatherSightMin, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.HappenWeatherSightMax);
                     _weatherNow = plan.To;
                     world.Emit(SimEvent.WeatherShifting(plan.To, plan.Seconds));
                     s.EndsAt = world.Time + plan.Seconds;
@@ -856,7 +856,7 @@ namespace MachineBrigade.Sim.Modes
         private Outcome FieldGeneral(SimWorld world, EventState s)
         {
             var plan = (GeneralPlan)s.Plan!;
-            if (!Spawns!.TryPlace(world, plan.Point, Rules.NearSight, Player, out var at) && s.Tries < 5) return Outcome.Retry;
+            if (!Spawns!.TryPlace(world, plan.Point, Rules.NearSight, Player, out var at) && s.Tries < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.FieldGeneralTriesMax) return Outcome.Retry;
             // The general's passive (prompt 22 F) while on the field, when the mission's enemy is not under it already.
             var passive = Commanders.General(plan.General);
             if (passive != null && world.CommanderOf(Enemy) != passive)
@@ -870,7 +870,7 @@ namespace MachineBrigade.Sim.Modes
             var across = new Vector2(-plan.Point.Inward.Y, plan.Point.Inward.X);
             for (var k = 0; k < plan.Escorts.Count; k++)
             {
-                var spot = world.ClampToMap(at + across * ((k % 2 == 0 ? 1f : -1f) * (6f + 4f * (k / 2))) - plan.Point.Inward * 4f);
+                var spot = world.ClampToMap(at + across * ((k % 2 == 0 ? 1f : -1f) * (global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.FieldGeneralKAdd + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.FieldGeneralKScale * (k / global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.FieldGeneralKDivisor))) - plan.Point.Inward * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.FieldGeneralInwardScale);
                 var escort = Arrive(world, s, world.Economy.ForWave(Enemy, plan.Escorts[k]), Enemy, spot, plan.Point.Inward, false);
                 s.Others.Add(escort.Id);
             }
@@ -884,8 +884,8 @@ namespace MachineBrigade.Sim.Modes
         {
             var e = s.Def;
             var plan = (ConvoyPlan)s.Plan!;
-            var count = Math.Max(1, e.Whole("count", 3));
-            var seconds = e.Number("seconds", 120f);
+            var count = Math.Max(1, e.Whole("count", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyFallback));
+            var seconds = e.Number("seconds", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyFallback3);
             var dir = plan.To - plan.From;
             dir = dir.LengthSquared() > 1f ? Vector2.Normalize(dir) : Vector2.UnitX;
             switch (plan.Type)
@@ -901,20 +901,20 @@ namespace MachineBrigade.Sim.Modes
                     {
                         var id = roster[k % roster.Count];
                         if (!world.Catalog.Vehicles.ContainsKey(id)) id = Truck;
-                        var v = world.SpawnVehicle(id, Player, world.ClampToMap(plan.From + new Vector2((k % 3 - 1) * 5f, (k / 3) * 5f)), 0f);
+                        var v = world.SpawnVehicle(id, Player, world.ClampToMap(plan.From + new Vector2((k % global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyKMod - 1) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyKScale, (k / global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyKDivisor) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyKScale)), 0f);
                         v.Scripted = true;
                         s.Units.Add(v.Id);
                     }
                     var foes = e.Words("column").Count > 0 ? RosterFor(world, e, groundOnly: true, own: false) : RosterFor(world, e, groundOnly: true);
-                    var size = Math.Min(WaveSize(e, 4f), Room(world, Enemy));
+                    var size = Math.Min(WaveSize(e, global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyFallback2), Room(world, Enemy));
                     var away = world.TryGetRally(Enemy, out var camp) ? camp - plan.From : Vector2.UnitY;
                     away = away.LengthSquared() > 1f ? Vector2.Normalize(away) : Vector2.UnitY;
                     var besiegers = Compose(world, s, foes, size);
                     for (var k = 0; k < besiegers.Count; k++)
                     {
-                        var angle = (k - (besiegers.Count - 1) * 0.5f) * 0.45f;
+                        var angle = (k - (besiegers.Count - 1) * 0.5f) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyKScale2;
                         var off = new Vector2(away.X * MathF.Cos(angle) - away.Y * MathF.Sin(angle), away.X * MathF.Sin(angle) + away.Y * MathF.Cos(angle));
-                        var v = world.SpawnVehicle(world.Economy.ForWave(Enemy, besiegers[k]), Enemy, world.ClampToMap(plan.From + off * 24f), SimMath.HeadingOf(-off));
+                        var v = world.SpawnVehicle(world.Economy.ForWave(Enemy, besiegers[k]), Enemy, world.ClampToMap(plan.From + off * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyOffScale), SimMath.HeadingOf(-off));
                         v.Reinforcement = true;
                         v.ManualUntil = world.Time + seconds;
                         world.Submit(new Command(CommandType.AttackMove, Enemy, new[] { v.Id }, plan.From));
@@ -930,7 +930,7 @@ namespace MachineBrigade.Sim.Modes
                     if (team != Player && Seen(world, plan.From) && s.Tries < 5) return Outcome.Retry;
                     for (var k = 0; k < count; k++)
                     {
-                        var v = world.SpawnVehicle(Truck, team, world.ClampToMap(plan.From - dir * (k * 9f)), SimMath.HeadingOf(dir));
+                        var v = world.SpawnVehicle(Truck, team, world.ClampToMap(plan.From - dir * (k * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartConvoyKScale3)), SimMath.HeadingOf(dir));
                         v.Scripted = true;
                         if (team != Enemy) world.HoldFire(v, true);
                         if (plan.Type == "intercept") v.Marked = true;
@@ -989,7 +989,7 @@ namespace MachineBrigade.Sim.Modes
                     if (world.Time < s.EndsAt) break;
                     // The drop's crates rearm what stands under them (the repair drop mends it over its seconds).
                     foreach (var v in world.VehicleList)
-                        if (v.IsAlive && v.Team == Player && Vector2.Distance(v.Position, s.Where) < e.Number("radius", 16f)) world.Refill(v);
+                        if (v.IsAlive && v.Team == Player && Vector2.Distance(v.Position, s.Where) < e.Number("radius", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.UpdateFallback)) world.Refill(v);
                     Finish(world, s, true);
                     break;
                 case MissionEventKind.Blackout:
@@ -1001,7 +1001,7 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.WeatherShift:
                 {
                     var plan = (WeatherPlan)s.Plan!;
-                    var t = (float)Math.Clamp((world.Time - s.StartAt) / Math.Max(0.1, plan.Seconds), 0.0, 1.0);
+                    var t = (float)Math.Clamp((world.Time - s.StartAt) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.UpdateSecondsFloor, plan.Seconds), 0.0, 1.0);
                     world.WeatherSight = plan.From + (plan.Target - plan.From) * t;
                     if (t >= 1f) Finish(world, s, true, "end");
                     break;
@@ -1041,18 +1041,18 @@ namespace MachineBrigade.Sim.Modes
             {
                 if (world.Time < plan.FireAt) return;
                 var support = e.Word("support") ?? "scripted_barrage"; // balance final: scripted, not the card
-                for (var k = 0; k < Math.Max(1, e.Whole("salvos", 2)); k++) _strikes.Add((world.Time + k * 1.2, support, Enemy, plan.At, plan.At + Vector2.UnitX));
+                for (var k = 0; k < Math.Max(1, e.Whole("salvos", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.CounterBatteryFallback)); k++) _strikes.Add((world.Time + k * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.CounterBatteryKScale, support, Enemy, plan.At, plan.At + Vector2.UnitX));
                 plan.FireAt = -1;
-                plan.NextAllowed = world.Time + e.Number("cooldown", 45f);
+                plan.NextAllowed = world.Time + e.Number("cooldown", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.CounterBatteryFallback2);
                 return;
             }
-            if (world.Time < plan.NextAllowed || world.Tick % 10 != 0) return;
-            var still = e.Number("still", 20f);
+            if (world.Time < plan.NextAllowed || world.Tick % global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.CounterBatteryTickMod != 0) return;
+            var still = e.Number("still", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.CounterBatteryFallback3);
             foreach (var v in world.VehicleList)
             {
                 if (!v.IsAlive || v.Team != Player || v.Flying || v.Def.Static || v.Def.Class != UnitClass.Artillery) continue;
-                if (world.Time - v.StillSince < still || world.Time - v.LastFiredAt > 3.0) continue;
-                var lead = e.Number("lead", 5f);
+                if (world.Time - v.StillSince < still || world.Time - v.LastFiredAt > global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.CounterBatteryTimeMin) continue;
+                var lead = e.Number("lead", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.CounterBatteryFallback4);
                 plan.At = v.Position;
                 plan.FireAt = world.Time + lead;
                 s.Where = v.Position;
@@ -1081,7 +1081,7 @@ namespace MachineBrigade.Sim.Modes
             plan.Retreating = true;
             alive.Invulnerable = true;
             alive.Scripted = true;
-            alive.ExpiresAt = world.Time + 8.0;
+            alive.ExpiresAt = world.Time + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.WatchGeneralTimeAdd;
             var away = plan.Point.Position;
             foreach (var p in Spawns!.All)
                 if (p.Side == SpawnSide.Enemy && p.Kind == SpawnKind.Edge &&
@@ -1118,7 +1118,7 @@ namespace MachineBrigade.Sim.Modes
                 else if (convoy == 0 || now >= s.EndsAt)
                 {
                     foreach (var id in s.Units)
-                        if (world.TryGetVehicle(id, out var v) && v.IsAlive) v.ExpiresAt = now + 0.1;
+                        if (world.TryGetVehicle(id, out var v) && v.IsAlive) v.ExpiresAt = now + global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.WatchConvoyNowAdd;
                     Notice(world, s, "fail", 0f);
                     Line(world, s, "fail");
                     Finish(world, s, false);
@@ -1130,7 +1130,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 if (!world.TryGetVehicle(id, out var truck) || !truck.IsAlive) continue;
                 if (plan.Type == "neutral" && truck.LastAttackerTeam >= 0) plan.Hitter[id] = truck.LastAttackerTeam;
-                if (Vector2.Distance(truck.Position, plan.To) > 8f)
+                if (Vector2.Distance(truck.Position, plan.To) > global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.WatchConvoyDistanceMin)
                 {
                     driving++;
                     continue;
@@ -1216,18 +1216,18 @@ namespace MachineBrigade.Sim.Modes
                 var contested = false;
                 foreach (var v in world.VehicleList)
                 {
-                    if (!v.IsAlive || v.Flying || v.Team is < 0 or > 1 || Vector2.Distance(v.Position, crate.Position) > 6f + v.Def.HullRadius) continue;
+                    if (!v.IsAlive || v.Flying || v.Team is < 0 or > 1 || Vector2.Distance(v.Position, crate.Position) > global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.WatchCratesHullRadiusAdd + v.Def.HullRadius) continue;
                     if (holder < 0) holder = v.Team;
                     else if (holder != v.Team) contested = true;
                 }
                 if (holder < 0 || contested)
                 {
-                    crate.Claim = MathF.Max(0f, crate.Claim - dt / 2f);
+                    crate.Claim = MathF.Max(0f, crate.Claim - dt / global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.WatchCratesDtDivisor);
                     continue;
                 }
                 if (holder != crate.Holder) crate.Claim = 0f;
                 crate.Holder = holder;
-                crate.Claim += dt / 2f;
+                crate.Claim += dt / global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.WatchCratesDtDivisor;
                 if (crate.Claim < 1f) continue;
                 crate.IsAlive = false;
                 world.CrateList.Remove(crate);
@@ -1237,13 +1237,13 @@ namespace MachineBrigade.Sim.Modes
                 if (repair > 0f)
                 {
                     foreach (var v in world.VehicleList)
-                        if (v.IsAlive && v.Team == holder && !v.Def.Boss && Vector2.Distance(v.Position, crate.Position) < 25f)
+                        if (v.IsAlive && v.Team == holder && !v.Def.Boss && Vector2.Distance(v.Position, crate.Position) < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.WatchCratesDistanceMax)
                         {
                             var amount = world.Gear.Heal(v, v.MaxHp * repair);
                             if (amount > 0f) world.Emit(SimEvent.RepairedBy(v, amount));
                         }
                 }
-                else if (world.TryGetEconomy(holder, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + s.Def.Whole("cp", 12));
+                else if (world.TryGetEconomy(holder, out var economy)) economy.Cp = MathF.Min(economy.Bank, economy.Cp + s.Def.Whole("cp", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.WatchCratesFallback));
                 Notice(world, s, holder == Player ? "done" : "fail", 0f);
                 Finish(world, s, holder == Player, holder == Player ? "done" : "fail");
             }
@@ -1277,7 +1277,7 @@ namespace MachineBrigade.Sim.Modes
                 _rods.RemoveAt(i--);
                 if (world.Catalog.TryGetSupport(r.look, out var look)) world.Emit(SimEvent.StrikeImpact(Enemy, look, r.at));
                 world.Damage.Splash(r.at, r.radius, r.damage, DamageType.Kinetic, Enemy, EntityId.None,
-                    info: new HitInfo(null, Enemy, null, r.at, HitKind.Direct, true).WithPen(4f, true));
+                    info: new HitInfo(null, Enemy, null, r.at, HitKind.Direct, true).WithPen(global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StepRodsPen, true));
                 Record(world, _states[r.state], "impact");
             }
         }
@@ -1288,12 +1288,12 @@ namespace MachineBrigade.Sim.Modes
         {
             var e = s.Def;
             var plan = (CeasefirePlan)s.Plan!;
-            if (!Spawns!.TryPlace(world, plan.Point, Rules.NearSight, Player, out var at) && s.Tries < 5) return Outcome.Retry;
+            if (!Spawns!.TryPlace(world, plan.Point, Rules.NearSight, Player, out var at) && s.Tries < global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartCeasefireTriesMax) return Outcome.Retry;
             // The sworn column: its fire held, out of both commanders' hands and of every weapon's own choice of target.
             var across = new Vector2(-plan.Point.Inward.Y, plan.Point.Inward.X);
             for (var k = 0; k < plan.Column.Count; k++)
             {
-                var spot = world.ClampToMap(at + across * ((k % 3) - 1f) * 7f - plan.Point.Inward * (k / 3) * 7f);
+                var spot = world.ClampToMap(at + across * ((k % global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartCeasefireKMod) - 1f) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartCeasefireAcrossScale - plan.Point.Inward * (k / global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartCeasefireKDivisor) * global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartCeasefireInwardScale);
                 var v = world.SpawnVehicle(world.Economy.ForWave(Enemy, plan.Column[k]), Enemy, spot, SimMath.HeadingOf(plan.Point.Inward));
                 v.Reinforcement = true;
                 v.Scripted = true;
@@ -1302,7 +1302,7 @@ namespace MachineBrigade.Sim.Modes
                 world.HoldFire(v, true);
                 s.Units.Add(v.Id);
             }
-            var seconds = e.Number("seconds", 150f);
+            var seconds = e.Number("seconds", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.StartCeasefireFallback);
             s.EndsAt = world.Time + seconds;
             if (e.Has("breakAt")) plan.BreakAt = world.Time + e.Number("breakAt", 0f);
             s.Where = at;
@@ -1356,7 +1356,7 @@ namespace MachineBrigade.Sim.Modes
 
         private void PayEnemy(SimWorld world, EventState s)
         {
-            if (world.TryGetEconomy(Enemy, out var foe)) foe.Cp = MathF.Min(foe.Bank, foe.Cp + s.Def.Whole("enemyCp", 20));
+            if (world.TryGetEconomy(Enemy, out var foe)) foe.Cp = MathF.Min(foe.Bank, foe.Cp + s.Def.Whole("enemyCp", global::MachineBrigade.Sim.Content.SimTunables.Campaign.MissionEventSystem.PayEnemyFallback));
         }
 
         /// <summary>The ceasefire is over: the column is the enemy's to command again and goes for our side.</summary>

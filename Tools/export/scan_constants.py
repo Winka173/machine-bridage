@@ -18,6 +18,12 @@ de_xuat_dua_ra_du_lieu (co / khong) is the scan's own suggestion, for the owner 
 readonly / literal of the simulation (domains 01-08) in a damage, time, radius, threshold, chance, cap, rate or entity
 limit context; "khong" for the view (09-11), the data reads' defaults (the data already carries the number), math
 (epsilons, degrees, PI) and the rest.
+
+Balance pack 2 pass 2 (09/10): the gameplay literals were moved into Resources/Data/tunables.json by
+Tools/export/literal_to_tunable.py (a moved literal is a SimTunables read now, so the scan no longer sees it). The rows that
+pass left in the code on purpose, each with its reason (math, geometry, index, structure, presentation, infrastructure), are
+listed in Tools/export/pack2/pass2/excluded.csv; the scan marks them "khong" (EXCLUDED), so "co" counts what is still to do.
+A listed row whose line changes shows as "co" again until the list is regenerated (literal_to_tunable.py plan).
 """
 from __future__ import annotations
 
@@ -195,7 +201,25 @@ def _suggest(kind: str, domain: str, cat: str, value, ctx: str) -> str:
     return "khong"
 
 
-def scan(root: Path) -> list[dict]:
+EXCLUDED = "Tools/export/pack2/pass2/excluded.csv"
+
+
+def _excluded(root: Path) -> set:
+    """(file under Scripts/, normalised line, |value|) of the literals pack 2 pass 2 left in the code with a reason."""
+    import csv
+    path = root / EXCLUDED
+    if not path.exists():
+        return set()
+    keys = set()
+    with open(path, encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            v = _number(r["literal"].lstrip("-"))
+            keys.add((r["file"], r["line_text"], None if v is None else abs(float(v))))
+            keys.add((r["file"], r["line_text"], "any"))
+    return keys
+
+
+def scan(root: Path, use_excluded: bool = True) -> list[dict]:
     """Every row of Hang_so_trong_ma, sorted by file, line and column (deterministic)."""
     base = root / SCRIPTS
     rows = []
@@ -283,6 +307,18 @@ def scan(root: Path) -> list[dict]:
                 if before.endswith("[") and re.search(r"\w\[$", before):
                     continue  # an index
                 add("so_cung", k, m.start() + 1, member, v, context(k))
+    # pack 2 pass 2: the literals left in the code with a reason are not "co" any more (EXCLUDED)
+    excluded = _excluded(root) if use_excluded else set()
+    for r in rows:
+        if r["de_xuat_dua_ra_du_lieu"] != "co" or not excluded:
+            continue
+        f = r["tep"][len(SCRIPTS) + 1:]
+        if r["loai"] == "so_cung" and isinstance(r["gia_tri"], (int, float)):
+            hit = (f, r["ngu_canh"], abs(float(r["gia_tri"]))) in excluded
+        else:
+            hit = (f, r["ngu_canh"], "any") in excluded
+        if hit:
+            r["de_xuat_dua_ra_du_lieu"] = "khong"
     rows.sort(key=lambda r: (r["tep"], r["dong"], r["cot"]))
     seen = set()
     out = []

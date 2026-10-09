@@ -118,7 +118,7 @@ namespace MachineBrigade.Sim
         {
             if (CommanderOf(team) is not { } c) return 1f;
             var f = 1f;
-            if (c.LowHpDamage != 1f && attacker != null && attacker.Team == team && attacker.Hp < attacker.MaxHp * 0.5f && CommanderRules.Fields(attacker.Def))
+            if (c.LowHpDamage != 1f && attacker != null && attacker.Team == team && attacker.Hp < attacker.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SimWorld.CommanderOutgoingMaxHpScale && CommanderRules.Fields(attacker.Def))
                 f *= c.LowHpDamage;
             if (c.ExposedTaken != 1f && target is Vehicle v && v.Team != team && _combat.Marked(v, team)) f *= c.ExposedTaken;
             return f;

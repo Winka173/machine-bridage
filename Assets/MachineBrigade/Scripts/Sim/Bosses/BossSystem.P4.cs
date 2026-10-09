@@ -24,7 +24,7 @@ namespace MachineBrigade.Sim.Bosses
             Tun.Planning.Enabled && Tun.Coordination.Enabled && _world.CoordinationIfAny?.Peek(shooter.Team)?.PlanningIfAny != null;
 
         /// <summary>Spec 179 for part <paramref name="i"/> (plus a quarter of the old shooter-specific danger, so anti-air still hunts the anti-air parts).</summary>
-        internal float WeakpointP4(Vehicle shooter, Vehicle boss, int i, float distance) => WeakpointBase(boss, i, distance) + Danger(shooter, boss, i) * 0.25f;
+        internal float WeakpointP4(Vehicle shooter, Vehicle boss, int i, float distance) => WeakpointBase(boss, i, distance) + Danger(shooter, boss, i) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.WeakpointP4DangerScale;
 
         private float WeakpointBase(Vehicle boss, int i, float distance)
         {
@@ -40,7 +40,7 @@ namespace MachineBrigade.Sim.Bosses
             var phase = 0f;
             if (boss.BigAttack is { } big && big.Def.UsesPart(part.Id)) phase = big.Stage == BigStage.Charging ? 1f : 0.3f;
             else if (boss.Def.PartLock is { } lockDef && lockDef.Kind == part.Kind) phase = 0.6f;
-            else if (part.Skills.Count > 0) phase = 0.2f;
+            else if (part.Skills.Count > 0) phase = global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.WeakpointBasePhase2;
             return WeakpointUtility.Score(total > 0f ? mine / total : 0f, utilityPart, phase, boss.PartShare(i), distance);
         }
 

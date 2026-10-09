@@ -33,14 +33,14 @@ namespace MachineBrigade.Sim.Combat
             if (!v.Def.Static || v.Def.Boss) return 1f;
             var worth = ModeOf(v) switch
             {
-                TowerMode.Nearest or TowerMode.NearestRound or TowerMode.ShieldKey => 1f / (1f + 2f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range)),
-                TowerMode.Strongest => MathF.Sqrt(MathF.Max(0.5f, TeamIntel.StrengthOf(other))),
-                TowerMode.Weakest => 1.6f - other.Hp / MathF.Max(1f, other.MaxHp) + 200f / MathF.Max(50f, other.Hp),
+                TowerMode.Nearest or TowerMode.NearestRound or TowerMode.ShieldKey => 1f / (1f + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthDistanceScale * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range)),
+                TowerMode.Strongest => MathF.Sqrt(MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthStrengthOfFloor, TeamIntel.StrengthOf(other))),
+                TowerMode.Weakest => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthHpSub - other.Hp / MathF.Max(1f, other.MaxHp) + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthMaxDivisor / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthHpFloor, other.Hp),
                 TowerMode.Lead => Lead(v, other),
                 TowerMode.AirFirst or TowerMode.MissilesFirst => other.Flying ? 3f : 1f,
-                TowerMode.BiggestAircraft => other.Flying ? 1f + other.MaxHp / 300f : 0.5f,
+                TowerMode.BiggestAircraft => other.Flying ? 1f + other.MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthMaxHpDivisor : global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthFlyingFalse,
                 TowerMode.Cluster => 1f + 0.5f * Crowd(other, 8f),
-                TowerMode.ArtilleryFirst => other.Def.Weapon.MinRange > 0f ? 3f : 1f,
+                TowerMode.ArtilleryFirst => other.Def.Weapon.MinRange > 0f ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthMinRangeTrue : 1f,
                 _ => 1f,
             };
             // The sheet's special rules (E.4).
@@ -50,26 +50,26 @@ namespace MachineBrigade.Sim.Combat
                 case "one_shot_atgm_tower":
                 case "recoilless_gun_tower":
                     // No missile on a light vehicle while armour is in reach.
-                    if (other.Armor == ArmorClass.Light && ArmourInReach(v, weapon)) worth *= 0.05f;
+                    if (other.Armor == ArmorClass.Light && ArmourInReach(v, weapon)) worth *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthWorth;
                     break;
                 case "guard_tower":
-                    if (other.Armor == ArmorClass.Light || other.Def.Class == UnitClass.Scout) worth *= 1.5f;
+                    if (other.Armor == ArmorClass.Light || other.Def.Class == UnitClass.Scout) worth *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthWorth2;
                     break;
                 case "mg_bunker":
-                    if (other.Armor == ArmorClass.Light) worth *= 1f + 0.3f * Crowd(other, 8f);
+                    if (other.Armor == ArmorClass.Light) worth *= 1f + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthCrowdScale2 * Crowd(other, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthRadius);
                     break;
                 case "rocket_turret":
-                    worth *= Crowd(other, 8f) >= 2 ? 2f : 0.6f; // waits for a group of three or more where it can
+                    worth *= Crowd(other, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthRadius) >= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthCrowdMin ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthCrowdTrue : global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthCrowdFalse; // waits for a group of three or more where it can
                     break;
                 case "drone_hangar":
-                    if (other.Def.Weapon.MinRange > 0f || !other.IsMoving) worth *= 2f;
+                    if (other.Def.Weapon.MinRange > 0f || !other.IsMoving) worth *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthWorth3;
                     break;
             }
             // E.2: towers close together take the same target when it goes down fast.
-            if (other.Hp < other.MaxHp * 0.5f)
+            if (other.Hp < other.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthMaxHpScale)
                 foreach (var f in _world.VehicleList)
                     if (f != v && f.IsAlive && f.Team == v.Team && f.Def.Static && f.Target == other.Id &&
-                        Vector2.DistanceSquared(f.Position, v.Position) < 40f * 40f)
+                        Vector2.DistanceSquared(f.Position, v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthScale * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TowerWorthScale)
                     {
                         worth *= 1.4f;
                         break;
@@ -81,7 +81,7 @@ namespace MachineBrigade.Sim.Combat
         private float Lead(Vehicle tower, Vehicle other)
         {
             if (!_world.TryGetRally(tower.Team, out var home)) return 1f;
-            return 1f + 60f / MathF.Max(10f, Vector2.Distance(other.Position, home));
+            return 1f + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LeadMaxDivisor / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LeadDistanceFloor, Vector2.Distance(other.Position, home));
         }
 
         private bool ArmourInReach(Vehicle v, WeaponDef weapon)
@@ -113,8 +113,8 @@ namespace MachineBrigade.Sim.Combat
                 {
                     BossBehaviour.AntiBlob => 1f + 0.4f * Crowd(other, 10f),
                     BossBehaviour.AntiAir => other.Flying ? 2.5f : 1f,
-                    BossBehaviour.AntiArtillery => other.Def.Weapon.MinRange > 0f ? 3f : other.IsMoving ? 1f : 1.3f,
-                    BossBehaviour.CoreProtection => other.Target == v.Id && Vector2.Distance(other.Position, v.Position) < 30f ? 1.8f : 1f,
+                    BossBehaviour.AntiArtillery => other.Def.Weapon.MinRange > 0f ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BossWorthMinRangeTrue : other.IsMoving ? 1f : global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BossWorthIsMovingFalse,
+                    BossBehaviour.CoreProtection => other.Target == v.Id && Vector2.Distance(other.Position, v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BossWorthDistanceMax ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BossWorthTargetTrue2 : 1f,
                     BossBehaviour.FlankPunishment => BossSystem.Behind(v, other) ? 2.2f : 1f,
                     BossBehaviour.AreaDenial => other.IsMoving ? 1f : 1.6f,
                     _ => 1f,

@@ -218,7 +218,7 @@ namespace MachineBrigade.Sim.AI
         internal bool Open(OpportunityWindow w)
         {
             foreach (var o in _windows)
-                if (o.Kind == w.Kind && o.Subject == w.Subject && (w.Subject != 0 || Vector2.Distance(o.Centre, w.Centre) < 20f))
+                if (o.Kind == w.Kind && o.Subject == w.Subject && (w.Subject != 0 || Vector2.Distance(o.Centre, w.Centre) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.OpenDistanceMax))
                 {
                     o.Expires = Math.Max(o.Expires, w.Expires);
                     return false;
@@ -268,7 +268,7 @@ namespace MachineBrigade.Sim.AI
             {
                 var cell = (long)MathF.Floor(v.Position.X / 40f) * 100003L + (long)MathF.Floor(v.Position.Y / 40f);
                 _lossCells.TryGetValue(cell, out var c);
-                if (c.events == 0 || now - c.last > 20.0)
+                if (c.events == 0 || now - c.last > global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveDeathNowMin)
                 {
                     c.events++;
                     if (c.events == 2) Adaptation.AmbushRepeats++;
@@ -278,13 +278,13 @@ namespace MachineBrigade.Sim.AI
                 return;
             }
             if (!seen) return;
-            var value = v.Def.Boss ? v.MaxHp / 150f : MathF.Max(0.5f, v.Def.Power);
+            var value = v.Def.Boss ? v.MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveDeathMaxHpDivisor : MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveDeathPowerFloor, v.Def.Power);
             _enemyLosses.Add((v.Position, value, now));
-            if (_enemyLosses.Count > 128) _enemyLosses.RemoveAt(0);
+            if (_enemyLosses.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveDeathCountMin2) _enemyLosses.RemoveAt(0);
             var group = TeamIntel.GroupOf(v.Def);
             if (group is { } g) Adaptation.Kill((int)g);
             if (group == ForceGroup.AntiAir || v.Def.Class == Content.UnitClass.AntiAir)
-                Open(new OpportunityWindow(OpportunityKind.AntiAirDown, v.Position, MathF.Max(30f, v.Def.Weapon.Range), 0.8f,
+                Open(new OpportunityWindow(OpportunityKind.AntiAirDown, v.Position, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveDeathRangeFloor, v.Def.Weapon.Range), global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveDeathConfidence,
                     now + Tun.Opportunity.AaDownS, OpportunityRoles.Air, v.Id.Value));
         }
 
@@ -292,7 +292,7 @@ namespace MachineBrigade.Sim.AI
         internal void ObservePartBroken(Vehicle boss, int part)
         {
             if (part < 0 || part >= boss.Def.Parts.Count || !WeakpointUtility.IsUtilityKind(boss.Def.Parts[part].Kind)) return;
-            Open(new OpportunityWindow(OpportunityKind.BossPartDown, boss.Position, 40f + boss.Radius, 0.9f, _world.Time + Tun.Opportunity.PartDownS,
+            Open(new OpportunityWindow(OpportunityKind.BossPartDown, boss.Position, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObservePartBrokenRadiusAdd + boss.Radius, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObservePartBrokenConfidence, _world.Time + Tun.Opportunity.PartDownS,
                 OpportunityRoles.Ground | OpportunityRoles.Air | OpportunityRoles.Artillery, boss.Id.Value * 16 + part));
         }
 
@@ -305,13 +305,13 @@ namespace MachineBrigade.Sim.AI
                 long key;
                 unchecked
                 {
-                    key = ((long)w.Source * 1000003L + (long)MathF.Round(w.Centre.X * 0.5f) * 7919L + (long)MathF.Round(w.Centre.Y * 0.5f)) * 31L + (long)Math.Round(w.Due * 10.0);
+                    key = ((long)w.Source * 1000003L + (long)MathF.Round(w.Centre.X * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveWarningsXScale) * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveWarningsRoundScale + (long)MathF.Round(w.Centre.Y * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveWarningsYScale)) * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveWarningsSourceScale2 + (long)Math.Round(w.Due * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveWarningsDueScale);
                 }
                 if (_warnSeen.ContainsKey(key)) continue;
                 _warnSeen[key] = now;
                 var axis = w.Centre - w.Origin;
                 if (_firstZone.TryGetValue(w.Source, out var f) && now - f.at <= Tun.BossTactics.PatternWindowS &&
-                    Vector2.Distance(f.centre, w.Centre) > MathF.Max(4f, w.Radius * 0.5f))
+                    Vector2.Distance(f.centre, w.Centre) > MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveWarningsRadiusFloor, w.Radius * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveWarningsRadiusScale))
                 {
                     Patterns.FollowUp(f.sig, f.centre, f.axis, w.Centre);
                     Metrics.PatternFollowUps++;
@@ -325,7 +325,7 @@ namespace MachineBrigade.Sim.AI
             {
                 var old = new List<long>();
                 foreach (var kv in _warnSeen)
-                    if (now - kv.Value > 30.0) old.Add(kv.Key);
+                    if (now - kv.Value > global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.ObserveWarningsNowMin) old.Add(kv.Key);
                 foreach (var k in old) _warnSeen.Remove(k);
             }
         }
@@ -354,7 +354,7 @@ namespace MachineBrigade.Sim.AI
             _windows.RemoveAll(w => w.Expires <= now);
             Repetition.Prune(now);
             Ownership.Prune(now);
-            if (_lanes.Count > 64)
+            if (_lanes.Count > global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateCountMin)
             {
                 var old = new List<long>();
                 foreach (var kv in _lanes)
@@ -367,13 +367,13 @@ namespace MachineBrigade.Sim.AI
                 if (!c.InSight || !c.Artillery || c.Flying) continue;
                 var escorted = false;
                 foreach (var o in intel.Contacts)
-                    if (o != c && !o.Artillery && !o.Flying && o.Age(now) < 5f && Vector2.Distance(o.Position, c.Position) <= Tun.Opportunity.ExposedRadius)
+                    if (o != c && !o.Artillery && !o.Flying && o.Age(now) < global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateAgeMax && Vector2.Distance(o.Position, c.Position) <= Tun.Opportunity.ExposedRadius)
                     {
                         escorted = true;
                         break;
                     }
                 if (!escorted)
-                    Open(new OpportunityWindow(OpportunityKind.ArtilleryExposed, c.Position, 20f, 0.7f, now + Tun.Opportunity.ArtilleryExposedS,
+                    Open(new OpportunityWindow(OpportunityKind.ArtilleryExposed, c.Position, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateRadius, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateConfidence, now + Tun.Opportunity.ArtilleryExposedS,
                         OpportunityRoles.Fast | OpportunityRoles.Air, c.Id.Value));
             }
             if (objective is { } o2)
@@ -388,15 +388,15 @@ namespace MachineBrigade.Sim.AI
                         found = true;
                     }
                 if (found && Vector2.Distance(main.Centre, o2) > Tun.Opportunity.MainFarDistance)
-                    Open(new OpportunityWindow(OpportunityKind.MainForceFar, o2, 50f, main.Confidence, now + Tun.Opportunity.MainFarS,
+                    Open(new OpportunityWindow(OpportunityKind.MainForceFar, o2, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateRadius2, main.Confidence, now + Tun.Opportunity.MainFarS,
                         OpportunityRoles.Ground | OpportunityRoles.Fast, 1));
                 // Defenders seen leaving: the seen strength at the objective fell (no seen losses explain it) while it was watched.
-                if (float.IsNaN(_objectiveFor.X) || Vector2.Distance(_objectiveFor, o2) > 15f)
+                if (float.IsNaN(_objectiveFor.X) || Vector2.Distance(_objectiveFor, o2) > global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateDistanceMin)
                 {
                     _objectiveFor = o2;
                     _objectiveSeen.Clear();
                 }
-                var watched = intel.Seen[intel.CellIndex(o2)] >= now - 2.0;
+                var watched = intel.Seen[intel.CellIndex(o2)] >= now - global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateNowSub;
                 if (watched)
                 {
                     var seen = SeenStrength(intel, o2, 60f);
@@ -405,8 +405,8 @@ namespace MachineBrigade.Sim.AI
                     foreach (var s in _objectiveSeen) peak = MathF.Max(peak, s.seen);
                     _objectiveSeen.Add((now, seen));
                     if (peak > 0f && seen <= peak * (1f - Tun.Opportunity.RedeployDrop) &&
-                        EnemyLossesNear(o2, 60f, now - Tun.Opportunity.RedeployS) < (peak - seen) * 0.5f)
-                        Open(new OpportunityWindow(OpportunityKind.DefendersRedeploy, o2, 50f, 0.6f, now + Tun.Opportunity.RedeployS,
+                        EnemyLossesNear(o2, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateRadius3, now - Tun.Opportunity.RedeployS) < (peak - seen) * global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdatePeakScale)
+                        Open(new OpportunityWindow(OpportunityKind.DefendersRedeploy, o2, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateRadius2, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateConfidence2, now + Tun.Opportunity.RedeployS,
                             OpportunityRoles.Ground | OpportunityRoles.Fast, 2));
                 }
             }
@@ -417,8 +417,8 @@ namespace MachineBrigade.Sim.AI
                 for (var i = _rubbleSeen; i < areas.Count; i++)
                 {
                     var centre = (areas[i].min + areas[i].max) * 0.5f;
-                    if (intel.Seen[intel.CellIndex(centre)] >= now - 3.0)
-                        Open(new OpportunityWindow(OpportunityKind.GateOpen, centre, 20f, 0.8f, now + Tun.Opportunity.GateS, OpportunityRoles.Ground, 100 + i));
+                    if (intel.Seen[intel.CellIndex(centre)] >= now - global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateNowSub2)
+                        Open(new OpportunityWindow(OpportunityKind.GateOpen, centre, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateRadius, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateConfidence3, now + Tun.Opportunity.GateS, OpportunityRoles.Ground, global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateIAdd + i));
                 }
                 _rubbleSeen = areas.Count;
             }
@@ -432,9 +432,9 @@ namespace MachineBrigade.Sim.AI
             Adaptation.Towers = towers;
             var shots = 0;
             foreach (var e in tc.Battery.Estimates)
-                if (now - e.LastAt < 30.0) shots = Math.Max(shots, e.Shots);
+                if (now - e.LastAt < global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateNowMax) shots = Math.Max(shots, e.Shots);
             Adaptation.CampImpacts = shots;
-            if (_enemyLosses.Count > 0 && now - _enemyLosses[0].time > 60.0) _enemyLosses.RemoveAll(l => now - l.time > 60.0);
+            if (_enemyLosses.Count > 0 && now - _enemyLosses[0].time > global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateNowMin) _enemyLosses.RemoveAll(l => now - l.time > global::MachineBrigade.Sim.Content.SimTunables.Ai.TeamPlanning.UpdateNowMin);
         }
     }
 }

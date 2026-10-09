@@ -156,6 +156,8 @@ internal static partial class Scan
 
     private static string LaneOf(string f)
     {
+        // pass 2 (09/10): the AI's own files are the AI domain, whatever their names say (Commander, Conquest, Boss...)
+        if (f.StartsWith("Sim/AI/")) return "ai_rest";
         if (Regex.IsMatch(f, @"^Sim/Bosses/|Boss|BigAttack|BigStrike|Escort|TierDefs|HuntPower")) return "boss";
         if (Regex.IsMatch(f, @"^Sim/(Combat|Strikes)/|Weapon|Munition|Projectile|Armour|DamageTable|Missile|Bomb|Flare|Countermeasure|Cluster|Ammo|FirePower|SecondRounds|FixRules")) return "weapons";
         if (Regex.IsMatch(f, @"Base(Rules|Sites|System|Loadout|Plan|Roles|Strength)|Tower|HqType|Fortress|Wall|Outpost|Garrison|SimWorld\.Walls")) return "bases";
@@ -194,14 +196,19 @@ internal static partial class Scan
         return s;
     }
 
-    private static void AssignLanes(List<Lit> lits, Registry reg)
+    private static void AssignLanes(List<Lit> lits, Registry reg, Compiler.Pair? c = null)
     {
         var constUses = ConstantContextNames(lits);
         var assigned = AssignedNames(lits);
         var used = new Dictionary<string, (TypedValue v, string baseName)>(StringComparer.Ordinal);
         foreach (var k in reg.Keys.Values) used[k.Key] = (k.Field?.Default ?? new TypedValue("?", 0), "");
         var fieldPaths = new HashSet<string>(reg.Fields.Keys, StringComparer.Ordinal);
-        foreach (var l in lits.Where(l => l.Class == "gameplay").OrderBy(l => l.File, StringComparer.Ordinal).ThenBy(l => l.Line))
+        // pass 2 (09/10): the gameplay literals first (their keys as before), then the simulation's other literals, so a
+        // literal the pass-2 policy moves against the scan's class (Tools/export/literal_to_tunable.py FORCE_MOVE) has a key too
+        var order = lits.Where(l => l.Class == "gameplay").OrderBy(l => l.File, StringComparer.Ordinal).ThenBy(l => l.Line)
+            .Concat(lits.Where(l => l.Class != "gameplay" && (l.File.StartsWith("Sim/") || l.File.StartsWith("Game/Match/")))
+                .OrderBy(l => l.File, StringComparer.Ordinal).ThenBy(l => l.Line));
+        foreach (var l in order)
         {
             l.Lane = LaneOf(l.File);
             l.Domain = DomainOf(l.Lane, l.File);
@@ -215,8 +222,16 @@ internal static partial class Scan
             if (baseName == "" || baseName == Syn.Camel(Ident(l.Member)) && ctx == "") baseName = Syn.Camel(Ident(l.Member)) + Syn.Pascal(l.Group == "khac" ? "value" : l.Group.Split('_')[0]);
             if (baseName == "" ) baseName = "value";
             if (baseName.Length > 48) baseName = baseName[..48];
+            // pass 2 (09/10): a literal in a data table gets its row id and path (TableNames), and is never merged with another
+            var inStaticInit = l.Node.Ancestors().OfType<FieldDeclarationSyntax>().FirstOrDefault() is { } sf && sf.Modifiers.Any(SyntaxKind.StaticKeyword) && !sf.Modifiers.Any(SyntaxKind.ConstKeyword)
+                               && !(sf.Declaration.Variables.Count == 1 && sf.Declaration.Variables[0].Initializer?.Value == (l.Negated ? (ExpressionSyntax)l.Node.Parent! : l.Node));
+            if (c != null && (l.Context is "table" or "tuple" || inStaticInit) && TableNames.Of(l.Node, c.Model(Repo.Scripts + "/" + l.File)) is { } tableName)
+            {
+                baseName = tableName;
+                named = true;
+            }
             if (Syn.Pascal(baseName) == Syn.Pascal(owner)) baseName += "Value";
-            var tv = TypedValue.FromToken(l.Node.Token)!.Value;
+            var tv = TypedValue.FromToken(l.Node.Token, l.Negated)!.Value; // pass 2: signed (a negated literal is its own value)
             string key;
             for (var n = 1; ; n++)
             {

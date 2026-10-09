@@ -203,7 +203,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 20: seconds between drops by phase (the last holds after; empty: <see cref="Every"/>).</summary>
         public IReadOnlyList<float> EveryByPhase { get; internal set; } = Array.Empty<float>();
 
-        public float EveryIn(int phase) => EveryByPhase.Count == 0 ? Every : MathF.Max(2f, EveryByPhase[Math.Clamp(phase, 0, EveryByPhase.Count - 1)]);
+        public float EveryIn(int phase) => EveryByPhase.Count == 0 ? Every : MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.PodDef.EveryInEveryByPhaseFloor, EveryByPhase[Math.Clamp(phase, 0, EveryByPhase.Count - 1)]);
 
         public bool DropsAt(AltitudeTier tier)
         {

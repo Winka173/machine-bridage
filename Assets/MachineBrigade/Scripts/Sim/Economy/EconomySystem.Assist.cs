@@ -72,7 +72,7 @@ namespace MachineBrigade.Sim.Economy
                 }
                 if (pick != null && _world.Bases.TryGetDropZone(weak.Team, out var zone))
                 {
-                    var count = average <= 6f ? 3 : 2;
+                    var count = average <= global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.StepUnderdogAverageMax ? global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.StepUnderdogAverageTrue : global::MachineBrigade.Sim.Content.SimTunables.Modes.EconomySystem.StepUnderdogAverageFalse;
                     for (var i = 0; i < count; i++) Airlift(weak.Team, pick, zone);
                 }
             }

@@ -185,10 +185,10 @@ namespace MachineBrigade.Sim.Bosses
                     }
                     // The boss's run: whoever is in its way (but its own fleet) pulls in at once.
                     if (b.Escaping && a.Flagship != b.Id && a.SeaHold < 0 && InWay(b, a, sea, out var runAlong, out var runGap) &&
-                        runAlong < runGap + 3f * SlowBand)
+                        runAlong < runGap + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RouteTrafficSlowBandScale * SlowBand)
                         StartHold(a, b, sea);
                 }
-                a.SeaWait = blocker != null && a.SeaCap < 0.05f && MathF.Abs(a.Speed) < 0.1f ? a.SeaWait + 1 : 0;
+                a.SeaWait = blocker != null && a.SeaCap < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RouteTrafficSeaCapMax && MathF.Abs(a.Speed) < global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.RouteTrafficAbsMax ? a.SeaWait + 1 : 0;
                 if (blocker != null && a.SeaWait > HoldAfterTicks)
                 {
                     var yielder = Before(a, blocker) ? blocker : a;
@@ -238,7 +238,7 @@ namespace MachineBrigade.Sim.Bosses
             foreach (var n in routes.Nodes)
             {
                 if (n.Kind != SeaNodeKind.Holding) continue;
-                if (MathF.Abs(n.Frame.Y - line) < (v.Def.Width + cause.Def.Width) * 0.5f + LateralMargin + 2f) continue;
+                if (MathF.Abs(n.Frame.Y - line) < (v.Def.Width + cause.Def.Width) * 0.5f + LateralMargin + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.StartHoldWidthAdd) continue;
                 var free = true;
                 foreach (var o in _big)
                 {
@@ -285,7 +285,7 @@ namespace MachineBrigade.Sim.Bosses
             return MathF.Sqrt(dx * dx + dy * dy);
         }
 
-        private float Leash => _world.Catalog.EscortRules.Leash > 0f ? _world.Catalog.EscortRules.Leash : 28f;
+        private float Leash => _world.Catalog.EscortRules.Leash > 0f ? _world.Catalog.EscortRules.Leash : global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.LeashLeashFalse;
 
         /// <summary>
         /// An escort's slot beside <paramref name="flag"/> on lane <paramref name="laneId"/>: <paramref name="preferred"/> (the
@@ -349,10 +349,10 @@ namespace MachineBrigade.Sim.Bosses
         {
             if (lane == null) return true;
             var routes = Routes;
-            var limit = _world.Map.HalfSize - 2f;
+            var limit = _world.Map.HalfSize - global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SlotValidHalfSizeSub;
             var middle = sea.At(at.X, lane.W + at.Y);
             if (MathF.Abs(middle.X) > limit || MathF.Abs(middle.Y) > limit) return false;
-            var margin = escort.Width * 0.5f + 2f;
+            var margin = escort.Width * 0.5f + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.SlotValidWidthAdd;
             for (var u = -lane.Patrol; u <= lane.Patrol + 0.01f; u += SlotSample)
             {
                 var p = sea.At(u + at.X, lane.W + at.Y);
@@ -395,7 +395,7 @@ namespace MachineBrigade.Sim.Bosses
             if (lane == null) return false;
             var aligned = Vector2.Dot(SimMath.Forward(flag.Heading), sea.Along * flag.NavalDir) >= 0.97f;
             var toEnd = (flag.NavalDir * lane.Patrol - ff.X) * flag.NavalDir;
-            return !aligned || toEnd < TurnWarn || MathF.Abs(ff.Y - lane.W) > 3f;
+            return !aligned || toEnd < TurnWarn || MathF.Abs(ff.Y - lane.W) > global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.TurningAbsMin;
         }
 
         /// <summary>The traffic state into the battle's fingerprint.</summary>

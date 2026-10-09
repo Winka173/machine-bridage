@@ -93,7 +93,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 32 L1: the player's tower cards, in the data's order ("base.roster"); empty: every tower def is a card.</summary>
         public IReadOnlyList<string> Roster => _roster;
 
-        private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };
+        private readonly (int cp, float cooldown)[] _rebuild = { (global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseRules.Rebuild1Cp, global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseRules.Rebuild1Cooldown), (global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseRules.Rebuild2Cp, global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseRules.Rebuild2Cooldown), (global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseRules.Rebuild3Cp, global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseRules.Rebuild3Cooldown) };
 
         /// <summary>The air drop's fall when a size names none ("rebuild.delay").</summary>
         public float RebuildDelay { get; internal set; } = 4f;
@@ -217,7 +217,7 @@ namespace MachineBrigade.Sim.Content
             if (b.Has("reference"))
                 foreach (var r in b.Array("reference"))
                 {
-                    var loadout = new Modes.BaseLoadout { HqLevel = Math.Clamp(r.Int("level", rules._reference.Count + 1), 1, 5) };
+                    var loadout = new Modes.BaseLoadout { HqLevel = Math.Clamp(r.Int("level", rules._reference.Count + 1), 1, global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseRules.ParseIntMax) };
                     if (r.Has("small")) loadout.Small.AddRange(r.StringArray("small"));
                     if (r.Has("medium")) loadout.Medium.AddRange(r.StringArray("medium"));
                     if (r.Has("large")) loadout.Large.AddRange(r.StringArray("large"));
@@ -242,7 +242,7 @@ namespace MachineBrigade.Sim.Content
                 if (ai.Has("levels"))
                 {
                     var levels = ai.Object("levels");
-                    foreach (var key in levels.Keys) rules._aiLevels[key] = levels.Int(key, 3);
+                    foreach (var key in levels.Keys) rules._aiLevels[key] = levels.Int(key, global::MachineBrigade.Sim.Content.SimTunables.Bases.BaseRules.ParseFallback);
                 }
                 if (ai.Has("styles"))
                 {

@@ -254,7 +254,7 @@ namespace MachineBrigade.Sim.Navigation
                 _flags[i] |= flag;
                 if (!count || _stamp[i] == _stampId) continue;
                 _stamp[i] = _stampId;
-                if (_routeCount[i] < 255) _routeCount[i]++;
+                if (_routeCount[i] < global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.StampSegmentRouteCountMax) _routeCount[i]++;
             }
         }
 
@@ -390,7 +390,7 @@ namespace MachineBrigade.Sim.Navigation
             if (_grid.IsWalkable(p) && (here & (LaneFlags.NoPark | LaneFlags.Route | LaneFlags.Road)) == 0) return p;
             var best = p;
             var bestScore = _grid.IsWalkable(p) ? StandCost(p) : float.MaxValue;
-            for (var ring = 1; ring * 2f <= reach; ring++)
+            for (var ring = 1; ring * global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.OffLaneRingScale <= reach; ring++)
             {
                 var around = 8 * ring;
                 for (var k = 0; k < around; k++)
@@ -411,7 +411,7 @@ namespace MachineBrigade.Sim.Navigation
         {
             var f = At(p);
             if ((f & LaneFlags.NoPark) != 0) return 1000f;
-            return ((f & LaneFlags.Road) != 0 ? 12f : 0f) + ((f & LaneFlags.Route) != 0 ? 20f * RouteCountAt(p) : 0f);
+            return ((f & LaneFlags.Road) != 0 ? global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.StandCostFTrue : 0f) + ((f & LaneFlags.Route) != 0 ? global::MachineBrigade.Sim.Content.SimTunables.Maps.LaneMap.StandCostRouteCountAtScale * RouteCountAt(p) : 0f);
         }
 
         // ------------------------------------------------------------------ firing-spot reservations

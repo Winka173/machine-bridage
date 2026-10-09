@@ -248,8 +248,8 @@ namespace MachineBrigade.Sim.Modes
             _outposts?.Tick(world);
             if (hill.Owner is PlayerTeam or EnemyTeam && !hill.Contested) _score[hill.Owner] += _rules.ScorePerSecond * dt;
             // The holder also earns a little more, so a strong hold snowballs a bit.
-            if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = hill.Owner == PlayerTeam ? 0.35f : 0f;
-            if (world.TryGetEconomy(EnemyTeam, out var e1)) e1.Bonus = hill.Owner == EnemyTeam ? 0.35f : 0f;
+            if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = hill.Owner == PlayerTeam ? global::MachineBrigade.Sim.Content.SimTunables.Modes.KingOfTheHillMode.TickOwnerTrue : 0f;
+            if (world.TryGetEconomy(EnemyTeam, out var e1)) e1.Bonus = hill.Owner == EnemyTeam ? global::MachineBrigade.Sim.Content.SimTunables.Modes.KingOfTheHillMode.TickOwnerTrue : 0f;
 
             int? winner = _score[PlayerTeam] >= _rules.ScoreTarget ? PlayerTeam : _score[EnemyTeam] >= _rules.ScoreTarget ? EnemyTeam : null;
             winner ??= AtTheLimit(world, hill);
@@ -298,7 +298,7 @@ namespace MachineBrigade.Sim.Modes
         public void Apply(SimWorld world)
         {
             if (RulesId == null || PlayerDefends || world.Catalog.MatchRules.For(RulesId) is not { } r) return;
-            StartSeconds = r.Get("start", 300f) * (StartSeconds / 300f);
+            StartSeconds = r.Get("start", global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultRules.ApplyFallback) * (StartSeconds / global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultRules.ApplyStartSecondsDivisor);
             SectorBonus = r.Get("sectorBonus", SectorBonus);
             MaxBank = r.Get("maxBank", MaxBank);
             Overtime = r.Get("overtime", Overtime);
@@ -387,7 +387,7 @@ namespace MachineBrigade.Sim.Modes
                 if (taken) Advance(world);
             }
             _outposts?.Tick(world);
-            if (world.TryGetEconomy(Attacker, out var e0)) e0.Bonus = 0.25f * Sector;
+            if (world.TryGetEconomy(Attacker, out var e0)) e0.Bonus = global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.TickSectorScale * Sector;
 
             // The defending HQ destroyed: the attack has won, whatever the sectors.
             if (Sector >= _sectors.Count || world.Bases.Of(Defender)?.HqFallen == true) Result = new MatchResult(Attacker);
@@ -396,7 +396,7 @@ namespace MachineBrigade.Sim.Modes
                 // Overtime: the attack goes on while it is still pushing on a live point.
                 var fighting = false;
                 foreach (var point in _sectors[Sector])
-                    fighting |= point.Contested || (point.Owner != Attacker && point.Progress * (Defender == Attacker ? 1f : -1f) < 0.999f && Pushing(world, point));
+                    fighting |= point.Contested || (point.Owner != Attacker && point.Progress * (Defender == Attacker ? 1f : -1f) < global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.TickProgressMax && Pushing(world, point));
                 if (fighting && _overtimeUntil < _deadline) _overtimeUntil = world.Time + _rules.Overtime;
                 if (!fighting || world.Time >= _overtimeUntil) Result = new MatchResult(Defender);
             }
@@ -427,7 +427,7 @@ namespace MachineBrigade.Sim.Modes
             if (Sector < _sectors.Count)
             {
                 foreach (var point in _sectors[Sector]) point.Locked = false;
-                world.SetRally(Attacker, Open(world, centre - _axis * 14f, 10f));
+                world.SetRally(Attacker, Open(world, centre - _axis * global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.AdvanceAxisScale, global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.AdvanceSearch));
             }
             var side = _rules.PlayerDefends ? "defend." : "assault.";
             var key = side + (Sector >= _sectors.Count ? "done" : Sector == 1 ? "sectorB" : "sectorC");
@@ -447,11 +447,11 @@ namespace MachineBrigade.Sim.Modes
             var length = Vector2.Distance(from, to);
             _axis = length > 1f ? (to - from) / length : Vector2.UnitX;
             var across = new Vector2(-_axis.Y, _axis.X);
-            var cSpot = to - _axis * MathF.Max(52f, length * 0.26f);
+            var cSpot = to - _axis * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsLengthFloor, length * global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsLengthScale);
             var layout = new[]
             {
-                new[] { ("a", "sector_a", from + _axis * (length * 0.36f)) },
-                new[] { ("b1", "sector_b", from + _axis * (length * 0.56f) + across * 24f), ("b2", "sector_b", from + _axis * (length * 0.56f) - across * 24f) },
+                new[] { ("a", "sector_a", from + _axis * (length * global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsLengthScale2)) },
+                new[] { ("b1", "sector_b", from + _axis * (length * global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsLengthScale3) + across * global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsAcrossScale), ("b2", "sector_b", from + _axis * (length * global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsLengthScale3) - across * global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsAcrossScale) },
                 new[] { ("c", "sector_c", cSpot) },
             };
             for (var s = 0; s < layout.Length; s++)
@@ -459,7 +459,7 @@ namespace MachineBrigade.Sim.Modes
                 var sector = new List<ObjectiveState>();
                 foreach (var (id, name, spot) in layout[s])
                 {
-                    var point = new ObjectiveState(new CapturePointDef(id, name, Open(world, spot, 14f), s == 2 ? 13f : 12f));
+                    var point = new ObjectiveState(new CapturePointDef(id, name, Open(world, spot, global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsSearch), s == global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsSIs ? global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsSTrue : global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.BuildSectorsSFalse));
                     PointCapture.Own(point, Defender);
                     point.Locked = s > 0;
                     sector.Add(point);
@@ -488,9 +488,9 @@ namespace MachineBrigade.Sim.Modes
                 {
                     if (!world.Catalog.Vehicles.ContainsKey(kinds[s][i])) continue;
                     var point = sector[i % sector.Count];
-                    var side = (i % 2 == 0 ? 1f : -1f) * (sector.Count > 1 ? 6f : 9f);
-                    var spot = point.Def.Position + _axis * (point.Def.Radius + 4f) + across * side;
-                    var gun = world.SpawnVehicle(kinds[s][i], Defender, Open(world, spot, 6f), heading);
+                    var side = (i % 2 == 0 ? 1f : -1f) * (sector.Count > 1 ? global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.FortifyCountTrue : global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.FortifyCountFalse);
+                    var spot = point.Def.Position + _axis * (point.Def.Radius + global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.FortifyRadiusAdd) + across * side;
+                    var gun = world.SpawnVehicle(kinds[s][i], Defender, Open(world, spot, global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.FortifySearch), heading);
                     world.AnchorDefence(gun);
                     _defences[s].Add(gun.Id);
                 }
@@ -502,17 +502,17 @@ namespace MachineBrigade.Sim.Modes
         {
             var best = spot;
             var bestScore = -1;
-            for (var dx = -search; dx <= search; dx += 2f)
-                for (var dy = -search; dy <= search; dy += 2f)
+            for (var dx = -search; dx <= search; dx += global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenDx)
+                for (var dy = -search; dy <= search; dy += global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenDy)
                 {
                     var at = spot + new Vector2(dx, dy);
                     if (!world.Map.Contains(at) || !world.Grid.IsWalkable(at)) continue;
                     var open = 0;
-                    for (var ox = -6f; ox <= 6f; ox += 3f)
-                        for (var oy = -6f; oy <= 6f; oy += 3f)
+                    for (var ox = global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenOx; ox <= global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenOxMax; ox += global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenOx2)
+                        for (var oy = global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenOy; oy <= global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenOyMax; oy += global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenOy2)
                             if (world.Grid.IsWalkable(at + new Vector2(ox, oy))) open++;
                     // Prefer open ground, then staying near the spot.
-                    var score = open * 100 - (int)(dx * dx + dy * dy);
+                    var score = open * global::MachineBrigade.Sim.Content.SimTunables.Modes.AssaultMode.OpenOpenScale - (int)(dx * dx + dy * dy);
                     if (score <= bestScore) continue;
                     bestScore = score;
                     best = at;

@@ -229,7 +229,7 @@ namespace MachineBrigade.Sim.Bosses
         private void Change(Vehicle v, TierDef t, AltitudeTier to, double now, double hold, float seconds = -1f)
         {
             // Each manoeuvring thruster broken makes the change longer (the speed it lost).
-            if (seconds < 0f) seconds = t.Shift / MathF.Max(0.4f, v.PartSpeed);
+            if (seconds < 0f) seconds = t.Shift / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ChangePartSpeedFloor, v.PartSpeed);
             v.Shifting = true;
             v.TierTo = to;
             v.ShiftStart = now;
@@ -254,7 +254,7 @@ namespace MachineBrigade.Sim.Bosses
                 v.AltitudeNow = t.HeightOf(v.TierFrom);
                 return;
             }
-            var u = (float)Math.Clamp((now - v.ShiftStart) / Math.Max(0.1, v.ShiftEnds - v.ShiftStart), 0.0, 1.0);
+            var u = (float)Math.Clamp((now - v.ShiftStart) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.HeightShiftEndsFloor, v.ShiftEnds - v.ShiftStart), 0.0, 1.0);
             u = u * u * (3f - 2f * u);
             v.AltitudeNow = t.HeightOf(v.TierFrom) + (t.HeightOf(v.TierTo) - t.HeightOf(v.TierFrom)) * u;
         }
@@ -266,7 +266,7 @@ namespace MachineBrigade.Sim.Bosses
             if (v.Def.Pods is not { } p || v.PodsOff || v.Stunned || now < v.PodNext) return;
             var tier = v.Def.Tiers == null ? AltitudeTier.None : v.Shifting ? AltitudeTier.None : v.TierFrom;
             if (v.Def.Tiers != null && !p.DropsAt(tier)) return;
-            v.PodNext = now + p.EveryIn(v.TierPhase) * (v.PodShare < 1f ? 1f / MathF.Max(0.34f, v.PodShare) : 1f);
+            v.PodNext = now + p.EveryIn(v.TierPhase) * (v.PodShare < 1f ? 1f / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PodsDuePodShareFloor, v.PodShare) : 1f);
             var room = p.Max - PodLoad(v);
             if (room <= 0) return;
             // Short of the other side's biggest group, towards the boss (never on top of it); else under the boss.
@@ -275,18 +275,18 @@ namespace MachineBrigade.Sim.Bosses
             {
                 var back = v.Position - group;
                 var distance = back.Length();
-                centre = distance > 0.5f ? group + back / distance * MathF.Min(p.Offset, distance) : group;
+                centre = distance > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PodsDueDistanceMin ? group + back / distance * MathF.Min(p.Offset, distance) : group;
             }
             var sent = 0;
             for (var k = 0; k < p.Count && room > 0; k++)
             {
                 var seats = Math.Min(room, p.Min + (p.PerPod > p.Min ? _world.Random.Next(p.PerPod - p.Min + 1) : 0));
                 var units = new string[seats];
-                for (var j = 0; j < seats; j++) units[j] = _world.Economy.ForWave(v.Team, p.Units[(v.PodsSent * 2 + j) % p.Units.Count]);
+                for (var j = 0; j < seats; j++) units[j] = _world.Economy.ForWave(v.Team, p.Units[(v.PodsSent * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PodsDuePodsSentScale + j) % p.Units.Count]);
                 v.PodsSent++;
                 var at = _world.ClampToMap(centre + RandomIn(_world.Random, p.Spread));
-                if (_world.Grid.TryNearestWalkable(at, 8, out var open)) at = open;
-                _podOrders.Add((v, at, units, MathF.Max(8f, v.Height), p));
+                if (_world.Grid.TryNearestWalkable(at, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PodsDueMaxRings, out var open)) at = open;
+                _podOrders.Add((v, at, units, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PodsDueHeightFloor, v.Height), p));
                 room -= seats;
                 sent++;
             }
@@ -320,7 +320,7 @@ namespace MachineBrigade.Sim.Bosses
                     _podFlights.RemoveAt(i--);
                     continue;
                 }
-                var u = (float)Math.Clamp((now - pod.PodLaunched) / Math.Max(0.1, pod.PodLands - pod.PodLaunched), 0.0, 1.0);
+                var u = (float)Math.Clamp((now - pod.PodLaunched) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepPodsPodLandsFloor, pod.PodLands - pod.PodLaunched), 0.0, 1.0);
                 pod.AltitudeNow = pod.PodFrom + (PodGround - pod.PodFrom) * u;
                 if (now < pod.PodLands) continue;
                 _podFlights.RemoveAt(i--);
@@ -328,7 +328,7 @@ namespace MachineBrigade.Sim.Bosses
                 var right = new Vector2(forward.Y, -forward.X);
                 for (var k = 0; k < f.Units.Length; k++)
                 {
-                    var spot = pod.Position + right * ((k - (f.Units.Length - 1) * 0.5f) * 5f) + forward * 3f;
+                    var spot = pod.Position + right * ((k - (f.Units.Length - 1) * 0.5f) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepPodsKScale) + forward * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepPodsForwardScale;
                     var unit = _world.SpawnVehicle(f.Units[k], f.Boss.Team, _world.ClampToMap(spot), pod.Heading);
                     _podLanded.Add((f.Boss, unit));
                 }
@@ -385,12 +385,12 @@ namespace MachineBrigade.Sim.Bosses
         private Vector2 CrashSite(CrashDef crash)
         {
             var at = _world.ClampToMap(crash.At);
-            return _world.Grid.TryNearestWalkable(at, 12, out var open) ? open : at;
+            return _world.Grid.TryNearestWalkable(at, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.CrashSiteMaxRings, out var open) ? open : at;
         }
 
         private void StepCrash(Vehicle v, TierDef t, double now)
         {
-            var u = (float)Math.Clamp((now - v.CrashStart) / Math.Max(0.1, v.CrashAt - v.CrashStart), 0.0, 1.0);
+            var u = (float)Math.Clamp((now - v.CrashStart) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepCrashCrashAtFloor, v.CrashAt - v.CrashStart), 0.0, 1.0);
             var to = v.CrashSpot - v.CrashFrom;
             v.Position = _world.ClampToMap(v.CrashFrom + to * u);
             if (to.LengthSquared() > 1f) v.Heading = SimMath.HeadingOf(to);

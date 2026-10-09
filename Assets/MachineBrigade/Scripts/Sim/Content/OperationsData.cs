@@ -181,7 +181,7 @@ namespace MachineBrigade.Sim.Content
             for (var week = 0; week < RotationWeeks; week++)
             {
                 var pick = -1;
-                for (var cap = 1; pick < 0 && cap < 100; cap++)
+                for (var cap = 1; pick < 0 && cap < global::MachineBrigade.Sim.Content.SimTunables.Campaign.OperationsData.RotationCapMax; cap++)
                     for (var k = 0; k < order.Count; k++)
                     {
                         if (used[k]) continue;
@@ -210,7 +210,7 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public (int operation, MutatorDef a, MutatorDef b)? Weekly(int week, int operations)
         {
-            if (operations <= 0 || Mutators.Count < 2) return null;
+            if (operations <= 0 || Mutators.Count < global::MachineBrigade.Sim.Content.SimTunables.Campaign.OperationsData.WeeklyCountMax) return null;
             var random = new WeekRandom(week);
             var operation = random.Next(operations);
             var pool = new List<MutatorDef>(Mutators);
@@ -318,7 +318,7 @@ namespace MachineBrigade.Sim.Content
             foreach (var m in mutators)
             {
                 if (m.TimeScale != 1f && copy.Goal is not (MissionGoal.Survive or MissionGoal.Protect))
-                    copy.TimeLimit = (copy.TimeLimit > 0f ? copy.TimeLimit : 1500f) * m.TimeScale;
+                    copy.TimeLimit = (copy.TimeLimit > 0f ? copy.TimeLimit : global::MachineBrigade.Sim.Content.SimTunables.Campaign.Mutators.ApplyTimeLimitFalse) * m.TimeScale;
                 if (m.Swarm) copy.ReinforceSize *= 2;
                 if (copy.Waves != null)
                 {
@@ -359,11 +359,11 @@ namespace MachineBrigade.Sim.Content
                 if (m.PlayerMaxCp > 0 || m.PlayerHeavy || m.NoAir)
                 {
                     var kept = Filter(player.Vehicles, Allowed, catalog);
-                    if (kept.Count < 4)
+                    if (kept.Count < global::MachineBrigade.Sim.Content.SimTunables.Campaign.Mutators.ApplyCountMax)
                     {
                         var more = new List<string>(kept);
                         foreach (var id in fallback)
-                            if (more.Count < 8 && !more.Contains(id) && Allowed(id)) more.Add(id);
+                            if (more.Count < global::MachineBrigade.Sim.Content.SimTunables.Campaign.Mutators.ApplyCountMax2 && !more.Contains(id) && Allowed(id)) more.Add(id);
                         kept = more;
                     }
                     player.Vehicles = kept;

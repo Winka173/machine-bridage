@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Balance pack 2 pass 2 (09/10, feature/pack2-pass2): 3 607 more gameplay literals of the C# moved into
+  Resources/Data/tunables.json (4 221 keys) with Tools/export/literal_to_tunable.py, values unchanged; 686 left with a reason.
 - Barrels (06/10, feature/barrels): the battleship carries three Iowa triple 406 mm turrets that fire all three barrels
   together (3 x 200 a volley, DPS unchanged); Tools/assets/barrel_audit.py lists other data / model barrel mismatches.
 - Naval models, lane A (06/10, branch feature/naval-models-art): real models for torpedo_boat, ashm_corvette,

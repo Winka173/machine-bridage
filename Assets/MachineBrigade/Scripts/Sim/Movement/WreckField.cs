@@ -157,7 +157,7 @@ namespace MachineBrigade.Sim.Movement
             var nearest = float.MaxValue;
             var forward = probe - from;
             var mid = (front + probe) * 0.5f;
-            var span = Vector2.Distance(front, probe) * 0.5f + width;
+            var span = Vector2.Distance(front, probe) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WreckField.AheadDistanceScale + width;
             foreach (var w in _list)
             {
                 if (w.Naval != naval) continue;
@@ -196,7 +196,7 @@ namespace MachineBrigade.Sim.Movement
                 {
                     // Dead centre on its spine: out the way from the wreck's middle (else a fixed way by its id).
                     var away = centre - w.Position;
-                    delta = away.LengthSquared() > 1e-6f ? away : SimMath.Forward((w.Id.Value * 2.39996f) % SimMath.Tau);
+                    delta = away.LengthSquared() > 1e-6f ? away : SimMath.Forward((w.Id.Value * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WreckField.OverlapValueScale) % SimMath.Tau);
                     d2 = delta.LengthSquared();
                     push += delta / MathF.Sqrt(d2) * minimum;
                     continue;

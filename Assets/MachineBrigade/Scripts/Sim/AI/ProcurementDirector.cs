@@ -139,7 +139,7 @@ namespace MachineBrigade.Sim.AI
             Vector2? goal, Vector2? defendPoint, float[]? desiredByGroup, float[]? legacyMix)
         {
             var now = world.Time;
-            var dt = double.IsNaN(_lastObserve) ? 0f : (float)Math.Min(5.0, now - _lastObserve);
+            var dt = double.IsNaN(_lastObserve) ? 0f : (float)Math.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ObserveNowCap, now - _lastObserve);
             _lastObserve = now;
             var p = SimTunables.Ai.Procurement.IntelEma;
 
@@ -149,12 +149,12 @@ namespace MachineBrigade.Sim.AI
             foreach (var e in known)
             {
                 if (!e.IsAlive || e.Team == _team) continue;
-                var value = e.Def.Boss ? 30f : MathF.Max(1f, e.Def.CpCost);
+                var value = e.Def.Boss ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ObserveBossTrue : MathF.Max(1f, e.Def.CpCost);
                 seen += value;
                 var layer = EngagementFeasibility.LayerOf(world, e);
                 if (layer == TargetLayer.Air) current[(int)Threat.Air] += value;
                 if (layer == TargetLayer.Naval) current[(int)Threat.Naval] += value;
-                if (layer == TargetLayer.Ground && e.Def.Armour.Front >= 4) current[(int)Threat.HeavyArmour] += value;
+                if (layer == TargetLayer.Ground && e.Def.Armour.Front >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ObserveFrontMin) current[(int)Threat.HeavyArmour] += value;
                 if (layer == TargetLayer.Ground && e.Def.Class is UnitClass.Scout or UnitClass.Light) current[(int)Threat.Light] += value;
                 if (e.Def.Weapon.MinRange > 0f && !e.Flying) current[(int)Threat.Artillery] += value;
                 if (e.Def.Drone || Catalog.FliesDrones(e.Def)) current[(int)Threat.Drones] += value;
@@ -234,13 +234,13 @@ namespace MachineBrigade.Sim.AI
             var ground = WeaponEnvelope.Of(v.Def, TargetLayer.Ground).MaxRange;
             var air = WeaponEnvelope.Of(v.Def, TargetLayer.Air).MaxRange;
             if (ground <= 0f && air <= 0f) return;
-            var fired = world.Time - v.LastFiredAt <= 2.0;
+            var fired = world.Time - v.LastFiredAt <= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.TrackTimeMax;
             var inReach = fired;
             for (var i = 0; i < known.Count && !inReach; i++)
             {
                 var e = known[i];
                 if (!e.IsAlive) continue;
-                var reach = (e.Flying ? air : ground) * 1.5f + e.Radius;
+                var reach = (e.Flying ? air : ground) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.TrackScale + e.Radius;
                 if (reach > 0f && Vector2.DistanceSquared(e.Position, v.Position) <= reach * reach) inReach = true;
             }
             if (!inReach) return;
@@ -267,7 +267,7 @@ namespace MachineBrigade.Sim.AI
         private void Desired(float[]? groups, float[]? mix)
         {
             Array.Clear(_desired, 0, Roles);
-            if (groups != null && groups.Length >= 8)
+            if (groups != null && groups.Length >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.DesiredLengthMin)
             {
                 _desired[(int)ProcurementRole.Frontline] = groups[(int)ForceGroup.Armour];
                 _desired[(int)ProcurementRole.FastFlank] = groups[(int)ForceGroup.Light] * 0.6f;
@@ -279,7 +279,7 @@ namespace MachineBrigade.Sim.AI
                 _desired[(int)ProcurementRole.Engineer] = groups[(int)ForceGroup.Support] * 0.6f;
                 _desired[(int)ProcurementRole.ElectronicWarfare] = groups[(int)ForceGroup.Support] * 0.4f;
             }
-            else if (mix != null && mix.Length >= 5)
+            else if (mix != null && mix.Length >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.DesiredLengthMin2)
             {
                 _desired[(int)ProcurementRole.Frontline] = mix[0] * 2f / 3f;
                 _desired[(int)ProcurementRole.AntiTank] = mix[0] / 3f;
@@ -377,31 +377,31 @@ namespace MachineBrigade.Sim.AI
             var timing = TimingFit(def, inf) * (1f + late);
             var survive = SurvivabilityFit(def);
             var synergy = Synergy(def);
-            var cost = Math.Clamp(def.CombatValue * 0.5f, 0f, 1f) * (1f - 0.5f * late);
+            var cost = Math.Clamp(def.CombatValue * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreCombatValueScale, 0f, 1f) * (1f - global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreLateScale * late);
             var tactic = TacticPreference(def, economy, commander);
 
-            var redundancy = copies * SimTunables.Ai.Procurement.RedundancyPerCopy + (saturated ? 0.1f : 0f);
+            var redundancy = copies * SimTunables.Ai.Procurement.RedundancyPerCopy + (saturated ? global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreSaturatedTrue : 0f);
             var congestion = Congestion(world, economy, def);
             var travel = float.IsPositiveInfinity(inf.TravelSeconds) ? 0f
                 : Math.Clamp((inf.TravelSeconds - SimTunables.Ai.Procurement.LongTravelSeconds) / MathF.Max(1f, SimTunables.Ai.Procurement.LongTravelSeconds), 0f, 1f)
                   * SimTunables.Ai.Procurement.LongTravelMax;
 
-            var score = W(0) * role + W(1) * counter + W(2) * objective + W(3) * influence + W(4) * timing + W(5) * survive +
+            var score = W(0) * role + W(1) * counter + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreI) * objective + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreI2) * influence + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreI3) * timing + W(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreI4) * survive +
                         W(6) * synergy + W(7) * cost + W(8) * tactic - redundancy - congestion - travel;
             var feedback = FeedbackModifier(def.EliteOf ?? def.Id);
             if (score > 0f) score *= feedback;
             if (factors != null)
             {
                 factors.Add(new Factor("role", W(0) * role * 100f));
-                factors.Add(new Factor("counter", W(1) * counter * 100f));
+                factors.Add(new Factor("counter", W(1) * counter * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreWScale));
                 factors.Add(new Factor("objective", W(2) * objective * 100f));
                 factors.Add(new Factor("map", W(3) * influence * 100f));
-                factors.Add(new Factor("timing", W(4) * timing * 100f));
+                factors.Add(new Factor("timing", W(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreI3) * timing * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreWScale));
                 factors.Add(new Factor("survive", W(5) * survive * 100f));
                 factors.Add(new Factor("synergy", W(6) * synergy * 100f));
                 factors.Add(new Factor("cost", W(7) * cost * 100f));
                 factors.Add(new Factor("tactic", W(8) * tactic * 100f));
-                if (redundancy > 0f) factors.Add(new Factor(saturated ? "role-saturated" : "redundancy", -redundancy * 100f));
+                if (redundancy > 0f) factors.Add(new Factor(saturated ? "role-saturated" : "redundancy", -redundancy * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ScoreRedundancyScale));
                 if (congestion > 0f) factors.Add(new Factor("congestion", -congestion * 100f));
                 if (travel > 0f) factors.Add(new Factor("long-travel", -travel * 100f));
                 if (feedback < 1f) factors.Add(new Factor("low-realized-utilization", -(1f - feedback) * 100f));
@@ -430,7 +430,7 @@ namespace MachineBrigade.Sim.AI
             foreach (var r in roles) sum += r;
             saturated = false;
             if (sum <= 0f) return 0f;
-            var total = MathF.Max(8f, _haveTotal);
+            var total = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RoleDeficitHaveTotalFloor, _haveTotal);
             var floors = SimTunables.Ai.Procurement.Floors;
             var best = 0f;
             var primary = -1;
@@ -450,7 +450,7 @@ namespace MachineBrigade.Sim.AI
                 {
                     (int)ProcurementRole.Recon => FloorOf(floors, 0, true),
                     (int)ProcurementRole.AntiAir => FloorOf(floors, 1, _ever[(int)Threat.Air] || _ever[(int)Threat.Drones]),
-                    (int)ProcurementRole.AntiTank => FloorOf(floors, 2, _ever[(int)Threat.HeavyArmour] || _ever[(int)Threat.Naval]),
+                    (int)ProcurementRole.AntiTank => FloorOf(floors, global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RoleDeficitI, _ever[(int)Threat.HeavyArmour] || _ever[(int)Threat.Naval]),
                     _ => 0f,
                 };
                 want = MathF.Max(want, floor);
@@ -463,7 +463,7 @@ namespace MachineBrigade.Sim.AI
                 var want = _desired[primary] + _lost[primary] / total;
                 saturated = want > 0f ? _have[primary] / total > want * SimTunables.Ai.Procurement.Saturation : _have[primary] > 0f;
             }
-            return Math.Clamp(best * 1.0f / MathF.Max(0.25f, MaxWeight(roles, sum)), 0f, 1f);
+            return Math.Clamp(best * 1.0f / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RoleDeficitMaxWeightFloor, MaxWeight(roles, sum)), 0f, 1f);
 
             static float FloorOf(float[]? f, int i, bool plausible) => plausible && f != null && i < f.Length ? f[i] : 0f;
         }
@@ -478,7 +478,7 @@ namespace MachineBrigade.Sim.AI
         /// <summary>Sections 14, 15, 197: confirmed needs (smoothed share past the threshold with confidence for 4 s), less the army's existing answer.</summary>
         public float CounterNeed(VehicleDef def, double now)
         {
-            var own = MathF.Max(8f, _ownTotal);
+            var own = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.CounterNeedOwnTotalFloor, _ownTotal);
             var best = 0f;
             for (var t = 0; t < Threats; t++)
             {
@@ -486,7 +486,7 @@ namespace MachineBrigade.Sim.AI
                 if (!Confirmed((Threat)t, now) || !Answers(def, (Threat)t)) continue;
                 var share = _ema[t];
                 var answered = _answer[t] / own;
-                var need = Math.Clamp((share - answered * 0.85f) / MathF.Max(0.05f, share), 0f, 1f) * _confidence;
+                var need = Math.Clamp((share - answered * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.CounterNeedAnsweredScale) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.CounterNeedShareFloor, share), 0f, 1f) * _confidence;
                 best = MathF.Max(best, need);
             }
             return best;
@@ -513,7 +513,7 @@ namespace MachineBrigade.Sim.AI
         {
             float s;
             if (def.Flying) s = 1f - _ema[(int)Threat.AntiAir];
-            else if (def.Armor == ArmorClass.Heavy) s = 1f - 0.4f * _ema[(int)Threat.AntiTank] - 0.1f * _ema[(int)Threat.Artillery];
+            else if (def.Armor == ArmorClass.Heavy) s = 1f - global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.SurvivabilityFitEmaScale * _ema[(int)Threat.AntiTank] - global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.SurvivabilityFitEmaScale2 * _ema[(int)Threat.Artillery];
             else s = 1f - 0.8f * _ema[(int)Threat.AntiTank] - 0.2f * _ema[(int)Threat.Artillery];
             return Math.Clamp(s, 0f, 1f);
         }
@@ -521,7 +521,7 @@ namespace MachineBrigade.Sim.AI
         private float Synergy(VehicleDef def)
         {
             if (def.RepairAura != null || def.RearmAura != null || def.AirRearm != null || def.CommandAura != null || def.Dome != null)
-                return Math.Clamp(_fielded.Count / 8f, 0f, 1f);
+                return Math.Clamp(_fielded.Count / global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.SynergyCountDivisor, 0f, 1f);
             // An army with its support (repairs, ammunition, a commander) gets more out of each fighter.
             var support = _have[(int)ProcurementRole.Engineer] + _have[(int)ProcurementRole.ElectronicWarfare];
             return support > 0f ? 0.6f : 0.4f;
@@ -532,7 +532,7 @@ namespace MachineBrigade.Sim.AI
             if (commander != null)
                 foreach (var p in commander.CurrentTactic.Prefer)
                     if (p == def.Id || p == def.EliteOf) return 1f;
-            return economy.Commander is { } c ? Math.Clamp(CommanderRules.Fit(c, def) * 2f, 0f, 1f) : 0f;
+            return economy.Commander is { } c ? Math.Clamp(CommanderRules.Fit(c, def) * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.TacticPreferenceFitScale, 0f, 1f) : 0f;
         }
 
         /// <summary>Section 17: crowding (ground army against the cap) x footprint x how much the route depends on a choke.</summary>
@@ -541,7 +541,7 @@ namespace MachineBrigade.Sim.AI
             var domain = MapTopology.DomainOf(def);
             if (domain is not (MobilityDomain.Ground or MobilityDomain.Amphibious)) return 0f;
             var density = Math.Clamp(_ownGround / MathF.Max(1f, economy.VehicleCap), 0f, 1f);
-            var footprint = Math.Clamp(def.Radius / 3f, 0f, 1f);
+            var footprint = Math.Clamp(def.Radius / global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.CongestionRadiusDivisor, 0f, 1f);
             var dependency = ChokeDependency(world, def);
             return density * footprint * dependency * SimTunables.Ai.Procurement.CongestionMax;
         }
@@ -575,7 +575,7 @@ namespace MachineBrigade.Sim.AI
             if (float.IsPositiveInfinity(_chokeWidth)) return 0f;
             var choke = SimTunables.Ai.Topology.ChokeWidth;
             var spare = _chokeWidth - def.Radius * 2f;
-            return Math.Clamp(1f - (spare - choke * 0.5f) / MathF.Max(1f, choke * 1.5f), 0f, 1f);
+            return Math.Clamp(1f - (spare - choke * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ChokeDependencyChokeScale) / MathF.Max(1f, choke * global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ChokeDependencyChokeScale2), 0f, 1f);
         }
 
         // ------------------------------------------------------------------------------------------------ plans and reserve
@@ -595,7 +595,7 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         public PurchasePlan MakePlan(SimWorld world, TeamEconomy economy, IReadOnlyList<(string id, float score)> ranked, AiDifficulty difficulty)
         {
-            var size = Math.Clamp(difficulty switch { AiDifficulty.Easy => 3, AiDifficulty.Normal => 4, _ => 5 },
+            var size = Math.Clamp(difficulty switch { AiDifficulty.Easy => global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.MakePlanDifficultyValue, AiDifficulty.Normal => global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.MakePlanDifficultyValue2, _ => global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.MakePlanDifficultyValue3 },
                 SimTunables.Ai.Procurement.MinPlanCards, Math.Max(SimTunables.Ai.Procurement.MinPlanCards, SimTunables.Ai.Procurement.MaxPlanCards));
             var cards = new List<string>();
             var cp = 0;
@@ -603,14 +603,14 @@ namespace MachineBrigade.Sim.AI
             var usedRoles = new bool[Roles];
             var roles = new float[Roles];
             // First pass: different roles; second: the best again where roles ran out.
-            for (var pass = 0; pass < 2 && cards.Count < size; pass++)
+            for (var pass = 0; pass < global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.MakePlanPassMax && cards.Count < size; pass++)
                 foreach (var (id, _) in ranked)
                 {
                     if (cards.Count >= size) break;
                     if (!world.Catalog.Vehicles.TryGetValue(id, out var def)) continue;
                     var primary = PrimaryRole(def, roles);
                     if (pass == 0 && (cards.Contains(id) || (primary >= 0 && usedRoles[primary] && cards.Count > 0))) continue;
-                    if (pass == 1 && cards.Count > 0 && Count(cards, id) >= 2) continue;
+                    if (pass == 1 && cards.Count > 0 && Count(cards, id) >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.MakePlanCountMin) continue;
                     cards.Add(id);
                     if (primary >= 0) usedRoles[primary] = true;
                     cp += (int)MathF.Round(economy.PriceOf(id, def.CpCost));
@@ -633,7 +633,7 @@ namespace MachineBrigade.Sim.AI
         private string Purpose(SimWorld world, List<string> cards)
         {
             var now = world.Time;
-            if (Confirmed(Threat.Naval, now) || _ema[(int)Threat.Naval] > 0.3f) return "shore denial";
+            if (Confirmed(Threat.Naval, now) || _ema[(int)Threat.Naval] > global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.PurposeEmaMin) return "shore denial";
             if (Confirmed(Threat.Air, now)) return "air defence";
             if (Confirmed(Threat.HeavyArmour, now)) return "anti-armour";
             if (Confirmed(Threat.Artillery, now)) return "counter-battery";
@@ -689,7 +689,7 @@ namespace MachineBrigade.Sim.AI
         public bool Reserve(SimWorld world, TeamEconomy economy, VehicleDef toBuy, VehicleDef? counter, bool thin, bool underFire)
         {
             var now = world.Time;
-            if (counter == null || thin || underFire || economy.Cp >= economy.Bank - 3f || counter.Id == toBuy.Id) return Release();
+            if (counter == null || thin || underFire || economy.Cp >= economy.Bank - global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.ReserveBankSub || counter.Id == toBuy.Id) return Release();
             var price = economy.PriceOf(counter.Id, counter.CpCost);
             if (price <= economy.Cp) return Release();
             if (economy.Cp + economy.Income * SimTunables.Ai.Procurement.ReserveHorizonSeconds < price) return Release();
@@ -729,7 +729,7 @@ namespace MachineBrigade.Sim.AI
             {
                 Add(ProcurementRole.AirCover, 1f);
                 if (def.Drone) Add(ProcurementRole.Drone, 1f);
-                if (KillsArmour(def)) Add(ProcurementRole.AntiTank, 0.5f);
+                if (KillsArmour(def)) Add(ProcurementRole.AntiTank, global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RolesOfW);
                 return;
             }
             switch (def.Class)
@@ -737,7 +737,7 @@ namespace MachineBrigade.Sim.AI
                 case UnitClass.Tank:
                 case UnitClass.Heavy:
                     Add(ProcurementRole.Frontline, 1f);
-                    if (KillsArmour(def)) Add(ProcurementRole.AntiTank, 0.5f);
+                    if (KillsArmour(def)) Add(ProcurementRole.AntiTank, global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RolesOfW);
                     break;
                 case UnitClass.TankHunter:
                     Add(ProcurementRole.AntiTank, 1f);
@@ -754,7 +754,7 @@ namespace MachineBrigade.Sim.AI
                     break;
                 case UnitClass.Light:
                     Add(ProcurementRole.FastFlank, 1f);
-                    if (def.VisionRange >= 40f) Add(ProcurementRole.Recon, 0.5f);
+                    if (def.VisionRange >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RolesOfVisionRangeMin) Add(ProcurementRole.Recon, global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RolesOfW);
                     break;
                 case UnitClass.Support:
                     if (def.RepairAura != null || def.RearmAura != null || def.AirRearm != null || def.Breacher) Add(ProcurementRole.Engineer, 1f);
@@ -770,7 +770,7 @@ namespace MachineBrigade.Sim.AI
             if (def.Breacher) Add(ProcurementRole.Siege, 1f);
             if (Catalog.FliesDrones(def)) Add(ProcurementRole.Drone, 1f);
             // Anything that reaches ships from the shore (a long gun, a missile) screens the coast.
-            if (WeaponEnvelope.Of(def, TargetLayer.Naval).MaxRange >= 60f) Add(ProcurementRole.NavalStrike, 0.5f);
+            if (WeaponEnvelope.Of(def, TargetLayer.Naval).MaxRange >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RolesOfMaxRangeMin) Add(ProcurementRole.NavalStrike, global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.RolesOfW);
         }
 
         private static int PrimaryRole(VehicleDef def, float[] roles)
@@ -793,7 +793,7 @@ namespace MachineBrigade.Sim.AI
             Threat.Air => EngagementFeasibility.CanHit(def, TargetLayer.Air),
             Threat.HeavyArmour => KillsArmour(def),
             Threat.Light => EngagementFeasibility.CanHit(def, TargetLayer.Ground) && def.Weapon.MinRange <= 0f,
-            Threat.Artillery => def.Flying || def.Speed >= 11f || def.CounterBattery != null || def.Weapon.MinRange > 0f,
+            Threat.Artillery => def.Flying || def.Speed >= global::MachineBrigade.Sim.Content.SimTunables.Ai.ProcurementDirector.AnswersSpeedMin || def.CounterBattery != null || def.Weapon.MinRange > 0f,
             Threat.Drones => EngagementFeasibility.CanHit(def, TargetLayer.Air) || def.Microwave != null || def.DroneHunt != null,
             Threat.Naval => EngagementFeasibility.CanHit(def, TargetLayer.Naval),
             _ => false,

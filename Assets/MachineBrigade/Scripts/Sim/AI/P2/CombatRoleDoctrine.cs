@@ -172,7 +172,7 @@ namespace MachineBrigade.Sim.AI
             if (role == "Recon" || def.Class == UnitClass.Scout) return TargetClass.Recon;
             var front = t.Armour.Front;
             if (front >= 5) return TargetClass.SuperHeavy;
-            if (front >= 4) return TargetClass.Armour4;
+            if (front >= global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.ClassOfFrontMin2) return TargetClass.Armour4;
             if (role == "Heavy" || def.Class == UnitClass.Heavy) return TargetClass.Heavy;
             if (role == "MBT" || def.Class == UnitClass.Tank) return TargetClass.Mbt;
             return t.Armor == ArmorClass.Light ? TargetClass.Light : TargetClass.Medium;
@@ -208,7 +208,7 @@ namespace MachineBrigade.Sim.AI
                     return c switch
                     {
                         TargetClass.SuperHeavy => Rung(1, 6),
-                        TargetClass.Armour4 => Rung(2, 6),
+                        TargetClass.Armour4 => Rung(global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRung, global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRungs),
                         TargetClass.Heavy => Rung(3, 6),
                         TargetClass.Boss => Rung(4, 6),
                         TargetClass.Mbt => Rung(5, 6),
@@ -219,7 +219,7 @@ namespace MachineBrigade.Sim.AI
                 case DoctrineRole.MainBattle:
                     // B5: immediate threat, heavy / MBT, TD threatening our heavies, objective defender, structure, light.
                     if (survival) return Rung(1, 6);
-                    if (HeavyArmour(c)) return Rung(2, 6);
+                    if (HeavyArmour(c)) return Rung(global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRung, global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRungs);
                     if (c == TargetClass.AntiTank) return targetsOwnHeavy ? Rung(3, 6) : Rung(4, 6);
                     if (objectiveThreat > 0f) return Rung(4, 6);
                     if (c is TargetClass.Tower or TargetClass.Structure or TargetClass.Boss) return Rung(5, 6);
@@ -256,7 +256,7 @@ namespace MachineBrigade.Sim.AI
                     if (c == TargetClass.Artillery) return Rung(1, 6);
                     if (c is TargetClass.Tower or TargetClass.SamRadar) return Rung(2, 6);
                     if (clustered) return Rung(3, 6);
-                    if (HeavyArmour(c) && !moving) return Rung(4, 6);
+                    if (HeavyArmour(c) && !moving) return Rung(global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRung3, global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRungs);
                     if (objectiveThreat > 0f) return Rung(5, 6);
                     if (LightTarget(c)) return LastResort();
                     return Rung(6, 6);
@@ -266,7 +266,7 @@ namespace MachineBrigade.Sim.AI
                     if (c is TargetClass.Structure or TargetClass.Tower or TargetClass.Boss) return Rung(1, 5);
                     if (c == TargetClass.Artillery) return Rung(2, 5);
                     if (c == TargetClass.SamRadar) return Rung(3, 5);
-                    if (HeavyArmour(c) && clustered) return Rung(4, 5);
+                    if (HeavyArmour(c) && clustered) return Rung(global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRung3, global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRungs2);
                     if (objectiveThreat > 0f && clustered) return Rung(5, 5);
                     return clustered ? Rung(0, 5) : LastResort();
                 case DoctrineRole.Fighter:
@@ -282,7 +282,7 @@ namespace MachineBrigade.Sim.AI
                     };
                 case DoctrineRole.LoiterAntiArmour:
                     // B13 anti-armour: heavy armour, TD / artillery, expensive support, tower.
-                    if (HeavyArmour(c)) return Rung(1, 4);
+                    if (HeavyArmour(c)) return Rung(1, global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRungs3);
                     if (c is TargetClass.AntiTank or TargetClass.Artillery) return Rung(2, 4);
                     if (c is TargetClass.Support or TargetClass.SamRadar) return Rung(3, 4);
                     if (c == TargetClass.Tower) return Rung(4, 4);
@@ -295,7 +295,7 @@ namespace MachineBrigade.Sim.AI
                         TargetClass.SamRadar => Rung(2, 5),
                         TargetClass.Support => Rung(3, 5),
                         TargetClass.Tower => Rung(4, 5),
-                        _ when HeavyArmour(c) => Rung(5, 5),
+                        _ when HeavyArmour(c) => Rung(global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRung4, global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.WorthRungs2),
                         _ => LastResort(),
                     };
                 case DoctrineRole.Screen:
@@ -313,7 +313,7 @@ namespace MachineBrigade.Sim.AI
         internal static bool Clustered(SimWorld world, Vehicle t)
         {
             // AI MASTER P5 section 98: a bounded query on the AI grid instead of a scan of every vehicle (same count).
-            return world.Spatial.CountSameSide(t, Tun.RoleDoctrine.ClusterRadius, 2) >= 2;
+            return world.Spatial.CountSameSide(t, Tun.RoleDoctrine.ClusterRadius, global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.ClusteredLimit) >= global::MachineBrigade.Sim.Content.SimTunables.Ai.CombatRoleDoctrine.ClusteredCountSameSideMin;
         }
     }
 }

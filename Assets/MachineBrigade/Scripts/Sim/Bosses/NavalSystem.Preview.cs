@@ -70,13 +70,13 @@ namespace MachineBrigade.Sim.Bosses
                 {
                     var along = salvo.Shells > 1 ? (s - (salvo.Shells - 1) * 0.5f) * 2.5f : 0f;
                     var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
-                    var reach = 2f * MathF.Sqrt((float)_world.Random.NextDouble());
+                    var reach = global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.PreviewSalvoSqrtScale * MathF.Sqrt((float)_world.Random.NextDouble());
                     var at = _world.ClampToMap(aim + across * along + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
                     // Play-test 14 (lane G): as a battle's salvo (FireSalvo), an unwarned turret's shells fly at the gun's own shell
                     // speed; the warned time (3.7 s whatever the distance) had them crawl onto a target beside the ship.
                     var flight = warning == null && gun != null && gun.ProjectileSpeed > 1f ? Vector2.Distance(from, at) / gun.ProjectileSpeed : salvo.Warn;
                     if (warning != null) _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, salvo.Warn));
-                    _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), flight + 0.15 * (together ? turret : s), v.Team, v,
+                    _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), flight + global::MachineBrigade.Sim.Content.SimTunables.Bosses.NavalSystem.PreviewSalvoScale * (together ? turret : s), v.Team, v,
                         HitKind.Strike, v.Id);
                     if (gun != null) _world.Emit(SimEvent.Fired(v, m, from, at, flight, EntityId.None));
                 }

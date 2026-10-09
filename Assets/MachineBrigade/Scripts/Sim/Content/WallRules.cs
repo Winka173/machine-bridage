@@ -182,7 +182,7 @@ namespace MachineBrigade.Sim.Content
         public float Length => MathF.Max(Width, Depth);
 
         /// <summary>A point this far in front of (positive) or behind (negative) the segment's face.</summary>
-        public Vector2 Out(float metres) => Center + Core.SimMath.Forward(Facing) * (MathF.Min(Width, Depth) * 0.5f + metres);
+        public Vector2 Out(float metres) => Center + Core.SimMath.Forward(Facing) * (MathF.Min(Width, Depth) * global::MachineBrigade.Sim.Content.SimTunables.Bases.WallSegmentDef.OutMinScale + metres);
     }
 
     /// <summary>A wall line of a camp or a fortress (map data "walls"): its ring, its gate and its segments.</summary>

@@ -89,7 +89,7 @@ namespace MachineBrigade.Sim.Content
         public bool Laid => Mode == StickMode.Stick && Bombs > 1;
 
         /// <summary>The bombs a stick drops on fewer targets than <see cref="MinTargets"/>: max(2, ceil(n / 3)), never more than n.</summary>
-        public int Reduced => Math.Min(Bombs, Math.Max(2, (Bombs + 2) / 3));
+        public int Reduced => Math.Min(Bombs, Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.StickDef.ReducedBombsFloor, (Bombs + global::MachineBrigade.Sim.Content.SimTunables.Weapons.StickDef.ReducedBombsAdd) / global::MachineBrigade.Sim.Content.SimTunables.Weapons.StickDef.ReducedBombsDivisor));
     }
 
     public sealed partial class WeaponDef
@@ -107,7 +107,7 @@ namespace MachineBrigade.Sim.Content
     public sealed partial class Catalog
     {
         /// <summary>Tolerance of the derived stick numbers against their formulas (length, interval, lead, overlap, width).</summary>
-        private const float StickTolerance = 0.02f;
+        private static float StickTolerance => global::MachineBrigade.Sim.Content.SimTunables.Weapons.Catalog.StickTolerance;
 
         /// <summary>The bomb-run fix, pass 1: reads weapons[*].stick (enum words may be written with underscores: STICK_RECT).</summary>
         private static void ParseWeaponStick(JsonObject w, WeaponDef def)
@@ -124,20 +124,20 @@ namespace MachineBrigade.Sim.Content
                 Heading = Loose(s, "heading", StickHeading.Approach),
                 Anchor = Loose(s, "anchor", StickAnchor.Center),
                 Drop = Loose(s, "drop", StickDrop.Overfly),
-                JitterAcross = MathF.Max(0f, s.Float("jitterAcross", 0.25f * def.SplashRadius)),
+                JitterAcross = MathF.Max(0f, s.Float("jitterAcross", global::MachineBrigade.Sim.Content.SimTunables.Weapons.Catalog.ParseWeaponStickSplashRadiusScale * def.SplashRadius)),
                 MinTargets = Math.Max(0, s.Int("minTargets", 0)),
-                Safety = MathF.Max(0f, s.Float("safety", MathF.Max(def.SplashRadius, 8f))),
+                Safety = MathF.Max(0f, s.Float("safety", MathF.Max(def.SplashRadius, global::MachineBrigade.Sim.Content.SimTunables.Weapons.Catalog.ParseWeaponStickSplashRadiusFloor))),
                 Exit = MathF.Max(0f, s.Float("exit", 0f)),
                 BayOpen = MathF.Max(0f, s.Float("bayOpen", 0f)),
                 Warn = Loose(s, "warnShape", StickWarn.None),
             };
-            stick.JitterAlong = MathF.Max(0f, s.Float("jitterAlong", 0.15f * stick.Spacing));
+            stick.JitterAlong = MathF.Max(0f, s.Float("jitterAlong", global::MachineBrigade.Sim.Content.SimTunables.Weapons.Catalog.ParseWeaponStickSpacingScale * stick.Spacing));
             var length = (stick.Bombs - 1) * stick.Spacing;
             stick.Length = MathF.Max(0f, s.Float("length", length));
             stick.Interval = MathF.Max(0f, s.Float("interval", stick.ReleaseSpeed > 0f ? stick.Spacing / stick.ReleaseSpeed : def.BurstInterval));
             stick.Lead = MathF.Max(0f, s.Float("lead", stick.Drop == StickDrop.Bay ? 0f : stick.ReleaseSpeed * stick.FallTime));
             stick.Overlap = MathF.Max(0f, s.Float("overlap", stick.Spacing > 0f ? def.SplashRadius / stick.Spacing : 0f));
-            stick.Width = MathF.Max(0f, s.Float("width", 2f * def.WarnRadius + 2f * stick.JitterAcross));
+            stick.Width = MathF.Max(0f, s.Float("width", 2f * def.WarnRadius + global::MachineBrigade.Sim.Content.SimTunables.Weapons.Catalog.ParseWeaponStickJitterAcrossScale * stick.JitterAcross));
             stick.StraightTime = MathF.Max(0f, s.Float("straightTime", 0f));
             if (stick.Mode == StickMode.Stick)
             {
@@ -155,7 +155,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A derived stick number within <see cref="StickTolerance"/> of its formula (0.05 absolute for small numbers).</summary>
         private static void Near(JsonObject s, string key, float value, float formula)
         {
-            if (MathF.Abs(value - formula) > MathF.Max(0.05f, MathF.Abs(formula) * StickTolerance))
+            if (MathF.Abs(value - formula) > MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.Catalog.NearAbsFloor, MathF.Abs(formula) * StickTolerance))
                 throw new FormatException($"{s.Path}.{key}: {value}, its formula gives {formula}.");
         }
 

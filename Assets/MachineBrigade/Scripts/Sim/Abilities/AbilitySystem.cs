@@ -63,15 +63,15 @@ namespace MachineBrigade.Sim.Abilities
                 // A boss's jamming aura stops with its jammer part (prompt 16).
                 if (v.Def.Jammer > 0f && !v.JammerOff) _jammers.Add(v);
                 // Standing still (entrenchment counts from here).
-                if (Vector2.DistanceSquared(v.Position, v.StillAt) > 0.04f)
+                if (Vector2.DistanceSquared(v.Position, v.StillAt) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.StepDistanceSquaredMin)
                 {
                     v.StillAt = v.Position;
                     v.StillSince = now;
                 }
                 // Home zone: a vehicle left alone for 3 s by its own camp repairs 2 % a second.
-                if (_world.HomeZones && !v.Def.Static && v.Hp < v.MaxHp && now - v.LastHitTime > 3.0 &&
+                if (_world.HomeZones && !v.Def.Static && v.Hp < v.MaxHp && now - v.LastHitTime > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.StepNowMin &&
                     _world.TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(v.Position, home) < SimWorld.HomeRadius * SimWorld.HomeRadius)
-                    v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.02f * dt);
+                    v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.StepMaxHpScale * dt);
                 // Active protection reloads one interceptor at a time; a launcher reloaded whole (prompt 20 L.1, the
                 // Iron Dome) gets all of them back once it has been quiet for its reload time (it restarts at each launch).
                 var aps = v.Aps;
@@ -90,7 +90,7 @@ namespace MachineBrigade.Sim.Abilities
             if (auraTick) _auraTimer += AuraInterval;
             _skillTimer -= dt;
             var skillTick = _skillTimer <= 0f;
-            if (skillTick) _skillTimer += 0.25f;
+            if (skillTick) _skillTimer += global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.StepSkillTimer;
 
             if (auraTick)
             {
@@ -113,7 +113,7 @@ namespace MachineBrigade.Sim.Abilities
                     if (v.Def.RepairAura != null || v.Def.RearmAura != null) Support(v);
                     if (v.Def.FortifyAura != null) Fortify(v);
                     // A firing-range target mends itself between volleys.
-                    if (v.Unkillable) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.08f * AuraInterval);
+                    if (v.Unkillable) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.StepMaxHpScale2 * AuraInterval);
                 }
                 // Upgrades: self-repair out of combat (sooner with a toolbox, part of it under fire with a
                 // combat welder, half while burning), and smoke dischargers at half health.
@@ -122,7 +122,7 @@ namespace MachineBrigade.Sim.Abilities
                     var rate = Regenerating(v, now);
                     if (rate > 0f) _world.Gear.Heal(v, v.MaxHp * v.Regen * rate * dt);
                 }
-                if (v.Special == SpecialModule.SmokeDischarger && !v.SmokeUsed && v.Hp < v.MaxHp * 0.5f)
+                if (v.Special == SpecialModule.SmokeDischarger && !v.SmokeUsed && v.Hp < v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.StepMaxHpScale3)
                 {
                     v.SmokeUsed = true;
                     _world.Strikes.AddSmoke(v.Team, v.Position, v.SpecialPower, 14f);
@@ -156,8 +156,8 @@ namespace MachineBrigade.Sim.Abilities
         private static float Regenerating(Vehicle v, double now)
         {
             var g = v.Gear;
-            if (g == null) return now - v.LastHitTime > 4.0 ? 1f : 0f;
-            var delay = Math.Max(1.0, 4.0 - g.Stat(StatId.RegenDelay));
+            if (g == null) return now - v.LastHitTime > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.RegeneratingNowMin ? 1f : 0f;
+            var delay = Math.Max(1.0, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.RegeneratingStatSub - g.Stat(StatId.RegenDelay));
             var rate = now - v.LastHitTime > delay ? 1f : g.Has(TraitId.CombatWelder) ? g.Trait(TraitId.CombatWelder).A : 0f;
             return rate * GearSystem.RepairFactor(v, now);
         }
@@ -218,7 +218,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (repair != null && distance <= repair.Radius + (v.Def.Static ? v.Def.HullBound : 0f) && !v.Def.Boss && v.Hp < v.MaxHp)
                 {
                     // Prompt 22 F: Engineer Lind's engineers repair faster.
-                    var rate = repair.Rate * (v.Def.Static ? 0.5f : 1f) * _world.RepairScaleOf(engineer.Team);
+                    var rate = repair.Rate * (v.Def.Static ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.SupportStaticTrue : 1f) * _world.RepairScaleOf(engineer.Team);
                     var amount = _world.Gear.Heal(v, v.MaxHp * rate * AuraInterval * GearSystem.RepairFactor(v, _world.Time));
                     _world.Emit(SimEvent.RepairedBy(v, amount));
                 }
@@ -264,7 +264,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 var slow = _world.Catalog.Base.Walls.RubbleSlow;
                 foreach (var v in _world.VehicleList)
-                    if (v.IsAlive && !v.Flying && !v.Def.Static && _world.Walls.InRubble(v.Position)) _world.Status.Slow(v, slow, AuraInterval * 2f);
+                    if (v.IsAlive && !v.Flying && !v.Def.Static && _world.Walls.InRubble(v.Position)) _world.Status.Slow(v, slow, AuraInterval * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.SlowAurasAuraIntervalScale);
             }
             foreach (var w in _world.VehicleList)
             {
@@ -273,7 +273,7 @@ namespace MachineBrigade.Sim.Abilities
                 foreach (var v in _world.VehicleList)
                 {
                     if (!v.IsAlive || v.Team == w.Team || v.Team < 0 || v.Flying || v.Def.Static) continue;
-                    if (Vector2.DistanceSquared(v.Position, w.Position) <= aura.Radius * aura.Radius) _world.Status.Slow(v, aura.Rate, AuraInterval * 2f);
+                    if (Vector2.DistanceSquared(v.Position, w.Position) <= aura.Radius * aura.Radius) _world.Status.Slow(v, aura.Rate, AuraInterval * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.SlowAurasAuraIntervalScale);
                 }
             }
         }
@@ -393,7 +393,7 @@ namespace MachineBrigade.Sim.Abilities
         {
             for (var i = 0; i < v.Weapons.Length; i++)
                 if (v.Weapons[i].Ammo == 0 && v.Weapons[i].ReloadLeft > 0f)
-                    v.Weapons[i].ReloadLeft = MathF.Max(0.0001f, v.Weapons[i].ReloadLeft - AuraInterval * 2f); // the reload itself finishes it
+                    v.Weapons[i].ReloadLeft = MathF.Max(0.0001f, v.Weapons[i].ReloadLeft - AuraInterval * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.TopUpAuraIntervalScale); // the reload itself finishes it
             while (v.RearmProgress >= 1f && PartEmpty(v))
             {
                 v.RearmProgress -= 1f;
@@ -444,13 +444,13 @@ namespace MachineBrigade.Sim.Abilities
                 if (!m.IsAlive || m.Layer != v.Id) continue;
                 mine++;
                 // Spread them out: no two within a few metres.
-                if (Vector2.DistanceSquared(m.Position, v.Position) < 25f) return;
+                if (Vector2.DistanceSquared(m.Position, v.Position) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.LayMinesDistanceSquaredMax) return;
             }
             if (mine >= def.Max) return;
             // Drop it behind the vehicle, clear of the hull.
-            var at = v.Position - SimMath.Forward(v.Heading) * (v.Def.HullHalf + v.Def.HullRadius + 0.8f);
+            var at = v.Position - SimMath.Forward(v.Heading) * (v.Def.HullHalf + v.Def.HullRadius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.LayMinesHullHalfAdd);
             if (!_world.Map.Contains(at) || !_world.Grid.IsWalkable(at)) return;
-            var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + 2.0);
+            var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.LayMinesNowAdd);
             _mines.Add(laid);
             _world.Emit(SimEvent.MineLaid(laid));
         }
@@ -469,12 +469,12 @@ namespace MachineBrigade.Sim.Abilities
             v.MineTurned = 0f;
             v.NextMineAt = now + def.Interval;
             var back = -SimMath.Forward(v.Heading);
-            var start = v.Def.HullHalf + v.Def.HullRadius + 1.5f;
+            var start = v.Def.HullHalf + v.Def.HullRadius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.LayStripHullHalfAdd;
             for (var k = 0; k < def.Max; k++)
             {
                 var at = v.Position + back * (start + k * 2.5f);
                 if (!_world.Map.Contains(at) || !_world.Grid.IsWalkable(at)) continue;
-                var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + 1.5) { ExpiresAt = def.Life > 0f ? now + def.Life : double.PositiveInfinity };
+                var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.LayStripNowAdd) { ExpiresAt = def.Life > 0f ? now + def.Life : double.PositiveInfinity };
                 _mines.Add(laid);
                 _world.Emit(SimEvent.MineLaid(laid));
             }
@@ -492,12 +492,12 @@ namespace MachineBrigade.Sim.Abilities
             for (var tries = 0; alive < wanted && tries < 40; tries++)
             {
                 var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
-                var r = def.Spread * MathF.Sqrt(0.2f + 0.8f * (float)_world.Random.NextDouble());
+                var r = def.Spread * MathF.Sqrt(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.LayFieldNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.LayFieldNextDoubleScale * (float)_world.Random.NextDouble());
                 var at = v.Position + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * r;
                 if (!_world.Map.Contains(at) || !_world.Grid.IsWalkable(at)) continue;
                 var clear = true;
                 foreach (var m in _mines)
-                    if (m.IsAlive && Vector2.DistanceSquared(m.Position, at) < 4f) clear = false;
+                    if (m.IsAlive && Vector2.DistanceSquared(m.Position, at) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.LayFieldDistanceSquaredMax) clear = false;
                 if (!clear) continue;
                 var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + 1.0);
                 _mines.Add(laid);
@@ -554,7 +554,7 @@ namespace MachineBrigade.Sim.Abilities
             v.TransformUntil = now + MathF.Max(0f, phase.Transform);
             v.ImmuneUntil = Math.Max(v.ImmuneUntil, v.TransformUntil);
             _world.Emit(SimEvent.BossPhase(v, v.Phase + 2, true, phase.Radio));
-            _world.Emit(SimEvent.Exploded(v.Position, new ExplosionDef(0f, v.Radius * 1.6f, 0f, ExplosionTier.Huge), v.Id));
+            _world.Emit(SimEvent.Exploded(v.Position, new ExplosionDef(0f, v.Radius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.BeginPhaseRadiusScale, 0f, ExplosionTier.Huge), v.Id));
             if (phase.Transform <= 0f) CompletePhase(v, now);
         }
 
@@ -595,14 +595,14 @@ namespace MachineBrigade.Sim.Abilities
                     if (v.FlareChargesLeft <= 0) continue;
                     if (v.FlareChargesLeft == v.FlareChargesMax) v.FlareRechargeAt = now + FlareRecharge(v, skill);
                     v.FlareChargesLeft--;
-                    v.SkillReadyAt[i] = now + MathF.Max(0.5f, skill.Duration);
+                    v.SkillReadyAt[i] = now + MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.UseSkillsDurationFloor, skill.Duration);
                     v.SkillUsed[i] = true;
                     Fire(v, skill, now);
                     v.RefreshEffects(now);
                     _world.Emit(SimEvent.SkillUsed(v, skill));
                     continue;
                 }
-                v.SkillReadyAt[i] = now + skill.Cooldown * (v.Gear != null ? MathF.Max(0.5f, 1f - v.Gear.Stat(StatId.Cooldowns)) : 1f);
+                v.SkillReadyAt[i] = now + skill.Cooldown * (v.Gear != null ? MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.UseSkillsStatFloor, 1f - v.Gear.Stat(StatId.Cooldowns)) : 1f);
                 v.SkillUsed[i] = true;
                 Fire(v, skill, now);
                 v.RefreshEffects(now);
@@ -645,7 +645,7 @@ namespace MachineBrigade.Sim.Abilities
             SkillDef? flare = null;
             foreach (var s in v.Def.Skills)
                 if (s.Kind == SkillKind.Flares) flare = s;
-            v.FlareRechargeAt = now + (flare != null ? FlareRecharge(v, flare) : 20f);
+            v.FlareRechargeAt = now + (flare != null ? FlareRecharge(v, flare) : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.RechargeFlaresFlareFalse);
         }
 
         private bool Triggered(Vehicle v, SkillDef skill, double now) => skill.Trigger switch
@@ -674,14 +674,14 @@ namespace MachineBrigade.Sim.Abilities
                     break;
                 case SkillKind.Patch:
                     // Prompt 9: a boss's self-repair puts a broken part back instead of healing the body.
-                    _world.Bosses.Patch(v, skill.Amount > 0f ? skill.Amount : 0.5f);
+                    _world.Bosses.Patch(v, skill.Amount > 0f ? skill.Amount : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireAmountFalse);
                     break;
                 case SkillKind.Shield:
                     v.ShieldUntil = until;
-                    v.ShieldAmount = Math.Clamp(skill.Amount, 0f, 0.95f);
+                    v.ShieldAmount = Math.Clamp(skill.Amount, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireAmountMax);
                     break;
                 case SkillKind.Smoke:
-                    _world.Strikes.AddSmoke(v.Team, v.Position, skill.Radius > 0f ? skill.Radius : 8f, skill.Duration);
+                    _world.Strikes.AddSmoke(v.Team, v.Position, skill.Radius > 0f ? skill.Radius : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireRadiusFalse, skill.Duration);
                     break;
                 case SkillKind.Overdrive:
                     v.OverdriveUntil = until;
@@ -700,8 +700,8 @@ namespace MachineBrigade.Sim.Abilities
                     var count = skill.Max > 0 ? Math.Min(skill.Count, skill.Max - SummonedAlive(v, skill)) : skill.Count;
                     for (var k = 0; k < count; k++)
                     {
-                        var angle = (k + 0.5f) * SimMath.Tau / skill.Count + v.Heading;
-                        var at = _world.ClampToMap(v.Position + SimMath.Forward(angle) * (v.Def.HullBound + 5f));
+                        var angle = (k + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireKAdd) * SimMath.Tau / skill.Count + v.Heading;
+                        var at = _world.ClampToMap(v.Position + SimMath.Forward(angle) * (v.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireHullBoundAdd));
                         _summons.Add((skill.Unit!, v.Team, at, v.Heading, v.Id.Value, skill.Max > 0 ? skill.Id : ""));
                     }
                     break;

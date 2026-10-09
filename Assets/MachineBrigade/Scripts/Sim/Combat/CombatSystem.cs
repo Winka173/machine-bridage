@@ -21,7 +21,7 @@ namespace MachineBrigade.Sim.Combat
         private static readonly float TurretTolerance = SimMath.DegToRad(4f);
         private static readonly float FreeTolerance = SimMath.DegToRad(6f);
         private static readonly float HullTolerance = SimMath.DegToRad(12f);
-        private static readonly float FreeMountTurnRate = SimMath.DegToRad(300f);
+        private static readonly float FreeMountTurnRate = SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.FreeMountTurnRateDegrees);
 
         private readonly SimWorld _world;
         private readonly List<Projectile> _projectiles = new();
@@ -364,12 +364,12 @@ namespace MachineBrigade.Sim.Combat
             var effect = _world.Damage.Estimate(round, v, other);
             if (effect <= 0f) return 0f;
             effect *= DamageSystem.BonusFor(round, v, other, _world.Time);
-            var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
+            var score = (global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreEffectAdd + effect) * (global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreHpSub - other.Hp / other.MaxHp);
             // Guns and cannons turn on aircraft only when nothing on the ground is in reach;
             // anti-aircraft weapons go for aircraft first.
             // Prompt 19: a target on altitude tiers is fair game for any weapon that reaches its tier.
-            if (other.Flying != IsAntiAir(weapon) && other.Tier == AltitudeTier.None) score *= 0.02f;
-            if (other.Hp <= round.Damage * effect) score *= 1.5f;
+            if (other.Flying != IsAntiAir(weapon) && other.Tier == AltitudeTier.None) score *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreScore;
+            if (other.Hp <= round.Damage * effect) score *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreScore2;
             // An obstacle only when there is nothing else (the commander orders a breach itself).
             if (other.Def.Obstacle) score *= 0.05f;
             if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
@@ -379,9 +379,9 @@ namespace MachineBrigade.Sim.Combat
             if (other.Gear != null && _world.Gear.Taunts(other, v)) score *= 1.4f;
             // Worth more the more it costs (a titan before a jeep); one aiming at us first;
             // an unarmed truck last.
-            score *= MathF.Sqrt(Math.Clamp(Worth(other), 2f, 25f) / 10f);
+            score *= MathF.Sqrt(Math.Clamp(Worth(other), global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreWorthMin, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreWorthMax) / global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreClampDivisor);
             if (other.Target == v.Id) score *= 1.2f;
-            if (other.Def.Weapon.Damage <= 0f) score *= 0.3f;
+            if (other.Def.Weapon.Damage <= 0f) score *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreScore8;
             // Play-test 8 A: one that can hit this vehicle back before one that cannot.
             else if (other.Def.Weapon.CanTarget(v.Flying)) score *= ThreatWeight;
             // AI MASTER P0-A: overkill control (spec 44: 1.15, every weapon, with its exceptions; it replaces the old 1.1 rule for
@@ -401,7 +401,7 @@ namespace MachineBrigade.Sim.Combat
             score *= P3Worth(v, other, weapon);
             // AI MASTER P5 Part N: tower coordination on an AI side's towers (protected zone, AT, anti-artillery, critical, overkill).
             score *= P5Worth(v, other, weapon);
-            score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
+            score /= 1f + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreDistanceScale * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
             return score;
         }
 
@@ -433,19 +433,19 @@ namespace MachineBrigade.Sim.Combat
         internal float BombWorth(int team, Vehicle target, WeaponDef bombs)
         {
             if (target.Flying) return 1f;
-            var reach = bombs.SplashRadius + 4f;
+            var reach = bombs.SplashRadius + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BombWorthSplashRadiusAdd;
             var worth = 0f;
             var others = 0;
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == team || e.Team < 0 || e.Flying || e.Def.Untargetable) continue;
                 if (Vector2.DistanceSquared(e.Position, target.Position) > reach * reach) continue;
-                worth += Math.Clamp(Worth(e), 1f, 25f);
+                worth += Math.Clamp(Worth(e), 1f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BombWorthWorthMax);
                 if (e != target) others++;
             }
-            var factor = worth / Math.Clamp(Worth(target), 1f, 25f);
+            var factor = worth / Math.Clamp(Worth(target), 1f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BombWorthWorthMax);
             if (target.Def.Static) factor *= 1.5f;
-            else if (others == 0 && target.Armor == ArmorClass.Light && Worth(target) < 7f) factor *= 0.25f;
+            else if (others == 0 && target.Armor == ArmorClass.Light && Worth(target) < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BombWorthWorthMax2) factor *= global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BombWorthFactor2;
             if (RecentlyBombed(team, target.Position)) factor *= 0.33f;
             return factor;
         }
@@ -481,7 +481,7 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>What a target is worth: its CP, or for units never bought (bosses, defences) a guess from their health.</summary>
-        internal static float Worth(Vehicle v) => v.Def.CpCost > 0 ? v.Def.CpCost : v.Def.Boss ? 25f : v.MaxHp / 250f;
+        internal static float Worth(Vehicle v) => v.Def.CpCost > 0 ? v.Def.CpCost : v.Def.Boss ? global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.WorthBossTrue : v.MaxHp / global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.WorthMaxHpDivisor;
 
         /// <summary>Damage on its way to each target (rounds in flight), for overkill checks.</summary>
         private readonly Dictionary<EntityId, float> _incoming = new();
@@ -507,7 +507,7 @@ namespace MachineBrigade.Sim.Combat
         public bool HasLineOfFire(Vehicle v, IDamageable target, WeaponDef weapon)
         {
             if (v.Flying || IsFlying(target) || weapon.Indirect) return true;
-            return !_world.Cover.TryFirstHit(v.Position, target.Position, v.Radius * 0.6f, target is Vehicle ? target.Radius * 0.5f : 0f,
+            return !_world.Cover.TryFirstHit(v.Position, target.Position, v.Radius * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.HasLineOfFireRadiusScale, target is Vehicle ? target.Radius * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.HasLineOfFireRadiusScale2 : 0f,
                 target as Prop, out _);
         }
 
@@ -528,7 +528,7 @@ namespace MachineBrigade.Sim.Combat
             // Play-test 8 A: a free-falling bomb reaches as far ahead as the middle of its stick falls.
             if (FreeFall(v, weapon)) reach = MathF.Max(reach, BombReach(v, weapon));
             // Radar-absorbent coating: a missile must come closer to lock on.
-            if (weapon.Projectile == ProjectileKind.Missile && target is Vehicle { Gear: { } coated }) reach *= 1f - Math.Clamp(coated.Stat(StatId.LockRange), 0f, 0.5f);
+            if (weapon.Projectile == ProjectileKind.Missile && target is Vehicle { Gear: { } coated }) reach *= 1f - Math.Clamp(coated.Stat(StatId.LockRange), 0f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.InReachStatMax);
             return distance >= weapon.MinRange && distance - target.Radius <= reach;
         }
 
@@ -647,7 +647,7 @@ namespace MachineBrigade.Sim.Combat
             {
                 // A run of fire, then a pause while the gunner re-lays (its damage rides on the rounds).
                 state.Cooldown = weapon.Cooldown * Jitter();
-                if (--state.RunLeft <= 0) state.Cooldown = RestSeconds * (0.7f + 0.6f * (float)_world.Random.NextDouble());
+                if (--state.RunLeft <= 0) state.Cooldown = RestSeconds * (global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.OperateNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.OperateNextDoubleScale * (float)_world.Random.NextDouble());
                 return;
             }
             if (salvo > 1 || extra > 0)
@@ -706,11 +706,11 @@ namespace MachineBrigade.Sim.Combat
             var weapon = v.Arms[index];
             var now = _world.Time;
             // Picking up again after a pause: no credit from the idle time.
-            if (now - state.LastRoundAt > weapon.Cooldown + 0.06) state.Cooldown = MathF.Max(0f, state.Cooldown);
-            if (state.ClipLeft <= 0 || now - state.LastRoundAt >= MathF.Max(0.5f, weapon.ClipReload)) state.ClipLeft = weapon.Clip;
+            if (now - state.LastRoundAt > weapon.Cooldown + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StreamCooldownAdd) state.Cooldown = MathF.Max(0f, state.Cooldown);
+            if (state.ClipLeft <= 0 || now - state.LastRoundAt >= MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StreamClipReloadFloor, weapon.ClipReload)) state.ClipLeft = weapon.Clip;
             var flying = IsFlying(target);
             // At most three rounds a step (60 a second): the cadence, not the frame, sets the rate.
-            for (var k = 0; k < 3 && state.Cooldown <= 0f && state.ClipLeft > 0; k++)
+            for (var k = 0; k < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StreamKMax && state.Cooldown <= 0f && state.ClipLeft > 0; k++)
             {
                 var scale = index == 0 && v.Gear != null ? _world.Gear.MachineGunRound(v) : 1f;
                 Launch(v, index, target.Position, target.Id, flying, scale, true, target);
@@ -719,12 +719,12 @@ namespace MachineBrigade.Sim.Combat
             }
             state.LastRoundAt = now;
             // An empty magazine: the pause to change it (a little different every time).
-            if (state.ClipLeft <= 0) state.Cooldown = MathF.Max(state.Cooldown, weapon.ClipReload * (0.9f + 0.2f * (float)_world.Random.NextDouble()));
+            if (state.ClipLeft <= 0) state.Cooldown = MathF.Max(state.Cooldown, weapon.ClipReload * (global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StreamNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.StreamNextDoubleScale * (float)_world.Random.NextDouble()));
         }
 
         /// <summary>A machine gun: bullets fired faster than three a second, one at a time, in runs (not from a magazine).</summary>
         private static bool IsMachineGun(WeaponDef weapon) =>
-            weapon.Clip <= 0 && weapon.Projectile == ProjectileKind.Bullet && weapon.Cooldown < 0.35f && weapon.Burst <= 1;
+            weapon.Clip <= 0 && weapon.Projectile == ProjectileKind.Bullet && weapon.Cooldown < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.IsMachineGunCooldownMax && weapon.Burst <= 1;
 
         /// <summary>
         /// A gun in the fire rhythm: a machine gun, or a gun firing from a magazine (it opens up after a short random
@@ -744,7 +744,7 @@ namespace MachineBrigade.Sim.Combat
         private static float RunDamage => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.RunDamage;
 
         /// <summary>No two shots are exactly as far apart: up to 10 % either way, so identical vehicles fall out of step.</summary>
-        private float Jitter() => 0.9f + 0.2f * (float)_world.Random.NextDouble();
+        private float Jitter() => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.JitterNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.JitterNextDoubleScale * (float)_world.Random.NextDouble();
 
         /// <summary>Twin barrels (two mounts of one weapon) open fire at least this many seconds apart, never in lockstep.</summary>
         internal static float TwinOffset => global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.TwinOffset;
@@ -766,11 +766,11 @@ namespace MachineBrigade.Sim.Combat
             if (IsGun(weapon) && !state.Started)
             {
                 state.Started = true;
-                state.Cooldown = 0.2f + 0.8f * (float)_world.Random.NextDouble();
+                state.Cooldown = global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.InRhythmNextDoubleAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.InRhythmNextDoubleScale * (float)_world.Random.NextDouble();
                 return false;
             }
             // Opening fire (not the next round of a stream or a run already under way).
-            if (now - state.FiredAt > weapon.Cooldown * 1.1f + 0.06f)
+            if (now - state.FiredAt > weapon.Cooldown * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.InRhythmCooldownScale + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.InRhythmCooldownAdd)
             {
                 if (TwinJustOpened(v, index, now)) return false;
                 state.OpenedAt = now;
@@ -802,7 +802,7 @@ namespace MachineBrigade.Sim.Combat
             var stick = Sticks(v, v.Arms[index]);
             if (v.Arms[index].Projectile == ProjectileKind.Bomb &&
                 (stick ? StickAllUnsafe(v, index, target)
-                    : freeFall ? StickNearOwn(v, index) : OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + 3f))) return false;
+                    : freeFall ? StickNearOwn(v, index) : OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.CanFireSplashRadiusAdd))) return false;
             // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
             // Play-test 14 (lane G): a warship that holds to fire fires nothing until it has halted (see Operate).
@@ -836,7 +836,7 @@ namespace MachineBrigade.Sim.Combat
         private bool BarrelBusy(Vehicle v, int index)
         {
             var mounts = v.Def.Mounts;
-            if (mounts.Count < 2) return false;
+            if (mounts.Count < global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.BarrelBusyCountMax) return false;
             var now = _world.Time;
             if (index > 0)
                 return SharesBarrel(v, index) && (v.Weapons[0].BurstLeft > 0 || now - v.Weapons[0].FiredAt < BarrelClear);
@@ -952,8 +952,8 @@ namespace MachineBrigade.Sim.Combat
             // Rounds scatter more the farther they fly: tight up close, and at the edge of range
             // wide enough that a long shot can miss outright.
             // The gun's reach (a second round's is its gun's; equipment may lengthen the gun's own).
-            var reach = Math.Clamp(distance / shooter.Arms[index].Range, 0f, 1.2f);
-            var spread = stick || weapon.Guided || weapon.GuidedRocket ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
+            var reach = Math.Clamp(distance / shooter.Arms[index].Range, 0f, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchDistanceMax);
+            var spread = stick || weapon.Guided || weapon.GuidedRocket ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchPowAdd + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchPowScale * MathF.Pow(reach, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchReachExponent));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
             // Prompt 28 I.8: hit and run pays for firing while backing off.
@@ -973,7 +973,7 @@ namespace MachineBrigade.Sim.Combat
                     state.BracketTarget = target;
                     state.BracketShots = 0;
                 }
-                spread *= MathF.Max(0.4f, 1.6f * MathF.Pow(0.7f, state.BracketShots));
+                spread *= MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchPowFloor, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchPowScale2 * MathF.Pow(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchBracketShotsExponent, state.BracketShots));
                 // A target its side has marked (a designator's laser, a radar's fix, a UAV over it): the
                 // SP gun's rounds fall almost on the mark (prompt 8 A.2).
                 if (index == 0 && shooter.Def.MarkedSpread < 1f && aimTarget is Vehicle marked && Marked(marked, shooter.Team)) spread *= shooter.Def.MarkedSpread;
@@ -990,8 +990,8 @@ namespace MachineBrigade.Sim.Combat
                 var laid = weapon.Stick!;
                 var side = new Vector2(-mountState.StickDir.Y, mountState.StickDir.X);
                 var widen = _world.Works.SpreadFactor(shooter, weapon, aimAt);
-                var along = ((float)_world.Random.NextDouble() * 2f - 1f) * laid.JitterAlong * widen;
-                var across = ((float)_world.Random.NextDouble() * 2f - 1f) * laid.JitterAcross * widen;
+                var along = ((float)_world.Random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchNextDoubleScale - 1f) * laid.JitterAlong * widen;
+                var across = ((float)_world.Random.NextDouble() * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchNextDoubleScale - 1f) * laid.JitterAcross * widen;
                 aim += mountState.StickDir * along + side * across;
                 if (OwnNear(shooter.Team, aim, laid.Safety)) return;
             }
@@ -1008,7 +1008,7 @@ namespace MachineBrigade.Sim.Combat
             // ordinary vehicle's muzzle exactly where it was (their Radius was already well under this) while a boss's nudge
             // can no longer eat a meaningful slice of a shot that just cleared its minimum range.
             var toAim = aim - shooter.Position;
-            var nudge = MathF.Min(MathF.Min(shooter.Radius, 3f), toAim.Length() * 0.9f);
+            var nudge = MathF.Min(MathF.Min(shooter.Radius, global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchRadiusCap), toAim.Length() * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchLengthScale);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * nudge;
             // A direct-fire round that meets a wall on its way (the spread took it wide, or the
             // target slipped behind a building mid-salvo) bursts on the wall and damages it.
@@ -1028,7 +1028,7 @@ namespace MachineBrigade.Sim.Combat
             // The bomb-run fix: a boss bay's bomb falls at least its fall from the boss's height (its old shell flight otherwise).
             else if (BayStick(weapon)) travel = MathF.Max(BombFall(shooter), Vector2.Distance(origin, aim) / weapon.ProjectileSpeed);
             else if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
-                travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
+                travel = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchDistanceFloor, Vector2.Distance(origin, aim) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.LaunchSpeedFloor, shooter.Speed));
             // Prompt 25 F2 batch A: a glide bomb flies at its own speed; a simultaneous-impact salvo lands together.
             if (weapon.Glides) travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
             travel = MrsiTravel(shooter, index, pull, travel);
@@ -1113,7 +1113,7 @@ namespace MachineBrigade.Sim.Combat
                 _projectiles.RemoveAt(_projectiles.Count - 1);
                 if (p.Incoming > 0f && _incoming.TryGetValue(p.Target, out var due))
                 {
-                    if (due - p.Incoming > 0.01f) _incoming[p.Target] = due - p.Incoming;
+                    if (due - p.Incoming > global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.UpdateProjectilesDueMin) _incoming[p.Target] = due - p.Incoming;
                     else _incoming.Remove(p.Target);
                 }
                 _world.Damage.ResolveImpact(p);

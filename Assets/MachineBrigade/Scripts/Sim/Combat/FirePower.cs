@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Combat
         private static float OnPaper(WeaponDef w, VehicleDef? carrier)
         {
             if (w.Damage <= 0f) return 0f;
-            var cycle = MathF.Max(0.05f, w.CycleSeconds);
+            var cycle = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.FirePower.OnPaperCycleSecondsFloor, w.CycleSeconds);
             var perCycle = Volley(w);
             // An aircraft's stores: the whole load fired, then taken on again.
             var load = carrier?.LoadOf(w) ?? 0;
@@ -52,8 +52,8 @@ namespace MachineBrigade.Sim.Combat
         public static float LoadSeconds(WeaponDef w, VehicleDef? carrier = null)
         {
             var load = carrier?.LoadOf(w) ?? 0;
-            if (load > 0) return MathF.Max(0.05f, w.CycleSeconds) * MathF.Ceiling(load / (float)Math.Max(1, w.Burst));
-            return w.Ammo > 0 ? MathF.Max(0.05f, w.CycleSeconds) * w.Ammo : 0f;
+            if (load > 0) return MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.FirePower.LoadSecondsCycleSecondsFloor, w.CycleSeconds) * MathF.Ceiling(load / (float)Math.Max(1, w.Burst));
+            return w.Ammo > 0 ? MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.FirePower.LoadSecondsCycleSecondsFloor, w.CycleSeconds) * w.Ammo : 0f;
         }
     }
 }

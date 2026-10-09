@@ -40,7 +40,7 @@ namespace MachineBrigade.Sim.Modes
             _result = null;
             InEndless = true;
             _finiteWaves = Wave;
-            _waveTimer = WaveInterval / MathF.Max(0.5f, Intensity);
+            _waveTimer = WaveInterval / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.ContinueEndlessIntensityFloor, Intensity);
         }
 
         /// <summary>Survival's own loss (sheet: the army wiped out, or the drop zone taken) is the session's; this is the win.</summary>
@@ -77,10 +77,10 @@ namespace MachineBrigade.Sim.Modes
         private static float SurvivalWaveInterval => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SurvivalWaveInterval;
 
         /// <summary>Seconds to the next wave: a minute in Survival's ten, else the old interval by the intensity.</summary>
-        private float NextWaveIn => FiniteWaves > 0 && !InEndless ? SurvivalWaveInterval : WaveInterval / MathF.Max(0.5f, Intensity);
+        private float NextWaveIn => FiniteWaves > 0 && !InEndless ? SurvivalWaveInterval : WaveInterval / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.NextWaveInIntensityFloor, Intensity);
 
         /// <summary>Enemies alive at once: 14, one and a half more each wave, up to 48 (prompt 13 H.9).</summary>
-        private int MaxEnemies => Math.Min(48, 14 + Wave * 3 / 2);
+        private int MaxEnemies => Math.Min(global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.MaxEnemiesWaveCap, global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.MaxEnemiesWaveAdd + Wave * global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.MaxEnemiesWaveScale / global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.MaxEnemiesWaveDivisor);
         public static float ReinforceCooldownSeconds => global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.ReinforceCooldownSeconds;
 
         private static readonly string[] WaveRoster =
@@ -139,7 +139,7 @@ namespace MachineBrigade.Sim.Modes
             for (var i = 0; i < 2; i++)
             {
                 var def = ReinforceRoster[_reinforcements++ % ReinforceRoster.Length];
-                world.SpawnVehicle(def, PlayerTeam, rally + Offset(i, 2, 7f), SimMath.DegToRad(45f));
+                world.SpawnVehicle(def, PlayerTeam, rally + Offset(i, global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.TryReinforceCount, global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.TryReinforceRadius), SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.TryReinforceDegrees));
             }
             ReinforceCooldown = ReinforceCooldownSeconds;
             return true;
@@ -161,16 +161,16 @@ namespace MachineBrigade.Sim.Modes
             // ever), by the difficulty and the deck, with no ceiling but the enemies alive at once; the heavier
             // cards come in as the waves go on, and from wave 8 more and more of them (all by wave 24) as their
             // elite versions, so a line that holds is worn down in the end.
-            var count = Math.Min(room, Math.Max(1, (int)MathF.Round((3f + 0.9f * (Wave - 1)) * Intensity * DeckScale)));
+            var count = Math.Min(room, Math.Max(1, (int)MathF.Round((global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveWaveAdd + global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveWaveScale * (Wave - 1)) * Intensity * DeckScale)));
             if (InEndless) count = Math.Min(count, _lastFiniteSize);
             else if (FiniteWaves > 0 && Wave == FiniteWaves) _lastFiniteSize = count;
-            var reach = Math.Clamp(4 + Wave, 4, WaveRoster.Length);
-            var elite = MathF.Min(1f, (Wave - 7) * 0.06f);
+            var reach = Math.Clamp(global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveWaveAdd2 + Wave, global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveWaveMin, WaveRoster.Length);
+            var elite = MathF.Min(1f, (Wave - global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveWaveSub) * global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveWaveScale2);
             for (var i = 0; i < count; i++)
             {
-                var def = WaveRoster[(Wave * 3 + i) % reach];
-                if (elite > 0f && (Wave + i) % 10 < elite * 10f && world.Catalog.EliteVariant(def) is { } better) def = better;
-                world.SpawnVehicle(def, EnemyTeam, rally + Offset(i, count, 9f), SimMath.DegToRad(225f));
+                var def = WaveRoster[(Wave * global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveWaveScale3 + i) % reach];
+                if (elite > 0f && (Wave + i) % global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveWaveMod < elite * global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveEliteScale && world.Catalog.EliteVariant(def) is { } better) def = better;
+                world.SpawnVehicle(def, EnemyTeam, rally + Offset(i, count, global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveRadius), SimMath.DegToRad(global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxMode.SpawnWaveDegrees));
             }
         }
 

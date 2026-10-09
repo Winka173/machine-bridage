@@ -3,8 +3,9 @@ namespace MbConst;
 internal static class Program
 {
     /// <summary>Writes the empty generated domain files the registry (SimTunables.Pack2.cs) lists, if missing.</summary>
-    private static int Init()
+    private static int Init(string[] args)
     {
+        if (args.Length >= 2 && args[0] == "--fileset" && args[1] == "pass2") Pack2Files.Prefix = "Pass2";
         foreach (var d in Pack2Files.Domains)
             if (!File.Exists(Repo.Abs(Pack2Files.FileOf(d)))) { Pack2Files.Write(d, new List<Pack2Files.Field>()); Console.WriteLine(Pack2Files.FileOf(d)); }
         return 0;
@@ -25,7 +26,7 @@ internal static class Program
             "move" => Move.Run(rest),
             "check" => Check.Run(rest),
             "scan" => Scan.Run(rest),
-            "init" => Init(),
+            "init" => Init(rest),
             _ => 2,
         };
     }

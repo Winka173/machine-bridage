@@ -192,7 +192,7 @@ namespace MachineBrigade.Sim.Bosses
             // Every part that carries it broken: it has lost it until a self-repair puts one back.
             if (!AnyArmed(v, def))
             {
-                s.Next = now + 2.0;
+                s.Next = now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.TryBeginNowAdd;
                 return;
             }
             if (quake)
@@ -222,11 +222,11 @@ namespace MachineBrigade.Sim.Bosses
             if (PressureDeferP4(v, s, now)) return;
             if (!AimAt(v, def, out var aim))
             {
-                s.Next = now + 3.0;
+                s.Next = now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.TryBeginNowAdd2;
                 return;
             }
             var scale = ScaleOf(v, settings);
-            var warn = MathF.Max(0.5f, def.Warn + scale.Warn);
+            var warn = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.TryBeginWarnFloor, def.Warn + scale.Warn);
             s.Stage = BigStage.Charging;
             s.LastStart = s.WarnStart = now;
             s.FireAt = now + warn;
@@ -236,7 +236,7 @@ namespace MachineBrigade.Sim.Bosses
             s.Origin = v.Position;
             s.Forward = SimMath.Forward(v.Heading);
             var toward = aim - v.Position;
-            s.Axis = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
+            s.Axis = toward.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.TryBeginLengthSquaredMin ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
             s.Blind = def.Spotter != null && v.IsPartBroken(v.Def.PartIndex(def.Spotter));
             s.WasStunned = false;
             // Prompt 20 J.4: a diving boss comes up to launch; only the parts carrying it show until it fires.
@@ -244,7 +244,7 @@ namespace MachineBrigade.Sim.Bosses
             Plan(v, s, now);
             Hold(v, s, true);
             if (def.Exposed > 1f) v.BigTaken = def.Exposed;
-            if (def.Halt) _world.Status.Slow(v, 0.95f, warn);
+            if (def.Halt) _world.Status.Slow(v, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.TryBeginShare, warn);
             foreach (var m in def.Hold)
                 switch (m)
                 {
@@ -262,8 +262,8 @@ namespace MachineBrigade.Sim.Bosses
             foreach (var m in def.Hold)
                 switch (m)
                 {
-                    case "bombard" when v.Def.Bombard is { } b && v.BombardNext - b.Every * v.PartCadence > now - b.Warn - 0.5:
-                    case "cruise" when v.Def.Cruise is { } c && v.CruiseNext - c.Every * v.PartCadence > now - c.Warn - 0.5:
+                    case "bombard" when v.Def.Bombard is { } b && v.BombardNext - b.Every * v.PartCadence > now - b.Warn - global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.HeldInFlightNowSub:
+                    case "cruise" when v.Def.Cruise is { } c && v.CruiseNext - c.Every * v.PartCadence > now - c.Warn - global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.HeldInFlightNowSub:
                         return true;
                 }
             return false;
@@ -277,7 +277,7 @@ namespace MachineBrigade.Sim.Bosses
             {
                 case BigAim.Self:
                     // Only worth it with an enemy on the ground inside the ring.
-                    return Spot(v, def.Strikes[0].Radius + 2f, false, out _) > 0;
+                    return Spot(v, def.Strikes[0].Radius + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.AimAtRadiusAdd, false, out _) > 0;
                 case BigAim.Still:
                     return Spot(v, def.Reach, true, out aim) > 0 || Spot(v, def.Reach, false, out aim) > 0;
                 case BigAim.Hq:
@@ -338,8 +338,8 @@ namespace MachineBrigade.Sim.Bosses
                 var sum = Vector2.Zero;
                 foreach (var o in list)
                 {
-                    if (!Target(v, o, still) || Vector2.DistanceSquared(o.Position, e.Position) > 15f * 15f) continue;
-                    weight += o.Def.Static ? 4f : MathF.Max(1f, o.Def.CpCost);
+                    if (!Target(v, o, still) || Vector2.DistanceSquared(o.Position, e.Position) > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SpotScale * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SpotScale) continue;
+                    weight += o.Def.Static ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SpotStaticTrue : MathF.Max(1f, o.Def.CpCost);
                     n++;
                     sum += o.Position;
                 }
@@ -378,7 +378,7 @@ namespace MachineBrigade.Sim.Bosses
                 candidates.Add((sum / count, weight, e.Id.Value));
             }
             candidates.Sort((a, b) => a.weight != b.weight ? b.weight.CompareTo(a.weight) : a.id.CompareTo(b.id));
-            var apart = radius * 1.6f;
+            var apart = radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.RodSpotsRadiusScale;
             foreach (var c in candidates)
             {
                 if (spots.Count >= n) break;
@@ -389,16 +389,16 @@ namespace MachineBrigade.Sim.Bosses
             }
             // Fewer groups than rods: round the first spot, a ring's width out, evenly.
             var centre = spots.Count > 0 ? spots[0] : fallback;
-            for (var k = 0; spots.Count < n && k < n * 2; k++)
+            for (var k = 0; spots.Count < n && k < n * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.RodSpotsNScale; k++)
             {
                 var a = k * SimMath.Tau / Math.Max(1, n - 1);
-                spots.Add(_world.ClampToMap(centre + new Vector2(MathF.Cos(a), MathF.Sin(a)) * radius * 1.7f));
+                spots.Add(_world.ClampToMap(centre + new Vector2(MathF.Cos(a), MathF.Sin(a)) * radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.RodSpotsRadiusScale2));
             }
             return spots;
         }
 
         /// <summary>How much a rod wants a unit: the thicker its armour the more (a heavy tank before a jeep), a tower a little.</summary>
-        private static float RodWeight(Vehicle o) => o.Def.Static ? 3f : (1f + o.Def.Armour.Front) * (1f + o.Def.Armour.Front) + MathF.Max(1f, o.Def.CpCost) * 0.5f;
+        private static float RodWeight(Vehicle o) => o.Def.Static ? global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.RodWeightStaticTrue : (1f + o.Def.Armour.Front) * (1f + o.Def.Armour.Front) + MathF.Max(1f, o.Def.CpCost) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.RodWeightMaxScale;
 
         /// <summary>What a big attack aims at: the other side's ground units and towers (not walls, not bosses).</summary>
         private static bool Target(Vehicle v, Vehicle e, bool still) =>
@@ -502,7 +502,7 @@ namespace MachineBrigade.Sim.Bosses
                             var n = RoundsOf(v, st);
                             for (var k = 0; k < n; k++)
                             {
-                                var at = _world.ClampToMap(s.Aim + axis * (-st.Length * 0.5f + st.Length * (k + 0.5f) / n));
+                                var at = _world.ClampToMap(s.Aim + axis * (-st.Length * 0.5f + st.Length * (k + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PlanKAdd) / n));
                                 s.ZoneList.Add(new BigZone(at, st.Radius, fire + k * st.Interval, true));
                             }
                         }
@@ -518,7 +518,7 @@ namespace MachineBrigade.Sim.Bosses
                         break;
                     }
                     case BigShape.Swarm:
-                        s.ZoneList.Add(new BigZone(s.Aim, MathF.Max(8f, st.Area), fire, false));
+                        s.ZoneList.Add(new BigZone(s.Aim, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PlanAreaFloor, st.Area), fire, false));
                         break;
                     case BigShape.Missile:
                     {
@@ -528,7 +528,7 @@ namespace MachineBrigade.Sim.Bosses
                         for (var k = 0; k < n; k++)
                         {
                             var at = spots[k % spots.Count];
-                            var due = fire + 0.35 * k + MathF.Max(st.Flight, Vector2.Distance(v.Position, at) / MissileTopSpeed);
+                            var due = fire + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PlanKScale * k + MathF.Max(st.Flight, Vector2.Distance(v.Position, at) / MissileTopSpeed);
                             s.Points.Add((at, due));
                             // One ring a target (the second missile at the same spot shares it).
                             if (k < spots.Count) s.ZoneList.Add(new BigZone(at, st.Radius, due, true));
@@ -536,7 +536,7 @@ namespace MachineBrigade.Sim.Bosses
                         break;
                     }
                     case BigShape.Drop:
-                        s.ZoneList.Add(new BigZone(Offset(v, st.At), 8f, fire, false));
+                        s.ZoneList.Add(new BigZone(Offset(v, st.At), global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PlanRadius, fire, false));
                         break;
                     case BigShape.Rods:
                     {
@@ -564,7 +564,7 @@ namespace MachineBrigade.Sim.Bosses
                         for (var k = -1; k <= 1; k++)
                         {
                             var dir = SimMath.Forward(v.Heading + k * half * 0.66f);
-                            s.ZoneList.Add(new BigZone(_world.ClampToMap(SwingCentre(v) + dir * st.Radius * 0.55f), st.Radius * 0.5f, fire, true));
+                            s.ZoneList.Add(new BigZone(_world.ClampToMap(SwingCentre(v) + dir * st.Radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PlanDirScale), st.Radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PlanRadiusScale, fire, true));
                         }
                         break;
                     }
@@ -572,7 +572,7 @@ namespace MachineBrigade.Sim.Bosses
                     {
                         var to = ChargeEnd(v, s.Axis, st.Length);
                         var mid = (v.Position + to) * 0.5f;
-                        s.ZoneList.Add(new BigZone(mid, s.Axis, Vector2.Distance(v.Position, to) * 0.5f, st.Width * 0.5f, fire, true, 1f));
+                        s.ZoneList.Add(new BigZone(mid, s.Axis, Vector2.Distance(v.Position, to) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PlanDistanceScale, st.Width * 0.5f, fire, true, 1f));
                         break;
                     }
                 }
@@ -637,7 +637,7 @@ namespace MachineBrigade.Sim.Bosses
                 s.FireAt += def.EmpDelay;
                 for (var i = 0; i < s.ZoneList.Count; i++) s.ZoneList[i] = s.ZoneList[i].Later(def.EmpDelay);
                 for (var i = 0; i < s.Points.Count; i++) s.Points[i] = (s.Points[i].at, s.Points[i].due + def.EmpDelay);
-                _world.Emit(SimEvent.Big(v, def.Id, 4, s.Aim, def.EmpDelay));
+                _world.Emit(SimEvent.Big(v, def.Id, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ChargeStage, s.Aim, def.EmpDelay));
             }
             s.WasStunned = v.Stunned;
             if (now >= s.FireAt) Fire(v, s, settings, now);
@@ -660,7 +660,7 @@ namespace MachineBrigade.Sim.Bosses
             v.BigTaken = 1f;
             // Its dodgers go back now.
             for (var i = 0; i < _dodges.Count; i++)
-                if (_dodges[i].back > s.Now + 0.5) _dodges[i] = (_dodges[i].unit, _dodges[i].before, _dodges[i].from, _dodges[i].exit, Math.Min(_dodges[i].back, s.Now + 1.0));
+                if (_dodges[i].back > s.Now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FinishNowAdd) _dodges[i] = (_dodges[i].unit, _dodges[i].before, _dodges[i].from, _dodges[i].exit, Math.Min(_dodges[i].back, s.Now + 1.0));
         }
 
         // ================================================================== firing
@@ -704,7 +704,7 @@ namespace MachineBrigade.Sim.Bosses
                                 var scatter = s.Blind ? def.BlindScatter : st.Scatter;
                                 if (scatter > 0f) at += RandomIn(rng, scatter);
                             }
-                            Round(v, s, st, _world.ClampToMap(at), now + (k / salvo) * gap + 0.08 * (k % salvo), scale, k);
+                            Round(v, s, st, _world.ClampToMap(at), now + (k / salvo) * gap + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FireKScale * (k % salvo), scale, k);
                         }
                         break;
                     }
@@ -714,13 +714,13 @@ namespace MachineBrigade.Sim.Bosses
                         var across = new Vector2(axis.Y, -axis.X);
                         for (var k = 0; k < n; k++)
                         {
-                            var along = -st.Length * 0.5f + st.Length * (k + 0.5f) / n;
-                            var lateral = st.Width > 0f && st.Interval <= 0f ? ((float)rng.NextDouble() - 0.5f) * st.Width * 0.7f : 0f;
+                            var along = -st.Length * 0.5f + st.Length * (k + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FireKAdd) / n;
+                            var lateral = st.Width > 0f && st.Interval <= 0f ? ((float)rng.NextDouble() - 0.5f) * st.Width * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FireNextDoubleScale : 0f;
                             var due = st.Interval > 0f ? now + k * st.Interval : now + (n > 1 ? st.Duration * k / (n - 1) : 0f);
                             Round(v, s, st, _world.ClampToMap(s.Aim + axis * along + across * lateral), due, scale, k);
                         }
                         if (st.Pass != null && _world.Catalog.TryGetSupport(st.Pass, out var pass))
-                            _world.Emit(SimEvent.AircraftPass(v.Team, pass, s.Aim - axis * st.Length * 0.5f, s.Aim + axis * st.Length * 0.5f, MathF.Max(0.5f, st.Duration)));
+                            _world.Emit(SimEvent.AircraftPass(v.Team, pass, s.Aim - axis * st.Length * 0.5f, s.Aim + axis * st.Length * 0.5f, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FireDurationFloor, st.Duration)));
                         break;
                     }
                     case BigShape.Line:
@@ -740,8 +740,8 @@ namespace MachineBrigade.Sim.Bosses
                             var (at, due) = s.Points[k];
                             var part = ArmedPart(v, st, k);
                             var from = part >= 0 ? v.PartPosition(part) : v.Position;
-                            var launch = now + 0.35 * k;
-                            Launch(v, s, st, from, at, launch, Math.Max(launch + 0.5, due), scale, EntityId.None, part);
+                            var launch = now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FireKScale2 * k;
+                            Launch(v, s, st, from, at, launch, Math.Max(launch + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.FireLaunchAdd, due), scale, EntityId.None, part);
                         }
                         break;
                     case BigShape.Drop:
@@ -774,7 +774,7 @@ namespace MachineBrigade.Sim.Bosses
             var salvo = Math.Max(1, st.Salvo);
             var volleys = (n + salvo - 1) / salvo;
             var gap = st.Every > 0f ? st.Every : volleys > 1 ? st.Duration / (volleys - 1) : 0f;
-            return (k / salvo) * gap + 0.08 * (k % salvo);
+            return (k / salvo) * gap + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.CircleDelayKScale * (k % salvo);
         }
 
         private static Vector2 RandomIn(Random rng, float radius)
@@ -811,7 +811,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (!b.Shot && now >= b.Due - Lead(b))
                 {
                     b.Shot = true;
-                    if (b.Boss.IsAlive) Shoot(b.Boss, b.Mount, b.Look, b.From, b.At, (float)Math.Max(0.05, b.Due - now), EntityId.None, b.Part);
+                    if (b.Boss.IsAlive) Shoot(b.Boss, b.Mount, b.Look, b.From, b.At, (float)Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepBlastsDueFloor, b.Due - now), EntityId.None, b.Part);
                 }
                 if (now < b.Due) continue;
                 _bigBlasts.RemoveAt(i--);
@@ -842,13 +842,13 @@ namespace MachineBrigade.Sim.Bosses
         /// </summary>
         // Flight feel 05/10 (lane B): 0.9 s was tuned for 180-300 m/s rounds; the flight-feel speeds (mortar 40, howitzer 55-65,
         // the 460 mm 85) fly up to ~2 s at full reach, so the cap is 2.5 s: the shell's view flies at its data speed, not faster.
-        private const double MaxLead = 2.5;
+        private static double MaxLead => global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.MaxLead;
 
         private double Lead(BigBlast b)
         {
             var round = b.Look ?? (b.Mount >= 0 && b.Mount < b.Boss.Def.Mounts.Count ? b.Boss.Arms[b.Mount] : null);
             if (round == null || round.ProjectileSpeed <= 1f) return MaxLead;
-            return Math.Clamp(Vector2.Distance(b.From, b.At) / round.ProjectileSpeed, 0.1, MaxLead);
+            return Math.Clamp(Vector2.Distance(b.From, b.At) / round.ProjectileSpeed, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.LeadDistanceMin, MaxLead);
         }
 
         /// <summary>
@@ -865,7 +865,7 @@ namespace MachineBrigade.Sim.Bosses
             var info = s.Shape == BigShape.Rods
                 ? new HitInfo(boss, boss.Team, null, at, HitKind.Direct, true).WithPen(s.Pen, true)
                 : new HitInfo(boss, boss.Team, null, at, HitKind.Strike, true).At(at).WithPen(s.Pen, true, s.Thermo);
-            var half = side.LengthSquared() > 0.01f;
+            var half = side.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BlastAtLengthSquaredMin;
             // Prompt 26 B.3: two layers, the core (s.Radius) and the edge (twice as wide); splash 04/10: the table's splash row.
             var outer = s.EdgeRadius;
             var table = _world.Catalog.Damage;
@@ -894,7 +894,7 @@ namespace MachineBrigade.Sim.Bosses
                     var share = Share(table, s, edge, outer);
                     _world.Damage.Apply(prop, damage * share * (prop.Kind == TargetKind.Structure ? s.Structure : 1f), s.Type, info);
                 }
-            var tier = damage >= 800f ? ExplosionTier.Ultimate : damage >= 200f ? ExplosionTier.Huge : damage >= 50f ? ExplosionTier.Large : ExplosionTier.Medium;
+            var tier = damage >= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BlastAtDamageMin ? ExplosionTier.Ultimate : damage >= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BlastAtDamageMin2 ? ExplosionTier.Huge : damage >= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BlastAtDamageMin3 ? ExplosionTier.Large : ExplosionTier.Medium;
             _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, s.Radius, 0f, tier) { Edge = outer }, boss.Id));
         }
 
@@ -907,9 +907,9 @@ namespace MachineBrigade.Sim.Bosses
         private static float Share(DamageTable table, BigStrikeDef s, float edge, float outer)
         {
             if (outer > s.Radius) return table.SplashFalloff(edge, s.Radius, outer);
-            if (!s.IsBlast) return 1f - (1f - s.Falloff) * Math.Clamp(edge / MathF.Max(0.01f, s.Radius), 0f, 1f);
+            if (!s.IsBlast) return 1f - (1f - s.Falloff) * Math.Clamp(edge / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ShareRadiusFloor, s.Radius), 0f, 1f);
             var share = table.SplashFalloff(edge, 0f, s.Radius);
-            return s.Thermo && share > 0f && share < 1f ? 1f - (1f - share) * 0.5f : share;
+            return s.Thermo && share > 0f && share < 1f ? 1f - (1f - share) * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ShareShareScale : share;
         }
 
         /// <summary>Round the boss (the Inferno's ring): all round with every part standing, else each standing part's half.</summary>
@@ -958,7 +958,7 @@ namespace MachineBrigade.Sim.Bosses
             }
             var part = ArmedPart(v, st, 0);
             var mount = part >= 0 && v.Def.Parts[part].Mounts.Count > 0 ? v.Def.Parts[part].Mounts[0] : -1;
-            Shoot(v, mount, LookOf(st), part >= 0 ? v.PartPosition(part) : v.Position, s.Origin + s.Axis * st.Length, 0.12f, EntityId.None, part);
+            Shoot(v, mount, LookOf(st), part >= 0 ? v.PartPosition(part) : v.Position, s.Origin + s.Axis * st.Length, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.PierceSeconds, EntityId.None, part);
         }
 
         /// <summary>While it fires: the sweep runs, the boost holds, a boss hurt enough breaks off; done once all has landed.</summary>
@@ -1001,8 +1001,8 @@ namespace MachineBrigade.Sim.Bosses
                 return;
             }
             var zone = s.ZoneList.Count > 0 ? s.ZoneList[0] : new BigZone(s.Aim, s.Axis, st.Length * 0.5f, st.Width * 0.5f, now, true);
-            var t = (float)Math.Clamp((now - s.FireAt) / Math.Max(0.1, st.Duration), 0.0, 1.0);
-            Vector2 At(float u) => zone.Centre + zone.Axis * (-zone.HalfLength + 2f * zone.HalfLength * u);
+            var t = (float)Math.Clamp((now - s.FireAt) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SweepDurationFloor, st.Duration), 0.0, 1.0);
+            Vector2 At(float u) => zone.Centre + zone.Axis * (-zone.HalfLength + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SweepHalfLengthScale * zone.HalfLength * u);
             var from = At(s.SweepDone);
             var to = At(t);
             var damage = st.Damage * DamageOf(v, ScaleOf(v, _world.BigAttackSettings!));
@@ -1071,7 +1071,7 @@ namespace MachineBrigade.Sim.Bosses
             // Its targets: the heaviest armour in the group first (it strikes the roof), at most so many; a strike with
             // prey (prompt 22 E) takes its prey within the attack's reach, and the group round the aim only with none.
             _picked.Clear();
-            var area = MathF.Max(8f, st.Area);
+            var area = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SwarmAreaFloor, st.Area);
             if (st.Prey != BigPrey.None) _picked.AddRange(Prey(v, st, s.Def.Reach, st.Targets));
             if (_picked.Count == 0)
             {
@@ -1079,8 +1079,8 @@ namespace MachineBrigade.Sim.Bosses
                     if (Target(v, e, false) && Vector2.DistanceSquared(e.Position, s.Aim) <= area * area) _picked.Add(e);
                 _picked.Sort((a, b) =>
                 {
-                    var pa = a.Def.Armour.Front * 100 + a.Def.CpCost;
-                    var pb = b.Def.Armour.Front * 100 + b.Def.CpCost;
+                    var pa = a.Def.Armour.Front * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SwarmFrontScale + a.Def.CpCost;
+                    var pb = b.Def.Armour.Front * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SwarmFrontScale + b.Def.CpCost;
                     return pa != pb ? pb.CompareTo(pa) : a.Id.Value.CompareTo(b.Id.Value);
                 });
             }
@@ -1091,7 +1091,7 @@ namespace MachineBrigade.Sim.Bosses
                 var from = part >= 0 ? v.PartPosition(part) : v.Position;
                 var target = targets > 0 ? _picked[k % targets] : null;
                 var to = target?.Position ?? _world.ClampToMap(s.Aim + RandomIn(_world.Random, area));
-                var launch = now + 0.12 * k;
+                var launch = now + global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.SwarmKScale * k;
                 Launch(v, s, st, from, to, launch, launch + Vector2.Distance(from, to) / st.Speed, scale, target?.Id ?? EntityId.None, part);
             }
         }
@@ -1120,7 +1120,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (!f.Shot)
                 {
                     f.Shot = true;
-                    if (f.Boss.IsAlive) Shoot(f.Boss, f.Mount, f.Look, f.From, f.To, (float)Math.Max(0.1, f.Arrive - now), f.Target, f.Part);
+                    if (f.Boss.IsAlive) Shoot(f.Boss, f.Mount, f.Look, f.From, f.To, (float)Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepFlyersArriveFloor, f.Arrive - now), f.Target, f.Part);
                 }
                 if (now >= f.Arrive)
                 {
@@ -1129,7 +1129,7 @@ namespace MachineBrigade.Sim.Bosses
                     continue;
                 }
                 if (!check) continue;
-                var t = (float)Math.Clamp((now - f.Launch) / Math.Max(0.1, f.Arrive - f.Launch), 0.0, 1.0);
+                var t = (float)Math.Clamp((now - f.Launch) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepFlyersArriveFloor, f.Arrive - f.Launch), 0.0, 1.0);
                 var at = Vector2.Lerp(f.From, f.To, t);
                 if (!Intercepted(f, at)) continue;
                 _bigFlyers.RemoveAt(i--);
@@ -1146,7 +1146,7 @@ namespace MachineBrigade.Sim.Bosses
         {
             var rules = _world.Catalog.BigAttackRules;
             var table = _world.Catalog.Damage;
-            var seconds = FlyerTicks * 0.05f;
+            var seconds = FlyerTicks * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.InterceptedFlyerTicksScale;
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == f.Boss.Team || e.Team < 0 || e.Stunned) continue;
@@ -1186,7 +1186,7 @@ namespace MachineBrigade.Sim.Bosses
             }
             var jammed = _world.Abilities.Jammed(f.To, boss.Team) && _world.Random.NextDouble() < global::MachineBrigade.Sim.Content.SimTunables.Weapons.JamRules.SwarmJamChance;
             Vehicle? target = null;
-            if (!jammed && f.Target.IsValid && _world.TryGetVehicle(f.Target, out var t) && t.IsAlive && Vector2.Distance(t.Position, f.To) < 8f) target = t;
+            if (!jammed && f.Target.IsValid && _world.TryGetVehicle(f.Target, out var t) && t.IsAlive && Vector2.Distance(t.Position, f.To) < global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ArrivedDistanceMax) target = t;
             if (!jammed && target == null)
             {
                 // Its target gone: the nearest other one on the ground close by.
@@ -1200,7 +1200,7 @@ namespace MachineBrigade.Sim.Bosses
                     target = e;
                 }
             }
-            var at = target?.Position ?? f.To + (jammed ? RandomIn(_world.Random, 7f) : Vector2.Zero);
+            var at = target?.Position ?? f.To + (jammed ? RandomIn(_world.Random, global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.ArrivedRadius) : Vector2.Zero);
             if (target != null)
                 _world.Damage.Apply(target, st.Damage * f.Scale, st.Type, new HitInfo(boss, boss.Team, null, f.From, HitKind.Direct, true).WithPen(st.Pen, st.Top));
             _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, st.Radius, 0f, ExplosionTier.Large), boss.Id));
@@ -1212,25 +1212,25 @@ namespace MachineBrigade.Sim.Bosses
         {
             _bigFires.Add((at, fire.Radius, now + fire.Seconds, fire.Dps, boss, side));
             // Patches of fire for the view: one for a small fire, a ring of them for a sea of flame (one half with a side).
-            if (fire.Radius <= 9f)
+            if (fire.Radius <= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BurnRadiusMax)
             {
                 _world.Emit(SimEvent.FireTrail(boss, at, fire.Seconds, fire.Radius));
                 return;
             }
-            _world.Emit(SimEvent.FireTrail(boss, at, fire.Seconds, fire.Radius * 0.35f));
+            _world.Emit(SimEvent.FireTrail(boss, at, fire.Seconds, fire.Radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BurnRadiusScale));
             for (var k = 0; k < 8; k++)
             {
                 var a = k * SimMath.Tau / 8f;
                 var dir = new Vector2(MathF.Cos(a), MathF.Sin(a));
-                if (side.LengthSquared() > 0.01f && Vector2.Dot(dir, side) < 0f) continue;
-                _world.Emit(SimEvent.FireTrail(boss, _world.ClampToMap(at + dir * fire.Radius * 0.65f), fire.Seconds, fire.Radius * 0.35f));
+                if (side.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BurnLengthSquaredMin && Vector2.Dot(dir, side) < 0f) continue;
+                _world.Emit(SimEvent.FireTrail(boss, _world.ClampToMap(at + dir * fire.Radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BurnDirScale), fire.Seconds, fire.Radius * global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.BurnRadiusScale));
             }
         }
 
         /// <summary>Twice a second: the burning ground sets the other side's ground units in it on fire.</summary>
         private void StepFires(double now)
         {
-            if (_bigFires.Count == 0 || _world.Tick % 10 != 5) return;
+            if (_bigFires.Count == 0 || _world.Tick % global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepFiresTickMod != global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepFiresTickIs) return;
             for (var i = _bigFires.Count - 1; i >= 0; i--)
             {
                 var (at, radius, until, dps, boss, side) = _bigFires[i];
@@ -1239,7 +1239,7 @@ namespace MachineBrigade.Sim.Bosses
                     _bigFires.RemoveAt(i);
                     continue;
                 }
-                var half = side.LengthSquared() > 0.01f;
+                var half = side.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepFiresLengthSquaredMin;
                 foreach (var e in _world.VehicleList)
                 {
                     if (!e.IsAlive || e.Team == boss.Team || e.Team < 0 || e.Flying || e.Def.Boss) continue;
@@ -1258,7 +1258,7 @@ namespace MachineBrigade.Sim.Bosses
             if (!v.BigQuake || v.BigAttack is not { } s || _world.BigAttackSettings is not { } settings) return warn;
             var st = s.Def.Strikes[0];
             var scale = ScaleOf(v, settings);
-            warn = MathF.Max(0.5f, s.Def.Warn + scale.Warn);
+            warn = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.QuakeWarnedWarnFloor, s.Def.Warn + scale.Warn);
             var now = _world.Time;
             s.WarnStart = now;
             s.FireAt = now + warn;
@@ -1315,7 +1315,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (InAnyZone(s, exit, e.Radius)) exit = _world.ClampToMap(other);
                 if (InAnyZone(s, exit, e.Radius)) continue;
                 var speed = e.Def.Speed * e.SpeedFactor;
-                if (speed <= 0.1f || Vector2.Distance(e.Position, exit) / speed > zone.Due - now - 0.2) continue;
+                if (speed <= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.DodgeSpeedMax || Vector2.Distance(e.Position, exit) / speed > zone.Due - now - global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.DodgeDueSub) continue;
                 var before = e.Order;
                 for (var k = _dodges.Count - 1; k >= 0; k--)
                     if (_dodges[k].unit == e)
@@ -1344,7 +1344,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (now < back) continue;
                 _dodges.RemoveAt(i);
                 // Still on our order (or there and idle); given another since (by the player or its commander): leave it be.
-                var ours = unit.Order.Kind == OrderKind.Idle || (unit.Order.Kind == OrderKind.Move && Vector2.Distance(unit.Order.Point, exit) <= 2f);
+                var ours = unit.Order.Kind == OrderKind.Idle || (unit.Order.Kind == OrderKind.Move && Vector2.Distance(unit.Order.Point, exit) <= global::MachineBrigade.Sim.Content.SimTunables.Bosses.BossSystem.StepDodgesDistanceMax);
                 if (!unit.IsAlive || !ours) continue;
                 switch (before.Kind)
                 {

@@ -32,7 +32,7 @@ namespace MachineBrigade.Sim.AI
                 v.SquadTargets = tactic.Modules.Targets;
                 ExplainTarget(world, s, v, tactic);
                 // D.4: a standing vehicle with a thicker front turns it to the threat (the turret aims on its own).
-                v.FaceHeading = !v.IsMoving && threat is { } t && Vector2.Distance(t, v.Position) <= s.Reach * 1.5f &&
+                v.FaceHeading = !v.IsMoving && threat is { } t && Vector2.Distance(t, v.Position) <= s.Reach * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnitsReachScale &&
                                 v.ArmourOn(ArmorFace.Front) > v.ArmourOn(ArmorFace.Side)
                     ? SimMath.HeadingOf(t - v.Position)
                     : null;
@@ -40,9 +40,9 @@ namespace MachineBrigade.Sim.AI
                 if (role == null) continue;
                 // Scouts keep to the edge of their sight, not in the fight.
                 if (role.Id == "Recon" && threat is { } seen && s.State == SquadState.Combat &&
-                    Vector2.Distance(seen, v.Position) < v.Def.VisionRange * 0.75f && !v.IsMoving)
+                    Vector2.Distance(seen, v.Position) < v.Def.VisionRange * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnitsVisionRangeScale && !v.IsMoving)
                 {
-                    var back = world.Map.Clamp(seen + Direction(seen, v.Position) * v.Def.VisionRange * 0.9f, 6f);
+                    var back = world.Map.Clamp(seen + Direction(seen, v.Position) * v.Def.VisionRange * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnitsDirectionScale, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.UnitsMargin);
                     if (world.Grid.IsWalkable(back)) world.Submit(new Command(CommandType.Move, _commander.Team, new[] { id }, back));
                     continue;
                 }
@@ -71,7 +71,7 @@ namespace MachineBrigade.Sim.AI
                     foreach (var x in tactic.Modules.Targets)
                         if (x == g) factors.Add(new Factor("tacticTarget", 1f));
                 if (t.Target == v.Id) factors.Add(new Factor("shootsAtUs", 1f));
-                if (t.Hp < t.MaxHp * 0.3f) factors.Add(new Factor("nearlyDead", 1f));
+                if (t.Hp < t.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ExplainTargetMaxHpScale) factors.Add(new Factor("nearlyDead", 1f));
                 factors.Add(new Factor("effectiveDamage", 1f));
                 if (!t.IsVisibleTo(v.Team)) factors.Add(new Factor("notInSight", -1f));
             }
@@ -96,7 +96,7 @@ namespace MachineBrigade.Sim.AI
                 case OverwhelmedMove.Smoke:
                     foreach (var z in world.Strikes.Smoke)
                         if (Vector2.Distance(z.Centre, v.Position) < z.Radius)
-                            spot = z.Centre + Direction(z.Centre, v.Position) * (z.Radius + 4f);
+                            spot = z.Centre + Direction(z.Centre, v.Position) * (z.Radius + global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ShortMoveRadiusAdd);
                     break;
                 case OverwhelmedMove.Cover:
                     // The nearest of a few spots with less anti-tank reach on it.
@@ -117,7 +117,7 @@ namespace MachineBrigade.Sim.AI
                     break;
             }
             if (spot is not { } to) return;
-            to = world.Map.Clamp(to, 4f);
+            to = world.Map.Clamp(to, global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.ShortMoveMargin);
             if (!world.Grid.IsWalkable(to)) return;
             _shortMoveAt[v.Id] = now;
             world.Submit(new Command(CommandType.AttackMove, _commander.Team, new[] { v.Id }, UnsharedSlot(world, v, to)));
@@ -128,12 +128,12 @@ namespace MachineBrigade.Sim.AI
         {
             if (intel.Chokepoints.Count == 0) return false;
             var dir = Direction(from, to);
-            var end = from + dir * MathF.Min(40f, Vector2.Distance(from, to));
+            var end = from + dir * MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CrowdedDistanceCap, Vector2.Distance(from, to));
             foreach (var c in intel.Chokepoints)
             {
                 var p = intel.CellCentre(c);
                 var along = Math.Clamp(Vector2.Dot(p - from, dir), 0f, Vector2.Distance(from, end));
-                if (Vector2.Distance(from + dir * along, p) < 12f && intel.Density[c] >= 3) return true;
+                if (Vector2.Distance(from + dir * along, p) < global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CrowdedDistanceMax && intel.Density[c] >= global::MachineBrigade.Sim.Content.SimTunables.Ai.SquadLayer.CrowdedDensityMin) return true;
             }
             return false;
         }

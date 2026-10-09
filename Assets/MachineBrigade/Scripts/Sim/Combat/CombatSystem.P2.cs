@@ -70,7 +70,7 @@ namespace MachineBrigade.Sim.Combat
         private bool ThreatensNear(Vehicle v, Vehicle other)
         {
             if (!_world.TryGetVehicle(other.Target, out var victim) || victim.Team != v.Team || victim == v) return false;
-            if (Vector2.DistanceSquared(victim.Position, v.Position) > 15f * 15f) return false;
+            if (Vector2.DistanceSquared(victim.Position, v.Position) > global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ThreatensNearScale * global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ThreatensNearScale) return false;
             var w = other.Def.Weapon;
             return w.Damage > 0f && w.CanTarget(victim.Flying) && Vector2.Distance(other.Position, victim.Position) - victim.Radius <= w.Range;
         }

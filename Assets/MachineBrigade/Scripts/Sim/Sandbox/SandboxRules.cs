@@ -242,9 +242,9 @@ namespace MachineBrigade.Sim.Sandbox
                     var radius = MathF.Max(spacing, spacing * (count - 1) / MathF.PI);
                     for (var i = 0; i < count; i++)
                     {
-                        var t = count == 1 ? 0.5f : i / (float)(count - 1);
+                        var t = count == 1 ? global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxRules.FormationCountTrue : i / (float)(count - 1);
                         var a = (t - 0.5f) * MathF.PI;
-                        list.Add(centre + right * (MathF.Sin(a) * radius) + forward * ((MathF.Cos(a) - 0.5f) * radius));
+                        list.Add(centre + right * (MathF.Sin(a) * radius) + forward * ((MathF.Cos(a) - global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxRules.FormationCosSub) * radius));
                     }
                     break;
                 }
@@ -254,6 +254,6 @@ namespace MachineBrigade.Sim.Sandbox
         }
 
         /// <summary>The spacing that keeps a formation's hulls apart.</summary>
-        public static float Spacing(VehicleDef def) => MathF.Max(4f, def.HullBound * 2f + 2.5f);
+        public static float Spacing(VehicleDef def) => MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxRules.SpacingHullBoundFloor, def.HullBound * global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxRules.SpacingHullBoundScale + global::MachineBrigade.Sim.Content.SimTunables.Modes.SandboxRules.SpacingHullBoundAdd);
     }
 }

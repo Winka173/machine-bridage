@@ -25,7 +25,7 @@ namespace MachineBrigade.Sim.Content
         {
             if (def.Boss) return WeightClass.Heavy;
             if (def.Flying || def.Armour.GroundClass != ArmorClass.Heavy) return WeightClass.Light;
-            return def.MaxHp >= 1400f ? WeightClass.Heavy : WeightClass.Medium;
+            return def.MaxHp >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleDef.InferWeightMaxHpMin ? WeightClass.Heavy : WeightClass.Medium;
         }
     }
 }

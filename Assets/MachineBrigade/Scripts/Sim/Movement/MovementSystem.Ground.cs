@@ -29,7 +29,7 @@ namespace MachineBrigade.Sim.Movement
         /// </summary>
         internal void ClearGround(Vehicle defence)
         {
-            var reach = MathF.Max(defence.Def.Length, defence.Def.Width) * 0.4f + SimWorld.ObstacleClearance + _world.Grid.CellSize;
+            var reach = MathF.Max(defence.Def.Length, defence.Def.Width) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ClearGroundMaxScale + SimWorld.ObstacleClearance + _world.Grid.CellSize;
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Flying || v.Def.Static || v == defence || _world.Grid.IsWalkable(v.Position)) continue;

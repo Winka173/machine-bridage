@@ -480,7 +480,7 @@ namespace MachineBrigade.Sim.Events
         /// or an EventNotice's (its Mount), prompt 23 H.3.
         /// </summary>
         public LinePriority Priority => Kind == SimEventKind.Radio
-            ? Value > 0.5f ? (LinePriority)Math.Clamp((int)MathF.Round(Value) - 1, 0, 3) : LinePriority.Event
+            ? Value > global::MachineBrigade.Sim.Content.SimTunables.Modes.SimEvent.PriorityValueMin ? (LinePriority)Math.Clamp((int)MathF.Round(Value) - 1, 0, global::MachineBrigade.Sim.Content.SimTunables.Modes.SimEvent.PriorityRoundMax) : LinePriority.Event
             : (LinePriority)Mount;
 
         /// <summary>A Radio line opens a story moment (prompt 23 H.8).</summary>

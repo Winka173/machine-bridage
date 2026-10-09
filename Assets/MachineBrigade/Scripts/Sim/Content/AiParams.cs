@@ -67,22 +67,22 @@ namespace MachineBrigade.Sim.Content
 
 
         // World Model (A.1, M.1).
-        public float WorldRate => Get("world.rate", 2f);
+        public float WorldRate => Get("world.rate", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.WorldRateFallback);
         public float WorldCell => Get("world.cell", 10f);
 
         // The sheet "Tham số AI".
-        public float AttackThreshold => Get("params.attackThreshold", 1.2f);
-        public float FallbackRatio => Get("params.fallbackRatio", 0.6f);
+        public float AttackThreshold => Get("params.attackThreshold", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.AttackThresholdFallback);
+        public float FallbackRatio => Get("params.fallbackRatio", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.FallbackRatioFallback);
         public float SwitchMargin => Get("params.switchMargin", 8f);
-        public float MinCommit => Get("params.minCommit", 4f);
+        public float MinCommit => Get("params.minCommit", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.MinCommitFallback);
         public float IdleReassess => Get("params.idleReassess", 5f);
-        public float StuckTime => Get("params.stuckTime", 3f);
-        public float EmergencyCooldown => Get("params.emergencyCooldown", 25f);
-        public float OverwhelmRatio => Get("params.overwhelmRatio", 2f);
+        public float StuckTime => Get("params.stuckTime", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.StuckTimeFallback);
+        public float EmergencyCooldown => Get("params.emergencyCooldown", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.EmergencyCooldownFallback);
+        public float OverwhelmRatio => Get("params.overwhelmRatio", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.OverwhelmRatioFallback);
         /// <summary>Confidence lost per second since an enemy was last seen (0.06: about half left after 8 s).</summary>
         public float ConfidenceDecay => Get("params.confidenceDecay", 0.06f);
         public float SplashSpread => Get("params.splashSpread", 1f);
-        public float ReactionDelay => Get("params.reactionDelay", 0.8f);
+        public float ReactionDelay => Get("params.reactionDelay", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.ReactionDelayFallback);
         public float FlankWeight => Get("params.flankWeight", 1f);
         public float FocusWeight => Get("params.focusWeight", 1f);
         public float Cohesion => Get("params.cohesion", 1f);
@@ -91,7 +91,7 @@ namespace MachineBrigade.Sim.Content
         public float HoldFire => Get("params.holdFire", 0f);
         public float MainEffort => Get("params.mainEffort", 0.5f);
         public float CpSaving => Get("params.cpSaving", 0f);
-        public float TacticCooldown => Get("params.tacticCooldown", 50f);
+        public float TacticCooldown => Get("params.tacticCooldown", global::MachineBrigade.Sim.Content.SimTunables.Ai.AiParams.TacticCooldownFallback);
         public float TacticTransition => Get("params.tacticTransition", 5f);
 
         internal static AiParams Parse(JsonObject ai)

@@ -93,7 +93,7 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>Whether a sample is low progress (spec 102: actual &lt; 25 % of desired and route progress &lt; 0.25 m/s).</summary>
         public static bool IsLow(float desiredSpeed, float actualSpeed, float progressPerSecond) =>
-            actualSpeed < MathF.Max(0.1f, desiredSpeed) * SimTunables.Ai.Navigation.JamLowSpeedShare &&
+            actualSpeed < MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.JamTracker.IsLowDesiredSpeedFloor, desiredSpeed) * SimTunables.Ai.Navigation.JamLowSpeedShare &&
             progressPerSecond < SimTunables.Ai.Navigation.JamProgressPerSecond;
 
         /// <summary>
