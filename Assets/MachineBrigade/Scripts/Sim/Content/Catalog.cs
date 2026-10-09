@@ -241,6 +241,10 @@ namespace MachineBrigade.Sim.Content
                         k.Float("duration", 0f), k.Float("amount", 0f), k.Float("radius", 0f), k.Int("count", 0),
                         k.Has("unit") ? k.String("unit") : null, k.Bool("once", false)));
                     skill.Max = Math.Max(0, k.Int("max", 0));
+                    skill.Delay = Math.Max(0f, k.Float("delay", 0f));
+                    skill.Warn = Math.Max(0f, k.Float("warn", 0f));
+                    skill.Safe = Math.Max(0f, k.Float("safe", 0f));
+                    skill.Warning = k.Has("warning") ? k.String("warning") : null;
                     if (!skills.TryAdd(skill.Id, skill)) throw new FormatException($"{k.Path}: duplicate skill '{skill.Id}'.");
                 }
 

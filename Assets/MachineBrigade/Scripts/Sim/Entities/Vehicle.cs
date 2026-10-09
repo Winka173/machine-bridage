@@ -280,6 +280,9 @@ namespace MachineBrigade.Sim.Entities
         // ------------------------------------------------------------ skills and effects
         internal readonly double[] SkillReadyAt;
         internal readonly bool[] SkillUsed;
+
+        /// <summary>Boss design 09/10: its summons' first-wave delays have been laid (once, at its first skill step).</summary>
+        internal bool SkillsArmed;
         internal double ShieldUntil = double.NegativeInfinity, OverdriveUntil = double.NegativeInfinity,
             BarrageUntil = double.NegativeInfinity, FlaresUntil = double.NegativeInfinity,
             StunnedUntil = double.NegativeInfinity, HealUntil = double.NegativeInfinity;

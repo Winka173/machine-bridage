@@ -38,6 +38,15 @@ namespace MachineBrigade.Sim.Abilities
         private readonly List<Vehicle> _jammers = new();
         private readonly List<(string def, int team, Vector2 at, float heading, int by, string skill)> _summons = new();
 
+        /// <summary>Boss design 09/10: summons called but not yet arrived (their place ringed): arrival time, then the same as a summon.</summary>
+        private readonly List<(double due, string def, int team, Vector2 at, float heading, int by, string skill)> _pending = new();
+
+        /// <summary>Boss design 09/10: how often a summon blocked by an enemy standing on its arrival point is tried again before the wave is given up.</summary>
+        private readonly Dictionary<(int by, string skill), int> _blocked = new();
+
+        private const int BlockedRetries = 4;
+        private const float BlockedRetrySeconds = 2.5f;
+
         /// <summary>Play-test 14 (lane G): the units each vehicle's capped summon (<see cref="SkillDef.Max"/>) has put up, by skill.</summary>
         private readonly Dictionary<(int by, string skill), List<EntityId>> _summoned = new();
         private float _auraTimer;
@@ -100,6 +109,13 @@ namespace MachineBrigade.Sim.Abilities
             }
             HideGunPits(now);
             _summons.Clear();
+            for (var p = _pending.Count - 1; p >= 0; p--)
+            {
+                if (_pending[p].due > now) continue;
+                var due = _pending[p];
+                _pending.RemoveAt(p);
+                _summons.Add((due.def, due.team, due.at, due.heading, due.by, due.skill));
+            }
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
@@ -580,6 +596,13 @@ namespace MachineBrigade.Sim.Abilities
         private void UseSkills(Vehicle v, double now)
         {
             var skills = v.Def.Skills;
+            // Boss design 09/10: a summon's first wave comes after its delay, not with the boss.
+            if (!v.SkillsArmed)
+            {
+                v.SkillsArmed = true;
+                for (var a = 0; a < skills.Count; a++)
+                    if (skills[a].Kind == SkillKind.Summon && skills[a].Delay > 0f) v.SkillReadyAt[a] = Math.Max(v.SkillReadyAt[a], now + skills[a].Delay);
+            }
             for (var i = 0; i < skills.Count; i++)
             {
                 var skill = skills[i];
@@ -587,8 +610,34 @@ namespace MachineBrigade.Sim.Abilities
                 // A boss's skill on a broken part (a drone hangar's launches) is used no more.
                 if (i < v.SkillOff.Length && v.SkillOff[i]) continue;
                 if (!Triggered(v, skill, now)) continue;
-                // Play-test 14 (lane G): a capped summon waits (its cooldown unspent) while its flight is full.
-                if (skill.Kind == SkillKind.Summon && skill.Max > 0 && SummonedAlive(v, skill) >= skill.Max) continue;
+                // Boss design 09/10: a full flight skips the wave and keeps no queue: the next call is a whole cooldown away
+                // (play-test 14 made it wait with its cooldown unspent, so the first free slot refilled at once).
+                if (skill.Kind == SkillKind.Summon && skill.Max > 0 && SummonedAlive(v, skill) >= skill.Max)
+                {
+                    v.SkillReadyAt[i] = now + skill.Cooldown;
+                    continue;
+                }
+                // Boss design 09/10: nothing arrives on top of an enemy ground unit; tried again a few times, then the wave is dropped.
+                if (skill.Kind == SkillKind.Summon && skill.Safe > 0f)
+                {
+                    var key = (v.Id.Value, skill.Id);
+                    if (!SpawnClear(v, skill))
+                    {
+                        var tries = _blocked.TryGetValue(key, out var n) ? n : 0;
+                        if (tries < BlockedRetries)
+                        {
+                            _blocked[key] = tries + 1;
+                            v.SkillReadyAt[i] = now + BlockedRetrySeconds;
+                        }
+                        else
+                        {
+                            _blocked.Remove(key);
+                            v.SkillReadyAt[i] = now + skill.Cooldown;
+                        }
+                        continue;
+                    }
+                    _blocked.Remove(key);
+                }
                 // Prompt 29 S06: flares as charges: one is spent, the next can go once this one has burnt.
                 if (skill.Kind == SkillKind.Flares && v.FlareChargesMax > 0)
                 {
@@ -613,9 +662,68 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>Play-test 14 (lane G): how many of <paramref name="v"/>'s units from <paramref name="skill"/> are alive (the dead are dropped).</summary>
         private int SummonedAlive(Vehicle v, SkillDef skill)
         {
-            if (!_summoned.TryGetValue((v.Id.Value, skill.Id), out var list)) return 0;
+            var pending = 0;
+            foreach (var p in _pending)
+                if (p.by == v.Id.Value && p.skill == skill.Id) pending++;
+            if (!_summoned.TryGetValue((v.Id.Value, skill.Id), out var list)) return pending;
             list.RemoveAll(id => !_world.TryGetVehicle(id, out var u) || !u.IsAlive);
-            return list.Count;
+            return list.Count + pending;
+        }
+
+        /// <summary>
+        /// Boss design 09/10: where a summon's units arrive. From the part that carries the skill (a hangar, a flight deck, a gate or a
+        /// deployment door: its place on the hull, a little outside it), side by side; with no such part, round the hull as before. A
+        /// ground unit is put on open ground; a spot with none is dropped.
+        /// </summary>
+        private List<Vector2> SpawnPoints(Vehicle v, SkillDef skill, int count)
+        {
+            var points = new List<Vector2>(count);
+            BossPartDef? carrier = null;
+            foreach (var part in v.Def.Parts)
+                for (var s = 0; s < part.Skills.Count && carrier == null; s++)
+                    if (part.Skills[s] == skill.Id) carrier = part;
+            var ground = _world.Catalog.Vehicles.TryGetValue(skill.Unit!, out var unit) && !unit.Flying;
+            for (var k = 0; k < count; k++)
+            {
+                Vector2 at;
+                if (carrier != null)
+                {
+                    var forward = SimMath.Forward(v.Heading);
+                    var right = new Vector2(forward.Y, -forward.X);
+                    var local = carrier.At;
+                    var len = local.Length();
+                    var outward = len > 0.5f ? local / len : new Vector2(0f, -1f);
+                    // Out of the hull by the unit's own length, and the units of one wave side by side.
+                    var lateral = new Vector2(-outward.Y, outward.X) * ((k - (count - 1) * 0.5f) * 6f);
+                    var spot = local + outward * 6f + lateral;
+                    at = v.Position + right * spot.X + forward * spot.Y;
+                }
+                else
+                {
+                    var angle = (k + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireKAdd) * SimMath.Tau / skill.Count + v.Heading;
+                    at = v.Position + SimMath.Forward(angle) * (v.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireHullBoundAdd);
+                }
+                at = _world.ClampToMap(at);
+                if (ground)
+                {
+                    if (!_world.Grid.TryNearestWalkable(at, 6, out var open)) continue;
+                    at = open;
+                }
+                points.Add(at);
+            }
+            return points;
+        }
+
+        /// <summary>Boss design 09/10: no enemy ground unit within <see cref="SkillDef.Safe"/> of where this summon would arrive.</summary>
+        private bool SpawnClear(Vehicle v, SkillDef skill)
+        {
+            foreach (var at in SpawnPoints(v, skill, Math.Max(1, skill.Count)))
+                foreach (var e in _world.VehicleList)
+                {
+                    if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying) continue;
+                    if (Vector2.DistanceSquared(e.Position, at) < (skill.Safe + e.Radius) * (skill.Safe + e.Radius)) return false;
+                }
+            return true;
         }
 
         /// <summary>Seconds for one flare charge: the vehicle's own, else its flare skill's cooldown; the heat-decoy module x0.75.</summary>
@@ -698,11 +806,20 @@ namespace MachineBrigade.Sim.Abilities
                 {
                     // Play-test 14 (lane G): a capped summon only tops its flight up to the cap.
                     var count = skill.Max > 0 ? Math.Min(skill.Count, skill.Max - SummonedAlive(v, skill)) : skill.Count;
-                    for (var k = 0; k < count; k++)
+                    var points = SpawnPoints(v, skill, count);
+                    for (var k = 0; k < points.Count; k++)
                     {
-                        var angle = (k + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireKAdd) * SimMath.Tau / skill.Count + v.Heading;
-                        var at = _world.ClampToMap(v.Position + SimMath.Forward(angle) * (v.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.FireHullBoundAdd));
-                        _summons.Add((skill.Unit!, v.Team, at, v.Heading, v.Id.Value, skill.Max > 0 ? skill.Id : ""));
+                        var at = points[k];
+                        var id = skill.Max > 0 ? skill.Id : "";
+                        if (skill.Warn <= 0f)
+                        {
+                            _summons.Add((skill.Unit!, v.Team, at, v.Heading, v.Id.Value, id));
+                            continue;
+                        }
+                        // The place is ringed for the warning, then the unit arrives (it counts against the cap meanwhile).
+                        _pending.Add((now + skill.Warn, skill.Unit!, v.Team, at, v.Heading, v.Id.Value, id));
+                        if (_world.Catalog.TryGetSupport(skill.Warning ?? "escort_drop.ifv", out var ring))
+                            _world.Emit(SimEvent.StrikeWarning(v.Team, ring, at, at, skill.Warn));
                     }
                     break;
                 }

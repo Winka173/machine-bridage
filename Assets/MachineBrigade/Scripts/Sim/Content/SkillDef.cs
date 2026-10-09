@@ -108,6 +108,18 @@ namespace MachineBrigade.Sim.Content
         /// four of its jets up, and a launch only tops the flight up to it.
         /// </summary>
         public int Max { get; internal set; }
+
+        /// <summary>Boss design 09/10: seconds before a summon's first wave (the boss's arrival and the first call are never together; 0 none).</summary>
+        public float Delay { get; internal set; }
+
+        /// <summary>Boss design 09/10: seconds between the call and the unit's arrival, its place ringed on the ground meanwhile (0: it appears at once, an aircraft off its deck).</summary>
+        public float Warn { get; internal set; }
+
+        /// <summary>Boss design 09/10: a summon waits while an enemy ground unit is within this many metres of where it would arrive (0: no such check).</summary>
+        public float Safe { get; internal set; }
+
+        /// <summary>Boss design 09/10: the event support whose ring marks the arrival (null: "escort_drop.ifv" where it warns at all).</summary>
+        public string? Warning { get; internal set; }
     }
 
     /// <summary>An effect a support vehicle spreads around itself.</summary>
