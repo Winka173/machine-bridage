@@ -361,7 +361,7 @@ namespace MachineBrigade.Sim.Entities
         public string? Form { get; internal set; }
 
         /// <summary>Fire-rate multiplier from skills.</summary>
-        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost * FireGear * CommandFire * RankFire;
+        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Vehicle.FireFactorOverdrivenTrue : 1f) * FireBoost * FireGear * CommandFire * RankFire;
 
         /// <summary>A friendly command vehicle's aura (1: none in reach).</summary>
         internal float CommandFire = 1f;
@@ -459,7 +459,7 @@ namespace MachineBrigade.Sim.Entities
         }
 
         public bool IsAlive => Hp > 0f;
-        public bool IsMoving => Speed > 0.1f;
+        public bool IsMoving => Speed > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Vehicle.IsMovingSpeedMin;
         /// <summary>It flies (prompt 19: a tiered boss that has crashed is on the ground now).</summary>
         public bool Flying => Def.Flying && !Crashed;
 

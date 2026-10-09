@@ -33,39 +33,39 @@ namespace MachineBrigade.Sim.Content
         {
             // ------------------------------------------------------------ combat
             Combat("kade", "khai", "c1", DeckStyle.Balanced,
-                L(StatId.Damage, 0.05f, CommanderReach.Army), L(StatId.Health, 0.05f, CommanderReach.Army)),
+                L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Kade1DamageArmy, CommanderReach.Army), L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Kade2HealthArmy, CommanderReach.Army)),
             new CommanderDef
             {
                 Id = "lind", Family = CommanderFamily.Combat, Portrait = "mai", Unlock = "c2", Style = DeckStyle.Sustain, Repair = 1.25f,
-                Prices = new[] { P(PriceReach.Engineers, 0.8f) },
-                Lines = new[] { L(StatId.Damage, -0.10f, CommanderReach.Aircraft) },
+                Prices = new[] { P(PriceReach.Engineers, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.LindPricesScale) },
+                Lines = new[] { L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.LindLinesValue, CommanderReach.Aircraft) },
             },
             new CommanderDef
             {
                 // DECISIONS 23D: the air doctrine's +20 % aircraft health and 15 % faster fire support (neither overlapped).
-                Id = "reyes", Family = CommanderFamily.Combat, Portrait = "dieuhau", Unlock = "c3", Style = DeckStyle.Air, AirRearm = 1.15f, AirCap = 1,
-                StrikeCooldown = 0.85f,
+                Id = "reyes", Family = CommanderFamily.Combat, Portrait = "dieuhau", Unlock = "c3", Style = DeckStyle.Air, AirRearm = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReyesAirRearm, AirCap = 1,
+                StrikeCooldown = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReyesStrikeCooldown,
                 Lines = new[]
                 {
-                    L(StatId.Damage, 0.10f, CommanderReach.Aircraft), L(StatId.Health, 0.20f, CommanderReach.Aircraft),
-                    L(StatId.MagazineReload, 0.15f, CommanderReach.Aircraft),
-                    L(StatId.Health, -0.10f, CommanderReach.Towers),
+                    L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReyesLines1Value, CommanderReach.Aircraft), L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReyesLines2Value, CommanderReach.Aircraft),
+                    L(StatId.MagazineReload, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReyesLines3Value, CommanderReach.Aircraft),
+                    L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReyesLines4Value, CommanderReach.Towers),
                 },
             },
             new CommanderDef
             {
-                Id = "kerr", Family = CommanderFamily.Combat, Portrait = "linh", Unlock = "c4", Style = DeckStyle.Recon, StealthSight = 1.25f, ExposedTaken = 1.05f,
-                Lines = new[] { L(StatId.Vision, 0.15f, CommanderReach.Army), L(StatId.Health, -0.05f, CommanderReach.Heavy) },
+                Id = "kerr", Family = CommanderFamily.Combat, Portrait = "linh", Unlock = "c4", Style = DeckStyle.Recon, StealthSight = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.KerrStealthSight, ExposedTaken = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.KerrExposedTaken,
+                Lines = new[] { L(StatId.Vision, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.KerrLines1Value, CommanderReach.Army), L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.KerrLines2Value, CommanderReach.Heavy) },
             },
             new CommanderDef
             {
                 Id = "venn", Family = CommanderFamily.Combat, Portrait = "sen", Unlock = "c5+", Style = DeckStyle.Drones, JamResist = 0.3f,
                 Lines = new[]
                 {
-                    L(StatId.Health, 0.15f, CommanderReach.DroneUnits), L(StatId.Damage, 0.10f, CommanderReach.Drones),
+                    L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.VennLines1Value, CommanderReach.DroneUnits), L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.VennLines2Value, CommanderReach.Drones),
                     // The escort drones of the equipment (Hivemind, the drone escort module) hit harder the same way.
-                    L(StatId.SummonPower, 0.10f, CommanderReach.Army),
-                    L(StatId.Damage, -0.05f, CommanderReach.Tanks),
+                    L(StatId.SummonPower, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.VennLines3Value, CommanderReach.Army),
+                    L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.VennLines4Value, CommanderReach.Tanks),
                 },
             },
             new CommanderDef
@@ -75,25 +75,25 @@ namespace MachineBrigade.Sim.Content
                 Id = "mendez", Family = CommanderFamily.Combat, Portrait = "mendez", Unlock = "i2", Style = DeckStyle.Blitz, Delivery = 0.75f,
                 Lines = new[]
                 {
-                    L(StatId.Speed, 0.15f, CommanderReach.Vehicles), L(StatId.Health, 0.15f, CommanderReach.Light),
-                    L(StatId.Health, -0.05f, CommanderReach.Army),
+                    L(StatId.Speed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.MendezLines1Value, CommanderReach.Vehicles), L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.MendezLines2Value, CommanderReach.Light),
+                    L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.MendezLines3Value, CommanderReach.Army),
                 },
             },
             new CommanderDef
             {
                 Id = "brandt", Family = CommanderFamily.Combat, Portrait = "brandt", Unlock = "c6", Style = DeckStyle.Fortress,
-                Prices = new[] { P(PriceReach.AirdropTowers, 0.8f) },
+                Prices = new[] { P(PriceReach.AirdropTowers, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.BrandtPricesScale) },
                 Lines = new[]
                 {
-                    L(StatId.Health, 0.15f, CommanderReach.Towers), L(StatId.Damage, 0.10f, CommanderReach.Towers),
-                    L(StatId.Speed, -0.05f, CommanderReach.Vehicles),
+                    L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.BrandtLines1Value, CommanderReach.Towers), L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.BrandtLines2Value, CommanderReach.Towers),
+                    L(StatId.Speed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.BrandtLines3Value, CommanderReach.Vehicles),
                 },
             },
             // DECISIONS 23D: the artillery doctrine's +25 % artillery health and 25 % faster fire support (neither overlapped).
             Combat("dahl", "dahl", "c7", DeckStyle.Artillery,
-                L(StatId.Damage, 0.15f, CommanderReach.Artillery), L(StatId.Range, 0.10f, CommanderReach.Artillery),
-                L(StatId.Health, 0.25f, CommanderReach.Artillery),
-                L(StatId.Damage, -0.10f, CommanderReach.DirectFire)).With(d => d.StrikeCooldown = 0.75f),
+                L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.DahlArtilleryDamageArtillery, CommanderReach.Artillery), L(StatId.Range, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.DahlArtilleryRangeArtillery, CommanderReach.Artillery),
+                L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.DahlArtilleryHealthArtillery, CommanderReach.Artillery),
+                L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.DahlArtilleryDamageDirectFire, CommanderReach.DirectFire)).With(d => d.StrikeCooldown = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.DahlSetStrikeCooldown),
 
             // ------------------------------------------------------------ economy
             new CommanderDef
@@ -102,32 +102,32 @@ namespace MachineBrigade.Sim.Content
                 // bonus: +15 % on all income; its +4 army cap (a tenth of the usual 40) as supply +10 %.
                 Id = "brenn", Family = CommanderFamily.Economy, Portrait = "brenn", Unlock = "i1", Style = DeckStyle.LongGame, Income = 1.15f,
                 Supply = 1.10f,
-                Lines = new[] { L(StatId.Damage, -0.05f, CommanderReach.Army) },
+                Lines = new[] { L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.BrennLinesValue, CommanderReach.Army) },
             },
             new CommanderDef
             {
                 // The spec's +25 % on what a point pays was worth 2 % of the income in Conquest (DECISIONS 22F): +75 %.
                 Id = "adler", Family = CommanderFamily.Economy, Portrait = "adler", Unlock = "c4", Style = DeckStyle.Points, PointIncome = 1.75f, NoPointsIncome = 0.95f,
-                Lines = new[] { L(StatId.CaptureRate, 0.30f, CommanderReach.Vehicles) },
+                Lines = new[] { L(StatId.CaptureRate, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.AdlerLinesValue, CommanderReach.Vehicles) },
             },
             new CommanderDef
             {
                 Id = "varro", Family = CommanderFamily.Economy, Portrait = "varro", Unlock = "c8", Style = DeckStyle.Swarm, Supply = 1.15f,
-                Prices = new[] { P(PriceReach.Cheap, 0.85f) },
+                Prices = new[] { P(PriceReach.Cheap, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.VarroPricesScale) },
                 // The spec's -10 % lost every Swarm battle of the first sweep (DECISIONS 22F).
-                Lines = new[] { L(StatId.Health, -0.05f, CommanderReach.Army) },
+                Lines = new[] { L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.VarroLinesValue, CommanderReach.Army) },
             },
             new CommanderDef
             {
                 // DECISIONS 23D: the armoured doctrine (tanks and heavies +20 % health) and Crown's +15 % health on dear
                 // vehicles are one bonus: +20 % on both (a dear tank no longer gets the two stacked).
                 Id = "reyn", Family = CommanderFamily.Economy, Portrait = "reyn", Unlock = "i3", Style = DeckStyle.Heavy,
-                Prices = new[] { P(PriceReach.Vehicles, 1.10f) },
-                Lines = new[] { L(StatId.Health, 0.20f, CommanderReach.ArmourOrDear), L(StatId.Damage, 0.15f, CommanderReach.Dear) },
+                Prices = new[] { P(PriceReach.Vehicles, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReynPricesScale) },
+                Lines = new[] { L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReynLines1Value, CommanderReach.ArmourOrDear), L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.ReynLines2Value, CommanderReach.Dear) },
             },
             Econ("quist", "c8", DeckStyle.Attrition).With(d =>
             {
-                d.KillRefund = 0.35f;
+                d.KillRefund = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.AllKillRefund;
                 d.LossRefund = false;
             }),
             Econ("okoye", "c10", DeckStyle.Hoard).With(d =>
@@ -136,24 +136,24 @@ namespace MachineBrigade.Sim.Content
                 d.RichIncome = 1.10f;
                 d.RichAt = 20f;
                 d.EarlyIncome = 0.90f;
-                d.EarlySeconds = 90f;
+                d.EarlySeconds = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.AllEarlySeconds;
             }),
         };
 
         /// <summary>The enemy generals' passives (F.3), by the campaign's general id.</summary>
         public static readonly IReadOnlyList<CommanderDef> Generals = new[]
         {
-            Gen("brandt", L(StatId.Health, 0.15f, CommanderReach.Towers), L(StatId.Speed, -0.05f, CommanderReach.Vehicles)),
-            Gen("varga", L(StatId.Health, 0.10f, CommanderReach.Armour), L(StatId.Damage, -0.10f, CommanderReach.Aircraft)),
-            Gen("orlov", L(StatId.Range, 0.15f, CommanderReach.Artillery), L(StatId.Spread, 0.20f, CommanderReach.Artillery),
-                L(StatId.Health, -0.05f, CommanderReach.Light)),
-            Gen("kessler", L(StatId.Health, 0.10f, CommanderReach.Ships), L(StatId.Health, -0.05f, CommanderReach.Towers))
-                .With(d => d.Prices = new[] { P(PriceReach.Vehicles, 0.9f) }),
-            Gen("sen", L(StatId.Health, 0.15f, CommanderReach.DroneUnits), L(StatId.Damage, -0.05f, CommanderReach.Tanks)),
-            Gen("quaden", L(StatId.Damage, 0.10f, CommanderReach.Aircraft), L(StatId.Damage, -0.05f, CommanderReach.Ground)).With(d => d.AirCap = 1),
-            Gen("hung", L(StatId.Damage, 0.05f, CommanderReach.Army)).With(d => d.LowHpDamage = 1.10f),
-            Gen("aurel", L(StatId.Damage, 0.15f, CommanderReach.Energy), L(StatId.Health, 0.10f, CommanderReach.Shielded),
-                L(StatId.Health, -0.05f, CommanderReach.Light)),
+            Gen("brandt", L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Brandt1HealthTowers, CommanderReach.Towers), L(StatId.Speed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Brandt2SpeedVehicles, CommanderReach.Vehicles)),
+            Gen("varga", L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Varga1HealthArmour, CommanderReach.Armour), L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Varga2DamageAircraft, CommanderReach.Aircraft)),
+            Gen("orlov", L(StatId.Range, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Orlov1RangeArtillery, CommanderReach.Artillery), L(StatId.Spread, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Orlov2SpreadArtillery, CommanderReach.Artillery),
+                L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Orlov3HealthLight, CommanderReach.Light)),
+            Gen("kessler", L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Kessler1HealthShips, CommanderReach.Ships), L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Kessler2HealthTowers, CommanderReach.Towers))
+                .With(d => d.Prices = new[] { P(PriceReach.Vehicles, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.KesslerSetPricesScale) }),
+            Gen("sen", L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Sen1HealthDroneUnits, CommanderReach.DroneUnits), L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Sen2DamageTanks, CommanderReach.Tanks)),
+            Gen("quaden", L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Quaden1DamageAircraft, CommanderReach.Aircraft), L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Quaden2DamageGround, CommanderReach.Ground)).With(d => d.AirCap = 1),
+            Gen("hung", L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Hung1DamageArmy, CommanderReach.Army)).With(d => d.LowHpDamage = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.HungSetLowHpDamage),
+            Gen("aurel", L(StatId.Damage, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Aurel1DamageEnergy, CommanderReach.Energy), L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Aurel2HealthShielded, CommanderReach.Shielded),
+                L(StatId.Health, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.Commanders.Aurel3HealthLight, CommanderReach.Light)),
         };
 
         private static CommanderDef With(this CommanderDef d, Action<CommanderDef> set)
@@ -198,15 +198,15 @@ namespace MachineBrigade.Sim.Content
         private static float[] BuildCaps()
         {
             var caps = new float[(int)StatId.Count];
-            caps[(int)StatId.Damage] = 0.25f;
-            caps[(int)StatId.FireRate] = 0.15f;
-            caps[(int)StatId.Health] = 0.25f;
-            caps[(int)StatId.Speed] = 0.15f;
-            caps[(int)StatId.Range] = 0.12f;
-            caps[(int)StatId.Vision] = 0.25f;
+            caps[(int)StatId.Damage] = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.BuildCapsCaps;
+            caps[(int)StatId.FireRate] = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.BuildCapsCaps2;
+            caps[(int)StatId.Health] = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.BuildCapsCaps;
+            caps[(int)StatId.Speed] = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.BuildCapsCaps2;
+            caps[(int)StatId.Range] = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.BuildCapsCaps3;
+            caps[(int)StatId.Vision] = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.BuildCapsCaps;
             caps[(int)StatId.Spread] = 0.3f;
-            caps[(int)StatId.MagazineReload] = 0.3f;
-            caps[(int)StatId.CaptureRate] = 0.5f;
+            caps[(int)StatId.MagazineReload] = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.BuildCapsCaps4;
+            caps[(int)StatId.CaptureRate] = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.BuildCapsCaps5;
             caps[(int)StatId.SummonPower] = 0.15f;
             return caps;
         }
@@ -272,7 +272,7 @@ namespace MachineBrigade.Sim.Content
                 stats[i] = line.Value > 0f ? MathF.Max(had, MathF.Min(had + line.Value, MathF.Max(i < caps.Length ? caps[i] : 0f, line.Value))) : had + line.Value;
             }
             if (stats == null) return gear;
-            float Fold(StatId id, float multiplier) => multiplier * (1f + stats[(int)id]) / MathF.Max(0.05f, 1f + gear.Stat(id));
+            float Fold(StatId id, float multiplier) => multiplier * (1f + stats[(int)id]) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.MergeStatFloor, 1f + gear.Stat(id));
             return new VehicleBoost(Fold(StatId.Health, gear.Hp), Fold(StatId.Damage, gear.Damage), Fold(StatId.FireRate, gear.FireRate), Fold(StatId.Speed, gear.Speed),
                 gear.DamageTaken, gear.Regen, gear.Special, gear.SpecialPower, stats, gear.Traits, gear.SpecialPower2);
         }
@@ -330,20 +330,20 @@ namespace MachineBrigade.Sim.Content
                 fit += l.Value * l.Stat switch
                 {
                     StatId.Damage or StatId.Health => 1f,
-                    StatId.Range => 0.8f,
-                    StatId.Speed => 0.6f,
-                    StatId.MagazineReload or StatId.Spread => 0.4f,
-                    StatId.Vision => 0.3f,
-                    StatId.CaptureRate => def.CaptureRate > 0f ? 0.3f : 0f,
+                    StatId.Range => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.FitStatValue,
+                    StatId.Speed => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.FitStatValue2,
+                    StatId.MagazineReload or StatId.Spread => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.FitStatValue3,
+                    StatId.Vision => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.FitStatValue4,
+                    StatId.CaptureRate => def.CaptureRate > 0f ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.FitCaptureRateTrue : 0f,
                     _ => 0f,
                 };
             }
             fit += (1f - PriceScale(c, def)) * 1.5f;
             var air = def.Flying && !def.Drone && !def.Static;
-            if (air && (c.AirCap > 0 || c.AirRearm > 1f)) fit += 0.05f;
+            if (air && (c.AirCap > 0 || c.AirRearm > 1f)) fit += global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.FitFit;
             if (def.RepairAura != null && c.Repair > 1f) fit += 0.1f;
-            if (c.JamResist > 0f && Reaches(CommanderReach.Drones, def)) fit += 0.05f;
-            if (c.StealthSight > 1f && def.Class == UnitClass.Scout) fit += 0.05f;
+            if (c.JamResist > 0f && Reaches(CommanderReach.Drones, def)) fit += global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.FitFit;
+            if (c.StealthSight > 1f && def.Class == UnitClass.Scout) fit += global::MachineBrigade.Sim.Content.SimTunables.Vehicles.CommanderRules.FitFit;
             if (c.BankBonus > 0f && def.CpCost >= DearAt) fit += 0.05f;
             return fit;
         }

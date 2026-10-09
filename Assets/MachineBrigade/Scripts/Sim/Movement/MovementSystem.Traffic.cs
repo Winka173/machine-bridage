@@ -186,7 +186,7 @@ namespace MachineBrigade.Sim.Movement
             if (v.Scripted || v.Def.Boss) return 100;
             var weapon = v.Def.Weapon;
             if (v.Order.Kind == OrderKind.Retreat || (weapon.MinRange > 0f && v.HasPath &&
-                    _world.FindNearestEnemy(v, weapon.MinRange + 6f, requireVisible: true, layers: TargetLayers.Ground) != null))
+                    _world.FindNearestEnemy(v, weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TrafficPriorityMinRangeAdd, requireVisible: true, layers: TargetLayers.Ground) != null))
                 return 80;
             // On its way somewhere, held up or not, it has a mover's right of way: movers do not ask
             // each other to make way (a column would shuffle itself), only after getting nowhere
@@ -196,9 +196,9 @@ namespace MachineBrigade.Sim.Movement
             if (v.OutOfAmmo) return 15;
             if (v.Target.IsValid)
             {
-                var longRange = weapon.MinRange > 0f || weapon.Range >= 45f || v.Def.Class is UnitClass.TankHunter or UnitClass.Artillery;
-                if (longRange) return 20;
-                return _world.FindNearestEnemy(v, weapon.Range * 0.5f, requireVisible: true, layers: TargetLayers.Ground) != null ? 45 : 30;
+                var longRange = weapon.MinRange > 0f || weapon.Range >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TrafficPriorityRangeMin || v.Def.Class is UnitClass.TankHunter or UnitClass.Artillery;
+                if (longRange) return global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TrafficPriorityTrafficPriority5;
+                return _world.FindNearestEnemy(v, weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TrafficPriorityRangeScale, requireVisible: true, layers: TargetLayers.Ground) != null ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TrafficPriorityFindNearestEnemyTrue : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TrafficPriorityFindNearestEnemyFalse;
             }
             return 10;
         }
@@ -313,9 +313,9 @@ namespace MachineBrigade.Sim.Movement
                     var w = mover.Path[i];
                     if (Vector2.Dot(w - blocker.Position, toBlocker) <= 0f && i < mover.Path.Count - 1) continue;
                     var d = w - mover.Position;
-                    if (d.LengthSquared() > 0.25f) return Vector2.Normalize(d);
+                    if (d.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.MoverDirectionLengthSquaredMin) return Vector2.Normalize(d);
                 }
-            return toBlocker.LengthSquared() > 0.01f ? Vector2.Normalize(toBlocker) : SimMath.Forward(mover.Heading);
+            return toBlocker.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.MoverDirectionLengthSquaredMin2 ? Vector2.Normalize(toBlocker) : SimMath.Forward(mover.Heading);
         }
 
         /// <summary>Serves the requests posted last step, in the vehicle list's order (each one's outcome is decided by its own request only).</summary>
@@ -367,13 +367,13 @@ namespace MachineBrigade.Sim.Movement
                 {
                     var p = b.Position + side * (s * k * clear) + dir * along;
                     if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || !grid.LineOfSight(b.Position, p)) continue;
-                    if (DistanceToRoute(mover, p, 25f) < clear) continue;
+                    if (DistanceToRoute(mover, p, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryYieldSpotLookAhead) < clear) continue;
                     var f = lanes.At(p);
                     // (A spot behind costs a slow pivot there and another back: worth several metres.)
                     var turn = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(p - b.Position) - b.Heading));
-                    var score = Vector2.Distance(b.Position, p) + turn * YieldTurnCost + (pass == 1 ? 6f : 0f) +
+                    var score = Vector2.Distance(b.Position, p) + turn * YieldTurnCost + (pass == 1 ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryYieldSpotPassTrue : 0f) +
                                 ((f & LaneFlags.NoPark) != 0 ? 50f : 0f) + ((f & LaneFlags.Route) != 0 ? 8f : 0f) +
-                                (KeepsTargetInReach(b, p) ? 0f : 10f);
+                                (KeepsTargetInReach(b, p) ? 0f : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryYieldSpotKeepsTargetInReachFalse);
                     if (score >= best) continue;
                     if (HullAt(b, p) is { } other)
                     {
@@ -415,7 +415,7 @@ namespace MachineBrigade.Sim.Movement
                     {
                         var p = ahead + side * (s * k * clear);
                         if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || !grid.LineOfSight(ahead, p) || lanes.NoParkAt(p)) continue;
-                        if (HullAt(b, p) != null || DistanceToRoute(mover, p, 30f) < clear) continue;
+                        if (HullAt(b, p) != null || DistanceToRoute(mover, p, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryClearForwardLookAhead) < clear) continue;
                         spot = p;
                         return true;
                     }
@@ -438,7 +438,7 @@ namespace MachineBrigade.Sim.Movement
                 if (o == v || !o.IsAlive) continue;
                 Spine(o, out var a, out var b);
                 ClosestPoints(point - half, point + half, a, b, out var c1, out var c2);
-                if (Vector2.DistanceSquared(c1, c2) < Square(v.Def.HullRadius + o.Def.HullRadius + 0.3f)) return o;
+                if (Vector2.DistanceSquared(c1, c2) < Square(v.Def.HullRadius + o.Def.HullRadius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.HullAtHullRadiusAdd)) return o;
             }
             return null;
         }
@@ -483,7 +483,7 @@ namespace MachineBrigade.Sim.Movement
             if (!_world.TryGetTarget(id, out var target) || !target.IsAlive) return true;
             var weapon = b.Def.Weapon;
             var d = Vector2.Distance(p, target.Position);
-            return d >= weapon.MinRange && d - target.Radius <= weapon.Range * 0.95f;
+            return d >= weapon.MinRange && d - target.Radius <= weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.KeepsTargetInReachRangeScale;
         }
 
         private void StartYield(Vehicle b, Vehicle mover, Vector2 dir, Vector2 spot)
@@ -580,21 +580,21 @@ namespace MachineBrigade.Sim.Movement
             if (bt.ReverseFor == v.Id && bt.Reversing(now))
             {
                 // It is backing out for us: follow it in.
-                slowFor = MathF.Min(slowFor, MathF.Abs(blocker.Speed) * 0.9f);
+                slowFor = MathF.Min(slowFor, MathF.Abs(blocker.Speed) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.NegotiateAbsScale);
                 return true;
             }
             if (t.QueueBehind == blocker.Id && now >= t.QueueUntil) t.QueueBehind = EntityId.None;
             if (t.QueueBehind == blocker.Id)
             {
                 var gap = Vector2.Distance(v.Position, blocker.Position) - v.Def.HullBound - blocker.Def.HullBound;
-                slowFor = MathF.Min(slowFor, gap > 2f ? MathF.Max(0f, blocker.Speed) : 0f);
+                slowFor = MathF.Min(slowFor, gap > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.NegotiateGapMin ? MathF.Max(0f, blocker.Speed) : 0f);
                 PostYield(v, blocker, 0);
                 return true;
             }
             PostYield(v, blocker, 0);
             if (bt.YieldingTo == v.Id)
             {
-                slowFor = MathF.Min(slowFor, v.Def.Speed * 0.25f);
+                slowFor = MathF.Min(slowFor, v.Def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.NegotiateSpeedScale);
                 if (!wasWaiting) t.WaitStarted = now;
                 t.WaitingOnYield = true;
                 // Crawl straight on behind it: a swerve started a moment ago would only run into a wall.
@@ -610,9 +610,9 @@ namespace MachineBrigade.Sim.Movement
         /// </summary>
         private static bool Oncoming(Vehicle v, Vehicle blocker, Vector2 forward)
         {
-            if (!blocker.HasPath || Vector2.Dot(SimMath.Forward(blocker.Heading), forward) >= -0.5f) return false;
+            if (!blocker.HasPath || Vector2.Dot(SimMath.Forward(blocker.Heading), forward) >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OncomingDotMin) return false;
             var towards = blocker.Path[blocker.PathIndex] - blocker.Position;
-            return towards.LengthSquared() > 1f && Vector2.Dot(Vector2.Normalize(towards), forward) < -0.5f &&
+            return towards.LengthSquared() > 1f && Vector2.Dot(Vector2.Normalize(towards), forward) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OncomingDotMax &&
                    Vector2.Dot(towards, v.Position - blocker.Position) > 0f;
         }
 
@@ -773,14 +773,14 @@ namespace MachineBrigade.Sim.Movement
             var best = float.MaxValue;
             foreach (var lateral in GateWaitLateral)
             foreach (var back in GateWaitBack)
-                for (var s = -1; s <= 1; s += 2)
+                for (var s = -1; s <= 1; s += global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryGateWaitSpotS)
                 {
                     var p = v.Position + side * (s * lateral) - moveDir * back;
                     if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || !grid.LineOfSight(v.Position, p)) continue;
                     var f = lanes.At(p);
                     if ((f & LaneFlags.NoPark) != 0) continue;
                     var turn = MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(p - v.Position) - v.Heading));
-                    var score = lateral + back * 0.5f + turn * YieldTurnCost + ((f & LaneFlags.Route) != 0 ? 8f * lanes.RouteCountAt(p) : 0f);
+                    var score = lateral + back * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryGateWaitSpotBackScale + turn * YieldTurnCost + ((f & LaneFlags.Route) != 0 ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryGateWaitSpotRouteCountAtScale * lanes.RouteCountAt(p) : 0f);
                     if (score >= best || HullAt(v, p) != null) continue;
                     best = score;
                     spot = p;
@@ -922,7 +922,7 @@ namespace MachineBrigade.Sim.Movement
             var t = v.Traffic;
             t.ReverseFor = forWhom?.Id ?? EntityId.None;
             t.ReverseLeft = distance;
-            t.ReverseUntil = _world.Time + distance / MathF.Max(0.5f, v.Def.Speed * ReverseShare(v)) + 1.5;
+            t.ReverseUntil = _world.Time + distance / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StartReverseSpeedFloor, v.Def.Speed * ReverseShare(v)) + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.StartReverseTimeAdd;
             if (forWhom != null) t.Yields++;
             Vehicle.PathTrace?.Invoke(v, $"Reverse {distance:0.0} for #{t.ReverseFor.Value}");
         }
@@ -960,7 +960,7 @@ namespace MachineBrigade.Sim.Movement
             if (t.ReverseFacing)
                 v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(t.ReverseFace - v.Position), def.TurnRate * v.TurnFactor * dt);
             var back = -SimMath.Forward(v.Heading);
-            v.Speed = SimMath.MoveTowards(v.Speed, -def.Speed * ReverseShare(v), def.Speed * 2f * dt);
+            v.Speed = SimMath.MoveTowards(v.Speed, -def.Speed * ReverseShare(v), def.Speed * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.DriveReverseSpeedScale * dt);
             var step = MathF.Max(0f, -v.Speed) * dt;
             var next = v.Position + back * step;
             if (t.ReverseLeft <= 0f || !_world.Map.Contains(next) || !_world.Grid.IsWalkable(next) ||
@@ -1003,7 +1003,7 @@ namespace MachineBrigade.Sim.Movement
             var blocker = RecentBlocker(v);
             if (blocker != null && blocker.Team == v.Team && !blocker.HasPath && !_world.Lanes.NoParkAt(v.Position) &&
                 Vector2.DistanceSquared(blocker.Position, v.PathGoal) < GatherReach * GatherReach &&
-                Vector2.Distance(v.Position, v.PathGoal) < GatherReach + v.Def.HullBound * 2f)
+                Vector2.Distance(v.Position, v.PathGoal) < GatherReach + v.Def.HullBound * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.OnNoProgressHullBoundScale)
             {
                 // Held up by a friend already standing where it is going: the group has gathered,
                 // and this one has arrived too (it is not asked to leave, see PostYield).
@@ -1107,7 +1107,7 @@ namespace MachineBrigade.Sim.Movement
                 if (blocker != null)
                 {
                     Spine(blocker, out _costs.BlockerA, out _costs.BlockerB);
-                    _costs.BlockerRadius = blocker.Def.HullRadius + v.Def.HullRadius + 0.5f;
+                    _costs.BlockerRadius = blocker.Def.HullRadius + v.Def.HullRadius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.RunPathQueueHullRadiusAdd;
                     // A hull that cannot move at all (knocked out) is as good as a wall.
                     _costs.BlockerCost = blocker.Stunned || blocker.Def.Static ? ImmovableBlockerCost : BlockerCost;
                 }
@@ -1169,7 +1169,7 @@ namespace MachineBrigade.Sim.Movement
             // worth queueing behind.
             var mayMove = blocker != null && !blocker.Stunned && !blocker.Def.Static &&
                           (blocker.HasPath || blocker.Traffic.YieldingTo.IsValid || Askable(blocker));
-            var cap = request.Strikes >= 2 ? DetourCapLate : DetourCap;
+            var cap = request.Strikes >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ApplyCostedPathStrikesMin ? DetourCapLate : DetourCap;
             // Never queue behind a hull that is queued behind us, or coming the other way: each
             // would wait for the other for ever (two tanks sent to each other's slots; prompt 12).
             if (blocker != null && (blocker.Traffic.QueueBehind == v.Id || Oncoming(v, blocker, SimMath.Forward(v.Heading)))) mayMove = false;
@@ -1244,7 +1244,7 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>A route planned round parked hulls moments ago, to about the same goal: a plain replan must not undo it yet.</summary>
         private bool KeepCostedPath(Vehicle v, Vector2 goal) =>
-            v.HasPath && _world.Time < v.Traffic.CostPathUntil && Vector2.DistanceSquared(goal, v.Traffic.CostGoal) < 64f;
+            v.HasPath && _world.Time < v.Traffic.CostPathUntil && Vector2.DistanceSquared(goal, v.Traffic.CostGoal) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.KeepCostedPathDistanceSquaredMax;
 
         // ------------------------------------------------------------------ holding fire position off the lanes
 
@@ -1264,9 +1264,9 @@ namespace MachineBrigade.Sim.Movement
         {
             foreach (var o in _ground)
             {
-                if (o == v || o.Team != v.Team || !o.IsAlive || o.Def.Static || !o.HasPath || o.Speed < 0.5f) continue;
+                if (o == v || o.Team != v.Team || !o.IsAlive || o.Def.Static || !o.HasPath || o.Speed < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FriendlyTrafficBehindSpeedMax) continue;
                 if (Vector2.DistanceSquared(o.Position, v.Position) > TrafficBehindReach * TrafficBehindReach) continue;
-                if (DistanceToRoute(o, v.Position, TrafficBehindReach) < v.Def.HullRadius + o.Def.HullRadius + 0.5f) return true;
+                if (DistanceToRoute(o, v.Position, TrafficBehindReach) < v.Def.HullRadius + o.Def.HullRadius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.FriendlyTrafficBehindHullRadiusAdd) return true;
             }
             return false;
         }
@@ -1299,8 +1299,8 @@ namespace MachineBrigade.Sim.Movement
                     var count = (f & LaneFlags.Route) != 0 ? lanes.RouteCountAt(p) : 0;
                     if (!hereNoPark && count >= hereCount) continue;
                     var reach = Vector2.Distance(p, target.Position) - target.Radius;
-                    if (reach > weapon.Range * 0.95f || Vector2.Distance(p, target.Position) < weapon.MinRange + 1f) continue;
-                    var score = lateral + along * 0.5f + ((f & LaneFlags.Road) != 0 ? 6f : 0f) + count * 8f -
+                    if (reach > weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryOffLaneSpotRangeScale || Vector2.Distance(p, target.Position) < weapon.MinRange + 1f) continue;
+                    var score = lateral + along * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryOffLaneSpotAlongScale + ((f & LaneFlags.Road) != 0 ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryOffLaneSpotFTrue : 0f) + count * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryOffLaneSpotCountScale -
                                 (lanes.ClearanceAt(p) >= 4 ? 3f : 0f);
                     if (score >= best || HullAt(v, p) != null || !ClearShotFrom(v, p, target, weapon)) continue;
                     best = score;
@@ -1313,7 +1313,7 @@ namespace MachineBrigade.Sim.Movement
         private bool ClearShotFrom(Vehicle v, Vector2 p, IDamageable target, WeaponDef weapon)
         {
             if (v.Flying || target is Vehicle { Flying: true } || weapon.Indirect) return true;
-            return !_world.Cover.TryFirstHit(p, target.Position, v.Radius * 0.6f, target is Vehicle ? target.Radius * 0.5f : 0f, target as Prop, out _);
+            return !_world.Cover.TryFirstHit(p, target.Position, v.Radius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ClearShotFromRadiusScale, target is Vehicle ? target.Radius * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.ClearShotFromRadiusScale2 : 0f, target as Prop, out _);
         }
 
         /// <summary>A parkable spot near <paramref name="p"/>, one cell further out than the nearest so it is not on the doorway's edge.</summary>
@@ -1322,7 +1322,7 @@ namespace MachineBrigade.Sim.Movement
             var lanes = _world.Lanes;
             if (!lanes.TryParkable(p, reach, out spot)) return false;
             var away = spot - p;
-            if (away.LengthSquared() < 0.01f) return true;
+            if (away.LengthSquared() < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryStandBesideLengthSquaredMax) return true;
             var further = spot + Vector2.Normalize(away) * _world.Grid.CellSize;
             if (_world.Grid.IsWalkable(further) && !lanes.NoParkAt(further) && _world.Grid.LineOfSight(spot, further)) spot = further;
             return true;

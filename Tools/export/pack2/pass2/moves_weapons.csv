@@ -1,9 +1,1 @@
 file,line,col,literal,key,unit,kind,linh_vuc,mode,note,context
-Sim/Combat/FirePower.cs,55,44,0.05f,weapons.firePower.loadSecondsCycleSecondsFloor,s,thoi_gian,01,pass2:inline,,"math_max: if (load > 0) return MathF.Max(0.05f, w.CycleSeconds) * MathF.Ceiling(load / (float)Math.Max(1, w.Burst));"
-Sim/Combat/FirePower.cs,56,43,0.05f,weapons.firePower.loadSecondsCycleSecondsFloor,s,thoi_gian,01,pass2:inline,,"math_max: return w.Ammo > 0 ? MathF.Max(0.05f, w.CycleSeconds) * w.Ammo : 0f;"
-Sim/Content/DamageTable.cs,59,308,1.00f,weapons.damageTable.defaultSplash4,x,sat_thuong,01,pass2:static array table (FloatArray / IntArray entry),,"table: private static readonly float[] DefaultSplash = { global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash1, global::MachineBr"
-Sim/Content/DamageTable.cs,59,647,0f,weapons.damageTable.defaultSplash9,x,sat_thuong,01,pass2:static array table (FloatArray / IntArray entry),,"table: private static readonly float[] DefaultSplash = { global::MachineBrigade.Sim.Content.SimTunables.Weapons.DamageTable.DefaultSplash1, global::MachineBr"
-Sim/Content/WeaponDef.Stick.cs,127,70,0.25f,weapons.catalog.parseWeaponStickSplashRadiusScale,x,sat_thuong,01,pass2:inline,,"multiply: JitterAcross = MathF.Max(0f, s.Float(""jitterAcross"", 0.25f * def.SplashRadius)),"
-Sim/Content/WeaponDef.Stick.cs,129,86,8f,weapons.catalog.parseWeaponStickSplashRadiusFloor,m,sat_thuong,01,pass2:inline,,"math_max: Safety = MathF.Max(0f, s.Float(""safety"", MathF.Max(def.SplashRadius, 8f))),"
-Sim/Content/WeaponDef.Stick.cs,134,70,0.15f,weapons.catalog.parseWeaponStickSpacingScale,x,thoi_gian,01,pass2:inline,,"multiply: stick.JitterAlong = MathF.Max(0f, s.Float(""jitterAlong"", 0.15f * stick.Spacing));"
-Sim/Content/WeaponDef.Stick.cs,140,80,2f,weapons.catalog.parseWeaponStickJitterAcrossScale,x,thoi_gian,01,pass2:inline,,"multiply: stick.Width = MathF.Max(0f, s.Float(""width"", 2f * def.WarnRadius + 2f * stick.JitterAcross));"

@@ -60,7 +60,7 @@ namespace MachineBrigade.Sim.Movement
     public static class WreckStates
     {
         /// <summary>How long a wreck counts as freshly destroyed (its death show) before it is a plain hulk, s.</summary>
-        public const double AnimatingSeconds = 2.5;
+        public static double AnimatingSeconds => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.WreckStates.AnimatingSeconds;
 
         private static readonly WreckStateContract[] Table =
         {

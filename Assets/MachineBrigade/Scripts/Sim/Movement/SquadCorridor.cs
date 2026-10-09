@@ -87,9 +87,9 @@ namespace MachineBrigade.Sim.Movement
         internal void Step()
         {
             _builtThisStep = 0;
-            if (_world.Tick % 40 != 17) return;
+            if (_world.Tick % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.StepTickMod != global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.StepTickIs) return;
             // Corridors no squad asked for in 30 s are dropped.
-            _list.RemoveAll(c => _world.Time - c.UsedAt > 30.0);
+            _list.RemoveAll(c => _world.Time - c.UsedAt > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.StepTimeMin);
         }
 
         /// <summary>A wreck fell, a jam was stamped, a passage overloaded: corridors through there are planned again.</summary>
@@ -116,14 +116,14 @@ namespace MachineBrigade.Sim.Movement
                     mine = c;
                     break;
                 }
-            if (mine != null && avoid == null && !mine.Dirty && Vector2.Distance(mine.To, to) < 10f &&
-                now - mine.BuiltAt < SimTunables.Ai.Traffic.CorridorRefreshS && Vector2.Distance(mine.From, from) < 40f)
+            if (mine != null && avoid == null && !mine.Dirty && Vector2.Distance(mine.To, to) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.GetDistanceMax &&
+                now - mine.BuiltAt < SimTunables.Ai.Traffic.CorridorRefreshS && Vector2.Distance(mine.From, from) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.GetDistanceMax2)
             {
                 mine.UsedAt = now;
                 _world.Traffic.Stats.CorridorsReused++;
                 return mine;
             }
-            if (_builtThisStep >= BuildsPerStep) return mine != null && !mine.Dirty && Vector2.Distance(mine.To, to) < 10f ? mine : null;
+            if (_builtThisStep >= BuildsPerStep) return mine != null && !mine.Dirty && Vector2.Distance(mine.To, to) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.GetDistanceMax ? mine : null;
             _builtThisStep++;
             if (!Plan(team, from, to, null)) return null;
             if (avoid != null)
@@ -166,7 +166,7 @@ namespace MachineBrigade.Sim.Movement
             _costs.HasBlocker = false;
             _costs.Avoid = avoid;
             _costs.AvoidCost = 250;
-            _costs.MaxExpansions = Math.Max(500, SimTunables.Ai.Traffic.CorridorNodes);
+            _costs.MaxExpansions = Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.PlanCorridorNodesFloor, SimTunables.Ai.Traffic.CorridorNodes);
             return _finder.TryFindPath(from, to, _buffer, _costs) && _buffer.Count > 0;
         }
 
@@ -191,7 +191,7 @@ namespace MachineBrigade.Sim.Movement
         {
             into.Clear();
             var points = c.PointList;
-            if (points.Count < 2) return false;
+            if (points.Count < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.ComposeCountMax) return false;
             var grid = _world.Grid;
             var nearest = 0;
             var best = float.MaxValue;
@@ -203,7 +203,7 @@ namespace MachineBrigade.Sim.Movement
                 nearest = i;
             }
             var join = -1;
-            for (var i = Math.Min(points.Count - 1, nearest + 3); i >= nearest; i--)
+            for (var i = Math.Min(points.Count - 1, nearest + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.ComposeNearestAdd); i >= nearest; i--)
                 if (grid.LineOfSight(from, points[i]))
                 {
                     join = i;
@@ -211,7 +211,7 @@ namespace MachineBrigade.Sim.Movement
                 }
             if (join < 0) return false;
             // (The corridor's own end is the squad's goal: a member bound for a slot beside it leaves the way before it.)
-            var last = Vector2.DistanceSquared(points[points.Count - 1], slot) < 1f ? points.Count - 1 : points.Count - 2;
+            var last = Vector2.DistanceSquared(points[points.Count - 1], slot) < 1f ? points.Count - 1 : points.Count - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.ComposeCountSub;
             if (join > last)
             {
                 if (!grid.LineOfSight(from, slot)) return false;
@@ -220,7 +220,7 @@ namespace MachineBrigade.Sim.Movement
                 return true;
             }
             var leave = -1;
-            for (var i = last; i >= Math.Max(join, last - 4); i--)
+            for (var i = last; i >= Math.Max(join, last - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.ComposeLastSub); i--)
                 if (grid.LineOfSight(points[i], slot))
                 {
                     leave = i;
@@ -229,7 +229,7 @@ namespace MachineBrigade.Sim.Movement
             if (leave < 0) return false;
             for (var i = join; i <= leave; i++)
                 if (Vector2.DistanceSquared(points[i], from) > 1f || i > join) into.Add(points[i]);
-            if (into.Count == 0 || Vector2.DistanceSquared(into[into.Count - 1], slot) > 0.25f) into.Add(slot);
+            if (into.Count == 0 || Vector2.DistanceSquared(into[into.Count - 1], slot) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.SquadCorridors.ComposeDistanceSquaredMin) into.Add(slot);
             c.UsedAt = _world.Time;
             return true;
         }

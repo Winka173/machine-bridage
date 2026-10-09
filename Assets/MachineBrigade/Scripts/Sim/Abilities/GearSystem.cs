@@ -44,7 +44,7 @@ namespace MachineBrigade.Sim.Abilities
         private readonly List<Vehicle> _radars = new();
         private float _auraTimer;
 
-        private static readonly SkillDef EmpBurst = new("emp_payload", SkillKind.Emp, SkillTrigger.Always, 0f, 0f, 2f, 0f, 10f, 0, null, true);
+        private static readonly SkillDef EmpBurst = new("emp_payload", SkillKind.Emp, SkillTrigger.Always, 0f, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EmpBurstDuration, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EmpBurstRadius, 0, null, true);
 
         public GearSystem(SimWorld world) => _world = world;
 
@@ -62,7 +62,7 @@ namespace MachineBrigade.Sim.Abilities
             // High-explosive filler on a gun that has no blast: it hits light vehicles harder instead.
             // Gear balance 04/10 (section 27): the converted line counts towards the damage-vs-light cap like the gear's own.
             if (v.Def.Weapon.SplashRadius <= 0f && g.Stat(StatId.Splash) > 0f)
-                g.Stats[(int)StatId.DamageVsLight] += _world.Headroom(v.Def, StatId.DamageVsLight, g.Stat(StatId.DamageVsLight), g.Stat(StatId.Splash) * 0.55f);
+                g.Stats[(int)StatId.DamageVsLight] += _world.Headroom(v.Def, StatId.DamageVsLight, g.Stat(StatId.DamageVsLight), g.Stat(StatId.Splash) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EquipStatScale);
             v.TurnFactor = 1f + g.Stat(StatId.TurnRate);
             v.TurretFactor = 1f + g.Stat(StatId.TurretRate);
             v.VisionFactor = 1f + g.Stat(StatId.Vision);
@@ -92,19 +92,19 @@ namespace MachineBrigade.Sim.Abilities
                     // Prompt 29 S06 (D6): the heat decoys only improve flares a vehicle has: one more charge, 25 % faster back.
                     v.FlareChargesMax++;
                     v.FlareChargesLeft++;
-                    v.FlareRechargeScale = 0.75f;
+                    v.FlareRechargeScale = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EquipFlareRechargeScale;
                     break;
                 case SpecialModule.MineDispenser when v.Def.Mines == null && !v.Flying:
-                    v.MineLayer = new MineLayerDef(b.SpecialPower2 > 0f ? b.SpecialPower2 : 20f, Math.Max(1, (int)MathF.Round(b.SpecialPower)), MineBlast(g, ModuleScale(v)), 2.2f);
-                    v.NextMineAt = now + 3.0;
+                    v.MineLayer = new MineLayerDef(b.SpecialPower2 > 0f ? b.SpecialPower2 : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EquipSpecialPower2False, Math.Max(1, (int)MathF.Round(b.SpecialPower)), MineBlast(g, ModuleScale(v)), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EquipTrigger);
+                    v.NextMineAt = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EquipNowAdd;
                     break;
                 case SpecialModule.DroneEscort:
                     // Sized to the vehicle's price (a cheap vehicle's escort drones hit less hard).
                     g.Drone = DroneFor(v, g, ModuleScale(v));
-                    g.ModuleReady = now + 4.0;
+                    g.ModuleReady = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EquipNowAdd2;
                     break;
                 case SpecialModule.UplinkBarrage:
-                    g.ModuleReady = now + 6.0;
+                    g.ModuleReady = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EquipNowAdd3;
                     break;
             }
         }
@@ -150,14 +150,14 @@ namespace MachineBrigade.Sim.Abilities
                 {
                     range *= 1f + g.Stat(StatId.Range);
                     speed *= 1f + g.Stat(StatId.ProjectileSpeed);
-                    spread *= MathF.Max(0.1f, 1f - g.Stat(StatId.Spread));
+                    spread *= MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TuneWeaponsStatFloor, 1f - g.Stat(StatId.Spread));
                     if (splash > 0f) splash *= 1f + g.Stat(StatId.Splash);
-                    if (w.Burst > 1) interval *= MathF.Max(0.3f, 1f - g.Stat(StatId.SalvoInterval));
+                    if (w.Burst > 1) interval *= MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TuneWeaponsStatFloor2, 1f - g.Stat(StatId.SalvoInterval));
                     if (g.Has(TraitId.ClusterWarhead) && w.Indirect)
                     {
                         var count = (int)g.Trait(TraitId.ClusterWarhead).A + (cluster?.Count ?? 0);
-                        var bomblet = cluster?.Bomblet ?? new ExplosionDef(MathF.Max(4f, w.Damage * 0.08f), 2.5f, 0f, ExplosionTier.Small);
-                        cluster = new ClusterDef(Math.Max(1, count), MathF.Max(6f, cluster?.Radius ?? 0f), bomblet);
+                        var bomblet = cluster?.Bomblet ?? new ExplosionDef(MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TuneWeaponsDamageFloor, w.Damage * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TuneWeaponsDamageScale), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TuneWeaponsRadius, 0f, ExplosionTier.Small);
+                        cluster = new ClusterDef(Math.Max(1, count), MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TuneWeaponsRadiusFloor, cluster?.Radius ?? 0f), bomblet);
                     }
                 }
                 else
@@ -168,9 +168,9 @@ namespace MachineBrigade.Sim.Abilities
                 if (ammo > 0)
                 {
                     var more = g.Stat(StatId.Magazine);
-                    if (more > 0f) ammo = Math.Max(ammo + (more >= 0.08f ? 1 : 0), (int)MathF.Round(ammo * (1f + more)));
+                    if (more > 0f) ammo = Math.Max(ammo + (more >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TuneWeaponsMoreMin ? 1 : 0), (int)MathF.Round(ammo * (1f + more)));
                     var faster = g.Stat(StatId.MagazineReload) + (g.Has(TraitId.HotSwap) ? g.Trait(TraitId.HotSwap).A : 0f);
-                    if (faster > 0f) reload = w.MagazineReload * MathF.Max(0.3f, 1f - faster);
+                    if (faster > 0f) reload = w.MagazineReload * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TuneWeaponsFasterFloor, 1f - faster);
                 }
                 var changed = range != w.Range || cooldown != w.Cooldown || speed != w.ProjectileSpeed || splash != w.SplashRadius || spread != w.Spread ||
                               interval != w.BurstInterval || targets != w.Targets || ammo != w.Ammo || reload != w.Reload || cluster != w.Cluster;
@@ -188,14 +188,14 @@ namespace MachineBrigade.Sim.Abilities
                     stock = def.Mines.Blast;
                     break;
                 }
-            var damage = (stock?.Damage * 0.6f ?? 260f) * (1f + g.Stat(StatId.SummonPower)) * scale;
-            return new ExplosionDef(damage, MathF.Min(stock?.Radius ?? 4f, 4f), 0f, stock?.Tier ?? ExplosionTier.Large);
+            var damage = (stock?.Damage * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.MineBlastDamageScale ?? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.MineBlastDamageDefault) * (1f + g.Stat(StatId.SummonPower)) * scale;
+            return new ExplosionDef(damage, MathF.Min(stock?.Radius ?? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.MineBlastRadiusDefault, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.MineBlastRadiusCap), 0f, stock?.Tier ?? ExplosionTier.Large);
         }
 
         /// <summary>The kamikaze drone this vehicle launches: a catalog drone's look, 60 % of one main-gun shot.</summary>
         private WeaponDef DroneFor(Vehicle v, GearState g, float scale = 1f)
         {
-            var damage = MathF.Max(40f, v.Def.Weapon.Damage * 0.6f) * (1f + g.Stat(StatId.SummonPower)) * scale;
+            var damage = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForDamageFloor, v.Def.Weapon.Damage * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForDamageScale) * (1f + g.Stat(StatId.SummonPower)) * scale;
             WeaponDef? template = null;
             if (_world.Catalog.Weapons.TryGetValue("fpv_swarm", out var fpv)) template = fpv;
             else
@@ -206,16 +206,16 @@ namespace MachineBrigade.Sim.Abilities
                         break;
                     }
             if (template == null)
-                return new WeaponDef("gear_drone", DamageType.ShapedCharge, damage, 1f, 80f, 0f, 26f, 2f, 0f, ExplosionTier.Medium, ProjectileKind.Drone)
-                    { Penetration = 3, TopAttack = true, Family = "drone", Size = 1.5f };
-            return template.Tuned(80f, 1f, template.ProjectileSpeed, MathF.Min(template.SplashRadius, 2.5f), 0f, template.BurstInterval, TargetLayers.Ground,
+                return new WeaponDef("gear_drone", DamageType.ShapedCharge, damage, 1f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForRange, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForProjectileSpeed, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForSplashRadius, 0f, ExplosionTier.Medium, ProjectileKind.Drone)
+                    { Penetration = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForPenetration, TopAttack = true, Family = "drone", Size = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForSize };
+            return template.Tuned(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForRange, 1f, template.ProjectileSpeed, MathF.Min(template.SplashRadius, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DroneForSplashRadiusCap), 0f, template.BurstInterval, TargetLayers.Ground,
                 0, 0f, null, damage, 1);
         }
 
         private static bool Has(Vehicle v, TraitId id) => v.Gear != null && v.Gear.Has(id);
 
         /// <summary>Crew Drills and the like: trait and module cooldowns are this share of their nominal length.</summary>
-        private static float CooldownFactor(GearState g) => MathF.Max(0.5f, 1f - g.Stat(StatId.Cooldowns));
+        private static float CooldownFactor(GearState g) => MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.CooldownFactorStatFloor, 1f - g.Stat(StatId.Cooldowns));
 
         // ================================================================== procs
 
@@ -300,7 +300,7 @@ namespace MachineBrigade.Sim.Abilities
             if (g.Calm && g.Stat(StatId.TransitSpeed) > 0f) speed *= 1f + g.Stat(StatId.TransitSpeed);
             if (g.ScootUntil > now) speed *= 1f + g.Trait(TraitId.ShootAndScoot).B;
             if (g.HitRunUntil > now) speed *= 1f + g.Trait(TraitId.SetHitAndRun).A;
-            if (g.Has(TraitId.RapidDeployment) && now - g.SpawnedAt < g.Trait(TraitId.RapidDeployment).A) speed *= 1.4f;
+            if (g.Has(TraitId.RapidDeployment) && now - g.SpawnedAt < g.Trait(TraitId.RapidDeployment).A) speed *= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearSpeed;
 
             // ---------------------------------------------------------- stances
             if (g.Has(TraitId.SiegeAnchor))
@@ -310,7 +310,7 @@ namespace MachineBrigade.Sim.Abilities
                     g.Anchored = false;
                     g.UnanchorUntil = now + 1.0;
                 }
-                else if (!g.Anchored && !v.HasPath && stillFor >= 3.0 && g.UnanchorUntil <= now)
+                else if (!g.Anchored && !v.HasPath && stillFor >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearStillForMin2 && g.UnanchorUntil <= now)
                 {
                     g.Anchored = true;
                     Proc(v, TraitId.SiegeAnchor);
@@ -333,7 +333,7 @@ namespace MachineBrigade.Sim.Abilities
                 var broken = v.Barrier <= 0f;
                 _world.Status.AddBarrier(v, v.MaxHp * t.A);
                 g.Ready[(int)TraitId.AegisBarrier] = now + t.B * cd;
-                if (broken && now - g.SpawnedAt > 0.5) Proc(v, TraitId.AegisBarrier);
+                if (broken && now - g.SpawnedAt > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearNowMin) Proc(v, TraitId.AegisBarrier);
             }
             if (g.Has(TraitId.ReactiveBlocks))
             {
@@ -348,7 +348,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 var t = g.Trait(TraitId.RapidResponse);
                 v.BarrageRate = v.BarrageUntil > now ? MathF.Max(v.BarrageRate, t.A) : t.A;
-                v.BarrageUntil = now + 4.0;
+                v.BarrageUntil = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearNowAdd;
                 g.Ready[(int)TraitId.RapidResponse] = now + t.B * cd;
                 v.RefreshEffects(now);
                 Proc(v, TraitId.RapidResponse);
@@ -356,26 +356,26 @@ namespace MachineBrigade.Sim.Abilities
             if (underFire && g.Has(TraitId.NitroDash) && now >= g.Ready[(int)TraitId.NitroDash] && !v.Def.Static)
             {
                 var t = g.Trait(TraitId.NitroDash);
-                v.OverdriveUntil = now + 3.0;
+                v.OverdriveUntil = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearNowAdd2;
                 v.OverdriveSpeed = MathF.Max(1f, t.A);
                 g.Ready[(int)TraitId.NitroDash] = now + t.B * cd;
                 v.RefreshEffects(now);
                 Proc(v, TraitId.NitroDash);
             }
-            if (g.Has(TraitId.AfterburnerReserve) && !g.AfterburnerUsed && v.Flying && v.Hp < v.MaxHp * 0.4f)
+            if (g.Has(TraitId.AfterburnerReserve) && !g.AfterburnerUsed && v.Flying && v.Hp < v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearMaxHpScale)
             {
                 g.AfterburnerUsed = true;
-                v.OverdriveUntil = now + 4.0;
+                v.OverdriveUntil = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearNowAdd;
                 v.OverdriveSpeed = 1f + g.Trait(TraitId.AfterburnerReserve).A;
-                v.FlaresUntil = Math.Max(v.FlaresUntil, now + 2.0);
+                v.FlaresUntil = Math.Max(v.FlaresUntil, now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearNowAdd3);
                 v.RefreshEffects(now);
                 Proc(v, TraitId.AfterburnerReserve);
             }
-            if (g.Has(TraitId.EmergencyRepairKit) && v.Hp < v.MaxHp * 0.4f && now >= g.Ready[(int)TraitId.EmergencyRepairKit])
+            if (g.Has(TraitId.EmergencyRepairKit) && v.Hp < v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearMaxHpScale && now >= g.Ready[(int)TraitId.EmergencyRepairKit])
             {
-                v.Healing = v.MaxHp * g.Trait(TraitId.EmergencyRepairKit).A / 5f;
-                v.HealUntil = now + 5.0;
-                g.Ready[(int)TraitId.EmergencyRepairKit] = now + 30.0 * cd;
+                v.Healing = v.MaxHp * g.Trait(TraitId.EmergencyRepairKit).A / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearMaxHpDivisor;
+                v.HealUntil = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearNowAdd4;
+                g.Ready[(int)TraitId.EmergencyRepairKit] = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearCdScale * cd;
                 Proc(v, TraitId.EmergencyRepairKit);
             }
             if (g.Has(TraitId.DamageControl) && now >= g.Ready[(int)TraitId.DamageControl] && _world.Status.Afflicted(v))
@@ -388,12 +388,12 @@ namespace MachineBrigade.Sim.Abilities
             if (g.Has(TraitId.SetSharedShield) && now >= g.Ready[(int)TraitId.SetSharedShield]) ShareShield(v, g, now);
             if (g.Has(TraitId.SetStrafingRun) && v.Flying && now >= g.Ready[(int)TraitId.SetStrafingRun])
             {
-                v.FlaresUntil = Math.Max(v.FlaresUntil, now + 2.0);
+                v.FlaresUntil = Math.Max(v.FlaresUntil, now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearNowAdd3);
                 g.Ready[(int)TraitId.SetStrafingRun] = now + g.Trait(TraitId.SetStrafingRun).B;
                 v.RefreshEffects(now);
             }
             // A tower's smoke launchers: a screen round it the first time it drops below half health.
-            if (g.Has(TraitId.TowerSmokeLaunchers) && !g.TowerSmokeUsed && v.Hp < v.MaxHp * 0.5f)
+            if (g.Has(TraitId.TowerSmokeLaunchers) && !g.TowerSmokeUsed && v.Hp < v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearMaxHpScale2)
             {
                 var t = g.Trait(TraitId.TowerSmokeLaunchers);
                 g.TowerSmokeUsed = true;
@@ -406,13 +406,13 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (g.Has(TraitId.FieldMechanics)) FieldRepair(v, g.Trait(TraitId.FieldMechanics), now);
                 if (g.Has(TraitId.AmmoCarrier)) Buff(v, StatusKind.Rearm, g.Trait(TraitId.AmmoCarrier).A, g.Trait(TraitId.AmmoCarrier).B, now);
-                if (v.Special == SpecialModule.RallyHorn) Buff(v, StatusKind.Rally, v.SpecialPower, v.SpecialPower2 > 0f ? v.SpecialPower2 : 12f, now);
+                if (v.Special == SpecialModule.RallyHorn) Buff(v, StatusKind.Rally, v.SpecialPower, v.SpecialPower2 > 0f ? v.SpecialPower2 : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearSpecialPower2False, now);
             }
 
             // ---------------------------------------------------------- modules
             switch (v.Special)
             {
-                case SpecialModule.SmokeDischarger when v.SpecialPower2 > 0f && v.SmokeUsed && !g.SecondSmokeUsed && v.Hp < v.MaxHp * 0.25f:
+                case SpecialModule.SmokeDischarger when v.SpecialPower2 > 0f && v.SmokeUsed && !g.SecondSmokeUsed && v.Hp < v.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearMaxHpScale3:
                     g.SecondSmokeUsed = true;
                     _world.Strikes.AddSmoke(v.Team, v.Position, v.SpecialPower, 14f);
                     Proc(v, SpecialModule.SmokeDischarger);
@@ -423,7 +423,7 @@ namespace MachineBrigade.Sim.Abilities
                     break;
                 case SpecialModule.DroneEscort when now >= g.ModuleReady:
                     g.ModuleReady = LaunchDrones(v, g, Math.Max(1, (int)MathF.Round(v.SpecialPower)))
-                        ? now + (v.SpecialPower2 > 0f ? v.SpecialPower2 : 25f) * cd
+                        ? now + (v.SpecialPower2 > 0f ? v.SpecialPower2 : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearSpecialPower2False2) * cd
                         : now + 1.0;
                     break;
                 case SpecialModule.AegisDome when !g.DomeUsed && aura:
@@ -431,13 +431,13 @@ namespace MachineBrigade.Sim.Abilities
                     break;
                 case SpecialModule.DecoyLauncher when now >= g.ModuleReady && (_world.MissileIncoming(v.Id) || _world.RoundIncoming(v.Id)):
                     g.DecoyUntil = now + v.SpecialPower;
-                    g.DecoyAt = _world.ClampToMap(v.Position - SimMath.Forward(v.Heading) * (v.Def.HullBound + 6f));
-                    g.ModuleReady = now + (v.SpecialPower2 > 0f ? v.SpecialPower2 : 35f) * cd;
+                    g.DecoyAt = _world.ClampToMap(v.Position - SimMath.Forward(v.Heading) * (v.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearHullBoundAdd));
+                    g.ModuleReady = now + (v.SpecialPower2 > 0f ? v.SpecialPower2 : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearSpecialPower2False3) * cd;
                     Proc(v, SpecialModule.DecoyLauncher);
                     break;
                 case SpecialModule.UplinkBarrage when now >= g.ModuleReady:
                     g.ModuleReady = Barrage(v, Math.Max(1, (int)MathF.Round(v.SpecialPower)))
-                        ? now + (v.SpecialPower2 > 0f ? v.SpecialPower2 : 45f) * cd
+                        ? now + (v.SpecialPower2 > 0f ? v.SpecialPower2 : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepGearSpecialPower2False4) * cd
                         : now + 1.0;
                     break;
             }
@@ -447,7 +447,7 @@ namespace MachineBrigade.Sim.Abilities
         private void Jam(Vehicle v, GearState g, double now, float cd)
         {
             var t = g.Trait(TraitId.EwJammer);
-            var radius = t.C > 0f ? t.C : 12f;
+            var radius = t.C > 0f ? t.C : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.JamCFalse;
             var threatened = false;
             foreach (var ally in _world.VehicleList)
                 if (ally.IsAlive && ally.Team == v.Team && Vector2.DistanceSquared(ally.Position, v.Position) <= radius * radius && _world.MissileIncoming(ally.Id))
@@ -470,7 +470,7 @@ namespace MachineBrigade.Sim.Abilities
         private void ShareShield(Vehicle v, GearState g, double now)
         {
             var t = g.Trait(TraitId.SetSharedShield);
-            var radius = t.C > 0f ? t.C : 12f;
+            var radius = t.C > 0f ? t.C : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShareShieldCFalse;
             Vehicle best = v;
             var bestShare = v.Hp / v.MaxHp;
             foreach (var ally in _world.VehicleList)
@@ -485,17 +485,17 @@ namespace MachineBrigade.Sim.Abilities
             }
             _world.Status.AddBarrier(best, best.MaxHp * t.A);
             g.Ready[(int)TraitId.SetSharedShield] = now + t.B;
-            if (now - g.SpawnedAt > 0.5) Proc(v, TraitId.SetSharedShield);
+            if (now - g.SpawnedAt > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShareShieldNowMin) Proc(v, TraitId.SetSharedShield);
         }
 
         /// <summary>Field Mechanics: allies round it (not itself) that are out of combat repair a share of their health a second.</summary>
         private void FieldRepair(Vehicle v, GearTrait t, double now)
         {
-            var radius = t.B > 0f ? t.B : 12f;
+            var radius = t.B > 0f ? t.B : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.FieldRepairBFalse;
             foreach (var ally in _world.VehicleList)
             {
                 if (!ally.IsAlive || ally == v || ally.Team != v.Team || ally.Def.Boss || ally.Hp >= ally.MaxHp) continue;
-                if (now - ally.LastHitTime <= 4.0 || Vector2.DistanceSquared(ally.Position, v.Position) > radius * radius) continue;
+                if (now - ally.LastHitTime <= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.FieldRepairNowMax || Vector2.DistanceSquared(ally.Position, v.Position) > radius * radius) continue;
                 var amount = Heal(ally, ally.MaxHp * t.A * AuraInterval * RepairFactor(ally, now));
                 if (amount <= 0f) continue;
                 _world.Emit(SimEvent.RepairedBy(ally, amount));
@@ -510,13 +510,13 @@ namespace MachineBrigade.Sim.Abilities
                 if (!ally.IsAlive || ally.Team != v.Team || Vector2.DistanceSquared(ally.Position, v.Position) > radius * radius) continue;
                 ref var s = ref ally.Statuses[(int)kind];
                 s.Value = s.Until > now ? MathF.Max(s.Value, value) : value;
-                s.Until = now + AuraInterval + 0.15;
+                s.Until = now + AuraInterval + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BuffNowAdd;
             }
         }
 
         /// <summary>Repairs on a burning vehicle go at half rate; its equipment may make them go faster.</summary>
         public static float RepairFactor(Vehicle v, double now) =>
-            v.RepairReceived * (StatusSystem.Has(v, StatusKind.Burn, now) ? 0.5f : 1f);
+            v.RepairReceived * (StatusSystem.Has(v, StatusKind.Burn, now) ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.RepairFactorHasTrue : 1f);
 
         /// <summary>Aegis Dome: once a life, three or more allies under fire round it and all of them (itself too) turn invulnerable.</summary>
         private void Dome(Vehicle v, GearState g, double now)
@@ -548,8 +548,8 @@ namespace MachineBrigade.Sim.Abilities
             if (target == null) return false;
             for (var k = 0; k < count; k++)
             {
-                var origin = v.Position + SimMath.Forward(v.Heading + (k - (count - 1) * 0.5f) * 0.6f) * v.Radius;
-                var travel = MathF.Max(0.3f, Vector2.Distance(origin, target.Position) / drone.ProjectileSpeed) + 0.15f * k;
+                var origin = v.Position + SimMath.Forward(v.Heading + (k - (count - 1) * 0.5f) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.LaunchDronesKScale) * v.Radius;
+                var travel = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.LaunchDronesDistanceFloor, Vector2.Distance(origin, target.Position) / drone.ProjectileSpeed) + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.LaunchDronesKScale2 * k;
                 var p = new Projectile(v.Id, v.Team, drone, target.Position, target.Id, travel) { Origin = origin, Shooter = v, NoProc = true };
                 _world.Combat.AddProjectile(p);
                 _world.Emit(SimEvent.FiredWith(v, drone, origin, target.Position, travel, target.Id));
@@ -562,13 +562,13 @@ namespace MachineBrigade.Sim.Abilities
         private bool Barrage(Vehicle v, int rounds)
         {
             if (!_world.TryGetTarget(v.Target, out var target) || !target.IsAlive) return false;
-            var blast = new ExplosionDef(60f * (1f + (v.Gear?.Stat(StatId.SummonPower) ?? 0f)) * ModuleScale(v), 4f, 0f, ExplosionTier.Medium);
+            var blast = new ExplosionDef(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BarrageStatScale * (1f + (v.Gear?.Stat(StatId.SummonPower) ?? 0f)) * ModuleScale(v), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BarrageRadius, 0f, ExplosionTier.Medium);
             for (var k = 0; k < rounds; k++)
             {
                 var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
-                var reach = 3f * MathF.Sqrt((float)_world.Random.NextDouble());
+                var reach = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BarrageSqrtScale * MathF.Sqrt((float)_world.Random.NextDouble());
                 var at = target.Position + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach;
-                _world.Damage.Queue(at, blast, 1.2 + 0.35 * k, v.Team, v, HitKind.Strike, v.Id);
+                _world.Damage.Queue(at, blast, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BarrageKAdd + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BarrageKScale * k, v.Team, v, HitKind.Strike, v.Id);
             }
             Proc(v, SpecialModule.UplinkBarrage);
             return true;
@@ -597,11 +597,11 @@ namespace MachineBrigade.Sim.Abilities
                 g.Hidden = false;
             }
             if (g.Has(TraitId.TandemWarhead) && weapon.Projectile is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone) mods.Tandem = true;
-            if (g.Has(TraitId.SetHitAndRun)) g.HitRunUntil = now + 2.0;
-            if (g.Has(TraitId.SetDeepStrike) && Vector2.Distance(v.Position, aimAt) > weapon.Range * 0.7f) mods.Scale *= 1f + g.Trait(TraitId.SetDeepStrike).A;
+            if (g.Has(TraitId.SetHitAndRun)) g.HitRunUntil = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotNowAdd;
+            if (g.Has(TraitId.SetDeepStrike) && Vector2.Distance(v.Position, aimAt) > weapon.Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotRangeScale) mods.Scale *= 1f + g.Trait(TraitId.SetDeepStrike).A;
             if (g.Has(TraitId.SetGhostNet) && (wasHidden || _world.Strikes.InSmoke(v.Position))) mods.Scale *= 1f + g.Trait(TraitId.SetGhostNet).A;
             if (g.Has(TraitId.MomentumGun) && target.IsValid && g.StreakTarget == target && g.StreakCarry > 0f)
-                mods.Scale *= 1f + g.Trait(TraitId.MomentumGun).A * MathF.Min(5f, g.StreakCarry);
+                mods.Scale *= 1f + g.Trait(TraitId.MomentumGun).A * MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotStreakCarryCap, g.StreakCarry);
             // Twin Feed on a gun of one or two rounds a pull (and machine guns): every round harder
             // instead of another round (a salvo of three or more gets one more round, see ExtraRounds).
             if (g.Has(TraitId.TwinFeed) && weapon.Burst <= 2) mods.Scale *= 1f + TwinSingle(g.Trait(TraitId.TwinFeed));
@@ -613,7 +613,7 @@ namespace MachineBrigade.Sim.Abilities
                 {
                     g.HeavyRoundsLeft--;
                     mods.Scale *= 1f + g.HeavyBonus;
-                    mods.ExtraSplash = 4f;
+                    mods.ExtraSplash = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotExtraSplash;
                 }
                 if (g.Has(TraitId.ClusterWarhead) && weapon.Indirect)
                 {
@@ -642,13 +642,13 @@ namespace MachineBrigade.Sim.Abilities
             if (g.Has(TraitId.ClusterWarhead) && weapon.Indirect) g.BombletRoundsLeft = ClusterRounds - 1;
             if (g.Has(TraitId.ShootAndScoot))
             {
-                if (!v.IsMoving && now - v.StillSince <= 1.5 && g.ScootShotAt < v.StillSince)
+                if (!v.IsMoving && now - v.StillSince <= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotNowMax && g.ScootShotAt < v.StillSince)
                 {
                     mods.Scale *= 1f + g.Trait(TraitId.ShootAndScoot).A;
                     g.ScootShotAt = now;
                     Proc(v, TraitId.ShootAndScoot);
                 }
-                g.ScootUntil = now + 2.0;
+                g.ScootUntil = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotNowAdd;
             }
             // Every Nth trigger pull is a heavy round: Overpressure Chamber, Hammerfall's Heavy Round,
             // or both together (every third, not stacking).
@@ -657,21 +657,21 @@ namespace MachineBrigade.Sim.Abilities
             var key = TraitId.None;
             if (g.Has(TraitId.OverpressureChamber))
             {
-                every = Math.Max(2, (int)g.Trait(TraitId.OverpressureChamber).A);
+                every = Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotAFloor, (int)g.Trait(TraitId.OverpressureChamber).A);
                 bonus = 0.5f;
                 key = TraitId.OverpressureChamber;
             }
             if (g.Has(TraitId.SetHeavyRound))
             {
                 var t = g.Trait(TraitId.SetHeavyRound);
-                every = every > 0 ? 3 : Math.Max(2, (int)t.A);
+                every = every > 0 ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotEveryTrue : Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotAFloor, (int)t.A);
                 bonus = MathF.Max(bonus, t.B);
                 key = TraitId.SetHeavyRound;
             }
             if (every > 0 && g.Shots % every == 0)
             {
                 mods.Scale *= 1f + bonus;
-                mods.ExtraSplash = 4f;
+                mods.ExtraSplash = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShotExtraSplash;
                 // A salvo's heavy pull is heavy in every round (a flak burst, a rocket ripple), not its first alone.
                 g.HeavyRoundsLeft = weapon.Burst - 1;
                 g.HeavyBonus = bonus;
@@ -697,7 +697,7 @@ namespace MachineBrigade.Sim.Abilities
                 total = rounds * (1f + g.Trait(TraitId.TwinFeed).A);
                 Proc(v, TraitId.TwinFeed);
             }
-            if (g.Has(TraitId.SetStrafingRun) && ++g.Salvos % Math.Max(2, (int)g.Trait(TraitId.SetStrafingRun).A) == 0)
+            if (g.Has(TraitId.SetStrafingRun) && ++g.Salvos % Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ExtraRoundsAFloor, (int)g.Trait(TraitId.SetStrafingRun).A) == 0)
             {
                 extra += rounds;
                 total += rounds;
@@ -713,7 +713,7 @@ namespace MachineBrigade.Sim.Abilities
         {
             var g = v.Gear;
             if (g == null || !g.Has(TraitId.SetStrafingRun)) return 1f;
-            return ++g.Salvos % Math.Max(2, (int)g.Trait(TraitId.SetStrafingRun).A) == 0 ? 2f : 1f;
+            return ++g.Salvos % Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.MachineGunRoundAFloor, (int)g.Trait(TraitId.SetStrafingRun).A) == 0 ? global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.MachineGunRoundSalvosTrue : 1f;
         }
 
         /// <summary>Counter-battery radar: enemy artillery firing near a radar is revealed to the radar's side.</summary>
@@ -767,7 +767,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 var cut = g.Stat(StatId.SpreadLong) * Math.Clamp(reach, 0f, 1f) + (v.IsMoving ? g.Stat(StatId.SpreadMoving) : 0f);
                 if (moving && g.Has(TraitId.FireControlComputer)) cut += g.Trait(TraitId.FireControlComputer).A;
-                if (cut > 0f) f *= MathF.Max(0.1f, 1f - cut);
+                if (cut > 0f) f *= MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.SpreadFactorCutFloor, 1f - cut);
             }
             if (moving && target is Vehicle evader && evader.Gear != null && evader.Gear.HitRunUntil > _world.Time)
                 f *= 1f + evader.Gear.Trait(TraitId.SetHitAndRun).B;
@@ -796,8 +796,8 @@ namespace MachineBrigade.Sim.Abilities
 
         /// <summary>Ironclad's Bulwark: dug in, it draws the fire of enemies round it.</summary>
         public bool Taunts(Vehicle target, Vehicle shooter) =>
-            target.Gear != null && target.Gear.Has(TraitId.SetBulwark) && !target.IsMoving && _world.Time - target.StillSince >= 2.0 &&
-            Vector2.DistanceSquared(target.Position, shooter.Position) <= 25f * 25f;
+            target.Gear != null && target.Gear.Has(TraitId.SetBulwark) && !target.IsMoving && _world.Time - target.StillSince >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TauntsTimeMin &&
+            Vector2.DistanceSquared(target.Position, shooter.Position) <= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TauntsScale * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.TauntsScale;
 
         /// <summary>Hot Swap or an ammunition carrier nearby: the magazine reloads on the move too, and faster.</summary>
         public float ReloadRate(Vehicle v, out bool onTheMove)
@@ -830,11 +830,11 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (g.Has(TraitId.MomentumGun))
                 {
-                    if (g.StreakTarget == tv.Id) g.StreakCarry = MathF.Min(5f, g.StreakCarry + c);
+                    if (g.StreakTarget == tv.Id) g.StreakCarry = MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitStreakCarryCap, g.StreakCarry + c);
                     else
                     {
                         g.StreakTarget = tv.Id;
-                        g.StreakCarry = MathF.Min(5f, c);
+                        g.StreakCarry = MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitCCap, c);
                     }
                     g.Streak = (int)g.StreakCarry;
                     if (g.StreakCarry >= 5f) Proc(v, TraitId.MomentumGun);
@@ -853,23 +853,23 @@ namespace MachineBrigade.Sim.Abilities
                     if (g.Has(TraitId.ShredderRounds))
                     {
                         // A fast gun needs several hits for one stack, a slow gun lays several at once and they last its reload.
-                        _world.Status.Shred(tv, g.Trait(TraitId.ShredderRounds).A, MathF.Max(5f, gap * 2f), 5, c);
+                        _world.Status.Shred(tv, g.Trait(TraitId.ShredderRounds).A, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitGapFloor, gap * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitGapScale), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitMaxStacks, c);
                         if (tv.Statuses[(int)StatusKind.Shred].Stacks >= 5) Proc(v, TraitId.ShredderRounds);
                     }
                     if (g.Has(TraitId.SuppressionRounds))
                     {
-                        _world.Status.Slow(tv, g.Trait(TraitId.SuppressionRounds).A, MathF.Max(2f, gap * 1.25f));
+                        _world.Status.Slow(tv, g.Trait(TraitId.SuppressionRounds).A, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitGapFloor2, gap * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitGapScale2));
                         Proc(v, TraitId.SuppressionRounds);
                     }
                     if (g.Has(TraitId.SuppressiveFire))
                     {
-                        _world.Status.Suppress(tv, g.Trait(TraitId.SuppressiveFire).A, MathF.Max(3f, gap * 1.25f));
+                        _world.Status.Suppress(tv, g.Trait(TraitId.SuppressiveFire).A, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitGapFloor3, gap * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitGapScale2));
                         Proc(v, TraitId.SuppressiveFire);
                     }
                     if (g.Has(TraitId.LaserDesignator))
                     {
                         var t = g.Trait(TraitId.LaserDesignator);
-                        _world.Status.Mark(tv, t.A, MathF.Max(t.B, gap * 1.5f), v.Team, 0.1f);
+                        _world.Status.Mark(tv, t.A, MathF.Max(t.B, gap * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitGapScale3), v.Team, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitReach);
                         Proc(v, TraitId.LaserDesignator);
                     }
                 }
@@ -884,7 +884,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (g.RicochetCarry >= 1f)
                 {
                     g.RicochetCarry -= 1f;
-                    Ricochet(p, v, g, struck, 1f / MathF.Max(0.05f, earned));
+                    Ricochet(p, v, g, struck, 1f / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDirectHitEarnedFloor, earned));
                 }
             }
         }
@@ -904,7 +904,7 @@ namespace MachineBrigade.Sim.Abilities
                 next = other;
             }
             if (next == null) return;
-            var travel = MathF.Max(0.05f, MathF.Sqrt(best) / MathF.Max(1f, p.Weapon.ProjectileSpeed));
+            var travel = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.RicochetSqrtFloor, MathF.Sqrt(best) / MathF.Max(1f, p.Weapon.ProjectileSpeed));
             // The bounce strikes its target only: no blast, no piercing, no bomblets.
             var bounce = new Projectile(p.Owner, p.OwnerTeam, p.Weapon, next.Position, next.Id, travel, next.Flying)
             {
@@ -957,7 +957,7 @@ namespace MachineBrigade.Sim.Abilities
                     TargetKind.Structure => g.Stat(StatId.DamageVsStructure),
                     _ => HeavyChassis(target) ? g.Stat(StatId.DamageVsHeavy) : g.Stat(StatId.DamageVsLight),
                 };
-                if (g.Has(TraitId.Executioner) && target is Vehicle && target.Hp < target.MaxHp * 0.3f)
+                if (g.Has(TraitId.Executioner) && target is Vehicle && target.Hp < target.MaxHp * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OutgoingMaxHpScale)
                 {
                     m += g.Trait(TraitId.Executioner).A;
                     if (hit.Kind == HitKind.Direct) Proc(attacker, TraitId.Executioner);
@@ -1003,7 +1003,7 @@ namespace MachineBrigade.Sim.Abilities
             if (g != null && g.Has(TraitId.TowerFireLink))
             {
                 var t = g.Trait(TraitId.TowerFireLink);
-                if (mark.ByOther(tower.Id, now - (t.B > 0f ? t.B : 3f)))
+                if (mark.ByOther(tower.Id, now - (t.B > 0f ? t.B : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.FireLinkBFalse)))
                 {
                     bonus = t.A;
                     if (hit.Kind == HitKind.Direct) Proc(tower, TraitId.TowerFireLink);
@@ -1031,7 +1031,7 @@ namespace MachineBrigade.Sim.Abilities
         /// </summary>
         private void CounterBattery(Vehicle v, GearState g, in HitInfo hit)
         {
-            if (hit.Attacker is not { } shooter || !shooter.IsAlive || shooter.Team == v.Team || v.Team < 0 || v.Team > 30) return;
+            if (hit.Attacker is not { } shooter || !shooter.IsAlive || shooter.Team == v.Team || v.Team < 0 || v.Team > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.CounterBatteryTeamMin) return;
             if (hit.Weapon is not { MinRange: > 0f } || hit.Kind is not (HitKind.Direct or HitKind.Splash)) return;
             var now = _world.Time;
             var seconds = g.Trait(TraitId.TowerCounterBattery).A;
@@ -1069,7 +1069,7 @@ namespace MachineBrigade.Sim.Abilities
                 ref var shred = ref v.Statuses[(int)StatusKind.Shred];
                 if (shred.Until > now && shred.Stacks > 0) m *= 1f + shred.Value * shred.Stacks;
                 ref var burn = ref v.Statuses[(int)StatusKind.Burn];
-                if (burn.Flag && burn.Until > now) m *= 1.1f;
+                if (burn.Flag && burn.Until > now) m *= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.IncomingM;
             }
             // Prompt 15 C.9: reactive armour (the module) cuts shaped charges hard and nothing else; a tandem warhead defeats it.
             // Gear balance 04/10: by the damage type (ShapedCharge = HEAT / ATGM / shaped-charge drones), never by the projectile
@@ -1080,7 +1080,7 @@ namespace MachineBrigade.Sim.Abilities
             var g = v.Gear;
             if (g == null) return m;
             var cut = g.Stat(Stats.Resist(type)) + Adapted(g, type, now);
-            if (hit.Kind == HitKind.Burn) return m * (1f - Math.Clamp(cut, 0f, 0.6f));
+            if (hit.Kind == HitKind.Burn) return m * (1f - Math.Clamp(cut, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.IncomingCutMax));
             var weapon = hit.Weapon;
             // Prompt 15 C.9: a cage takes shaped charges on rockets, missiles and drones; kinetic rounds and thermobaric blasts go through.
             if (type == DamageType.ShapedCharge && hit.Kind != HitKind.Mine && !(weapon?.Thermobaric ?? false) &&
@@ -1092,7 +1092,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (g.Has(TraitId.MineSweep) && now >= g.Ready[(int)TraitId.MineSweep])
                 {
-                    g.Ready[(int)TraitId.MineSweep] = now + 30.0;
+                    g.Ready[(int)TraitId.MineSweep] = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.IncomingNowAdd;
                     Proc(v, TraitId.MineSweep);
                     return 0f;
                 }
@@ -1100,10 +1100,10 @@ namespace MachineBrigade.Sim.Abilities
             }
             if (hit.Kind == HitKind.Direct && !hit.Indirect && g.Stat(StatId.ResistFrontal) > 0f && Frontal(v, hit.Origin)) cut += g.Stat(StatId.ResistFrontal);
             if (g.Anchored) cut += g.Trait(TraitId.SiegeAnchor).A;
-            if (g.Has(TraitId.SetBulwark) && !v.IsMoving && now - v.StillSince >= 2.0) cut += g.Trait(TraitId.SetBulwark).A;
-            if (g.Has(TraitId.RapidDeployment) && now - g.SpawnedAt < g.Trait(TraitId.RapidDeployment).A) cut += 0.2f;
+            if (g.Has(TraitId.SetBulwark) && !v.IsMoving && now - v.StillSince >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.IncomingNowMin) cut += g.Trait(TraitId.SetBulwark).A;
+            if (g.Has(TraitId.RapidDeployment) && now - g.SpawnedAt < g.Trait(TraitId.RapidDeployment).A) cut += global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.IncomingCut;
             cut += IncomingLines(v, g, hit);
-            m *= 1f - Math.Clamp(cut, 0f, 0.7f);
+            m *= 1f - Math.Clamp(cut, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.IncomingCutMax2);
             if (hit.Kind != HitKind.Direct) return m;
 
             // Armour traits that work hit by hit: reactive blocks take shaped charges only (prompt 15).
@@ -1111,11 +1111,11 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (g.Blocks >= (int)g.Trait(TraitId.ReactiveBlocks).A) g.BlockAt = now + g.Trait(TraitId.ReactiveBlocks).B * CooldownFactor(g);
                 g.Blocks--;
-                m *= 0.5f;
+                m *= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.IncomingM2;
                 Proc(v, TraitId.ReactiveBlocks);
             }
             if (g.Has(TraitId.AngledGlacis) && type is DamageType.ShapedCharge or DamageType.Kinetic && !hit.Indirect &&
-                ++g.GlacisHits % Math.Max(2, (int)g.Trait(TraitId.AngledGlacis).A) == 0)
+                ++g.GlacisHits % Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.IncomingAFloor, (int)g.Trait(TraitId.AngledGlacis).A) == 0)
             {
                 Proc(v, TraitId.AngledGlacis);
                 return 0f;
@@ -1133,7 +1133,7 @@ namespace MachineBrigade.Sim.Abilities
         private static bool Frontal(Vehicle v, Vector2 from)
         {
             var to = from - v.Position;
-            if (to.LengthSquared() < 0.01f) return false;
+            if (to.LengthSquared() < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.FrontalLengthSquaredMax) return false;
             return MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(to) - v.Heading)) <= MathF.PI / 6f;
         }
 
@@ -1147,7 +1147,7 @@ namespace MachineBrigade.Sim.Abilities
             var within = MathF.Min(damage, g.Ablative);
             g.Ablative -= within;
             if (g.Ablative <= 0f) Proc(v, TraitId.AblativeLayer);
-            return damage - within * 0.5f;
+            return damage - within * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.SoakWithinScale;
         }
 
         /// <summary>Guardian Link: a heavy vehicle nearby takes a share of the damage to a light one.</summary>
@@ -1157,7 +1157,7 @@ namespace MachineBrigade.Sim.Abilities
             foreach (var guardian in _guardians)
             {
                 if (!guardian.IsAlive || guardian == v || guardian.Team != v.Team) continue;
-                if (Vector2.DistanceSquared(guardian.Position, v.Position) > 100f) continue;
+                if (Vector2.DistanceSquared(guardian.Position, v.Position) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.RedirectDistanceSquaredMin) continue;
                 var share = damage * guardian.Gear!.Trait(TraitId.GuardianLink).A;
                 _world.Damage.TakeOver(guardian, share, hit);
                 Proc(guardian, TraitId.GuardianLink);
@@ -1189,9 +1189,9 @@ namespace MachineBrigade.Sim.Abilities
             if (!g.Has(TraitId.AdaptivePlating)) return;
             var now = _world.Time;
             var i = (int)type;
-            g.Adapt[i] = g.AdaptUntil[i] > now ? Math.Min(4, g.Adapt[i] + 1) : 1;
-            g.AdaptUntil[i] = now + 6.0;
-            if (g.Adapt[i] == 4) Proc(v, TraitId.AdaptivePlating);
+            g.Adapt[i] = g.AdaptUntil[i] > now ? Math.Min(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.AfterDamagedAdaptCap, g.Adapt[i] + 1) : 1;
+            g.AdaptUntil[i] = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.AfterDamagedNowAdd;
+            if (g.Adapt[i] == global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.AfterDamagedAdaptIs) Proc(v, TraitId.AdaptivePlating);
         }
 
         // ================================================================== deaths
@@ -1213,7 +1213,7 @@ namespace MachineBrigade.Sim.Abilities
                         state.Ammo = 1;
                         state.ReloadLeft = 0f;
                     }
-                    kg.KillFireUntil = now + MathF.Max(4f, HitInterval(killer.Arms[0]) * 1.5f);
+                    kg.KillFireUntil = now + MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathHitIntervalFloor, HitInterval(killer.Arms[0]) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathHitIntervalScale);
                     Proc(killer, TraitId.KillReload);
                 }
                 if (kg.Has(TraitId.SalvageTeam))
@@ -1223,8 +1223,8 @@ namespace MachineBrigade.Sim.Abilities
                     {
                         if (!ally.IsAlive || ally.Team != killer.Team || ally.Hp >= ally.MaxHp) continue;
                         var self = ally == killer;
-                        if (!self && Vector2.DistanceSquared(ally.Position, killer.Position) > 100f) continue;
-                        var amount = Heal(ally, ally.MaxHp * share * (self ? 1f : 0.5f) * RepairFactor(ally, now));
+                        if (!self && Vector2.DistanceSquared(ally.Position, killer.Position) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathDistanceSquaredMin) continue;
+                        var amount = Heal(ally, ally.MaxHp * share * (self ? 1f : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathSelfFalse) * RepairFactor(ally, now));
                         if (amount <= 0f) continue;
                         _world.Emit(SimEvent.RepairedBy(ally, amount));
                     }
@@ -1242,7 +1242,7 @@ namespace MachineBrigade.Sim.Abilities
                 var t = g.Trait(TraitId.VolatileFuelTanks);
                 // Sized to the vehicle's price, and never more than a heavy shell's worth on a big hull.
                 var blast = MathF.Min(FuelBlastCap, victim.MaxHp * t.A * ModuleScale(victim));
-                _world.Damage.Queue(victim.Position, new ExplosionDef(blast, t.B > 0f ? t.B : 8f, 0f, ExplosionTier.Large), 0.15, victim.Team,
+                _world.Damage.Queue(victim.Position, new ExplosionDef(blast, t.B > 0f ? t.B : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathBFalse, 0f, ExplosionTier.Large), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathDelay, victim.Team,
                     victim, HitKind.Splash, victim.Id);
                 _world.Emit(SimEvent.Proc(victim, GearKeys.Trait(TraitId.VolatileFuelTanks)));
             }
@@ -1255,9 +1255,9 @@ namespace MachineBrigade.Sim.Abilities
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v == victim || v.Gear == null || !v.Gear.Has(TraitId.DarkCrown)) continue;
-                if (Vector2.DistanceSquared(v.Position, victim.Position) > 25f * 25f) continue;
+                if (Vector2.DistanceSquared(v.Position, victim.Position) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathScale * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathScale) continue;
                 var t = v.Gear.Trait(TraitId.DarkCrown);
-                v.Gear.CrownStacks = Math.Min(5, v.Gear.CrownStacks + 1);
+                v.Gear.CrownStacks = Math.Min(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.OnDeathCrownStacksCap, v.Gear.CrownStacks + 1);
                 Heal(v, v.MaxHp * t.B);
                 Proc(v, TraitId.DarkCrown);
             }
@@ -1283,7 +1283,7 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>EMP Payload: the dying vehicle stuns enemy ground vehicles round it.</summary>
         private void EmpPayload(Vehicle victim, double now)
         {
-            var radius = victim.SpecialPower2 > 0f ? victim.SpecialPower2 : 10f;
+            var radius = victim.SpecialPower2 > 0f ? victim.SpecialPower2 : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.EmpPayloadSpecialPower2False;
             foreach (var other in _world.VehicleList)
             {
                 if (!other.IsAlive || other.Team == victim.Team || other.Team < 0 || other.Flying || other.Def.Boss) continue;

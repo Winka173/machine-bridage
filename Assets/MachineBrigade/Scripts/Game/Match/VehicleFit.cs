@@ -266,7 +266,7 @@ namespace MachineBrigade.Game.Match
                 if (Within(need & ~Hardware, has)) n++;
                 if (Within(need, has)) hardware = true;
             }
-            return hardware && n * 3 >= cards.Count;
+            return hardware && n * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.VehicleFit.ClassMeetsNScale >= cards.Count;
         }
 
         /// <summary>Whether a branch fits a need: one of its classes meets it.</summary>

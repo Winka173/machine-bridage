@@ -40,7 +40,7 @@ namespace MachineBrigade.Sim.Abilities
                         if (!v.HasPath && !v.PathQueued && !v.IsMoving && Wants(v, dep, now - v.StillSince)) Begin(v, DeployState.Deploying, dep.Seconds, now);
                         break;
                     case DeployState.Deploying:
-                        if (Leaving(v)) Begin(v, DeployState.Packing, (float)Math.Max(0.2, now - v.DeployFrom), now);
+                        if (Leaving(v)) Begin(v, DeployState.Packing, (float)Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.DeploySystem.StepNowFloor, now - v.DeployFrom), now);
                         else if (now >= v.DeployUntil) v.Deploy = DeployState.Deployed;
                         break;
                     case DeployState.Deployed:
@@ -67,7 +67,7 @@ namespace MachineBrigade.Sim.Abilities
 
         /// <summary>A ground enemy inside the main weapon's minimum reach (and a little).</summary>
         private bool Inside(Vehicle v) =>
-            _world.FindNearestEnemy(v, v.Def.Weapon.MinRange + 2f, requireVisible: true, layers: TargetLayers.Ground, mobileOnly: true) != null;
+            _world.FindNearestEnemy(v, v.Def.Weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.DeploySystem.InsideMinRangeAdd, requireVisible: true, layers: TargetLayers.Ground, mobileOnly: true) != null;
 
         /// <summary>
         /// Sieged, with enemies inside the mortar's minimum reach and nothing between that and its full reach to shell, for
@@ -101,7 +101,7 @@ namespace MachineBrigade.Sim.Abilities
         private bool Wants(Vehicle v, DeployDef dep, double stillFor)
         {
             if (stillFor < StandBefore || v.Stunned) return false;
-            var reach = v.Def.Weapon.Range * dep.Range + 4f;
+            var reach = v.Def.Weapon.Range * dep.Range + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.DeploySystem.WantsRangeAdd;
             if (dep.Siege)
             {
                 // Play-test 5 (DECISIONS 20W): a siege tank sieges for what its mortar can reach, never with an enemy

@@ -43,7 +43,7 @@ namespace MachineBrigade.Sim.Abilities
         /// fuel tanks) are sized to the vehicle's price: CP / 7 between 0.4 and 1.3, so a swarm of
         /// cheap vehicles wearing them is not the best use of them.
         /// </summary>
-        internal static float ModuleScale(Vehicle v) => Math.Clamp(MathF.Max(v.Def.CpCost, v.Def.ArmyCost) / 7f, 0.4f, 1.3f);
+        internal static float ModuleScale(Vehicle v) => Math.Clamp(MathF.Max(v.Def.CpCost, v.Def.ArmyCost) / global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ModuleScaleMaxDivisor, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ModuleScaleMaxMin, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ModuleScaleMaxMax);
 
         /// <summary>Seconds between a weapon's rounds (a salvo's rounds counted one by one; a machine gun's pauses between runs counted in).</summary>
         internal static float HitInterval(WeaponDef w)
@@ -52,8 +52,8 @@ namespace MachineBrigade.Sim.Abilities
             var cycle = w.CycleSeconds + w.Charge;
             var interval = cycle / MathF.Max(1, w.RoundsPerCycle);
             // A machine gun fires in runs with pauses (CombatSystem's RunDamage of 1.7).
-            if (w.Clip <= 0 && w.Projectile == ProjectileKind.Bullet && w.Cooldown < 0.35f && w.Burst <= 1) interval *= 1.7f;
-            return MathF.Max(0.02f, interval);
+            if (w.Clip <= 0 && w.Projectile == ProjectileKind.Bullet && w.Cooldown < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.HitIntervalCooldownMax && w.Burst <= 1) interval *= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.HitIntervalInterval;
+            return MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.HitIntervalIntervalFloor, interval);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace MachineBrigade.Sim.Abilities
         /// the weapon's hits over 1.5 s, between 0.15 (a flak gun, a minigun) and 2.5 (a tank gun, a
         /// railgun, a howitzer): a fast gun earns a stack in several hits, a slow one several stacks in one.
         /// </summary>
-        internal static float ProcCoefficient(WeaponDef w) => Math.Clamp(HitInterval(w) / ProcReference, 0.15f, 2.5f);
+        internal static float ProcCoefficient(WeaponDef w) => Math.Clamp(HitInterval(w) / ProcReference, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ProcCoefficientHitIntervalMin, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ProcCoefficientHitIntervalMax);
 
         /// <summary>Twin Feed on a gun of one or two rounds: the extra damage of every round (the trait's second number; its salvo share times 1.6 in older data).</summary>
         private static float TwinSingle(GearTrait t) => t.B > 0f ? t.B : t.A * 1.6f;
@@ -70,7 +70,7 @@ namespace MachineBrigade.Sim.Abilities
         private static float SuppressedShare(Vehicle v, double now)
         {
             ref var s = ref v.Statuses[(int)StatusKind.Suppressed];
-            return s.Until > now ? Math.Clamp(s.Value, 0f, 0.6f) : 0f;
+            return s.Until > now ? Math.Clamp(s.Value, 0f, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.SuppressedShareValueMax) : 0f;
         }
 
         // ================================================================== every step
@@ -110,9 +110,9 @@ namespace MachineBrigade.Sim.Abilities
             if (warn > 0f && !v.Flying && now >= g.WarningAt && _world.AtgmIncoming(v.Id))
             {
                 g.WarningAt = now + LaserWarningCooldown * cd;
-                _world.Strikes.AddSmoke(v.Team, v.Position, warn, 8f);
+                _world.Strikes.AddSmoke(v.Team, v.Position, warn, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepLinesSeconds);
                 ref var jam = ref v.Statuses[(int)StatusKind.Jam];
-                jam.Until = Math.Max(jam.Until, now + 1.5);
+                jam.Until = Math.Max(jam.Until, now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.StepLinesNowAdd);
                 Proc(v, "laser_warning");
             }
             if (aura)
@@ -140,12 +140,12 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>Rearguard: driving away from the nearest enemy it knows of (reversing counts).</summary>
         private bool MovingAway(Vehicle v)
         {
-            if (MathF.Abs(v.Speed) < 0.5f) return false;
+            if (MathF.Abs(v.Speed) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.MovingAwayAbsMax) return false;
             var threat = _world.FindNearestEnemy(v, 70f, requireVisible: true);
             if (threat == null) return false;
             var travel = SimMath.Forward(v.Heading) * MathF.Sign(v.Speed);
             var to = threat.Position - v.Position;
-            if (to.LengthSquared() < 0.01f) return false;
+            if (to.LengthSquared() < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.MovingAwayLengthSquaredMax) return false;
             return Vector2.Dot(travel, Vector2.Normalize(to)) < -0.3f;
         }
 
@@ -176,12 +176,12 @@ namespace MachineBrigade.Sim.Abilities
         private void BackOff(Vehicle v, GearState g, double now)
         {
             if (v.Flying || v.Def.Static || v.UnderPlayerControl(now) || v.Stunned) return;
-            var reach = MathF.Max(10f, v.Arms[0].Range * 0.45f);
+            var reach = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BackOffRangeFloor, v.Arms[0].Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BackOffRangeScale);
             var threat = _world.FindNearestEnemy(v, reach, requireVisible: true, layers: TargetLayers.Ground, mobileOnly: true);
             if (threat == null || threat.Def.Passive || threat.Def.Weapon.MinRange > 0f) return;
             if (_world.Movement.BackAway(v, threat.Position, 8f))
             {
-                g.BackOffAt = now + 4.0;
+                g.BackOffAt = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.BackOffNowAdd;
                 Proc(v, "reverse_gearbox");
             }
             else g.BackOffAt = now + 1.0;
@@ -219,11 +219,11 @@ namespace MachineBrigade.Sim.Abilities
         {
             var g = target.Gear;
             if (g == null || target.Flying || !target.IsAlive || target.Stunned) return false;
-            var share = g.Stat(StatId.DamageVsDrone) * 0.5f;
+            var share = g.Stat(StatId.DamageVsDrone) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShootDownStatScale;
             if (share <= 0f || p.Weapon.Projectile is not (ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone)) return false;
             if (_world.Random.NextDouble() >= share) return false;
             var from = p.Origin - target.Position;
-            var toward = from.LengthSquared() > 0.01f ? Vector2.Normalize(from) : SimMath.Forward(target.Heading);
+            var toward = from.LengthSquared() > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.ShootDownLengthSquaredMin ? Vector2.Normalize(from) : SimMath.Forward(target.Heading);
             _world.Emit(SimEvent.Intercept(target, p.Weapon, target.Position + toward * (target.Def.HullBound + 3f), false));
             Proc(target, "airburst_rounds");
             return true;
@@ -238,11 +238,11 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (!v.IsAlive || v == victim || v.Team != victim.Team || v.Gear == null || !v.Gear.Has(TraitId.Vengeance)) continue;
                 var t = v.Gear.Trait(TraitId.Vengeance);
-                var reach = t.B > 0f ? t.B : 15f;
+                var reach = t.B > 0f ? t.B : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DeathLinesBFalse;
                 if (Vector2.DistanceSquared(v.Position, victim.Position) > reach * reach) continue;
                 ref var s = ref v.Statuses[(int)StatusKind.Avenging];
                 s.Value = s.Until > now ? MathF.Max(s.Value, t.A) : t.A;
-                s.Until = now + (t.C > 0f ? t.C : 5f);
+                s.Until = now + (t.C > 0f ? t.C : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.DeathLinesCFalse);
                 Proc(v, TraitId.Vengeance);
             }
             // Bulwark Engineering's four pieces: a fallen tower leaves a machine-gun post for a while.
@@ -273,9 +273,9 @@ namespace MachineBrigade.Sim.Abilities
                 var t = g.Trait(TraitId.SetPhoenix);
                 ref var s = ref v.Statuses[(int)StatusKind.Overheal];
                 var had = s.Until > now ? s.Value : 0f;
-                var cap = v.MaxHp * (t.A > 0f ? t.A : 0.1f);
+                var cap = v.MaxHp * (t.A > 0f ? t.A : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.HealAFalse);
                 s.Value = MathF.Min(cap, had + over);
-                s.Until = now + (t.B > 0f ? t.B : 8f);
+                s.Until = now + (t.B > 0f ? t.B : global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.HealBFalse);
                 if (had <= 0f && s.Value > 0f) Proc(v, TraitId.SetPhoenix);
             }
             return applied;
@@ -292,7 +292,7 @@ namespace MachineBrigade.Sim.Abilities
             if (s.Until <= now || s.Value <= 0f || damage <= 0f) return damage;
             var soaked = MathF.Min(s.Value, damage);
             s.Value -= soaked;
-            if (s.Value <= 0.01f)
+            if (s.Value <= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.GearSystem.AbsorbOverhealValueMax)
             {
                 s.Value = 0f;
                 s.Until = 0;

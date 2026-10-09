@@ -89,7 +89,7 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>Checks one vehicle (every half second, staggered by id) and steps in when it has been stuck long enough.</summary>
         private void WatchRescue(Vehicle v)
         {
-            if (!RescueEnabled || v.Flying || v.Def.Static || v.Scripted || ((_world.Tick + v.Id.Value) % 10) != 0) return;
+            if (!RescueEnabled || v.Flying || v.Def.Static || v.Scripted || ((_world.Tick + v.Id.Value) % global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.WatchRescueTickMod) != 0) return;
             var t = v.Traffic;
             var now = _world.Time;
             var held = v.Burrow != Vehicle.BurrowState.Surface || v.Landing || v.Stunned || t.YieldingTo.IsValid || t.Reversing(now);
@@ -202,7 +202,7 @@ namespace MachineBrigade.Sim.Movement
             var length = way.Length();
             if (length < 1f) return false;
             way /= length;
-            for (var d = MathF.Min(9f, length); d >= 3f; d -= 1.5f)
+            for (var d = MathF.Min(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryHopLengthCap, length); d >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryHopDMin; d -= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.MovementSystem.TryHopD)
             {
                 var p = v.Position + way * d;
                 if (!_world.Map.Contains(p) || !grid.IsWalkable(p) || HullNear(v, p) || !grid.LineOfSight(p, next)) continue;

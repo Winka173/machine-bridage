@@ -760,7 +760,7 @@ internal static class Check
             if (r.Compiled) sb.AppendLine($"- Compile (Roslyn of the .NET SDK, Sim + Game, Unity 6 DLLs): {r.Errors.Count} error(s); warnings {r.OldWarnings} → {r.HeadWarnings}, new {r.NewWarnings.Count}.");
             List("(a) changes that are not a literal swap", r.NonLiteral, sb, 400);
             List("(a) rebuilt tree differs", r.ReconstructFail, sb, 50);
-            List("(a) recognised equivalent rewrites (pattern-checked, not tree-rebuilt)", r.Rewrites, sb, 50);
+            List("(a) recognised equivalent rewrites (lane B's xOrDefault: pattern-checked; pass 2's nullable default: undone, then the whole file tree-rebuilt)", r.Rewrites, sb, 50);
             List("(d) errors", r.Errors, sb, 40);
             List("(d) new warnings", r.NewWarnings, sb, 60);
             List("(e) type changes", r.TypeChanges, sb, 100);

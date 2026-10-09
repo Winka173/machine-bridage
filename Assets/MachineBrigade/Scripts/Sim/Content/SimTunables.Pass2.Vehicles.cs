@@ -9,10 +9,3105 @@ namespace MachineBrigade.Sim.Content
     {
         public static partial class Vehicles
         {
+            public static partial class AbilitySystem
+            {
+                /// <summary>vehicles.abilitySystem.ploughHullBoundAdd (m; ban_kinh, was Sim/Abilities/AbilitySystem.Breach.cs:26).</summary>
+                public static float PloughHullBoundAdd = 1.5f;
+                /// <summary>vehicles.abilitySystem.scootNextDoubleMax (share; xac_suat, was Sim/Abilities/AbilitySystem.Breach.cs:52).</summary>
+                public static double ScootNextDoubleMax = 0.5;
+                /// <summary>vehicles.abilitySystem.scootRangeSub (m; ban_kinh, was Sim/Abilities/AbilitySystem.Breach.cs:62).</summary>
+                public static float ScootRangeSub = 2f;
+                /// <summary>vehicles.abilitySystem.scootMinRangeAdd (m; ban_kinh, was Sim/Abilities/AbilitySystem.Breach.cs:62).</summary>
+                public static float ScootMinRangeAdd = 3f;
+                /// <summary>vehicles.abilitySystem.stepDistanceSquaredMin (m; ban_kinh, was Sim/Abilities/AbilitySystem.cs:66).</summary>
+                public static float StepDistanceSquaredMin = 0.04f;
+                /// <summary>vehicles.abilitySystem.stepNowMin (x; sat_thuong, was Sim/Abilities/AbilitySystem.cs:72).</summary>
+                public static double StepNowMin = 3.0;
+                /// <summary>vehicles.abilitySystem.stepMaxHpScale (x; sat_thuong, was Sim/Abilities/AbilitySystem.cs:74).</summary>
+                public static float StepMaxHpScale = 0.02f;
+                /// <summary>vehicles.abilitySystem.stepSkillTimer (s; sat_thuong, was Sim/Abilities/AbilitySystem.cs:93).</summary>
+                public static float StepSkillTimer = 0.25f;
+                /// <summary>vehicles.abilitySystem.stepMaxHpScale2 (x; sat_thuong, was Sim/Abilities/AbilitySystem.cs:116).</summary>
+                public static float StepMaxHpScale2 = 0.08f;
+                /// <summary>vehicles.abilitySystem.stepMaxHpScale3 (x; sat_thuong, was Sim/Abilities/AbilitySystem.cs:125).</summary>
+                public static float StepMaxHpScale3 = 0.5f;
+                /// <summary>vehicles.abilitySystem.regeneratingNowMin (s; thoi_gian, was Sim/Abilities/AbilitySystem.cs:159).</summary>
+                public static double RegeneratingNowMin = 4.0;
+                /// <summary>vehicles.abilitySystem.regeneratingStatSub (s; thoi_gian, was Sim/Abilities/AbilitySystem.cs:160).</summary>
+                public static double RegeneratingStatSub = 4.0;
+                /// <summary>vehicles.abilitySystem.supportStaticTrue (x; tan_suat, was Sim/Abilities/AbilitySystem.cs:221).</summary>
+                public static float SupportStaticTrue = 0.5f;
+                /// <summary>vehicles.abilitySystem.slowAurasAuraIntervalScale (x; thoi_gian, was Sim/Abilities/AbilitySystem.cs:267, Sim/Abilities/AbilitySystem.cs:276).</summary>
+                public static float SlowAurasAuraIntervalScale = 2f;
+                /// <summary>vehicles.abilitySystem.topUpAuraIntervalScale (x; thoi_gian, was Sim/Abilities/AbilitySystem.cs:396).</summary>
+                public static float TopUpAuraIntervalScale = 2f;
+                /// <summary>vehicles.abilitySystem.layMinesDistanceSquaredMax (m; ban_kinh, was Sim/Abilities/AbilitySystem.cs:447).</summary>
+                public static float LayMinesDistanceSquaredMax = 25f;
+                /// <summary>vehicles.abilitySystem.layMinesHullHalfAdd (m; ban_kinh, was Sim/Abilities/AbilitySystem.cs:451).</summary>
+                public static float LayMinesHullHalfAdd = 0.8f;
+                /// <summary>vehicles.abilitySystem.layMinesNowAdd (s; thoi_gian, was Sim/Abilities/AbilitySystem.cs:453).</summary>
+                public static double LayMinesNowAdd = 2.0;
+                /// <summary>vehicles.abilitySystem.layStripHullHalfAdd (m; ban_kinh, was Sim/Abilities/AbilitySystem.cs:472).</summary>
+                public static float LayStripHullHalfAdd = 1.5f;
+                /// <summary>vehicles.abilitySystem.layStripNowAdd (s; thoi_gian, was Sim/Abilities/AbilitySystem.cs:477).</summary>
+                public static double LayStripNowAdd = 1.5;
+                /// <summary>vehicles.abilitySystem.layFieldNextDoubleAdd (share; xac_suat, was Sim/Abilities/AbilitySystem.cs:495).</summary>
+                public static float LayFieldNextDoubleAdd = 0.2f;
+                /// <summary>vehicles.abilitySystem.layFieldNextDoubleScale (x; xac_suat, was Sim/Abilities/AbilitySystem.cs:495).</summary>
+                public static float LayFieldNextDoubleScale = 0.8f;
+                /// <summary>vehicles.abilitySystem.layFieldDistanceSquaredMax (m; ban_kinh, was Sim/Abilities/AbilitySystem.cs:500).</summary>
+                public static float LayFieldDistanceSquaredMax = 4f;
+                /// <summary>vehicles.abilitySystem.beginPhaseRadiusScale (x; ban_kinh, was Sim/Abilities/AbilitySystem.cs:557).</summary>
+                public static float BeginPhaseRadiusScale = 1.6f;
+                /// <summary>vehicles.abilitySystem.useSkillsDurationFloor (s; sat_thuong, was Sim/Abilities/AbilitySystem.cs:598).</summary>
+                public static float UseSkillsDurationFloor = 0.5f;
+                /// <summary>vehicles.abilitySystem.useSkillsStatFloor (x; sat_thuong, was Sim/Abilities/AbilitySystem.cs:605).</summary>
+                public static float UseSkillsStatFloor = 0.5f;
+                /// <summary>vehicles.abilitySystem.rechargeFlaresFlareFalse (s; thoi_gian, was Sim/Abilities/AbilitySystem.cs:648).</summary>
+                public static float RechargeFlaresFlareFalse = 20f;
+                /// <summary>vehicles.abilitySystem.fireAmountFalse (x; sat_thuong, was Sim/Abilities/AbilitySystem.cs:677).</summary>
+                public static float FireAmountFalse = 0.5f;
+                /// <summary>vehicles.abilitySystem.fireAmountMax (x; sat_thuong, was Sim/Abilities/AbilitySystem.cs:681).</summary>
+                public static float FireAmountMax = 0.95f;
+                /// <summary>vehicles.abilitySystem.fireRadiusFalse (m; sat_thuong, was Sim/Abilities/AbilitySystem.cs:684).</summary>
+                public static float FireRadiusFalse = 8f;
+                /// <summary>vehicles.abilitySystem.fireKAdd (x; sat_thuong, was Sim/Abilities/AbilitySystem.cs:703).</summary>
+                public static float FireKAdd = 0.5f;
+                /// <summary>vehicles.abilitySystem.fireHullBoundAdd (x; khac, was Sim/Abilities/AbilitySystem.cs:704).</summary>
+                public static float FireHullBoundAdd = 5f;
+            }
+
+            public static partial class Catalog
+            {
+                /// <summary>vehicles.catalog.parseExtrasFloatMin3 (s; thoi_gian, was Sim/Content/Catalog.Extra.cs:138).</summary>
+                public static float ParseExtrasFloatMin3 = 0.5f;
+                /// <summary>vehicles.catalog.parseExtrasFloatMax4 (s; thoi_gian, was Sim/Content/Catalog.Extra.cs:138).</summary>
+                public static float ParseExtrasFloatMax4 = 30f;
+                /// <summary>vehicles.catalog.parseExtrasCountFalse2 (count; gioi_han_thuc_the, was Sim/Content/Catalog.Extra.cs:228).</summary>
+                public static float ParseExtrasCountFalse2 = 10f;
+                /// <summary>vehicles.catalog.finishExtrasFallback (m; ban_kinh, was Sim/Content/Catalog.Extra.cs:339).</summary>
+                public static int FinishExtrasFallback = 2;
+                /// <summary>vehicles.catalog.finishExtrasCooldownFloor (s; sat_thuong, was Sim/Content/Catalog.Extra.cs:400).</summary>
+                public static float FinishExtrasCooldownFloor = 0.05f;
+                /// <summary>vehicles.catalog.finishExtrasRangeFloor (m; ban_kinh, was Sim/Content/Catalog.Extra.cs:401).</summary>
+                public static float FinishExtrasRangeFloor = 0.5f;
+                /// <summary>vehicles.catalog.parseP25AFloatMax (x; sat_thuong, was Sim/Content/Catalog.P25A.cs:274, Sim/Content/Catalog.P25A.cs:313, Sim/Content/Catalog.P25A.cs:328).</summary>
+                public static float ParseP25AFloatMax = 0.9f;
+                /// <summary>vehicles.catalog.parseP25AFloatMax4 (x; sat_thuong, was Sim/Content/Catalog.P25A.cs:286).</summary>
+                public static float ParseP25AFloatMax4 = 10f;
+                /// <summary>vehicles.catalog.parseP25AFloatFloor3 (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:294, Sim/Content/Catalog.P25A.cs:354).</summary>
+                public static float ParseP25AFloatFloor3 = 5f;
+                /// <summary>vehicles.catalog.parseP25AFloatMax5 (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:318).</summary>
+                public static float ParseP25AFloatMax5 = 5f;
+                /// <summary>vehicles.catalog.parseP25AFloatMin2 (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:344).</summary>
+                public static float ParseP25AFloatMin2 = 5f;
+                /// <summary>vehicles.catalog.parseP25AFloatMax6 (m; ban_kinh, was Sim/Content/Catalog.P25A.cs:344).</summary>
+                public static float ParseP25AFloatMax6 = 360f;
+                /// <summary>vehicles.catalog.parseP25AClampScale (x; ban_kinh, was Sim/Content/Catalog.P25A.cs:344).</summary>
+                public static float ParseP25AClampScale = 0.5f;
+                /// <summary>vehicles.catalog.parseP25AClampDivisor (x; ban_kinh, was Sim/Content/Catalog.P25A.cs:344).</summary>
+                public static float ParseP25AClampDivisor = 180f;
+                /// <summary>vehicles.catalog.parseP25AFloatFloor4 (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:345).</summary>
+                public static float ParseP25AFloatFloor4 = 0.5f;
+                /// <summary>vehicles.catalog.parseP25AFloatFloor5 (s; thoi_gian, was Sim/Content/Catalog.P25A.cs:361).</summary>
+                public static float ParseP25AFloatFloor5 = 2f;
+                /// <summary>vehicles.catalog.armyCapForTryGetValueFalse (count; tran, was Sim/Content/Catalog.cs:82).</summary>
+                public static int ArmyCapForTryGetValueFalse = 24;
+                /// <summary>vehicles.catalog.defaultRearmDefaultRearm (s; thoi_gian, was Sim/Content/Catalog.cs:111).</summary>
+                public static float DefaultRearmDefaultRearm = 8.5f;
+                /// <summary>vehicles.catalog.defaultRearmDefaultRearm2 (s; thoi_gian, was Sim/Content/Catalog.cs:112).</summary>
+                public static float DefaultRearmDefaultRearm2 = 11f;
+                /// <summary>vehicles.catalog.defaultRearmProjectileTrue (s; thoi_gian, was Sim/Content/Catalog.cs:113).</summary>
+                public static float DefaultRearmProjectileTrue = 21f;
+                /// <summary>vehicles.catalog.defaultRearmProjectileFalse (s; thoi_gian, was Sim/Content/Catalog.cs:113).</summary>
+                public static float DefaultRearmProjectileFalse = 14f;
+                /// <summary>vehicles.catalog.inferClassMaxHpMin (count; sat_thuong, was Sim/Content/Catalog.cs:125).</summary>
+                public static float InferClassMaxHpMin = 1400f;
+                /// <summary>vehicles.catalog.inferClassSpeedMin (m/s; tan_suat, was Sim/Content/Catalog.cs:126).</summary>
+                public static float InferClassSpeedMin = 11f;
+                /// <summary>vehicles.catalog.fromJsonLevel (x; sat_thuong, was Sim/Content/Catalog.cs:291).</summary>
+                public static int FromJsonLevel = 2;
+                /// <summary>vehicles.catalog.fromJsonCountIs (count; gioi_han_thuc_the, was Sim/Content/Catalog.cs:309).</summary>
+                public static int FromJsonCountIs = 3;
+                /// <summary>vehicles.catalog.fromJsonFallback (count; tran, was Sim/Content/Catalog.cs:527).</summary>
+                public static int FromJsonFallback = 32;
+                /// <summary>vehicles.catalog.readSharesFloatMax (share; ban_kinh, was Sim/Content/Catalog.cs:606).</summary>
+                public static float ReadSharesFloatMax = 2f;
+                /// <summary>vehicles.catalog.readArmyCapsFallback (m; ban_kinh, was Sim/Content/Catalog.cs:640).</summary>
+                public static int ReadArmyCapsFallback = 24;
+                /// <summary>vehicles.catalog.withEdgeSplashRadiusMax (m; sat_thuong, was Sim/Content/Catalog.cs:651).</summary>
+                public static float WithEdgeSplashRadiusMax = 2f;
+            }
+
+            public static partial class ClusterDef
+            {
+                /// <summary>vehicles.clusterDef.defaultPenetration (x; sat_thuong, was Sim/Content/Definitions.cs:404).</summary>
+                public static int DefaultPenetration = 2;
+            }
+
+            public static partial class CommanderRules
+            {
+                /// <summary>vehicles.commanderRules.buildCapsCaps (x; sat_thuong, was Sim/Content/Commanders.cs:201, Sim/Content/Commanders.cs:203, Sim/Content/Commanders.cs:206).</summary>
+                public static float BuildCapsCaps = 0.25f;
+                /// <summary>vehicles.commanderRules.buildCapsCaps2 (x; tan_suat, was Sim/Content/Commanders.cs:202, Sim/Content/Commanders.cs:204).</summary>
+                public static float BuildCapsCaps2 = 0.15f;
+                /// <summary>vehicles.commanderRules.buildCapsCaps3 (m; ban_kinh, was Sim/Content/Commanders.cs:205).</summary>
+                public static float BuildCapsCaps3 = 0.12f;
+                /// <summary>vehicles.commanderRules.buildCapsCaps4 (s; thoi_gian, was Sim/Content/Commanders.cs:208).</summary>
+                public static float BuildCapsCaps4 = 0.3f;
+                /// <summary>vehicles.commanderRules.buildCapsCaps5 (x; tan_suat, was Sim/Content/Commanders.cs:209).</summary>
+                public static float BuildCapsCaps5 = 0.5f;
+                /// <summary>vehicles.commanderRules.mergeStatFloor (x; nguong, was Sim/Content/Commanders.cs:275).</summary>
+                public static float MergeStatFloor = 0.05f;
+                /// <summary>vehicles.commanderRules.fitStatValue (m; ban_kinh, was Sim/Content/Commanders.cs:333).</summary>
+                public static float FitStatValue = 0.8f;
+                /// <summary>vehicles.commanderRules.fitStatValue2 (x; tan_suat, was Sim/Content/Commanders.cs:334).</summary>
+                public static float FitStatValue2 = 0.6f;
+                /// <summary>vehicles.commanderRules.fitStatValue3 (s; thoi_gian, was Sim/Content/Commanders.cs:335).</summary>
+                public static float FitStatValue3 = 0.4f;
+                /// <summary>vehicles.commanderRules.fitStatValue4 (m; ban_kinh, was Sim/Content/Commanders.cs:336).</summary>
+                public static float FitStatValue4 = 0.3f;
+                /// <summary>vehicles.commanderRules.fitCaptureRateTrue (x; tan_suat, was Sim/Content/Commanders.cs:337).</summary>
+                public static float FitCaptureRateTrue = 0.3f;
+                /// <summary>vehicles.commanderRules.fitFit (s; thoi_gian, was Sim/Content/Commanders.cs:343, Sim/Content/Commanders.cs:345, Sim/Content/Commanders.cs:346).</summary>
+                public static float FitFit = 0.05f;
+            }
+
+            public static partial class Commanders
+            {
+                /// <summary>vehicles.commanders.kade1DamageArmy (x; sat_thuong, was Sim/Content/Commanders.cs:36).</summary>
+                public static float Kade1DamageArmy = 0.05f;
+                /// <summary>vehicles.commanders.kade2HealthArmy (x; sat_thuong, was Sim/Content/Commanders.cs:36).</summary>
+                public static float Kade2HealthArmy = 0.05f;
+                /// <summary>vehicles.commanders.lindPricesScale (x; ban_kinh, was Sim/Content/Commanders.cs:40).</summary>
+                public static float LindPricesScale = 0.8f;
+                /// <summary>vehicles.commanders.lindLinesValue (x; sat_thuong, was Sim/Content/Commanders.cs:41).</summary>
+                public static float LindLinesValue = -0.10f;
+                /// <summary>vehicles.commanders.reyesAirRearm (s; thoi_gian, was Sim/Content/Commanders.cs:46).</summary>
+                public static float ReyesAirRearm = 1.15f;
+                /// <summary>vehicles.commanders.reyesStrikeCooldown (s; thoi_gian, was Sim/Content/Commanders.cs:47).</summary>
+                public static float ReyesStrikeCooldown = 0.85f;
+                /// <summary>vehicles.commanders.reyesLines1Value (x; sat_thuong, was Sim/Content/Commanders.cs:50).</summary>
+                public static float ReyesLines1Value = 0.10f;
+                /// <summary>vehicles.commanders.reyesLines2Value (x; sat_thuong, was Sim/Content/Commanders.cs:50).</summary>
+                public static float ReyesLines2Value = 0.20f;
+                /// <summary>vehicles.commanders.reyesLines3Value (s; thoi_gian, was Sim/Content/Commanders.cs:51).</summary>
+                public static float ReyesLines3Value = 0.15f;
+                /// <summary>vehicles.commanders.reyesLines4Value (x; sat_thuong, was Sim/Content/Commanders.cs:52).</summary>
+                public static float ReyesLines4Value = -0.10f;
+                /// <summary>vehicles.commanders.kerrStealthSight (m; ban_kinh, was Sim/Content/Commanders.cs:57).</summary>
+                public static float KerrStealthSight = 1.25f;
+                /// <summary>vehicles.commanders.kerrExposedTaken (m; ban_kinh, was Sim/Content/Commanders.cs:57).</summary>
+                public static float KerrExposedTaken = 1.05f;
+                /// <summary>vehicles.commanders.kerrLines1Value (x; sat_thuong, was Sim/Content/Commanders.cs:58).</summary>
+                public static float KerrLines1Value = 0.15f;
+                /// <summary>vehicles.commanders.kerrLines2Value (x; sat_thuong, was Sim/Content/Commanders.cs:58).</summary>
+                public static float KerrLines2Value = -0.05f;
+                /// <summary>vehicles.commanders.vennLines1Value (x; sat_thuong, was Sim/Content/Commanders.cs:65).</summary>
+                public static float VennLines1Value = 0.15f;
+                /// <summary>vehicles.commanders.vennLines2Value (x; sat_thuong, was Sim/Content/Commanders.cs:65).</summary>
+                public static float VennLines2Value = 0.10f;
+                /// <summary>vehicles.commanders.vennLines3Value (m; ban_kinh, was Sim/Content/Commanders.cs:67).</summary>
+                public static float VennLines3Value = 0.10f;
+                /// <summary>vehicles.commanders.vennLines4Value (x; sat_thuong, was Sim/Content/Commanders.cs:68).</summary>
+                public static float VennLines4Value = -0.05f;
+                /// <summary>vehicles.commanders.mendezLines1Value (x; sat_thuong, was Sim/Content/Commanders.cs:78).</summary>
+                public static float MendezLines1Value = 0.15f;
+                /// <summary>vehicles.commanders.mendezLines2Value (x; sat_thuong, was Sim/Content/Commanders.cs:78).</summary>
+                public static float MendezLines2Value = 0.15f;
+                /// <summary>vehicles.commanders.mendezLines3Value (x; sat_thuong, was Sim/Content/Commanders.cs:79).</summary>
+                public static float MendezLines3Value = -0.05f;
+                /// <summary>vehicles.commanders.brandtPricesScale (x; ban_kinh, was Sim/Content/Commanders.cs:85).</summary>
+                public static float BrandtPricesScale = 0.8f;
+                /// <summary>vehicles.commanders.brandtLines1Value (x; sat_thuong, was Sim/Content/Commanders.cs:88).</summary>
+                public static float BrandtLines1Value = 0.15f;
+                /// <summary>vehicles.commanders.brandtLines2Value (x; sat_thuong, was Sim/Content/Commanders.cs:88).</summary>
+                public static float BrandtLines2Value = 0.10f;
+                /// <summary>vehicles.commanders.brandtLines3Value (m; ban_kinh, was Sim/Content/Commanders.cs:89).</summary>
+                public static float BrandtLines3Value = -0.05f;
+                /// <summary>vehicles.commanders.dahlArtilleryDamageArtillery (x; sat_thuong, was Sim/Content/Commanders.cs:94).</summary>
+                public static float DahlArtilleryDamageArtillery = 0.15f;
+                /// <summary>vehicles.commanders.dahlArtilleryRangeArtillery (x; sat_thuong, was Sim/Content/Commanders.cs:94).</summary>
+                public static float DahlArtilleryRangeArtillery = 0.10f;
+                /// <summary>vehicles.commanders.dahlArtilleryHealthArtillery (x; sat_thuong, was Sim/Content/Commanders.cs:95).</summary>
+                public static float DahlArtilleryHealthArtillery = 0.25f;
+                /// <summary>vehicles.commanders.dahlArtilleryDamageDirectFire (x; sat_thuong, was Sim/Content/Commanders.cs:96).</summary>
+                public static float DahlArtilleryDamageDirectFire = -0.10f;
+                /// <summary>vehicles.commanders.dahlSetStrikeCooldown (s; sat_thuong, was Sim/Content/Commanders.cs:96).</summary>
+                public static float DahlSetStrikeCooldown = 0.75f;
+                /// <summary>vehicles.commanders.brennLinesValue (x; sat_thuong, was Sim/Content/Commanders.cs:105).</summary>
+                public static float BrennLinesValue = -0.05f;
+                /// <summary>vehicles.commanders.adlerLinesValue (m; ban_kinh, was Sim/Content/Commanders.cs:111).</summary>
+                public static float AdlerLinesValue = 0.30f;
+                /// <summary>vehicles.commanders.varroPricesScale (x; ban_kinh, was Sim/Content/Commanders.cs:116).</summary>
+                public static float VarroPricesScale = 0.85f;
+                /// <summary>vehicles.commanders.varroLinesValue (x; sat_thuong, was Sim/Content/Commanders.cs:118).</summary>
+                public static float VarroLinesValue = -0.05f;
+                /// <summary>vehicles.commanders.reynPricesScale (x; ban_kinh, was Sim/Content/Commanders.cs:125).</summary>
+                public static float ReynPricesScale = 1.10f;
+                /// <summary>vehicles.commanders.reynLines1Value (x; sat_thuong, was Sim/Content/Commanders.cs:126).</summary>
+                public static float ReynLines1Value = 0.20f;
+                /// <summary>vehicles.commanders.reynLines2Value (x; sat_thuong, was Sim/Content/Commanders.cs:126).</summary>
+                public static float ReynLines2Value = 0.15f;
+                /// <summary>vehicles.commanders.allKillRefund (x; sat_thuong, was Sim/Content/Commanders.cs:130).</summary>
+                public static float AllKillRefund = 0.35f;
+                /// <summary>vehicles.commanders.allEarlySeconds (s; thoi_gian, was Sim/Content/Commanders.cs:139).</summary>
+                public static float AllEarlySeconds = 90f;
+                /// <summary>vehicles.commanders.brandt1HealthTowers (x; sat_thuong, was Sim/Content/Commanders.cs:146).</summary>
+                public static float Brandt1HealthTowers = 0.15f;
+                /// <summary>vehicles.commanders.brandt2SpeedVehicles (x; sat_thuong, was Sim/Content/Commanders.cs:146).</summary>
+                public static float Brandt2SpeedVehicles = -0.05f;
+                /// <summary>vehicles.commanders.varga1HealthArmour (x; sat_thuong, was Sim/Content/Commanders.cs:147).</summary>
+                public static float Varga1HealthArmour = 0.10f;
+                /// <summary>vehicles.commanders.varga2DamageAircraft (x; sat_thuong, was Sim/Content/Commanders.cs:147).</summary>
+                public static float Varga2DamageAircraft = -0.10f;
+                /// <summary>vehicles.commanders.orlov1RangeArtillery (m; ban_kinh, was Sim/Content/Commanders.cs:148).</summary>
+                public static float Orlov1RangeArtillery = 0.15f;
+                /// <summary>vehicles.commanders.orlov2SpreadArtillery (m; ban_kinh, was Sim/Content/Commanders.cs:148).</summary>
+                public static float Orlov2SpreadArtillery = 0.20f;
+                /// <summary>vehicles.commanders.orlov3HealthLight (x; sat_thuong, was Sim/Content/Commanders.cs:149).</summary>
+                public static float Orlov3HealthLight = -0.05f;
+                /// <summary>vehicles.commanders.kessler1HealthShips (x; sat_thuong, was Sim/Content/Commanders.cs:150).</summary>
+                public static float Kessler1HealthShips = 0.10f;
+                /// <summary>vehicles.commanders.kessler2HealthTowers (x; sat_thuong, was Sim/Content/Commanders.cs:150).</summary>
+                public static float Kessler2HealthTowers = -0.05f;
+                /// <summary>vehicles.commanders.kesslerSetPricesScale (x; ban_kinh, was Sim/Content/Commanders.cs:151).</summary>
+                public static float KesslerSetPricesScale = 0.9f;
+                /// <summary>vehicles.commanders.sen1HealthDroneUnits (x; sat_thuong, was Sim/Content/Commanders.cs:152).</summary>
+                public static float Sen1HealthDroneUnits = 0.15f;
+                /// <summary>vehicles.commanders.sen2DamageTanks (x; sat_thuong, was Sim/Content/Commanders.cs:152).</summary>
+                public static float Sen2DamageTanks = -0.05f;
+                /// <summary>vehicles.commanders.quaden1DamageAircraft (x; sat_thuong, was Sim/Content/Commanders.cs:153).</summary>
+                public static float Quaden1DamageAircraft = 0.10f;
+                /// <summary>vehicles.commanders.quaden2DamageGround (x; sat_thuong, was Sim/Content/Commanders.cs:153).</summary>
+                public static float Quaden2DamageGround = -0.05f;
+                /// <summary>vehicles.commanders.hung1DamageArmy (x; sat_thuong, was Sim/Content/Commanders.cs:154).</summary>
+                public static float Hung1DamageArmy = 0.05f;
+                /// <summary>vehicles.commanders.hungSetLowHpDamage (x; sat_thuong, was Sim/Content/Commanders.cs:154).</summary>
+                public static float HungSetLowHpDamage = 1.10f;
+                /// <summary>vehicles.commanders.aurel1DamageEnergy (x; sat_thuong, was Sim/Content/Commanders.cs:155).</summary>
+                public static float Aurel1DamageEnergy = 0.15f;
+                /// <summary>vehicles.commanders.aurel2HealthShielded (x; sat_thuong, was Sim/Content/Commanders.cs:155).</summary>
+                public static float Aurel2HealthShielded = 0.10f;
+                /// <summary>vehicles.commanders.aurel3HealthLight (x; sat_thuong, was Sim/Content/Commanders.cs:156).</summary>
+                public static float Aurel3HealthLight = -0.05f;
+            }
+
+            public static partial class DeploySystem
+            {
+                /// <summary>vehicles.deploySystem.stepNowFloor (s; thoi_gian, was Sim/Abilities/DeploySystem.cs:43).</summary>
+                public static double StepNowFloor = 0.2;
+                /// <summary>vehicles.deploySystem.insideMinRangeAdd (m; ban_kinh, was Sim/Abilities/DeploySystem.cs:70).</summary>
+                public static float InsideMinRangeAdd = 2f;
+                /// <summary>vehicles.deploySystem.wantsRangeAdd (m; ban_kinh, was Sim/Abilities/DeploySystem.cs:104).</summary>
+                public static float WantsRangeAdd = 4f;
+            }
+
+            public static partial class DomeSystem
+            {
+                /// <summary>vehicles.domeSystem.absorbDamageSub (x; sat_thuong, was Sim/Abilities/DomeSystem.cs:155).</summary>
+                public static float AbsorbDamageSub = 0.01f;
+            }
+
+            public static partial class EliteRules
+            {
+                /// <summary>vehicles.eliteRules.budgetForTryGetValueFalse (x; nguong, was Sim/Content/Catalog.Extra.cs:48).</summary>
+                public static float BudgetForTryGetValueFalse = 0.1f;
+                /// <summary>vehicles.eliteRules.capForTryGetValueFalse (count; tran, was Sim/Content/Catalog.Extra.cs:52).</summary>
+                public static int CapForTryGetValueFalse = 2;
+                /// <summary>vehicles.eliteRules.powerEdgeCostScaleFloor (CP; nguong, was Sim/Content/Catalog.Extra.cs:58).</summary>
+                public static float PowerEdgeCostScaleFloor = 0.1f;
+            }
+
+            public static partial class FieldWorksSystem
+            {
+                /// <summary>vehicles.fieldWorksSystem.coverFactorShooterDistanceMin (m; ban_kinh, was Sim/Abilities/FieldWorksSystem.cs:130).</summary>
+                public static float CoverFactorShooterDistanceMin = 0.5f;
+                /// <summary>vehicles.fieldWorksSystem.coverFactorDMax (m; ban_kinh, was Sim/Abilities/FieldWorksSystem.cs:137).</summary>
+                public static float CoverFactorDMax = 0.1f;
+                /// <summary>vehicles.fieldWorksSystem.keepOffBalloonsSpeedFloor (m/s; tan_suat, was Sim/Abilities/FieldWorksSystem.cs:296).</summary>
+                public static float KeepOffBalloonsSpeedFloor = 2f;
+                /// <summary>vehicles.fieldWorksSystem.flaresForwardScale (x; ban_kinh, was Sim/Abilities/FieldWorksSystem.cs:344).</summary>
+                public static float FlaresForwardScale = 0.75f;
+                /// <summary>vehicles.fieldWorksSystem.n3 (m; ban_kinh, was Sim/Abilities/FieldWorksSystem.cs:378).</summary>
+                public static int N3 = 2;
+                /// <summary>vehicles.fieldWorksSystem.flyPassTimeMin (s; thoi_gian, was Sim/Abilities/FieldWorksSystem.cs:390).</summary>
+                public static double FlyPassTimeMin = 3.0;
+                /// <summary>vehicles.fieldWorksSystem.n32 (m; ban_kinh, was Sim/Abilities/FieldWorksSystem.cs:419).</summary>
+                public static int N32 = 2;
+                /// <summary>vehicles.fieldWorksSystem.stepDropsPodLandsFloor (s; thoi_gian, was Sim/Abilities/FieldWorksSystem.cs:464).</summary>
+                public static double StepDropsPodLandsFloor = 0.1;
+                /// <summary>vehicles.fieldWorksSystem.stepDropsHpMin (x; sat_thuong, was Sim/Abilities/FieldWorksSystem.cs:468).</summary>
+                public static float StepDropsHpMin = 0.05f;
+            }
+
+            public static partial class Gear
+            {
+                /// <summary>vehicles.gear.subCount1 (count; gioi_han_thuc_the, was Game/Match/Gear.Model.cs:17).</summary>
+                public static int SubCount1 = 0;
+                /// <summary>vehicles.gear.subCount2 (count; gioi_han_thuc_the, was Game/Match/Gear.Model.cs:17).</summary>
+                public static int SubCount2 = 1;
+                /// <summary>vehicles.gear.subCount3 (count; gioi_han_thuc_the, was Game/Match/Gear.Model.cs:17).</summary>
+                public static int SubCount3 = 2;
+                /// <summary>vehicles.gear.subCount4 (count; gioi_han_thuc_the, was Game/Match/Gear.Model.cs:17).</summary>
+                public static int SubCount4 = 2;
+                /// <summary>vehicles.gear.subCount5 (count; gioi_han_thuc_the, was Game/Match/Gear.Model.cs:17).</summary>
+                public static int SubCount5 = 2;
+                /// <summary>vehicles.gear.levelShareLevelAdd (share; tran, was Game/Match/Gear.Model.cs:44).</summary>
+                public static float LevelShareLevelAdd = 0.4f;
+                /// <summary>vehicles.gear.levelShareLevelScale (x; tran, was Game/Match/Gear.Model.cs:44).</summary>
+                public static float LevelShareLevelScale = 0.6f;
+                /// <summary>vehicles.gear.subValueRollMin (m; ban_kinh, was Game/Match/Gear.Model.cs:88).</summary>
+                public static float SubValueRollMin = 0.6f;
+                /// <summary>vehicles.gear.subQualityRollSub (share; xac_suat, was Game/Match/Gear.Model.cs:93).</summary>
+                public static float SubQualityRollSub = 0.6f;
+                /// <summary>vehicles.gear.subQualityRollDivisor (x; xac_suat, was Game/Match/Gear.Model.cs:93).</summary>
+                public static float SubQualityRollDivisor = 0.4f;
+                /// <summary>vehicles.gear.fillSubsNextDoubleAdd (share; xac_suat, was Game/Match/Gear.Model.cs:280).</summary>
+                public static float FillSubsNextDoubleAdd = 0.6f;
+                /// <summary>vehicles.gear.fillSubsNextDoubleScale (x; xac_suat, was Game/Match/Gear.Model.cs:280).</summary>
+                public static float FillSubsNextDoubleScale = 0.4f;
+            }
+
+            public static partial class GearCatalog
+            {
+                /// <summary>vehicles.gearCatalog.longBarrelTop1 (m; ban_kinh, was Game/Match/GearCatalog.cs:258).</summary>
+                public static float LongBarrelTop1 = 0.02f;
+                /// <summary>vehicles.gearCatalog.longBarrelTop2 (m; ban_kinh, was Game/Match/GearCatalog.cs:258).</summary>
+                public static float LongBarrelTop2 = 0.03f;
+                /// <summary>vehicles.gearCatalog.longBarrelTop3 (m; ban_kinh, was Game/Match/GearCatalog.cs:258).</summary>
+                public static float LongBarrelTop3 = 0.04f;
+                /// <summary>vehicles.gearCatalog.longBarrelTop4 (m; ban_kinh, was Game/Match/GearCatalog.cs:258).</summary>
+                public static float LongBarrelTop4 = 0.06f;
+                /// <summary>vehicles.gearCatalog.longBarrelTop5 (m; ban_kinh, was Game/Match/GearCatalog.cs:258).</summary>
+                public static float LongBarrelTop5 = 0.08f;
+                /// <summary>vehicles.gearCatalog.tungstenPenetratorTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:260).</summary>
+                public static float TungstenPenetratorTop1 = 0.4f;
+                /// <summary>vehicles.gearCatalog.tungstenPenetratorTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:260).</summary>
+                public static float TungstenPenetratorTop2 = 0.55f;
+                /// <summary>vehicles.gearCatalog.tungstenPenetratorTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:260).</summary>
+                public static float TungstenPenetratorTop3 = 0.7f;
+                /// <summary>vehicles.gearCatalog.tungstenPenetratorTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:260).</summary>
+                public static float TungstenPenetratorTop4 = 0.85f;
+                /// <summary>vehicles.gearCatalog.heFragFillerTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:261).</summary>
+                public static float HeFragFillerTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.heFragFillerTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:261).</summary>
+                public static float HeFragFillerTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.heFragFillerTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:261).</summary>
+                public static float HeFragFillerTop3 = 0.12f;
+                /// <summary>vehicles.gearCatalog.heFragFillerTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:261).</summary>
+                public static float HeFragFillerTop4 = 0.16f;
+                /// <summary>vehicles.gearCatalog.heFragFillerTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:261).</summary>
+                public static float HeFragFillerTop5 = 0.2f;
+                /// <summary>vehicles.gearCatalog.proximityFuzeTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:262).</summary>
+                public static float ProximityFuzeTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.proximityFuzeTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:262).</summary>
+                public static float ProximityFuzeTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.proximityFuzeTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:262).</summary>
+                public static float ProximityFuzeTop3 = 0.12f;
+                /// <summary>vehicles.gearCatalog.proximityFuzeTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:262).</summary>
+                public static float ProximityFuzeTop4 = 0.16f;
+                /// <summary>vehicles.gearCatalog.proximityFuzeTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:262).</summary>
+                public static float ProximityFuzeTop5 = 0.2f;
+                /// <summary>vehicles.gearCatalog.bunkerBusterTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:263).</summary>
+                public static float BunkerBusterTop1 = 0.06f;
+                /// <summary>vehicles.gearCatalog.bunkerBusterTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:263).</summary>
+                public static float BunkerBusterTop2 = 0.09f;
+                /// <summary>vehicles.gearCatalog.bunkerBusterTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:263).</summary>
+                public static float BunkerBusterTop3 = 0.13f;
+                /// <summary>vehicles.gearCatalog.bunkerBusterTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:263).</summary>
+                public static float BunkerBusterTop4 = 0.18f;
+                /// <summary>vehicles.gearCatalog.bunkerBusterTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:263).</summary>
+                public static float BunkerBusterTop5 = 0.24f;
+                /// <summary>vehicles.gearCatalog.heavyBarrelTop3 (m; ban_kinh, was Game/Match/GearCatalog.cs:266).</summary>
+                public static float HeavyBarrelTop3 = 0.07f;
+                /// <summary>vehicles.gearCatalog.heavyBarrelTop4 (m; ban_kinh, was Game/Match/GearCatalog.cs:266).</summary>
+                public static float HeavyBarrelTop4 = 0.09f;
+                /// <summary>vehicles.gearCatalog.heavyBarrelTop5 (m; ban_kinh, was Game/Match/GearCatalog.cs:266).</summary>
+                public static float HeavyBarrelTop5 = 0.1f;
+                /// <summary>vehicles.gearCatalog.heavyBarrelPenaltyTop3 (x; tan_suat, was Game/Match/GearCatalog.cs:267).</summary>
+                public static float HeavyBarrelPenaltyTop3 = -0.03f;
+                /// <summary>vehicles.gearCatalog.heavyBarrelPenaltyTop4 (x; tan_suat, was Game/Match/GearCatalog.cs:267).</summary>
+                public static float HeavyBarrelPenaltyTop4 = -0.04f;
+                /// <summary>vehicles.gearCatalog.heavyBarrelPenaltyTop5 (x; tan_suat, was Game/Match/GearCatalog.cs:267).</summary>
+                public static float HeavyBarrelPenaltyTop5 = -0.05f;
+                /// <summary>vehicles.gearCatalog.heavyBarrelMinRarity (x; tan_suat, was Game/Match/GearCatalog.cs:267).</summary>
+                public static int HeavyBarrelMinRarity = 2;
+                /// <summary>vehicles.gearCatalog.flankingRoundsTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:270).</summary>
+                public static float FlankingRoundsTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.flankingRoundsTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:270).</summary>
+                public static float FlankingRoundsTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.flankingRoundsTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:270).</summary>
+                public static float FlankingRoundsTop3 = 0.12f;
+                /// <summary>vehicles.gearCatalog.flankingRoundsTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:270).</summary>
+                public static float FlankingRoundsTop4 = 0.16f;
+                /// <summary>vehicles.gearCatalog.flankingRoundsTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:270).</summary>
+                public static float FlankingRoundsTop5 = 0.2f;
+                /// <summary>vehicles.gearCatalog.airburstRoundsTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:271).</summary>
+                public static float AirburstRoundsTop1 = 0.08f;
+                /// <summary>vehicles.gearCatalog.airburstRoundsTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:271).</summary>
+                public static float AirburstRoundsTop2 = 0.12f;
+                /// <summary>vehicles.gearCatalog.airburstRoundsTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:271).</summary>
+                public static float AirburstRoundsTop3 = 0.18f;
+                /// <summary>vehicles.gearCatalog.airburstRoundsTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:271).</summary>
+                public static float AirburstRoundsTop4 = 0.24f;
+                /// <summary>vehicles.gearCatalog.airburstRoundsTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:271).</summary>
+                public static float AirburstRoundsTop5 = 0.3f;
+                /// <summary>vehicles.gearCatalog.carouselAutoloaderTop1 (s; thoi_gian, was Game/Match/GearCatalog.cs:274).</summary>
+                public static float CarouselAutoloaderTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.carouselAutoloaderTop2 (s; thoi_gian, was Game/Match/GearCatalog.cs:274).</summary>
+                public static float CarouselAutoloaderTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.carouselAutoloaderTop3 (s; thoi_gian, was Game/Match/GearCatalog.cs:274).</summary>
+                public static float CarouselAutoloaderTop3 = 0.12f;
+                /// <summary>vehicles.gearCatalog.carouselAutoloaderTop4 (s; thoi_gian, was Game/Match/GearCatalog.cs:274).</summary>
+                public static float CarouselAutoloaderTop4 = 0.16f;
+                /// <summary>vehicles.gearCatalog.carouselAutoloaderTop5 (s; thoi_gian, was Game/Match/GearCatalog.cs:274).</summary>
+                public static float CarouselAutoloaderTop5 = 0.2f;
+                /// <summary>vehicles.gearCatalog.beltFeedTop1 (s; thoi_gian, was Game/Match/GearCatalog.cs:276).</summary>
+                public static float BeltFeedTop1 = 0.08f;
+                /// <summary>vehicles.gearCatalog.beltFeedTop2 (s; thoi_gian, was Game/Match/GearCatalog.cs:276).</summary>
+                public static float BeltFeedTop2 = 0.12f;
+                /// <summary>vehicles.gearCatalog.beltFeedTop3 (s; thoi_gian, was Game/Match/GearCatalog.cs:276).</summary>
+                public static float BeltFeedTop3 = 0.16f;
+                /// <summary>vehicles.gearCatalog.beltFeedTop4 (s; thoi_gian, was Game/Match/GearCatalog.cs:276).</summary>
+                public static float BeltFeedTop4 = 0.2f;
+                /// <summary>vehicles.gearCatalog.beltFeedTop5 (s; thoi_gian, was Game/Match/GearCatalog.cs:276).</summary>
+                public static float BeltFeedTop5 = 0.25f;
+                /// <summary>vehicles.gearCatalog.salvoRackTop1 (s; thoi_gian, was Game/Match/GearCatalog.cs:277).</summary>
+                public static float SalvoRackTop1 = 0.1f;
+                /// <summary>vehicles.gearCatalog.salvoRackTop2 (s; thoi_gian, was Game/Match/GearCatalog.cs:277).</summary>
+                public static float SalvoRackTop2 = 0.15f;
+                /// <summary>vehicles.gearCatalog.salvoRackTop3 (s; thoi_gian, was Game/Match/GearCatalog.cs:277).</summary>
+                public static float SalvoRackTop3 = 0.2f;
+                /// <summary>vehicles.gearCatalog.salvoRackTop4 (s; thoi_gian, was Game/Match/GearCatalog.cs:277).</summary>
+                public static float SalvoRackTop4 = 0.25f;
+                /// <summary>vehicles.gearCatalog.salvoRackTop5 (s; thoi_gian, was Game/Match/GearCatalog.cs:277).</summary>
+                public static float SalvoRackTop5 = 0.3f;
+                /// <summary>vehicles.gearCatalog.hairTriggerTop3 (x; tan_suat, was Game/Match/GearCatalog.cs:281).</summary>
+                public static float HairTriggerTop3 = 0.06f;
+                /// <summary>vehicles.gearCatalog.hairTriggerTop4 (x; tan_suat, was Game/Match/GearCatalog.cs:281).</summary>
+                public static float HairTriggerTop4 = 0.0725f;
+                /// <summary>vehicles.gearCatalog.hairTriggerTop5 (x; tan_suat, was Game/Match/GearCatalog.cs:281).</summary>
+                public static float HairTriggerTop5 = 0.075f;
+                /// <summary>vehicles.gearCatalog.hairTriggerPenaltyTop3 (x; nguong, was Game/Match/GearCatalog.cs:282).</summary>
+                public static float HairTriggerPenaltyTop3 = -0.08f;
+                /// <summary>vehicles.gearCatalog.hairTriggerPenaltyTop4 (x; nguong, was Game/Match/GearCatalog.cs:282).</summary>
+                public static float HairTriggerPenaltyTop4 = -0.1f;
+                /// <summary>vehicles.gearCatalog.hairTriggerPenaltyTop5 (x; nguong, was Game/Match/GearCatalog.cs:282).</summary>
+                public static float HairTriggerPenaltyTop5 = -0.12f;
+                /// <summary>vehicles.gearCatalog.hairTriggerMinRarity (x; nguong, was Game/Match/GearCatalog.cs:282).</summary>
+                public static int HairTriggerMinRarity = 2;
+                /// <summary>vehicles.gearCatalog.hairTriggerMainScale (x; nguong, was Game/Match/GearCatalog.cs:282).</summary>
+                public static float HairTriggerMainScale = 0.25f;
+                /// <summary>vehicles.gearCatalog.compositeAddonTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:287).</summary>
+                public static float CompositeAddonTop1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.compositeAddonTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:287).</summary>
+                public static float CompositeAddonTop2 = 0.06f;
+                /// <summary>vehicles.gearCatalog.compositeAddonTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:287).</summary>
+                public static float CompositeAddonTop3 = 0.09f;
+                /// <summary>vehicles.gearCatalog.compositeAddonTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:287).</summary>
+                public static float CompositeAddonTop4 = 0.12f;
+                /// <summary>vehicles.gearCatalog.compositeAddonTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:287).</summary>
+                public static float CompositeAddonTop5 = 0.15f;
+                /// <summary>vehicles.gearCatalog.spallLinerTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:288).</summary>
+                public static float SpallLinerTop1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.spallLinerTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:288).</summary>
+                public static float SpallLinerTop2 = 0.06f;
+                /// <summary>vehicles.gearCatalog.spallLinerTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:288).</summary>
+                public static float SpallLinerTop3 = 0.09f;
+                /// <summary>vehicles.gearCatalog.spallLinerTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:288).</summary>
+                public static float SpallLinerTop4 = 0.12f;
+                /// <summary>vehicles.gearCatalog.spallLinerTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:288).</summary>
+                public static float SpallLinerTop5 = 0.15f;
+                /// <summary>vehicles.gearCatalog.appliqueSteelTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:290).</summary>
+                public static float AppliqueSteelTop1 = 0.4f;
+                /// <summary>vehicles.gearCatalog.appliqueSteelTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:290).</summary>
+                public static float AppliqueSteelTop2 = 0.55f;
+                /// <summary>vehicles.gearCatalog.appliqueSteelTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:290).</summary>
+                public static float AppliqueSteelTop3 = 0.7f;
+                /// <summary>vehicles.gearCatalog.appliqueSteelTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:290).</summary>
+                public static float AppliqueSteelTop4 = 0.85f;
+                /// <summary>vehicles.gearCatalog.fireRetardantHullTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:291).</summary>
+                public static float FireRetardantHullTop1 = 0.08f;
+                /// <summary>vehicles.gearCatalog.fireRetardantHullTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:291).</summary>
+                public static float FireRetardantHullTop2 = 0.12f;
+                /// <summary>vehicles.gearCatalog.fireRetardantHullTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:291).</summary>
+                public static float FireRetardantHullTop3 = 0.16f;
+                /// <summary>vehicles.gearCatalog.fireRetardantHullTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:291).</summary>
+                public static float FireRetardantHullTop4 = 0.2f;
+                /// <summary>vehicles.gearCatalog.fireRetardantHullTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:291).</summary>
+                public static float FireRetardantHullTop5 = 0.25f;
+                /// <summary>vehicles.gearCatalog.armouredTubTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:294).</summary>
+                public static float ArmouredTubTop1 = 0.25f;
+                /// <summary>vehicles.gearCatalog.armouredTubTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:294).</summary>
+                public static float ArmouredTubTop2 = 0.35f;
+                /// <summary>vehicles.gearCatalog.armouredTubTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:294).</summary>
+                public static float ArmouredTubTop3 = 0.45f;
+                /// <summary>vehicles.gearCatalog.armouredTubTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:294).</summary>
+                public static float ArmouredTubTop4 = 0.55f;
+                /// <summary>vehicles.gearCatalog.armouredTubTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:294).</summary>
+                public static float ArmouredTubTop5 = 0.65f;
+                /// <summary>vehicles.gearCatalog.monolithPlatePenaltyTop3 (x; tan_suat, was Game/Match/GearCatalog.cs:297).</summary>
+                public static float MonolithPlatePenaltyTop3 = -0.04f;
+                /// <summary>vehicles.gearCatalog.monolithPlatePenaltyTop4 (x; tan_suat, was Game/Match/GearCatalog.cs:297).</summary>
+                public static float MonolithPlatePenaltyTop4 = -0.05f;
+                /// <summary>vehicles.gearCatalog.monolithPlatePenaltyTop5 (x; tan_suat, was Game/Match/GearCatalog.cs:297).</summary>
+                public static float MonolithPlatePenaltyTop5 = -0.06f;
+                /// <summary>vehicles.gearCatalog.monolithPlateMinRarity (x; tan_suat, was Game/Match/GearCatalog.cs:297).</summary>
+                public static int MonolithPlateMinRarity = 2;
+                /// <summary>vehicles.gearCatalog.monolithPlateMainScale (x; tan_suat, was Game/Match/GearCatalog.cs:297).</summary>
+                public static float MonolithPlateMainScale = 1.7142857f;
+                /// <summary>vehicles.gearCatalog.energyDissipationLinerTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:300).</summary>
+                public static float EnergyDissipationLinerTop1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.energyDissipationLinerTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:300).</summary>
+                public static float EnergyDissipationLinerTop2 = 0.06f;
+                /// <summary>vehicles.gearCatalog.energyDissipationLinerTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:300).</summary>
+                public static float EnergyDissipationLinerTop3 = 0.09f;
+                /// <summary>vehicles.gearCatalog.energyDissipationLinerTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:300).</summary>
+                public static float EnergyDissipationLinerTop4 = 0.12f;
+                /// <summary>vehicles.gearCatalog.energyDissipationLinerTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:300).</summary>
+                public static float EnergyDissipationLinerTop5 = 0.15f;
+                /// <summary>vehicles.gearCatalog.radarAbsorbentCoatingTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:302).</summary>
+                public static float RadarAbsorbentCoatingTop1 = 0.06f;
+                /// <summary>vehicles.gearCatalog.radarAbsorbentCoatingTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:302).</summary>
+                public static float RadarAbsorbentCoatingTop2 = 0.09f;
+                /// <summary>vehicles.gearCatalog.radarAbsorbentCoatingTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:302).</summary>
+                public static float RadarAbsorbentCoatingTop3 = 0.13f;
+                /// <summary>vehicles.gearCatalog.radarAbsorbentCoatingTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:302).</summary>
+                public static float RadarAbsorbentCoatingTop4 = 0.16f;
+                /// <summary>vehicles.gearCatalog.radarAbsorbentCoatingTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:302).</summary>
+                public static float RadarAbsorbentCoatingTop5 = 0.2f;
+                /// <summary>vehicles.gearCatalog.frontalWedgeTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:305).</summary>
+                public static float FrontalWedgeTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.frontalWedgeTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:305).</summary>
+                public static float FrontalWedgeTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.frontalWedgeTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:305).</summary>
+                public static float FrontalWedgeTop3 = 0.11f;
+                /// <summary>vehicles.gearCatalog.frontalWedgeTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:305).</summary>
+                public static float FrontalWedgeTop4 = 0.15f;
+                /// <summary>vehicles.gearCatalog.frontalWedgeTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:305).</summary>
+                public static float FrontalWedgeTop5 = 0.18f;
+                /// <summary>vehicles.gearCatalog.slatCageTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:306).</summary>
+                public static float SlatCageTop1 = 0.06f;
+                /// <summary>vehicles.gearCatalog.slatCageTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:306).</summary>
+                public static float SlatCageTop2 = 0.09f;
+                /// <summary>vehicles.gearCatalog.slatCageTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:306).</summary>
+                public static float SlatCageTop3 = 0.13f;
+                /// <summary>vehicles.gearCatalog.slatCageTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:306).</summary>
+                public static float SlatCageTop4 = 0.17f;
+                /// <summary>vehicles.gearCatalog.slatCageTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:306).</summary>
+                public static float SlatCageTop5 = 0.22f;
+                /// <summary>vehicles.gearCatalog.overheadScreenTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:307).</summary>
+                public static float OverheadScreenTop1 = 0.06f;
+                /// <summary>vehicles.gearCatalog.overheadScreenTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:307).</summary>
+                public static float OverheadScreenTop2 = 0.09f;
+                /// <summary>vehicles.gearCatalog.overheadScreenTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:307).</summary>
+                public static float OverheadScreenTop3 = 0.13f;
+                /// <summary>vehicles.gearCatalog.overheadScreenTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:307).</summary>
+                public static float OverheadScreenTop4 = 0.17f;
+                /// <summary>vehicles.gearCatalog.overheadScreenTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:307).</summary>
+                public static float OverheadScreenTop5 = 0.22f;
+                /// <summary>vehicles.gearCatalog.underbellyArmorTop1 (x; sat_thuong, was Game/Match/GearCatalog.cs:309).</summary>
+                public static float UnderbellyArmorTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.underbellyArmorTop2 (x; sat_thuong, was Game/Match/GearCatalog.cs:309).</summary>
+                public static float UnderbellyArmorTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.underbellyArmorTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:309).</summary>
+                public static float UnderbellyArmorTop3 = 0.11f;
+                /// <summary>vehicles.gearCatalog.underbellyArmorTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:309).</summary>
+                public static float UnderbellyArmorTop4 = 0.15f;
+                /// <summary>vehicles.gearCatalog.underbellyArmorTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:309).</summary>
+                public static float UnderbellyArmorTop5 = 0.18f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop1 (x; tan_suat, was Game/Match/GearCatalog.cs:313).</summary>
+                public static float DrivetrainTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop2 (x; tan_suat, was Game/Match/GearCatalog.cs:313).</summary>
+                public static float DrivetrainTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop3 (x; tan_suat, was Game/Match/GearCatalog.cs:313).</summary>
+                public static float DrivetrainTop3 = 0.12f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop4 (x; tan_suat, was Game/Match/GearCatalog.cs:313).</summary>
+                public static float DrivetrainTop4 = 0.16f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop5 (x; tan_suat, was Game/Match/GearCatalog.cs:313).</summary>
+                public static float DrivetrainTop5 = 0.2f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop2N1 (x; tan_suat, was Game/Match/GearCatalog.cs:314).</summary>
+                public static float DrivetrainTop2N1 = 0.08f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop2N2 (x; tan_suat, was Game/Match/GearCatalog.cs:314).</summary>
+                public static float DrivetrainTop2N2 = 0.12f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop2N3 (x; tan_suat, was Game/Match/GearCatalog.cs:314).</summary>
+                public static float DrivetrainTop2N3 = 0.16f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop2N4 (x; tan_suat, was Game/Match/GearCatalog.cs:314).</summary>
+                public static float DrivetrainTop2N4 = 0.2f;
+                /// <summary>vehicles.gearCatalog.drivetrainTop2N5 (x; tan_suat, was Game/Match/GearCatalog.cs:314).</summary>
+                public static float DrivetrainTop2N5 = 0.25f;
+                /// <summary>vehicles.gearCatalog.transitGearboxTop1 (x; tan_suat, was Game/Match/GearCatalog.cs:315).</summary>
+                public static float TransitGearboxTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.transitGearboxTop2 (x; tan_suat, was Game/Match/GearCatalog.cs:315).</summary>
+                public static float TransitGearboxTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.transitGearboxTop3 (x; tan_suat, was Game/Match/GearCatalog.cs:315).</summary>
+                public static float TransitGearboxTop3 = 0.12f;
+                /// <summary>vehicles.gearCatalog.transitGearboxTop4 (x; tan_suat, was Game/Match/GearCatalog.cs:315).</summary>
+                public static float TransitGearboxTop4 = 0.16f;
+                /// <summary>vehicles.gearCatalog.transitGearboxTop5 (x; tan_suat, was Game/Match/GearCatalog.cs:315).</summary>
+                public static float TransitGearboxTop5 = 0.2f;
+                /// <summary>vehicles.gearCatalog.overtunedEngineTop3 (x; tan_suat, was Game/Match/GearCatalog.cs:319).</summary>
+                public static float OvertunedEngineTop3 = 0.055f;
+                /// <summary>vehicles.gearCatalog.overtunedEngineTop4 (x; tan_suat, was Game/Match/GearCatalog.cs:319).</summary>
+                public static float OvertunedEngineTop4 = 0.0675f;
+                /// <summary>vehicles.gearCatalog.overtunedEngineTop5 (x; tan_suat, was Game/Match/GearCatalog.cs:319).</summary>
+                public static float OvertunedEngineTop5 = 0.08f;
+                /// <summary>vehicles.gearCatalog.overtunedEnginePenaltyTop3 (x; sat_thuong, was Game/Match/GearCatalog.cs:320).</summary>
+                public static float OvertunedEnginePenaltyTop3 = -0.03f;
+                /// <summary>vehicles.gearCatalog.overtunedEnginePenaltyTop4 (x; sat_thuong, was Game/Match/GearCatalog.cs:320).</summary>
+                public static float OvertunedEnginePenaltyTop4 = -0.04f;
+                /// <summary>vehicles.gearCatalog.overtunedEnginePenaltyTop5 (x; sat_thuong, was Game/Match/GearCatalog.cs:320).</summary>
+                public static float OvertunedEnginePenaltyTop5 = -0.05f;
+                /// <summary>vehicles.gearCatalog.overtunedEngineMinRarity (x; sat_thuong, was Game/Match/GearCatalog.cs:320).</summary>
+                public static int OvertunedEngineMinRarity = 2;
+                /// <summary>vehicles.gearCatalog.overtunedEngineMainScale (x; sat_thuong, was Game/Match/GearCatalog.cs:320).</summary>
+                public static float OvertunedEngineMainScale = 0.5f;
+                /// <summary>vehicles.gearCatalog.reverseGearboxTop1 (x; tan_suat, was Game/Match/GearCatalog.cs:322).</summary>
+                public static float ReverseGearboxTop1 = 0.15f;
+                /// <summary>vehicles.gearCatalog.reverseGearboxTop2 (x; tan_suat, was Game/Match/GearCatalog.cs:322).</summary>
+                public static float ReverseGearboxTop2 = 0.2f;
+                /// <summary>vehicles.gearCatalog.reverseGearboxTop3 (x; tan_suat, was Game/Match/GearCatalog.cs:322).</summary>
+                public static float ReverseGearboxTop3 = 0.28f;
+                /// <summary>vehicles.gearCatalog.reverseGearboxTop4 (x; tan_suat, was Game/Match/GearCatalog.cs:322).</summary>
+                public static float ReverseGearboxTop4 = 0.34f;
+                /// <summary>vehicles.gearCatalog.reverseGearboxTop5 (x; tan_suat, was Game/Match/GearCatalog.cs:322).</summary>
+                public static float ReverseGearboxTop5 = 0.4f;
+                /// <summary>vehicles.gearCatalog.toolboxTop2 (s; thoi_gian, was Game/Match/GearCatalog.cs:325).</summary>
+                public static float ToolboxTop2 = 1.5f;
+                /// <summary>vehicles.gearCatalog.toolboxTop3 (s; thoi_gian, was Game/Match/GearCatalog.cs:325).</summary>
+                public static float ToolboxTop3 = 2f;
+                /// <summary>vehicles.gearCatalog.toolboxTop4 (s; thoi_gian, was Game/Match/GearCatalog.cs:325).</summary>
+                public static float ToolboxTop4 = 2.5f;
+                /// <summary>vehicles.gearCatalog.toolboxTop5 (s; thoi_gian, was Game/Match/GearCatalog.cs:325).</summary>
+                public static float ToolboxTop5 = 3f;
+                /// <summary>vehicles.gearCatalog.crewDrillsTop1 (s; thoi_gian, was Game/Match/GearCatalog.cs:326).</summary>
+                public static float CrewDrillsTop1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.crewDrillsTop2 (s; thoi_gian, was Game/Match/GearCatalog.cs:326).</summary>
+                public static float CrewDrillsTop2 = 0.06f;
+                /// <summary>vehicles.gearCatalog.crewDrillsTop3 (s; thoi_gian, was Game/Match/GearCatalog.cs:326).</summary>
+                public static float CrewDrillsTop3 = 0.09f;
+                /// <summary>vehicles.gearCatalog.crewDrillsTop4 (s; thoi_gian, was Game/Match/GearCatalog.cs:326).</summary>
+                public static float CrewDrillsTop4 = 0.12f;
+                /// <summary>vehicles.gearCatalog.crewDrillsTop5 (s; thoi_gian, was Game/Match/GearCatalog.cs:326).</summary>
+                public static float CrewDrillsTop5 = 0.15f;
+                /// <summary>vehicles.gearCatalog.fireExtinguisherTop1 (s; thoi_gian, was Game/Match/GearCatalog.cs:327).</summary>
+                public static float FireExtinguisherTop1 = 0.1f;
+                /// <summary>vehicles.gearCatalog.fireExtinguisherTop2 (s; thoi_gian, was Game/Match/GearCatalog.cs:327).</summary>
+                public static float FireExtinguisherTop2 = 0.18f;
+                /// <summary>vehicles.gearCatalog.fireExtinguisherTop3 (s; thoi_gian, was Game/Match/GearCatalog.cs:327).</summary>
+                public static float FireExtinguisherTop3 = 0.26f;
+                /// <summary>vehicles.gearCatalog.fireExtinguisherTop4 (s; thoi_gian, was Game/Match/GearCatalog.cs:327).</summary>
+                public static float FireExtinguisherTop4 = 0.34f;
+                /// <summary>vehicles.gearCatalog.fireExtinguisherTop5 (s; thoi_gian, was Game/Match/GearCatalog.cs:327).</summary>
+                public static float FireExtinguisherTop5 = 0.42f;
+                /// <summary>vehicles.gearCatalog.laserRangefinderTop1 (m; ban_kinh, was Game/Match/GearCatalog.cs:332).</summary>
+                public static float LaserRangefinderTop1 = 0.08f;
+                /// <summary>vehicles.gearCatalog.laserRangefinderTop2 (m; ban_kinh, was Game/Match/GearCatalog.cs:332).</summary>
+                public static float LaserRangefinderTop2 = 0.12f;
+                /// <summary>vehicles.gearCatalog.laserRangefinderTop3 (m; ban_kinh, was Game/Match/GearCatalog.cs:332).</summary>
+                public static float LaserRangefinderTop3 = 0.16f;
+                /// <summary>vehicles.gearCatalog.laserRangefinderTop4 (m; ban_kinh, was Game/Match/GearCatalog.cs:332).</summary>
+                public static float LaserRangefinderTop4 = 0.2f;
+                /// <summary>vehicles.gearCatalog.laserRangefinderTop5 (m; ban_kinh, was Game/Match/GearCatalog.cs:332).</summary>
+                public static float LaserRangefinderTop5 = 0.25f;
+                /// <summary>vehicles.gearCatalog.commandersPeriscopeTop1 (m; ban_kinh, was Game/Match/GearCatalog.cs:334).</summary>
+                public static float CommandersPeriscopeTop1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.commandersPeriscopeTop2 (m; ban_kinh, was Game/Match/GearCatalog.cs:334).</summary>
+                public static float CommandersPeriscopeTop2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.commandersPeriscopeTop3 (m; ban_kinh, was Game/Match/GearCatalog.cs:334).</summary>
+                public static float CommandersPeriscopeTop3 = 0.12f;
+                /// <summary>vehicles.gearCatalog.commandersPeriscopeTop4 (m; ban_kinh, was Game/Match/GearCatalog.cs:334).</summary>
+                public static float CommandersPeriscopeTop4 = 0.16f;
+                /// <summary>vehicles.gearCatalog.commandersPeriscopeTop5 (m; ban_kinh, was Game/Match/GearCatalog.cs:334).</summary>
+                public static float CommandersPeriscopeTop5 = 0.2f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop1 (x; tan_suat, was Game/Match/GearCatalog.cs:337).</summary>
+                public static float SignalRelayTop1 = 0.1f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop2 (x; tan_suat, was Game/Match/GearCatalog.cs:337).</summary>
+                public static float SignalRelayTop2 = 0.15f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop3 (x; tan_suat, was Game/Match/GearCatalog.cs:337).</summary>
+                public static float SignalRelayTop3 = 0.2f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop4 (x; tan_suat, was Game/Match/GearCatalog.cs:337).</summary>
+                public static float SignalRelayTop4 = 0.25f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop5 (x; tan_suat, was Game/Match/GearCatalog.cs:337).</summary>
+                public static float SignalRelayTop5 = 0.3f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop2N1 (m; ban_kinh, was Game/Match/GearCatalog.cs:338).</summary>
+                public static float SignalRelayTop2N1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop2N2 (m; ban_kinh, was Game/Match/GearCatalog.cs:338).</summary>
+                public static float SignalRelayTop2N2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop2N3 (m; ban_kinh, was Game/Match/GearCatalog.cs:338).</summary>
+                public static float SignalRelayTop2N3 = 0.06f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop2N4 (m; ban_kinh, was Game/Match/GearCatalog.cs:338).</summary>
+                public static float SignalRelayTop2N4 = 0.08f;
+                /// <summary>vehicles.gearCatalog.signalRelayTop2N5 (m; ban_kinh, was Game/Match/GearCatalog.cs:338).</summary>
+                public static float SignalRelayTop2N5 = 0.1f;
+                /// <summary>vehicles.gearCatalog.laserWarningTop1 (s; thoi_gian, was Game/Match/GearCatalog.cs:341).</summary>
+                public static float LaserWarningTop1 = 6f;
+                /// <summary>vehicles.gearCatalog.laserWarningTop2 (s; thoi_gian, was Game/Match/GearCatalog.cs:341).</summary>
+                public static float LaserWarningTop2 = 6.5f;
+                /// <summary>vehicles.gearCatalog.laserWarningTop3 (s; thoi_gian, was Game/Match/GearCatalog.cs:341).</summary>
+                public static float LaserWarningTop3 = 7f;
+                /// <summary>vehicles.gearCatalog.laserWarningTop4 (s; thoi_gian, was Game/Match/GearCatalog.cs:341).</summary>
+                public static float LaserWarningTop4 = 7.5f;
+                /// <summary>vehicles.gearCatalog.laserWarningTop5 (s; thoi_gian, was Game/Match/GearCatalog.cs:341).</summary>
+                public static float LaserWarningTop5 = 8f;
+                /// <summary>vehicles.gearCatalog.reactiveArmorEpic (x; sat_thuong, was Game/Match/GearCatalog.cs:351).</summary>
+                public static float ReactiveArmorEpic = 0.4f;
+                /// <summary>vehicles.gearCatalog.reactiveArmorLegendary (x; sat_thuong, was Game/Match/GearCatalog.cs:351).</summary>
+                public static float ReactiveArmorLegendary = 0.55f;
+                /// <summary>vehicles.gearCatalog.mineDispenserEpic (x; nguong, was Game/Match/GearCatalog.cs:362).</summary>
+                public static float MineDispenserEpic = 2f;
+                /// <summary>vehicles.gearCatalog.mineDispenserLegendary (x; nguong, was Game/Match/GearCatalog.cs:362).</summary>
+                public static float MineDispenserLegendary = 3f;
+                /// <summary>vehicles.gearCatalog.mineDispenserEpic2 (x; nguong, was Game/Match/GearCatalog.cs:362).</summary>
+                public static float MineDispenserEpic2 = 20f;
+                /// <summary>vehicles.gearCatalog.mineDispenserLegendary2 (x; nguong, was Game/Match/GearCatalog.cs:362).</summary>
+                public static float MineDispenserLegendary2 = 15f;
+                /// <summary>vehicles.gearCatalog.killReloadEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:386).</summary>
+                public static float KillReloadEpic1 = 0.25f;
+                /// <summary>vehicles.gearCatalog.killReloadLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:386).</summary>
+                public static float KillReloadLegendary1 = 0.4f;
+                /// <summary>vehicles.gearCatalog.skywardPintleEpic1 (s; thoi_gian, was Game/Match/GearCatalog.cs:390).</summary>
+                public static float SkywardPintleEpic1 = 0.6f;
+                /// <summary>vehicles.gearCatalog.skywardPintleLegendary1 (s; thoi_gian, was Game/Match/GearCatalog.cs:390).</summary>
+                public static float SkywardPintleLegendary1 = 0.8f;
+                /// <summary>vehicles.gearCatalog.aegisBarrierEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:393).</summary>
+                public static float AegisBarrierEpic1 = 0.1f;
+                /// <summary>vehicles.gearCatalog.aegisBarrierEpic2 (x; sat_thuong, was Game/Match/GearCatalog.cs:393).</summary>
+                public static float AegisBarrierEpic2 = 20f;
+                /// <summary>vehicles.gearCatalog.aegisBarrierLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:393).</summary>
+                public static float AegisBarrierLegendary1 = 0.15f;
+                /// <summary>vehicles.gearCatalog.aegisBarrierLegendary2 (x; sat_thuong, was Game/Match/GearCatalog.cs:393).</summary>
+                public static float AegisBarrierLegendary2 = 16f;
+                /// <summary>vehicles.gearCatalog.unbreakableEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:394).</summary>
+                public static float UnbreakableEpic1 = 1.5f;
+                /// <summary>vehicles.gearCatalog.unbreakableLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:394).</summary>
+                public static float UnbreakableLegendary1 = 2.5f;
+                /// <summary>vehicles.gearCatalog.guardianLinkEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:395).</summary>
+                public static float GuardianLinkEpic1 = 0.15f;
+                /// <summary>vehicles.gearCatalog.guardianLinkLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:395).</summary>
+                public static float GuardianLinkLegendary1 = 0.25f;
+                /// <summary>vehicles.gearCatalog.darkCrownEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:396).</summary>
+                public static float DarkCrownEpic1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.darkCrownEpic2 (x; sat_thuong, was Game/Match/GearCatalog.cs:396).</summary>
+                public static float DarkCrownEpic2 = 0.02f;
+                /// <summary>vehicles.gearCatalog.darkCrownLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:396).</summary>
+                public static float DarkCrownLegendary1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.darkCrownLegendary2 (x; sat_thuong, was Game/Match/GearCatalog.cs:396).</summary>
+                public static float DarkCrownLegendary2 = 0.03f;
+                /// <summary>vehicles.gearCatalog.adaptivePlatingEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:397).</summary>
+                public static float AdaptivePlatingEpic1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.adaptivePlatingLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:397).</summary>
+                public static float AdaptivePlatingLegendary1 = 0.06f;
+                /// <summary>vehicles.gearCatalog.reactiveBlocksEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:398).</summary>
+                public static float ReactiveBlocksEpic1 = 3f;
+                /// <summary>vehicles.gearCatalog.reactiveBlocksEpic2 (x; sat_thuong, was Game/Match/GearCatalog.cs:398).</summary>
+                public static float ReactiveBlocksEpic2 = 20f;
+                /// <summary>vehicles.gearCatalog.reactiveBlocksLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:398).</summary>
+                public static float ReactiveBlocksLegendary1 = 4f;
+                /// <summary>vehicles.gearCatalog.reactiveBlocksLegendary2 (x; sat_thuong, was Game/Match/GearCatalog.cs:398).</summary>
+                public static float ReactiveBlocksLegendary2 = 15f;
+                /// <summary>vehicles.gearCatalog.ablativeLayerEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:399).</summary>
+                public static float AblativeLayerEpic1 = 0.2f;
+                /// <summary>vehicles.gearCatalog.ablativeLayerLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:399).</summary>
+                public static float AblativeLayerLegendary1 = 0.3f;
+                /// <summary>vehicles.gearCatalog.angledGlacisEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:400).</summary>
+                public static float AngledGlacisEpic1 = 6f;
+                /// <summary>vehicles.gearCatalog.angledGlacisLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:400).</summary>
+                public static float AngledGlacisLegendary1 = 5f;
+                /// <summary>vehicles.gearCatalog.siegeAnchorEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:401).</summary>
+                public static float SiegeAnchorEpic1 = 0.15f;
+                /// <summary>vehicles.gearCatalog.siegeAnchorEpic2 (x; sat_thuong, was Game/Match/GearCatalog.cs:401).</summary>
+                public static float SiegeAnchorEpic2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.siegeAnchorLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:401).</summary>
+                public static float SiegeAnchorLegendary1 = 0.2f;
+                /// <summary>vehicles.gearCatalog.siegeAnchorLegendary2 (x; sat_thuong, was Game/Match/GearCatalog.cs:401).</summary>
+                public static float SiegeAnchorLegendary2 = 0.12f;
+                /// <summary>vehicles.gearCatalog.damageControlEpic1 (x; sat_thuong, was Game/Match/GearCatalog.cs:415).</summary>
+                public static float DamageControlEpic1 = 15f;
+                /// <summary>vehicles.gearCatalog.damageControlLegendary1 (x; sat_thuong, was Game/Match/GearCatalog.cs:415).</summary>
+                public static float DamageControlLegendary1 = 10f;
+                /// <summary>vehicles.gearCatalog.counterBatteryRadarEpic1 (count; gioi_han_thuc_the, was Game/Match/GearCatalog.cs:420).</summary>
+                public static float CounterBatteryRadarEpic1 = 0.15f;
+                /// <summary>vehicles.gearCatalog.counterBatteryRadarEpic2 (count; gioi_han_thuc_the, was Game/Match/GearCatalog.cs:420).</summary>
+                public static float CounterBatteryRadarEpic2 = 80f;
+                /// <summary>vehicles.gearCatalog.counterBatteryRadarEpic3 (count; gioi_han_thuc_the, was Game/Match/GearCatalog.cs:420).</summary>
+                public static float CounterBatteryRadarEpic3 = 5f;
+                /// <summary>vehicles.gearCatalog.counterBatteryRadarLegendary1 (count; gioi_han_thuc_the, was Game/Match/GearCatalog.cs:420).</summary>
+                public static float CounterBatteryRadarLegendary1 = 0.25f;
+                /// <summary>vehicles.gearCatalog.counterBatteryRadarLegendary2 (count; gioi_han_thuc_the, was Game/Match/GearCatalog.cs:420).</summary>
+                public static float CounterBatteryRadarLegendary2 = 100f;
+                /// <summary>vehicles.gearCatalog.counterBatteryRadarLegendary3 (count; gioi_han_thuc_the, was Game/Match/GearCatalog.cs:420).</summary>
+                public static float CounterBatteryRadarLegendary3 = 8f;
+                /// <summary>vehicles.gearCatalog.damageVsLightValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:428).</summary>
+                public static float DamageVsLightValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.damageVsLightValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:428).</summary>
+                public static float DamageVsLightValues2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.damageVsLightValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:428).</summary>
+                public static float DamageVsLightValues3 = 0.05f;
+                /// <summary>vehicles.gearCatalog.damageVsLightValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:428).</summary>
+                public static float DamageVsLightValues4 = 0.06f;
+                /// <summary>vehicles.gearCatalog.damageVsHeavyValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:429).</summary>
+                public static float DamageVsHeavyValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.damageVsHeavyValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:429).</summary>
+                public static float DamageVsHeavyValues2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.damageVsHeavyValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:429).</summary>
+                public static float DamageVsHeavyValues3 = 0.05f;
+                /// <summary>vehicles.gearCatalog.damageVsHeavyValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:429).</summary>
+                public static float DamageVsHeavyValues4 = 0.06f;
+                /// <summary>vehicles.gearCatalog.damageVsAirValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:430).</summary>
+                public static float DamageVsAirValues1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.damageVsAirValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:430).</summary>
+                public static float DamageVsAirValues2 = 0.05f;
+                /// <summary>vehicles.gearCatalog.damageVsAirValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:430).</summary>
+                public static float DamageVsAirValues3 = 0.06f;
+                /// <summary>vehicles.gearCatalog.damageVsAirValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:430).</summary>
+                public static float DamageVsAirValues4 = 0.08f;
+                /// <summary>vehicles.gearCatalog.damageVsStructureValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:431).</summary>
+                public static float DamageVsStructureValues1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.damageVsStructureValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:431).</summary>
+                public static float DamageVsStructureValues2 = 0.06f;
+                /// <summary>vehicles.gearCatalog.damageVsStructureValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:431).</summary>
+                public static float DamageVsStructureValues3 = 0.08f;
+                /// <summary>vehicles.gearCatalog.damageVsStructureValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:431).</summary>
+                public static float DamageVsStructureValues4 = 0.1f;
+                /// <summary>vehicles.gearCatalog.fireRateValues1 (x; tan_suat, was Game/Match/GearCatalog.cs:432).</summary>
+                public static float FireRateValues1 = 0.015f;
+                /// <summary>vehicles.gearCatalog.fireRateValues2 (x; tan_suat, was Game/Match/GearCatalog.cs:432).</summary>
+                public static float FireRateValues2 = 0.02f;
+                /// <summary>vehicles.gearCatalog.fireRateValues3 (x; tan_suat, was Game/Match/GearCatalog.cs:432).</summary>
+                public static float FireRateValues3 = 0.03f;
+                /// <summary>vehicles.gearCatalog.fireRateValues4 (x; tan_suat, was Game/Match/GearCatalog.cs:432).</summary>
+                public static float FireRateValues4 = 0.04f;
+                /// <summary>vehicles.gearCatalog.damageValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:433).</summary>
+                public static float DamageValues1 = 0.015f;
+                /// <summary>vehicles.gearCatalog.damageValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:433).</summary>
+                public static float DamageValues2 = 0.02f;
+                /// <summary>vehicles.gearCatalog.damageValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:433).</summary>
+                public static float DamageValues3 = 0.03f;
+                /// <summary>vehicles.gearCatalog.damageValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:433).</summary>
+                public static float DamageValues4 = 0.04f;
+                /// <summary>vehicles.gearCatalog.rangeValues1 (m; ban_kinh, was Game/Match/GearCatalog.cs:434).</summary>
+                public static float RangeValues1 = 0.02f;
+                /// <summary>vehicles.gearCatalog.rangeValues2 (m; ban_kinh, was Game/Match/GearCatalog.cs:434).</summary>
+                public static float RangeValues2 = 0.025f;
+                /// <summary>vehicles.gearCatalog.rangeValues3 (m; ban_kinh, was Game/Match/GearCatalog.cs:434).</summary>
+                public static float RangeValues3 = 0.03f;
+                /// <summary>vehicles.gearCatalog.rangeValues4 (m; ban_kinh, was Game/Match/GearCatalog.cs:434).</summary>
+                public static float RangeValues4 = 0.04f;
+                /// <summary>vehicles.gearCatalog.visionValues1 (m; ban_kinh, was Game/Match/GearCatalog.cs:435).</summary>
+                public static float VisionValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.visionValues2 (m; ban_kinh, was Game/Match/GearCatalog.cs:435).</summary>
+                public static float VisionValues2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.visionValues3 (m; ban_kinh, was Game/Match/GearCatalog.cs:435).</summary>
+                public static float VisionValues3 = 0.05f;
+                /// <summary>vehicles.gearCatalog.visionValues4 (m; ban_kinh, was Game/Match/GearCatalog.cs:435).</summary>
+                public static float VisionValues4 = 0.06f;
+                /// <summary>vehicles.gearCatalog.projectileSpeedValues1 (x; tan_suat, was Game/Match/GearCatalog.cs:437).</summary>
+                public static float ProjectileSpeedValues1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.projectileSpeedValues2 (x; tan_suat, was Game/Match/GearCatalog.cs:437).</summary>
+                public static float ProjectileSpeedValues2 = 0.06f;
+                /// <summary>vehicles.gearCatalog.projectileSpeedValues3 (x; tan_suat, was Game/Match/GearCatalog.cs:437).</summary>
+                public static float ProjectileSpeedValues3 = 0.08f;
+                /// <summary>vehicles.gearCatalog.projectileSpeedValues4 (x; tan_suat, was Game/Match/GearCatalog.cs:437).</summary>
+                public static float ProjectileSpeedValues4 = 0.1f;
+                /// <summary>vehicles.gearCatalog.magazineReloadValues1 (s; thoi_gian, was Game/Match/GearCatalog.cs:439).</summary>
+                public static float MagazineReloadValues1 = 0.04f;
+                /// <summary>vehicles.gearCatalog.magazineReloadValues2 (s; thoi_gian, was Game/Match/GearCatalog.cs:439).</summary>
+                public static float MagazineReloadValues2 = 0.06f;
+                /// <summary>vehicles.gearCatalog.magazineReloadValues3 (s; thoi_gian, was Game/Match/GearCatalog.cs:439).</summary>
+                public static float MagazineReloadValues3 = 0.08f;
+                /// <summary>vehicles.gearCatalog.magazineReloadValues4 (s; thoi_gian, was Game/Match/GearCatalog.cs:439).</summary>
+                public static float MagazineReloadValues4 = 0.1f;
+                /// <summary>vehicles.gearCatalog.healthValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:440).</summary>
+                public static float HealthValues1 = 0.02f;
+                /// <summary>vehicles.gearCatalog.healthValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:440).</summary>
+                public static float HealthValues2 = 0.03f;
+                /// <summary>vehicles.gearCatalog.healthValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:440).</summary>
+                public static float HealthValues3 = 0.04f;
+                /// <summary>vehicles.gearCatalog.healthValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:440).</summary>
+                public static float HealthValues4 = 0.05f;
+                /// <summary>vehicles.gearCatalog.resistKineticValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:441).</summary>
+                public static float ResistKineticValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.resistKineticValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:441).</summary>
+                public static float ResistKineticValues2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.resistKineticValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:441).</summary>
+                public static float ResistKineticValues3 = 0.06f;
+                /// <summary>vehicles.gearCatalog.resistKineticValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:441).</summary>
+                public static float ResistKineticValues4 = 0.08f;
+                /// <summary>vehicles.gearCatalog.resistKineticWeight (x; sat_thuong, was Game/Match/GearCatalog.cs:441).</summary>
+                public static float ResistKineticWeight = 0.2f;
+                /// <summary>vehicles.gearCatalog.resistShapedChargeValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:442).</summary>
+                public static float ResistShapedChargeValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.resistShapedChargeValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:442).</summary>
+                public static float ResistShapedChargeValues2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.resistShapedChargeValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:442).</summary>
+                public static float ResistShapedChargeValues3 = 0.06f;
+                /// <summary>vehicles.gearCatalog.resistShapedChargeValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:442).</summary>
+                public static float ResistShapedChargeValues4 = 0.08f;
+                /// <summary>vehicles.gearCatalog.resistShapedChargeWeight (x; sat_thuong, was Game/Match/GearCatalog.cs:442).</summary>
+                public static float ResistShapedChargeWeight = 0.2f;
+                /// <summary>vehicles.gearCatalog.resistHighExplosiveValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:443).</summary>
+                public static float ResistHighExplosiveValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.resistHighExplosiveValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:443).</summary>
+                public static float ResistHighExplosiveValues2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.resistHighExplosiveValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:443).</summary>
+                public static float ResistHighExplosiveValues3 = 0.06f;
+                /// <summary>vehicles.gearCatalog.resistHighExplosiveValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:443).</summary>
+                public static float ResistHighExplosiveValues4 = 0.08f;
+                /// <summary>vehicles.gearCatalog.resistHighExplosiveWeight (x; sat_thuong, was Game/Match/GearCatalog.cs:443).</summary>
+                public static float ResistHighExplosiveWeight = 0.2f;
+                /// <summary>vehicles.gearCatalog.resistFireValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:444).</summary>
+                public static float ResistFireValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.resistFireValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:444).</summary>
+                public static float ResistFireValues2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.resistFireValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:444).</summary>
+                public static float ResistFireValues3 = 0.06f;
+                /// <summary>vehicles.gearCatalog.resistFireValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:444).</summary>
+                public static float ResistFireValues4 = 0.08f;
+                /// <summary>vehicles.gearCatalog.resistFireWeight (x; sat_thuong, was Game/Match/GearCatalog.cs:444).</summary>
+                public static float ResistFireWeight = 0.2f;
+                /// <summary>vehicles.gearCatalog.resistFragmentationValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:445).</summary>
+                public static float ResistFragmentationValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.resistFragmentationValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:445).</summary>
+                public static float ResistFragmentationValues2 = 0.04f;
+                /// <summary>vehicles.gearCatalog.resistFragmentationValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:445).</summary>
+                public static float ResistFragmentationValues3 = 0.06f;
+                /// <summary>vehicles.gearCatalog.resistFragmentationValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:445).</summary>
+                public static float ResistFragmentationValues4 = 0.08f;
+                /// <summary>vehicles.gearCatalog.resistFragmentationWeight (x; sat_thuong, was Game/Match/GearCatalog.cs:445).</summary>
+                public static float ResistFragmentationWeight = 0.2f;
+                /// <summary>vehicles.gearCatalog.speedValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:446).</summary>
+                public static float SpeedValues1 = 0.015f;
+                /// <summary>vehicles.gearCatalog.speedValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:446).</summary>
+                public static float SpeedValues2 = 0.02f;
+                /// <summary>vehicles.gearCatalog.speedValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:446).</summary>
+                public static float SpeedValues3 = 0.03f;
+                /// <summary>vehicles.gearCatalog.speedValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:446).</summary>
+                public static float SpeedValues4 = 0.04f;
+                /// <summary>vehicles.gearCatalog.turretRateValues1 (x; tan_suat, was Game/Match/GearCatalog.cs:447).</summary>
+                public static float TurretRateValues1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.turretRateValues2 (x; tan_suat, was Game/Match/GearCatalog.cs:447).</summary>
+                public static float TurretRateValues2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.turretRateValues3 (x; tan_suat, was Game/Match/GearCatalog.cs:447).</summary>
+                public static float TurretRateValues3 = 0.1f;
+                /// <summary>vehicles.gearCatalog.turretRateValues4 (x; tan_suat, was Game/Match/GearCatalog.cs:447).</summary>
+                public static float TurretRateValues4 = 0.12f;
+                /// <summary>vehicles.gearCatalog.captureRateValues1 (x; tan_suat, was Game/Match/GearCatalog.cs:448).</summary>
+                public static float CaptureRateValues1 = 0.05f;
+                /// <summary>vehicles.gearCatalog.captureRateValues2 (x; tan_suat, was Game/Match/GearCatalog.cs:448).</summary>
+                public static float CaptureRateValues2 = 0.08f;
+                /// <summary>vehicles.gearCatalog.captureRateValues3 (x; tan_suat, was Game/Match/GearCatalog.cs:448).</summary>
+                public static float CaptureRateValues3 = 0.1f;
+                /// <summary>vehicles.gearCatalog.captureRateValues4 (x; tan_suat, was Game/Match/GearCatalog.cs:448).</summary>
+                public static float CaptureRateValues4 = 0.12f;
+                /// <summary>vehicles.gearCatalog.cooldownsValues1 (s; thoi_gian, was Game/Match/GearCatalog.cs:449).</summary>
+                public static float CooldownsValues1 = 0.03f;
+                /// <summary>vehicles.gearCatalog.cooldownsValues2 (s; thoi_gian, was Game/Match/GearCatalog.cs:449).</summary>
+                public static float CooldownsValues2 = 0.05f;
+                /// <summary>vehicles.gearCatalog.cooldownsValues3 (s; thoi_gian, was Game/Match/GearCatalog.cs:449).</summary>
+                public static float CooldownsValues3 = 0.07f;
+                /// <summary>vehicles.gearCatalog.cooldownsValues4 (s; thoi_gian, was Game/Match/GearCatalog.cs:449).</summary>
+                public static float CooldownsValues4 = 0.09f;
+                /// <summary>vehicles.gearCatalog.regenValues1 (x; sat_thuong, was Game/Match/GearCatalog.cs:450).</summary>
+                public static float RegenValues1 = 0.001f;
+                /// <summary>vehicles.gearCatalog.regenValues2 (x; sat_thuong, was Game/Match/GearCatalog.cs:450).</summary>
+                public static float RegenValues2 = 0.0015f;
+                /// <summary>vehicles.gearCatalog.regenValues3 (x; sat_thuong, was Game/Match/GearCatalog.cs:450).</summary>
+                public static float RegenValues3 = 0.002f;
+                /// <summary>vehicles.gearCatalog.regenValues4 (x; sat_thuong, was Game/Match/GearCatalog.cs:450).</summary>
+                public static float RegenValues4 = 0.0025f;
+                /// <summary>vehicles.gearCatalog.ironcladValue (x; sat_thuong, was Game/Match/GearCatalog.cs:459).</summary>
+                public static float IroncladValue = 0.06f;
+                /// <summary>vehicles.gearCatalog.ironcladFourPieceSetBulwark (x; sat_thuong, was Game/Match/GearCatalog.cs:459).</summary>
+                public static float IroncladFourPieceSetBulwark = 0.15f;
+                /// <summary>vehicles.gearCatalog.kestrelIndex (x; tan_suat, was Game/Match/GearCatalog.cs:460).</summary>
+                public static int KestrelIndex = 2;
+                /// <summary>vehicles.gearCatalog.kestrelValue (x; tan_suat, was Game/Match/GearCatalog.cs:460).</summary>
+                public static float KestrelValue = 0.05f;
+                /// <summary>vehicles.gearCatalog.kestrelFourPieceASetHitAndRun (x; tan_suat, was Game/Match/GearCatalog.cs:460).</summary>
+                public static float KestrelFourPieceASetHitAndRun = 0.2f;
+                /// <summary>vehicles.gearCatalog.kestrelFourPieceBSetHitAndRun (x; tan_suat, was Game/Match/GearCatalog.cs:460).</summary>
+                public static float KestrelFourPieceBSetHitAndRun = 0.5f;
+                /// <summary>vehicles.gearCatalog.vulcanIndex (x; sat_thuong, was Game/Match/GearCatalog.cs:461).</summary>
+                public static int VulcanIndex = 3;
+                /// <summary>vehicles.gearCatalog.vulcanValue (x; sat_thuong, was Game/Match/GearCatalog.cs:461).</summary>
+                public static float VulcanValue = 0.15f;
+                /// <summary>vehicles.gearCatalog.vulcanFourPieceASetFirestorm (x; sat_thuong, was Game/Match/GearCatalog.cs:461).</summary>
+                public static float VulcanFourPieceASetFirestorm = 0.1f;
+                /// <summary>vehicles.gearCatalog.vulcanFourPieceBSetFirestorm (x; sat_thuong, was Game/Match/GearCatalog.cs:461).</summary>
+                public static float VulcanFourPieceBSetFirestorm = 6f;
+                /// <summary>vehicles.gearCatalog.longbowIndex (m; ban_kinh, was Game/Match/GearCatalog.cs:462).</summary>
+                public static int LongbowIndex = 4;
+                /// <summary>vehicles.gearCatalog.longbowValue (m; ban_kinh, was Game/Match/GearCatalog.cs:462).</summary>
+                public static float LongbowValue = 0.05f;
+                /// <summary>vehicles.gearCatalog.longbowFourPieceSetDeepStrike (m; ban_kinh, was Game/Match/GearCatalog.cs:462).</summary>
+                public static float LongbowFourPieceSetDeepStrike = 0.15f;
+                /// <summary>vehicles.gearCatalog.aegisIndex (x; sat_thuong, was Game/Match/GearCatalog.cs:463).</summary>
+                public static int AegisIndex = 5;
+                /// <summary>vehicles.gearCatalog.aegisValue (x; sat_thuong, was Game/Match/GearCatalog.cs:463).</summary>
+                public static float AegisValue = 0.05f;
+                /// <summary>vehicles.gearCatalog.aegisFourPieceASetSharedShield (x; sat_thuong, was Game/Match/GearCatalog.cs:463).</summary>
+                public static float AegisFourPieceASetSharedShield = 0.12f;
+                /// <summary>vehicles.gearCatalog.aegisFourPieceBSetSharedShield (x; sat_thuong, was Game/Match/GearCatalog.cs:463).</summary>
+                public static float AegisFourPieceBSetSharedShield = 25f;
+                /// <summary>vehicles.gearCatalog.aegisFourPieceCSetSharedShield (x; sat_thuong, was Game/Match/GearCatalog.cs:463).</summary>
+                public static float AegisFourPieceCSetSharedShield = 12f;
+                /// <summary>vehicles.gearCatalog.hivemindIndex (x; khac, was Game/Match/GearCatalog.cs:465).</summary>
+                public static int HivemindIndex = 7;
+                /// <summary>vehicles.gearCatalog.hivemindValue (x; khac, was Game/Match/GearCatalog.cs:465).</summary>
+                public static float HivemindValue = 0.1f;
+                /// <summary>vehicles.gearCatalog.hivemindFourPieceSetSwarm (x; khac, was Game/Match/GearCatalog.cs:465).</summary>
+                public static float HivemindFourPieceSetSwarm = 10f;
+                /// <summary>vehicles.gearCatalog.spectreIndex (m; ban_kinh, was Game/Match/GearCatalog.cs:467).</summary>
+                public static int SpectreIndex = 9;
+                /// <summary>vehicles.gearCatalog.spectreValue (m; ban_kinh, was Game/Match/GearCatalog.cs:467).</summary>
+                public static float SpectreValue = 0.08f;
+                /// <summary>vehicles.gearCatalog.spectreFourPieceSetGhostNet (m; ban_kinh, was Game/Match/GearCatalog.cs:467).</summary>
+                public static float SpectreFourPieceSetGhostNet = 0.15f;
+                /// <summary>vehicles.gearCatalog.hammerfallIndex (x; sat_thuong, was Game/Match/GearCatalog.cs:468).</summary>
+                public static int HammerfallIndex = 10;
+                /// <summary>vehicles.gearCatalog.hammerfallValue (x; sat_thuong, was Game/Match/GearCatalog.cs:468).</summary>
+                public static float HammerfallValue = 0.08f;
+                /// <summary>vehicles.gearCatalog.hammerfallFourPieceASetHeavyRound (x; sat_thuong, was Game/Match/GearCatalog.cs:468).</summary>
+                public static float HammerfallFourPieceASetHeavyRound = 5f;
+                /// <summary>vehicles.gearCatalog.wolfpackIndex (count; gioi_han_thuc_the, was Game/Match/GearCatalog.cs:471).</summary>
+                public static int WolfpackIndex = 12;
+                /// <summary>vehicles.gearCatalog.wolfpackFourPieceSetPackFocus (count; gioi_han_thuc_the, was Game/Match/GearCatalog.cs:471).</summary>
+                public static float WolfpackFourPieceSetPackFocus = 0.15f;
+                /// <summary>vehicles.gearCatalog.bulwarkValue (x; sat_thuong, was Game/Match/GearCatalog.cs:473).</summary>
+                public static float BulwarkValue = 0.1f;
+                /// <summary>vehicles.gearCatalog.bulwarkFourPieceSetBulwarkPost (x; sat_thuong, was Game/Match/GearCatalog.cs:473).</summary>
+                public static float BulwarkFourPieceSetBulwarkPost = 20f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap (x; sat_thuong, was Game/Match/GearCatalog.cs:486, Game/Match/GearCatalog.cs:488, Game/Match/GearCatalog.cs:492, Game/Match/GearCatalog.cs:493, Game/Match/GearCatalog.cs:494, Game/Match/GearCatalog.cs:497, Game/Match/GearCatalog.cs:511, Game/Match/GearCatalog.cs:519, Game/Match/GearCatalog.cs:520, Game/Match/GearCatalog.cs:526, Game/Match/GearCatalog.cs:529, Game/Match/GearCatalog.cs:532).</summary>
+                public static float BuildCapsCap = 0.25f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap2 (count; tran, was Game/Match/GearCatalog.cs:487, Game/Match/GearCatalog.cs:489).</summary>
+                public static float BuildCapsCap2 = 0.15f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap4 (x; sat_thuong, was Game/Match/GearCatalog.cs:491).</summary>
+                public static float BuildCapsCap4 = 0.2f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap5 (x; sat_thuong, was Game/Match/GearCatalog.cs:495, Game/Match/GearCatalog.cs:499, Game/Match/GearCatalog.cs:501, Game/Match/GearCatalog.cs:508, Game/Match/GearCatalog.cs:509, Game/Match/GearCatalog.cs:512, Game/Match/GearCatalog.cs:513, Game/Match/GearCatalog.cs:530, Game/Match/GearCatalog.cs:535).</summary>
+                public static float BuildCapsCap5 = 0.3f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap6 (m; ban_kinh, was Game/Match/GearCatalog.cs:496).</summary>
+                public static float BuildCapsCap6 = 0.12f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap8 (count; tran, was Game/Match/GearCatalog.cs:510, Game/Match/GearCatalog.cs:523, Game/Match/GearCatalog.cs:534).</summary>
+                public static float BuildCapsCap8 = 0.5f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap9 (s; thoi_gian, was Game/Match/GearCatalog.cs:514).</summary>
+                public static float BuildCapsCap9 = 0.35f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap10 (count; tran, was Game/Match/GearCatalog.cs:517).</summary>
+                public static float BuildCapsCap10 = 0.6f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap11 (s; thoi_gian, was Game/Match/GearCatalog.cs:522).</summary>
+                public static float BuildCapsCap11 = 3f;
+                /// <summary>vehicles.gearCatalog.buildCapsCap13 (s; thoi_gian, was Game/Match/GearCatalog.cs:533).</summary>
+                public static float BuildCapsCap13 = 8f;
+            }
+
+            public static partial class GearSystem
+            {
+                /// <summary>vehicles.gearSystem.moduleScaleMaxDivisor (x; nguong, was Sim/Abilities/GearSystem.Lines.cs:46).</summary>
+                public static float ModuleScaleMaxDivisor = 7f;
+                /// <summary>vehicles.gearSystem.moduleScaleMaxMin (count; nguong, was Sim/Abilities/GearSystem.Lines.cs:46).</summary>
+                public static float ModuleScaleMaxMin = 0.4f;
+                /// <summary>vehicles.gearSystem.moduleScaleMaxMax (count; nguong, was Sim/Abilities/GearSystem.Lines.cs:46).</summary>
+                public static float ModuleScaleMaxMax = 1.3f;
+                /// <summary>vehicles.gearSystem.hitIntervalCooldownMax (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:55).</summary>
+                public static float HitIntervalCooldownMax = 0.35f;
+                /// <summary>vehicles.gearSystem.hitIntervalInterval (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:55).</summary>
+                public static float HitIntervalInterval = 1.7f;
+                /// <summary>vehicles.gearSystem.hitIntervalIntervalFloor (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:56).</summary>
+                public static float HitIntervalIntervalFloor = 0.02f;
+                /// <summary>vehicles.gearSystem.procCoefficientHitIntervalMin (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:64).</summary>
+                public static float ProcCoefficientHitIntervalMin = 0.15f;
+                /// <summary>vehicles.gearSystem.procCoefficientHitIntervalMax (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:64).</summary>
+                public static float ProcCoefficientHitIntervalMax = 2.5f;
+                /// <summary>vehicles.gearSystem.suppressedShareValueMax (share; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:73).</summary>
+                public static float SuppressedShareValueMax = 0.6f;
+                /// <summary>vehicles.gearSystem.stepLinesSeconds (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:113).</summary>
+                public static float StepLinesSeconds = 8f;
+                /// <summary>vehicles.gearSystem.stepLinesNowAdd (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:115).</summary>
+                public static double StepLinesNowAdd = 1.5;
+                /// <summary>vehicles.gearSystem.movingAwayAbsMax (x; tan_suat, was Sim/Abilities/GearSystem.Lines.cs:143).</summary>
+                public static float MovingAwayAbsMax = 0.5f;
+                /// <summary>vehicles.gearSystem.movingAwayLengthSquaredMax (m; ban_kinh, was Sim/Abilities/GearSystem.Lines.cs:148).</summary>
+                public static float MovingAwayLengthSquaredMax = 0.01f;
+                /// <summary>vehicles.gearSystem.backOffRangeFloor (m; ban_kinh, was Sim/Abilities/GearSystem.Lines.cs:179).</summary>
+                public static float BackOffRangeFloor = 10f;
+                /// <summary>vehicles.gearSystem.backOffRangeScale (x; ban_kinh, was Sim/Abilities/GearSystem.Lines.cs:179).</summary>
+                public static float BackOffRangeScale = 0.45f;
+                /// <summary>vehicles.gearSystem.backOffNowAdd (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:184).</summary>
+                public static double BackOffNowAdd = 4.0;
+                /// <summary>vehicles.gearSystem.shootDownStatScale (x; sat_thuong, was Sim/Abilities/GearSystem.Lines.cs:222).</summary>
+                public static float ShootDownStatScale = 0.5f;
+                /// <summary>vehicles.gearSystem.shootDownLengthSquaredMin (m; ban_kinh, was Sim/Abilities/GearSystem.Lines.cs:226).</summary>
+                public static float ShootDownLengthSquaredMin = 0.01f;
+                /// <summary>vehicles.gearSystem.deathLinesBFalse (m; ban_kinh, was Sim/Abilities/GearSystem.Lines.cs:241).</summary>
+                public static float DeathLinesBFalse = 15f;
+                /// <summary>vehicles.gearSystem.deathLinesCFalse (s; thoi_gian, was Sim/Abilities/GearSystem.Lines.cs:245).</summary>
+                public static float DeathLinesCFalse = 5f;
+                /// <summary>vehicles.gearSystem.healAFalse (x; sat_thuong, was Sim/Abilities/GearSystem.Lines.cs:276).</summary>
+                public static float HealAFalse = 0.1f;
+                /// <summary>vehicles.gearSystem.healBFalse (x; sat_thuong, was Sim/Abilities/GearSystem.Lines.cs:278).</summary>
+                public static float HealBFalse = 8f;
+                /// <summary>vehicles.gearSystem.absorbOverhealValueMax (x; sat_thuong, was Sim/Abilities/GearSystem.Lines.cs:295).</summary>
+                public static float AbsorbOverhealValueMax = 0.01f;
+                /// <summary>vehicles.gearSystem.empBurstDuration (x; sat_thuong, was Sim/Abilities/GearSystem.cs:47).</summary>
+                public static float EmpBurstDuration = 2f;
+                /// <summary>vehicles.gearSystem.empBurstRadius (x; sat_thuong, was Sim/Abilities/GearSystem.cs:47).</summary>
+                public static float EmpBurstRadius = 10f;
+                /// <summary>vehicles.gearSystem.equipStatScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:65).</summary>
+                public static float EquipStatScale = 0.55f;
+                /// <summary>vehicles.gearSystem.equipFlareRechargeScale (x; thoi_gian, was Sim/Abilities/GearSystem.cs:95).</summary>
+                public static float EquipFlareRechargeScale = 0.75f;
+                /// <summary>vehicles.gearSystem.equipSpecialPower2False (x; sat_thuong, was Sim/Abilities/GearSystem.cs:98).</summary>
+                public static float EquipSpecialPower2False = 20f;
+                /// <summary>vehicles.gearSystem.equipTrigger (x; sat_thuong, was Sim/Abilities/GearSystem.cs:98).</summary>
+                public static float EquipTrigger = 2.2f;
+                /// <summary>vehicles.gearSystem.equipNowAdd (s; thoi_gian, was Sim/Abilities/GearSystem.cs:99).</summary>
+                public static double EquipNowAdd = 3.0;
+                /// <summary>vehicles.gearSystem.equipNowAdd2 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:104).</summary>
+                public static double EquipNowAdd2 = 4.0;
+                /// <summary>vehicles.gearSystem.equipNowAdd3 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:107).</summary>
+                public static double EquipNowAdd3 = 6.0;
+                /// <summary>vehicles.gearSystem.tuneWeaponsStatFloor (x; nguong, was Sim/Abilities/GearSystem.cs:153).</summary>
+                public static float TuneWeaponsStatFloor = 0.1f;
+                /// <summary>vehicles.gearSystem.tuneWeaponsStatFloor2 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:155).</summary>
+                public static float TuneWeaponsStatFloor2 = 0.3f;
+                /// <summary>vehicles.gearSystem.tuneWeaponsDamageFloor (x; sat_thuong, was Sim/Abilities/GearSystem.cs:159).</summary>
+                public static float TuneWeaponsDamageFloor = 4f;
+                /// <summary>vehicles.gearSystem.tuneWeaponsDamageScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:159).</summary>
+                public static float TuneWeaponsDamageScale = 0.08f;
+                /// <summary>vehicles.gearSystem.tuneWeaponsRadius (x; sat_thuong, was Sim/Abilities/GearSystem.cs:159).</summary>
+                public static float TuneWeaponsRadius = 2.5f;
+                /// <summary>vehicles.gearSystem.tuneWeaponsRadiusFloor (m; ban_kinh, was Sim/Abilities/GearSystem.cs:160).</summary>
+                public static float TuneWeaponsRadiusFloor = 6f;
+                /// <summary>vehicles.gearSystem.tuneWeaponsMoreMin (x; nguong, was Sim/Abilities/GearSystem.cs:171).</summary>
+                public static float TuneWeaponsMoreMin = 0.08f;
+                /// <summary>vehicles.gearSystem.tuneWeaponsFasterFloor (s; thoi_gian, was Sim/Abilities/GearSystem.cs:173).</summary>
+                public static float TuneWeaponsFasterFloor = 0.3f;
+                /// <summary>vehicles.gearSystem.mineBlastDamageScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:191).</summary>
+                public static float MineBlastDamageScale = 0.6f;
+                /// <summary>vehicles.gearSystem.mineBlastDamageDefault (x; sat_thuong, was Sim/Abilities/GearSystem.cs:191).</summary>
+                public static float MineBlastDamageDefault = 260f;
+                /// <summary>vehicles.gearSystem.mineBlastRadiusDefault (m; sat_thuong, was Sim/Abilities/GearSystem.cs:192).</summary>
+                public static float MineBlastRadiusDefault = 4f;
+                /// <summary>vehicles.gearSystem.mineBlastRadiusCap (m; sat_thuong, was Sim/Abilities/GearSystem.cs:192).</summary>
+                public static float MineBlastRadiusCap = 4f;
+                /// <summary>vehicles.gearSystem.droneForDamageFloor (x; sat_thuong, was Sim/Abilities/GearSystem.cs:198).</summary>
+                public static float DroneForDamageFloor = 40f;
+                /// <summary>vehicles.gearSystem.droneForDamageScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:198).</summary>
+                public static float DroneForDamageScale = 0.6f;
+                /// <summary>vehicles.gearSystem.droneForRange (x; sat_thuong, was Sim/Abilities/GearSystem.cs:209, Sim/Abilities/GearSystem.cs:211).</summary>
+                public static float DroneForRange = 80f;
+                /// <summary>vehicles.gearSystem.droneForProjectileSpeed (m/s; sat_thuong, was Sim/Abilities/GearSystem.cs:209).</summary>
+                public static float DroneForProjectileSpeed = 26f;
+                /// <summary>vehicles.gearSystem.droneForSplashRadius (m; sat_thuong, was Sim/Abilities/GearSystem.cs:209).</summary>
+                public static float DroneForSplashRadius = 2f;
+                /// <summary>vehicles.gearSystem.droneForPenetration (x; sat_thuong, was Sim/Abilities/GearSystem.cs:210).</summary>
+                public static int DroneForPenetration = 3;
+                /// <summary>vehicles.gearSystem.droneForSize (x; sat_thuong, was Sim/Abilities/GearSystem.cs:210).</summary>
+                public static float DroneForSize = 1.5f;
+                /// <summary>vehicles.gearSystem.droneForSplashRadiusCap (m; sat_thuong, was Sim/Abilities/GearSystem.cs:211).</summary>
+                public static float DroneForSplashRadiusCap = 2.5f;
+                /// <summary>vehicles.gearSystem.cooldownFactorStatFloor (s; thoi_gian, was Sim/Abilities/GearSystem.cs:218).</summary>
+                public static float CooldownFactorStatFloor = 0.5f;
+                /// <summary>vehicles.gearSystem.stepGearSpeed (s; thoi_gian, was Sim/Abilities/GearSystem.cs:303).</summary>
+                public static float StepGearSpeed = 1.4f;
+                /// <summary>vehicles.gearSystem.stepGearStillForMin2 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:313).</summary>
+                public static double StepGearStillForMin2 = 3.0;
+                /// <summary>vehicles.gearSystem.stepGearNowMin (s; thoi_gian, was Sim/Abilities/GearSystem.cs:336).</summary>
+                public static double StepGearNowMin = 0.5;
+                /// <summary>vehicles.gearSystem.stepGearNowAdd (s; thoi_gian, was Sim/Abilities/GearSystem.cs:351, Sim/Abilities/GearSystem.cs:368).</summary>
+                public static double StepGearNowAdd = 4.0;
+                /// <summary>vehicles.gearSystem.stepGearNowAdd2 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:359).</summary>
+                public static double StepGearNowAdd2 = 3.0;
+                /// <summary>vehicles.gearSystem.stepGearMaxHpScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:365, Sim/Abilities/GearSystem.cs:374).</summary>
+                public static float StepGearMaxHpScale = 0.4f;
+                /// <summary>vehicles.gearSystem.stepGearNowAdd3 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:370, Sim/Abilities/GearSystem.cs:391).</summary>
+                public static double StepGearNowAdd3 = 2.0;
+                /// <summary>vehicles.gearSystem.stepGearMaxHpDivisor (x; sat_thuong, was Sim/Abilities/GearSystem.cs:376).</summary>
+                public static float StepGearMaxHpDivisor = 5f;
+                /// <summary>vehicles.gearSystem.stepGearNowAdd4 (x; sat_thuong, was Sim/Abilities/GearSystem.cs:377).</summary>
+                public static double StepGearNowAdd4 = 5.0;
+                /// <summary>vehicles.gearSystem.stepGearCdScale (x; thoi_gian, was Sim/Abilities/GearSystem.cs:378).</summary>
+                public static double StepGearCdScale = 30.0;
+                /// <summary>vehicles.gearSystem.stepGearMaxHpScale2 (x; sat_thuong, was Sim/Abilities/GearSystem.cs:396).</summary>
+                public static float StepGearMaxHpScale2 = 0.5f;
+                /// <summary>vehicles.gearSystem.stepGearSpecialPower2False (s; thoi_gian, was Sim/Abilities/GearSystem.cs:409).</summary>
+                public static float StepGearSpecialPower2False = 12f;
+                /// <summary>vehicles.gearSystem.stepGearMaxHpScale3 (x; sat_thuong, was Sim/Abilities/GearSystem.cs:415).</summary>
+                public static float StepGearMaxHpScale3 = 0.25f;
+                /// <summary>vehicles.gearSystem.stepGearSpecialPower2False2 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:426).</summary>
+                public static float StepGearSpecialPower2False2 = 25f;
+                /// <summary>vehicles.gearSystem.stepGearHullBoundAdd (x; khac, was Sim/Abilities/GearSystem.cs:434).</summary>
+                public static float StepGearHullBoundAdd = 6f;
+                /// <summary>vehicles.gearSystem.stepGearSpecialPower2False3 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:435).</summary>
+                public static float StepGearSpecialPower2False3 = 35f;
+                /// <summary>vehicles.gearSystem.stepGearSpecialPower2False4 (s; thoi_gian, was Sim/Abilities/GearSystem.cs:440).</summary>
+                public static float StepGearSpecialPower2False4 = 45f;
+                /// <summary>vehicles.gearSystem.jamCFalse (m; ban_kinh, was Sim/Abilities/GearSystem.cs:450).</summary>
+                public static float JamCFalse = 12f;
+                /// <summary>vehicles.gearSystem.shareShieldCFalse (share; ban_kinh, was Sim/Abilities/GearSystem.cs:473).</summary>
+                public static float ShareShieldCFalse = 12f;
+                /// <summary>vehicles.gearSystem.shareShieldNowMin (share; thoi_gian, was Sim/Abilities/GearSystem.cs:488).</summary>
+                public static double ShareShieldNowMin = 0.5;
+                /// <summary>vehicles.gearSystem.fieldRepairBFalse (m; ban_kinh, was Sim/Abilities/GearSystem.cs:494).</summary>
+                public static float FieldRepairBFalse = 12f;
+                /// <summary>vehicles.gearSystem.fieldRepairNowMax (s; thoi_gian, was Sim/Abilities/GearSystem.cs:498).</summary>
+                public static double FieldRepairNowMax = 4.0;
+                /// <summary>vehicles.gearSystem.buffNowAdd (s; thoi_gian, was Sim/Abilities/GearSystem.cs:513).</summary>
+                public static double BuffNowAdd = 0.15;
+                /// <summary>vehicles.gearSystem.repairFactorHasTrue (s; thoi_gian, was Sim/Abilities/GearSystem.cs:519).</summary>
+                public static float RepairFactorHasTrue = 0.5f;
+                /// <summary>vehicles.gearSystem.launchDronesKScale (x; ban_kinh, was Sim/Abilities/GearSystem.cs:551).</summary>
+                public static float LaunchDronesKScale = 0.6f;
+                /// <summary>vehicles.gearSystem.launchDronesDistanceFloor (m; ban_kinh, was Sim/Abilities/GearSystem.cs:552).</summary>
+                public static float LaunchDronesDistanceFloor = 0.3f;
+                /// <summary>vehicles.gearSystem.launchDronesKScale2 (x; ban_kinh, was Sim/Abilities/GearSystem.cs:552).</summary>
+                public static float LaunchDronesKScale2 = 0.15f;
+                /// <summary>vehicles.gearSystem.barrageStatScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:565).</summary>
+                public static float BarrageStatScale = 60f;
+                /// <summary>vehicles.gearSystem.barrageRadius (x; sat_thuong, was Sim/Abilities/GearSystem.cs:565).</summary>
+                public static float BarrageRadius = 4f;
+                /// <summary>vehicles.gearSystem.barrageSqrtScale (x; ban_kinh, was Sim/Abilities/GearSystem.cs:569).</summary>
+                public static float BarrageSqrtScale = 3f;
+                /// <summary>vehicles.gearSystem.barrageKAdd (x; sat_thuong, was Sim/Abilities/GearSystem.cs:571).</summary>
+                public static double BarrageKAdd = 1.2;
+                /// <summary>vehicles.gearSystem.barrageKScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:571).</summary>
+                public static double BarrageKScale = 0.35;
+                /// <summary>vehicles.gearSystem.shotNowAdd (s; thoi_gian, was Sim/Abilities/GearSystem.cs:600, Sim/Abilities/GearSystem.cs:651).</summary>
+                public static double ShotNowAdd = 2.0;
+                /// <summary>vehicles.gearSystem.shotRangeScale (x; ban_kinh, was Sim/Abilities/GearSystem.cs:601).</summary>
+                public static float ShotRangeScale = 0.7f;
+                /// <summary>vehicles.gearSystem.shotStreakCarryCap (count; tran, was Sim/Abilities/GearSystem.cs:604).</summary>
+                public static float ShotStreakCarryCap = 5f;
+                /// <summary>vehicles.gearSystem.shotExtraSplash (x; sat_thuong, was Sim/Abilities/GearSystem.cs:616, Sim/Abilities/GearSystem.cs:674).</summary>
+                public static float ShotExtraSplash = 4f;
+                /// <summary>vehicles.gearSystem.shotNowMax (s; thoi_gian, was Sim/Abilities/GearSystem.cs:645).</summary>
+                public static double ShotNowMax = 1.5;
+                /// <summary>vehicles.gearSystem.shotAFloor (x; tan_suat, was Sim/Abilities/GearSystem.cs:660, Sim/Abilities/GearSystem.cs:667).</summary>
+                public static int ShotAFloor = 2;
+                /// <summary>vehicles.gearSystem.shotEveryTrue (x; tan_suat, was Sim/Abilities/GearSystem.cs:667).</summary>
+                public static int ShotEveryTrue = 3;
+                /// <summary>vehicles.gearSystem.extraRoundsAFloor (x; nguong, was Sim/Abilities/GearSystem.cs:700).</summary>
+                public static int ExtraRoundsAFloor = 2;
+                /// <summary>vehicles.gearSystem.machineGunRoundAFloor (x; nguong, was Sim/Abilities/GearSystem.cs:716).</summary>
+                public static int MachineGunRoundAFloor = 2;
+                /// <summary>vehicles.gearSystem.machineGunRoundSalvosTrue (x; nguong, was Sim/Abilities/GearSystem.cs:716).</summary>
+                public static float MachineGunRoundSalvosTrue = 2f;
+                /// <summary>vehicles.gearSystem.spreadFactorCutFloor (x; nguong, was Sim/Abilities/GearSystem.cs:770).</summary>
+                public static float SpreadFactorCutFloor = 0.1f;
+                /// <summary>vehicles.gearSystem.tauntsTimeMin (s; thoi_gian, was Sim/Abilities/GearSystem.cs:799).</summary>
+                public static double TauntsTimeMin = 2.0;
+                /// <summary>vehicles.gearSystem.tauntsScale (x; ban_kinh, was Sim/Abilities/GearSystem.cs:800).</summary>
+                public static float TauntsScale = 25f;
+                /// <summary>vehicles.gearSystem.onDirectHitStreakCarryCap (count; tran, was Sim/Abilities/GearSystem.cs:833).</summary>
+                public static float OnDirectHitStreakCarryCap = 5f;
+                /// <summary>vehicles.gearSystem.onDirectHitCCap (count; tran, was Sim/Abilities/GearSystem.cs:837).</summary>
+                public static float OnDirectHitCCap = 5f;
+                /// <summary>vehicles.gearSystem.onDirectHitGapFloor (m; ban_kinh, was Sim/Abilities/GearSystem.cs:856).</summary>
+                public static float OnDirectHitGapFloor = 5f;
+                /// <summary>vehicles.gearSystem.onDirectHitGapScale (x; ban_kinh, was Sim/Abilities/GearSystem.cs:856).</summary>
+                public static float OnDirectHitGapScale = 2f;
+                /// <summary>vehicles.gearSystem.onDirectHitMaxStacks (m; ban_kinh, was Sim/Abilities/GearSystem.cs:856).</summary>
+                public static int OnDirectHitMaxStacks = 5;
+                /// <summary>vehicles.gearSystem.onDirectHitGapFloor2 (m; ban_kinh, was Sim/Abilities/GearSystem.cs:861).</summary>
+                public static float OnDirectHitGapFloor2 = 2f;
+                /// <summary>vehicles.gearSystem.onDirectHitGapScale2 (x; ban_kinh, was Sim/Abilities/GearSystem.cs:861, Sim/Abilities/GearSystem.cs:866).</summary>
+                public static float OnDirectHitGapScale2 = 1.25f;
+                /// <summary>vehicles.gearSystem.onDirectHitGapFloor3 (m; ban_kinh, was Sim/Abilities/GearSystem.cs:866).</summary>
+                public static float OnDirectHitGapFloor3 = 3f;
+                /// <summary>vehicles.gearSystem.onDirectHitGapScale3 (x; ban_kinh, was Sim/Abilities/GearSystem.cs:872).</summary>
+                public static float OnDirectHitGapScale3 = 1.5f;
+                /// <summary>vehicles.gearSystem.onDirectHitReach (m; ban_kinh, was Sim/Abilities/GearSystem.cs:872).</summary>
+                public static float OnDirectHitReach = 0.1f;
+                /// <summary>vehicles.gearSystem.onDirectHitEarnedFloor (x; nguong, was Sim/Abilities/GearSystem.cs:887).</summary>
+                public static float OnDirectHitEarnedFloor = 0.05f;
+                /// <summary>vehicles.gearSystem.ricochetSqrtFloor (x; tan_suat, was Sim/Abilities/GearSystem.cs:907).</summary>
+                public static float RicochetSqrtFloor = 0.05f;
+                /// <summary>vehicles.gearSystem.outgoingMaxHpScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:960).</summary>
+                public static float OutgoingMaxHpScale = 0.3f;
+                /// <summary>vehicles.gearSystem.fireLinkBFalse (s; thoi_gian, was Sim/Abilities/GearSystem.cs:1006).</summary>
+                public static float FireLinkBFalse = 3f;
+                /// <summary>vehicles.gearSystem.counterBatteryTeamMin (count; gioi_han_thuc_the, was Sim/Abilities/GearSystem.cs:1034).</summary>
+                public static int CounterBatteryTeamMin = 30;
+                /// <summary>vehicles.gearSystem.incomingM (s; thoi_gian, was Sim/Abilities/GearSystem.cs:1072).</summary>
+                public static float IncomingM = 1.1f;
+                /// <summary>vehicles.gearSystem.incomingCutMax (x; nguong, was Sim/Abilities/GearSystem.cs:1083).</summary>
+                public static float IncomingCutMax = 0.6f;
+                /// <summary>vehicles.gearSystem.incomingNowAdd (s; thoi_gian, was Sim/Abilities/GearSystem.cs:1095).</summary>
+                public static double IncomingNowAdd = 30.0;
+                /// <summary>vehicles.gearSystem.incomingNowMin (s; thoi_gian, was Sim/Abilities/GearSystem.cs:1103).</summary>
+                public static double IncomingNowMin = 2.0;
+                /// <summary>vehicles.gearSystem.incomingCut (s; thoi_gian, was Sim/Abilities/GearSystem.cs:1104).</summary>
+                public static float IncomingCut = 0.2f;
+                /// <summary>vehicles.gearSystem.incomingCutMax2 (x; nguong, was Sim/Abilities/GearSystem.cs:1106).</summary>
+                public static float IncomingCutMax2 = 0.7f;
+                /// <summary>vehicles.gearSystem.incomingM2 (x; khac, was Sim/Abilities/GearSystem.cs:1114).</summary>
+                public static float IncomingM2 = 0.5f;
+                /// <summary>vehicles.gearSystem.incomingAFloor (x; nguong, was Sim/Abilities/GearSystem.cs:1118).</summary>
+                public static int IncomingAFloor = 2;
+                /// <summary>vehicles.gearSystem.frontalLengthSquaredMax (m; ban_kinh, was Sim/Abilities/GearSystem.cs:1136).</summary>
+                public static float FrontalLengthSquaredMax = 0.01f;
+                /// <summary>vehicles.gearSystem.soakWithinScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:1150).</summary>
+                public static float SoakWithinScale = 0.5f;
+                /// <summary>vehicles.gearSystem.redirectDistanceSquaredMin (m; ban_kinh, was Sim/Abilities/GearSystem.cs:1160).</summary>
+                public static float RedirectDistanceSquaredMin = 100f;
+                /// <summary>vehicles.gearSystem.afterDamagedAdaptCap (count; sat_thuong, was Sim/Abilities/GearSystem.cs:1192).</summary>
+                public static int AfterDamagedAdaptCap = 4;
+                /// <summary>vehicles.gearSystem.afterDamagedNowAdd (x; sat_thuong, was Sim/Abilities/GearSystem.cs:1193).</summary>
+                public static double AfterDamagedNowAdd = 6.0;
+                /// <summary>vehicles.gearSystem.afterDamagedAdaptIs (x; sat_thuong, was Sim/Abilities/GearSystem.cs:1194).</summary>
+                public static int AfterDamagedAdaptIs = 4;
+                /// <summary>vehicles.gearSystem.onDeathHitIntervalFloor (s; sat_thuong, was Sim/Abilities/GearSystem.cs:1216).</summary>
+                public static float OnDeathHitIntervalFloor = 4f;
+                /// <summary>vehicles.gearSystem.onDeathHitIntervalScale (x; sat_thuong, was Sim/Abilities/GearSystem.cs:1216).</summary>
+                public static float OnDeathHitIntervalScale = 1.5f;
+                /// <summary>vehicles.gearSystem.onDeathDistanceSquaredMin (m; sat_thuong, was Sim/Abilities/GearSystem.cs:1226).</summary>
+                public static float OnDeathDistanceSquaredMin = 100f;
+                /// <summary>vehicles.gearSystem.onDeathSelfFalse (x; sat_thuong, was Sim/Abilities/GearSystem.cs:1227).</summary>
+                public static float OnDeathSelfFalse = 0.5f;
+                /// <summary>vehicles.gearSystem.onDeathBFalse (x; sat_thuong, was Sim/Abilities/GearSystem.cs:1245).</summary>
+                public static float OnDeathBFalse = 8f;
+                /// <summary>vehicles.gearSystem.onDeathDelay (x; sat_thuong, was Sim/Abilities/GearSystem.cs:1245).</summary>
+                public static double OnDeathDelay = 0.15;
+                /// <summary>vehicles.gearSystem.onDeathScale (x; ban_kinh, was Sim/Abilities/GearSystem.cs:1258).</summary>
+                public static float OnDeathScale = 25f;
+                /// <summary>vehicles.gearSystem.onDeathCrownStacksCap (count; tran, was Sim/Abilities/GearSystem.cs:1260).</summary>
+                public static int OnDeathCrownStacksCap = 5;
+                /// <summary>vehicles.gearSystem.empPayloadSpecialPower2False (m; ban_kinh, was Sim/Abilities/GearSystem.cs:1286).</summary>
+                public static float EmpPayloadSpecialPower2False = 10f;
+            }
+
+            public static partial class JamTracker
+            {
+                /// <summary>vehicles.jamTracker.isLowDesiredSpeedFloor (m/s; tan_suat, was Sim/Movement/JamTracker.cs:96).</summary>
+                public static float IsLowDesiredSpeedFloor = 0.1f;
+            }
+
+            public static partial class MovementSystem
+            {
+                /// <summary>vehicles.movementSystem.clearGroundMaxScale (x; ban_kinh, was Sim/Movement/MovementSystem.Ground.cs:32).</summary>
+                public static float ClearGroundMaxScale = 0.4f;
+                /// <summary>vehicles.movementSystem.trackJamNowMax (s; thoi_gian, was Sim/Movement/MovementSystem.Jam.cs:51).</summary>
+                public static double TrackJamNowMax = 1.5;
+                /// <summary>vehicles.movementSystem.runJamStageNowAdd (s; thoi_gian, was Sim/Movement/MovementSystem.Jam.cs:83).</summary>
+                public static double RunJamStageNowAdd = 4.0;
+                /// <summary>vehicles.movementSystem.emergencyStageTimeAdd (s; thoi_gian, was Sim/Movement/MovementSystem.Jam.cs:166).</summary>
+                public static double EmergencyStageTimeAdd = 8.0;
+                /// <summary>vehicles.movementSystem.tryLocalWaypointLengthSquaredMin (m; ban_kinh, was Sim/Movement/MovementSystem.Jam.cs:200).</summary>
+                public static float TryLocalWaypointLengthSquaredMin = 0.25f;
+                /// <summary>vehicles.movementSystem.tryLocalWaypointDistanceSquaredMin (m; ban_kinh, was Sim/Movement/MovementSystem.Jam.cs:221).</summary>
+                public static float TryLocalWaypointDistanceSquaredMin = 4f;
+                /// <summary>vehicles.movementSystem.orcaTurnSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.Jam.cs:318).</summary>
+                public static float OrcaTurnSpeedScale = 0.5f;
+                /// <summary>vehicles.movementSystem.orcaTurnPreferredAdd (m; ban_kinh, was Sim/Movement/MovementSystem.Jam.cs:331).</summary>
+                public static float OrcaTurnPreferredAdd = 2f;
+                /// <summary>vehicles.movementSystem.orcaTurnMinScale (x; nguong, was Sim/Movement/MovementSystem.Jam.cs:374).</summary>
+                public static float OrcaTurnMinScale = 0.5f;
+                /// <summary>vehicles.movementSystem.resolveDeadlocksTickIs (ticks; thoi_gian, was Sim/Movement/MovementSystem.Jam.cs:403).</summary>
+                public static int ResolveDeadlocksTickIs = 7;
+                /// <summary>vehicles.movementSystem.resolveDeadlocksCountMax (count; thoi_gian, was Sim/Movement/MovementSystem.Jam.cs:419).</summary>
+                public static int ResolveDeadlocksCountMax = 2;
+                /// <summary>vehicles.movementSystem.resolveDeadlocksCountMin (count; gioi_han_thuc_the, was Sim/Movement/MovementSystem.Jam.cs:444).</summary>
+                public static int ResolveDeadlocksCountMin = 2;
+                /// <summary>vehicles.movementSystem.waitsForMaxAge (s; thoi_gian, was Sim/Movement/MovementSystem.Jam.cs:452).</summary>
+                public static double WaitsForMaxAge = 2.0;
+                /// <summary>vehicles.movementSystem.checkAnomalyAbsMax (s; thoi_gian, was Sim/Movement/MovementSystem.Jam.cs:515).</summary>
+                public static float CheckAnomalyAbsMax = 0.1f;
+                /// <summary>vehicles.movementSystem.checkAnomalyTimeMax (s; thoi_gian, was Sim/Movement/MovementSystem.Jam.cs:517).</summary>
+                public static double CheckAnomalyTimeMax = 3.0;
+                /// <summary>vehicles.movementSystem.flyWingDecoyScale (x; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:62).</summary>
+                public static float FlyWingDecoyScale = 2f;
+                /// <summary>vehicles.movementSystem.flyWingWantFloor (x; tan_suat, was Sim/Movement/MovementSystem.P17.cs:76).</summary>
+                public static float FlyWingWantFloor = 12f;
+                /// <summary>vehicles.movementSystem.flyWingWantScale (x; tan_suat, was Sim/Movement/MovementSystem.P17.cs:76).</summary>
+                public static float FlyWingWantScale = 1.3f;
+                /// <summary>vehicles.movementSystem.flyWingGapMin (m; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:81).</summary>
+                public static float FlyWingGapMin = 14f;
+                /// <summary>vehicles.movementSystem.flyWingForwardScale (x; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:81).</summary>
+                public static float FlyWingForwardScale = 20f;
+                /// <summary>vehicles.movementSystem.flyWingSlotScale (x; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:81).</summary>
+                public static float FlyWingSlotScale = 0.5f;
+                /// <summary>vehicles.movementSystem.flyWingGapSub (m; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:82).</summary>
+                public static float FlyWingGapSub = 2f;
+                /// <summary>vehicles.movementSystem.flyWingGapScale (x; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:82).</summary>
+                public static float FlyWingGapScale = 0.8f;
+                /// <summary>vehicles.movementSystem.flyWingSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.P17.cs:85).</summary>
+                public static float FlyWingSpeedScale = 0.35f;
+                /// <summary>vehicles.movementSystem.flyWingSpeedScale2 (x; tan_suat, was Sim/Movement/MovementSystem.P17.cs:87).</summary>
+                public static float FlyWingSpeedScale2 = 0.8f;
+                /// <summary>vehicles.movementSystem.chooseLeaderFollowScale (x; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:101).</summary>
+                public static float ChooseLeaderFollowScale = 1.2f;
+                /// <summary>vehicles.movementSystem.frontPointNormalizeScale (x; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:152).</summary>
+                public static float FrontPointNormalizeScale = 30f;
+                /// <summary>vehicles.movementSystem.seadTargetVisionRangeScale (x; ban_kinh, was Sim/Movement/MovementSystem.P17.cs:169).</summary>
+                public static float SeadTargetVisionRangeScale = 1.5f;
+                /// <summary>vehicles.movementSystem.watchRescueTickMod (ticks; thoi_gian, was Sim/Movement/MovementSystem.Rescue.cs:92).</summary>
+                public static int WatchRescueTickMod = 10;
+                /// <summary>vehicles.movementSystem.tryHopLengthCap (count; ban_kinh, was Sim/Movement/MovementSystem.Rescue.cs:205).</summary>
+                public static float TryHopLengthCap = 9f;
+                /// <summary>vehicles.movementSystem.tryHopDMin (m; ban_kinh, was Sim/Movement/MovementSystem.Rescue.cs:205).</summary>
+                public static float TryHopDMin = 3f;
+                /// <summary>vehicles.movementSystem.tryHopD (m; ban_kinh, was Sim/Movement/MovementSystem.Rescue.cs:205).</summary>
+                public static float TryHopD = 1.5f;
+                /// <summary>vehicles.movementSystem.trafficPriorityMinRangeAdd (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:189).</summary>
+                public static float TrafficPriorityMinRangeAdd = 6f;
+                /// <summary>vehicles.movementSystem.trafficPriorityRangeMin (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:199).</summary>
+                public static float TrafficPriorityRangeMin = 45f;
+                /// <summary>vehicles.movementSystem.trafficPriorityTrafficPriority5 (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:200).</summary>
+                public static int TrafficPriorityTrafficPriority5 = 20;
+                /// <summary>vehicles.movementSystem.trafficPriorityRangeScale (x; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:201).</summary>
+                public static float TrafficPriorityRangeScale = 0.5f;
+                /// <summary>vehicles.movementSystem.trafficPriorityFindNearestEnemyTrue (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:201).</summary>
+                public static int TrafficPriorityFindNearestEnemyTrue = 45;
+                /// <summary>vehicles.movementSystem.trafficPriorityFindNearestEnemyFalse (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:201).</summary>
+                public static int TrafficPriorityFindNearestEnemyFalse = 30;
+                /// <summary>vehicles.movementSystem.moverDirectionLengthSquaredMin (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:316).</summary>
+                public static float MoverDirectionLengthSquaredMin = 0.25f;
+                /// <summary>vehicles.movementSystem.moverDirectionLengthSquaredMin2 (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:318).</summary>
+                public static float MoverDirectionLengthSquaredMin2 = 0.01f;
+                /// <summary>vehicles.movementSystem.tryYieldSpotLookAhead (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:370).</summary>
+                public static float TryYieldSpotLookAhead = 25f;
+                /// <summary>vehicles.movementSystem.tryYieldSpotPassTrue (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:374).</summary>
+                public static float TryYieldSpotPassTrue = 6f;
+                /// <summary>vehicles.movementSystem.tryYieldSpotKeepsTargetInReachFalse (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:376).</summary>
+                public static float TryYieldSpotKeepsTargetInReachFalse = 10f;
+                /// <summary>vehicles.movementSystem.tryClearForwardLookAhead (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:418).</summary>
+                public static float TryClearForwardLookAhead = 30f;
+                /// <summary>vehicles.movementSystem.hullAtHullRadiusAdd (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:441).</summary>
+                public static float HullAtHullRadiusAdd = 0.3f;
+                /// <summary>vehicles.movementSystem.keepsTargetInReachRangeScale (x; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:486).</summary>
+                public static float KeepsTargetInReachRangeScale = 0.95f;
+                /// <summary>vehicles.movementSystem.negotiateAbsScale (x; tan_suat, was Sim/Movement/MovementSystem.Traffic.cs:583).</summary>
+                public static float NegotiateAbsScale = 0.9f;
+                /// <summary>vehicles.movementSystem.negotiateGapMin (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:590).</summary>
+                public static float NegotiateGapMin = 2f;
+                /// <summary>vehicles.movementSystem.negotiateSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.Traffic.cs:597).</summary>
+                public static float NegotiateSpeedScale = 0.25f;
+                /// <summary>vehicles.movementSystem.oncomingDotMin (x; nguong, was Sim/Movement/MovementSystem.Traffic.cs:613).</summary>
+                public static float OncomingDotMin = -0.5f;
+                /// <summary>vehicles.movementSystem.oncomingDotMax (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:615).</summary>
+                public static float OncomingDotMax = -0.5f;
+                /// <summary>vehicles.movementSystem.tryGateWaitSpotS (s; thoi_gian, was Sim/Movement/MovementSystem.Traffic.cs:776).</summary>
+                public static int TryGateWaitSpotS = 2;
+                /// <summary>vehicles.movementSystem.tryGateWaitSpotBackScale (x; thoi_gian, was Sim/Movement/MovementSystem.Traffic.cs:783).</summary>
+                public static float TryGateWaitSpotBackScale = 0.5f;
+                /// <summary>vehicles.movementSystem.tryGateWaitSpotRouteCountAtScale (x; thoi_gian, was Sim/Movement/MovementSystem.Traffic.cs:783).</summary>
+                public static float TryGateWaitSpotRouteCountAtScale = 8f;
+                /// <summary>vehicles.movementSystem.startReverseSpeedFloor (m/s; thoi_gian, was Sim/Movement/MovementSystem.Traffic.cs:925).</summary>
+                public static float StartReverseSpeedFloor = 0.5f;
+                /// <summary>vehicles.movementSystem.startReverseTimeAdd (s; thoi_gian, was Sim/Movement/MovementSystem.Traffic.cs:925).</summary>
+                public static double StartReverseTimeAdd = 1.5;
+                /// <summary>vehicles.movementSystem.driveReverseSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.Traffic.cs:963).</summary>
+                public static float DriveReverseSpeedScale = 2f;
+                /// <summary>vehicles.movementSystem.onNoProgressHullBoundScale (x; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:1006).</summary>
+                public static float OnNoProgressHullBoundScale = 2f;
+                /// <summary>vehicles.movementSystem.runPathQueueHullRadiusAdd (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:1110).</summary>
+                public static float RunPathQueueHullRadiusAdd = 0.5f;
+                /// <summary>vehicles.movementSystem.applyCostedPathStrikesMin (CP; tran, was Sim/Movement/MovementSystem.Traffic.cs:1172).</summary>
+                public static int ApplyCostedPathStrikesMin = 2;
+                /// <summary>vehicles.movementSystem.keepCostedPathDistanceSquaredMax (m; thoi_gian, was Sim/Movement/MovementSystem.Traffic.cs:1247).</summary>
+                public static float KeepCostedPathDistanceSquaredMax = 64f;
+                /// <summary>vehicles.movementSystem.friendlyTrafficBehindSpeedMax (m/s; tan_suat, was Sim/Movement/MovementSystem.Traffic.cs:1267).</summary>
+                public static float FriendlyTrafficBehindSpeedMax = 0.5f;
+                /// <summary>vehicles.movementSystem.friendlyTrafficBehindHullRadiusAdd (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:1269).</summary>
+                public static float FriendlyTrafficBehindHullRadiusAdd = 0.5f;
+                /// <summary>vehicles.movementSystem.tryOffLaneSpotRangeScale (x; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:1302).</summary>
+                public static float TryOffLaneSpotRangeScale = 0.95f;
+                /// <summary>vehicles.movementSystem.tryOffLaneSpotAlongScale (x; gioi_han_thuc_the, was Sim/Movement/MovementSystem.Traffic.cs:1303).</summary>
+                public static float TryOffLaneSpotAlongScale = 0.5f;
+                /// <summary>vehicles.movementSystem.tryOffLaneSpotFTrue (count; gioi_han_thuc_the, was Sim/Movement/MovementSystem.Traffic.cs:1303).</summary>
+                public static float TryOffLaneSpotFTrue = 6f;
+                /// <summary>vehicles.movementSystem.tryOffLaneSpotCountScale (x; gioi_han_thuc_the, was Sim/Movement/MovementSystem.Traffic.cs:1303).</summary>
+                public static float TryOffLaneSpotCountScale = 8f;
+                /// <summary>vehicles.movementSystem.clearShotFromRadiusScale (x; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:1316).</summary>
+                public static float ClearShotFromRadiusScale = 0.6f;
+                /// <summary>vehicles.movementSystem.clearShotFromRadiusScale2 (x; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:1316).</summary>
+                public static float ClearShotFromRadiusScale2 = 0.5f;
+                /// <summary>vehicles.movementSystem.tryStandBesideLengthSquaredMax (m; ban_kinh, was Sim/Movement/MovementSystem.Traffic.cs:1325).</summary>
+                public static float TryStandBesideLengthSquaredMax = 0.01f;
+                /// <summary>vehicles.movementSystem.blockerHullRadiusScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:247).</summary>
+                public static float BlockerHullRadiusScale = 0.85f;
+                /// <summary>vehicles.movementSystem.updateGuardReach (s; thoi_gian, was Sim/Movement/MovementSystem.cs:340).</summary>
+                public static float UpdateGuardReach = 16f;
+                /// <summary>vehicles.movementSystem.updateGuardGuardLeashAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:360).</summary>
+                public static float UpdateGuardGuardLeashAdd = 4f;
+                /// <summary>vehicles.movementSystem.updateGuardFromPostMin (s; thoi_gian, was Sim/Movement/MovementSystem.cs:368).</summary>
+                public static float UpdateGuardFromPostMin = 2f;
+                /// <summary>vehicles.movementSystem.goalSealedMaxRings (x; sat_thuong, was Sim/Movement/MovementSystem.cs:393).</summary>
+                public static int GoalSealedMaxRings = 3;
+                /// <summary>vehicles.movementSystem.guardThreatInterceptorTrue (m; ban_kinh, was Sim/Movement/MovementSystem.cs:403).</summary>
+                public static float GuardThreatInterceptorTrue = 2.4f;
+                /// <summary>vehicles.movementSystem.guardThreatInterceptorFalse (m; ban_kinh, was Sim/Movement/MovementSystem.cs:403).</summary>
+                public static float GuardThreatInterceptorFalse = 0.9f;
+                /// <summary>vehicles.movementSystem.updateAttackMoveVisionRangeScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:433).</summary>
+                public static float UpdateAttackMoveVisionRangeScale = 0.7f;
+                /// <summary>vehicles.movementSystem.bombTargetVisionRangeFloor (m; ban_kinh, was Sim/Movement/MovementSystem.cs:512).</summary>
+                public static float BombTargetVisionRangeFloor = 60f;
+                /// <summary>vehicles.movementSystem.bombTargetWorthMin (x; nguong, was Sim/Movement/MovementSystem.cs:520).</summary>
+                public static float BombTargetWorthMin = 2f;
+                /// <summary>vehicles.movementSystem.bombTargetWorthMax (x; nguong, was Sim/Movement/MovementSystem.cs:520).</summary>
+                public static float BombTargetWorthMax = 25f;
+                /// <summary>vehicles.movementSystem.bombTargetDDivisor (x; khac, was Sim/Movement/MovementSystem.cs:520).</summary>
+                public static float BombTargetDDivisor = 200f;
+                /// <summary>vehicles.movementSystem.stayBehindArmourNearest (x; sat_thuong, was Sim/Movement/MovementSystem.cs:536).</summary>
+                public static float StayBehindArmourNearest = 30f;
+                /// <summary>vehicles.movementSystem.stayBehindArmourHullBoundAdd (x; sat_thuong, was Sim/Movement/MovementSystem.cs:554).</summary>
+                public static float StayBehindArmourHullBoundAdd = 5f;
+                /// <summary>vehicles.movementSystem.stayBehindArmourReach (x; sat_thuong, was Sim/Movement/MovementSystem.cs:555).</summary>
+                public static float StayBehindArmourReach = 10f;
+                /// <summary>vehicles.movementSystem.stayBehindArmourDistanceMax (m; sat_thuong, was Sim/Movement/MovementSystem.cs:556).</summary>
+                public static float StayBehindArmourDistanceMax = 4f;
+                /// <summary>vehicles.movementSystem.stayBehindArmourDistanceMin (m; sat_thuong, was Sim/Movement/MovementSystem.cs:561).</summary>
+                public static float StayBehindArmourDistanceMin = 4f;
+                /// <summary>vehicles.movementSystem.stayBehindArmourRepathIntervalScale (x; sat_thuong, was Sim/Movement/MovementSystem.cs:563).</summary>
+                public static float StayBehindArmourRepathIntervalScale = 2f;
+                /// <summary>vehicles.movementSystem.standoffPenetrationMin (x; sat_thuong, was Sim/Movement/MovementSystem.cs:593).</summary>
+                public static int StandoffPenetrationMin = 2;
+                /// <summary>vehicles.movementSystem.standoffReachSub (m; ban_kinh, was Sim/Movement/MovementSystem.cs:596).</summary>
+                public static float StandoffReachSub = 2f;
+                /// <summary>vehicles.movementSystem.standoffLengthSquaredMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:617).</summary>
+                public static float StandoffLengthSquaredMin = 0.01f;
+                /// <summary>vehicles.movementSystem.standoffGunScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:617).</summary>
+                public static float StandoffGunScale = 0.85f;
+                /// <summary>vehicles.movementSystem.standoffDegrees (x; khac, was Sim/Movement/MovementSystem.cs:633).</summary>
+                public static float StandoffDegrees = 22.5f;
+                /// <summary>vehicles.movementSystem.standoffReachScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:643).</summary>
+                public static float StandoffReachScale = 0.97f;
+                /// <summary>vehicles.movementSystem.standoffReachScale2 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:643).</summary>
+                public static float StandoffReachScale2 = 0.6f;
+                /// <summary>vehicles.movementSystem.standoffBestExposureAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:643).</summary>
+                public static float StandoffBestExposureAdd = 0.5f;
+                /// <summary>vehicles.movementSystem.hoverReachMainScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:698).</summary>
+                public static float HoverReachMainScale = 0.6f;
+                /// <summary>vehicles.movementSystem.closeInMinRangeAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:727).</summary>
+                public static float CloseInMinRangeAdd = 8f;
+                /// <summary>vehicles.movementSystem.closeInReachScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:737).</summary>
+                public static float CloseInReachScale = 0.9f;
+                /// <summary>vehicles.movementSystem.closeInRepathIntervalScale (x; thoi_gian, was Sim/Movement/MovementSystem.cs:748).</summary>
+                public static float CloseInRepathIntervalScale = 3f;
+                /// <summary>vehicles.movementSystem.closeInReach (s; thoi_gian, was Sim/Movement/MovementSystem.cs:754).</summary>
+                public static float CloseInReach = 16f;
+                /// <summary>vehicles.movementSystem.closeInRangeAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:767).</summary>
+                public static float CloseInRangeAdd = 4f;
+                /// <summary>vehicles.movementSystem.closeInGoalDriftMin (s; thoi_gian, was Sim/Movement/MovementSystem.cs:776).</summary>
+                public static float CloseInGoalDriftMin = 4f;
+                /// <summary>vehicles.movementSystem.holdToFireSeconds (s; thoi_gian, was Sim/Movement/MovementSystem.cs:786).</summary>
+                public static double HoldToFireSeconds = 2.5;
+                /// <summary>vehicles.movementSystem.driveSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.cs:811, Sim/Movement/MovementSystem.cs:823, Sim/Movement/MovementSystem.cs:865).</summary>
+                public static float DriveSpeedScale = 2f;
+                /// <summary>vehicles.movementSystem.driveSpeedMax (m/s; tan_suat, was Sim/Movement/MovementSystem.cs:841).</summary>
+                public static float DriveSpeedMax = 0.1f;
+                /// <summary>vehicles.movementSystem.driveTurnRateScale (x; tan_suat, was Sim/Movement/MovementSystem.cs:843).</summary>
+                public static float DriveTurnRateScale = 0.5f;
+                /// <summary>vehicles.movementSystem.driveRadiusScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:853).</summary>
+                public static float DriveRadiusScale = 0.9f;
+                /// <summary>vehicles.movementSystem.driveDistanceScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:865).</summary>
+                public static float DriveDistanceScale = 1.2f;
+                /// <summary>vehicles.movementSystem.driveDistanceMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:875, Sim/Movement/MovementSystem.cs:925).</summary>
+                public static float DriveDistanceMin = 1.5f;
+                /// <summary>vehicles.movementSystem.driveSpeedAdd (m/s; tan_suat, was Sim/Movement/MovementSystem.cs:882).</summary>
+                public static float DriveSpeedAdd = 1.2f;
+                /// <summary>vehicles.movementSystem.driveSpeedScale2 (x; tan_suat, was Sim/Movement/MovementSystem.cs:882, Sim/Movement/MovementSystem.cs:913).</summary>
+                public static float DriveSpeedScale2 = 0.7f;
+                /// <summary>vehicles.movementSystem.driveSpeedScale3 (x; tan_suat, was Sim/Movement/MovementSystem.cs:894).</summary>
+                public static float DriveSpeedScale3 = 0.9f;
+                /// <summary>vehicles.movementSystem.driveDotMax (x; nguong, was Sim/Movement/MovementSystem.cs:904).</summary>
+                public static float DriveDotMax = -0.5f;
+                /// <summary>vehicles.movementSystem.driveSpeedScale4 (x; tan_suat, was Sim/Movement/MovementSystem.cs:908, Sim/Movement/MovementSystem.cs:921).</summary>
+                public static float DriveSpeedScale4 = 0.5f;
+                /// <summary>vehicles.movementSystem.driveHullHalfAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:913).</summary>
+                public static float DriveHullHalfAdd = 1.2f;
+                /// <summary>vehicles.movementSystem.driveHullRadiusScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:913).</summary>
+                public static float DriveHullRadiusScale = 0.85f;
+                /// <summary>vehicles.movementSystem.driveAvoidSecondsScale (x; thoi_gian, was Sim/Movement/MovementSystem.cs:930).</summary>
+                public static double DriveAvoidSecondsScale = 0.5;
+                /// <summary>vehicles.movementSystem.driveAbsMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:932).</summary>
+                public static float DriveAbsMin = 1.2f;
+                /// <summary>vehicles.movementSystem.driveSpeedScale5 (x; tan_suat, was Sim/Movement/MovementSystem.cs:947).</summary>
+                public static float DriveSpeedScale5 = 0.3f;
+                /// <summary>vehicles.movementSystem.driveDistanceMin2 (m; ban_kinh, was Sim/Movement/MovementSystem.cs:948).</summary>
+                public static float DriveDistanceMin2 = 2.5f;
+                /// <summary>vehicles.movementSystem.driveMisalignmentMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:948, Sim/Movement/MovementSystem.cs:957).</summary>
+                public static float DriveMisalignmentMin = 0.6f;
+                /// <summary>vehicles.movementSystem.driveFlyingTrue (x; tan_suat, was Sim/Movement/MovementSystem.cs:955).</summary>
+                public static float DriveFlyingTrue = 0.4f;
+                /// <summary>vehicles.movementSystem.driveFlyingFalse (x; tan_suat, was Sim/Movement/MovementSystem.cs:955).</summary>
+                public static float DriveFlyingFalse = 0.15f;
+                /// <summary>vehicles.movementSystem.driveMisalignmentTrue (m; ban_kinh, was Sim/Movement/MovementSystem.cs:957).</summary>
+                public static float DriveMisalignmentTrue = 0.3f;
+                /// <summary>vehicles.movementSystem.driveMisalignmentFalse (m; ban_kinh, was Sim/Movement/MovementSystem.cs:957).</summary>
+                public static float DriveMisalignmentFalse = 1.5f;
+                /// <summary>vehicles.movementSystem.driveDistanceScale2 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:957).</summary>
+                public static float DriveDistanceScale2 = 1.5f;
+                /// <summary>vehicles.movementSystem.driveTargetSpeedTrue (m/s; tan_suat, was Sim/Movement/MovementSystem.cs:959).</summary>
+                public static float DriveTargetSpeedTrue = 1.2f;
+                /// <summary>vehicles.movementSystem.driveTargetSpeedFalse (m/s; tan_suat, was Sim/Movement/MovementSystem.cs:959).</summary>
+                public static float DriveTargetSpeedFalse = 0.5f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneTurnRadiusScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1000).</summary>
+                public static float DriveAeroplaneTurnRadiusScale = 1.3f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneTurnRadiusAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1000).</summary>
+                public static float DriveAeroplaneTurnRadiusAdd = 4f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneTurnRadiusScale2 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1011).</summary>
+                public static float DriveAeroplaneTurnRadiusScale2 = 1.15f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneRangeScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1011).</summary>
+                public static float DriveAeroplaneRangeScale = 0.62f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneHalfXSub (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1012).</summary>
+                public static float DriveAeroplaneHalfXSub = 4f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneHalfZSub (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1013).</summary>
+                public static float DriveAeroplaneHalfZSub = 4f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneRangeFloor (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1056).</summary>
+                public static float DriveAeroplaneRangeFloor = 6f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneRangeScale2 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1056).</summary>
+                public static float DriveAeroplaneRangeScale2 = 0.3f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneRangeScale3 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1056).</summary>
+                public static float DriveAeroplaneRangeScale3 = 0.6f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneRangeScale4 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1058).</summary>
+                public static float DriveAeroplaneRangeScale4 = 0.85f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneTurnRadiusScale3 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1058).</summary>
+                public static float DriveAeroplaneTurnRadiusScale3 = 2.2f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneDistanceScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1070).</summary>
+                public static float DriveAeroplaneDistanceScale = 0.9f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneRangeScale5 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1075).</summary>
+                public static float DriveAeroplaneRangeScale5 = 1.3f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneDistanceScale2 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1075).</summary>
+                public static float DriveAeroplaneDistanceScale2 = 0.6f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneGapScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1079).</summary>
+                public static float DriveAeroplaneGapScale = 1.5f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneVtolTrue (x; khac, was Sim/Movement/MovementSystem.cs:1080).</summary>
+                public static float DriveAeroplaneVtolTrue = 0.3f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneVtolFalse (x; khac, was Sim/Movement/MovementSystem.cs:1080).</summary>
+                public static float DriveAeroplaneVtolFalse = 0.45f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneGapAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1086).</summary>
+                public static float DriveAeroplaneGapAdd = 0.5f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneGapMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1086).</summary>
+                public static float DriveAeroplaneGapMin = 0.5f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneRangeScale6 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1090).</summary>
+                public static float DriveAeroplaneRangeScale6 = 1.1f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneThrottle (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1090).</summary>
+                public static float DriveAeroplaneThrottle = 0.8f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneTurnRadiusFloor (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1096).</summary>
+                public static float DriveAeroplaneTurnRadiusFloor = 8f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneTurnRadiusFloor2 (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1104).</summary>
+                public static float DriveAeroplaneTurnRadiusFloor2 = 14f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneTurnRadiusScale4 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1104).</summary>
+                public static float DriveAeroplaneTurnRadiusScale4 = 1.6f;
+                /// <summary>vehicles.movementSystem.driveAeroplaneSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.cs:1116).</summary>
+                public static float DriveAeroplaneSpeedScale = 0.8f;
+                /// <summary>vehicles.movementSystem.dogfightDistanceMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1170).</summary>
+                public static float DogfightDistanceMin = 0.1f;
+                /// <summary>vehicles.movementSystem.dogfightTheirsMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1185).</summary>
+                public static float DogfightTheirsMin = 0.6f;
+                /// <summary>vehicles.movementSystem.dogfightMineMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1187).</summary>
+                public static float DogfightMineMin = 0.5f;
+                /// <summary>vehicles.movementSystem.dogfightTheirsMin2 (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1187).</summary>
+                public static float DogfightTheirsMin2 = 0.5f;
+                /// <summary>vehicles.movementSystem.dogfightTimeScale (x; thoi_gian, was Sim/Movement/MovementSystem.cs:1192).</summary>
+                public static float DogfightTimeScale = 1.6f;
+                /// <summary>vehicles.movementSystem.dogfightSinScale (x; thoi_gian, was Sim/Movement/MovementSystem.cs:1192).</summary>
+                public static float DogfightSinScale = 0.6f;
+                /// <summary>vehicles.movementSystem.attackHoldReachFloor (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1233).</summary>
+                public static float AttackHoldReachFloor = 5f;
+                /// <summary>vehicles.movementSystem.attackHoldReachScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1233).</summary>
+                public static float AttackHoldReachScale = 0.2f;
+                /// <summary>vehicles.movementSystem.attackHoldReachScale2 (x; thoi_gian, was Sim/Movement/MovementSystem.cs:1236).</summary>
+                public static float AttackHoldReachScale2 = 0.95f;
+                /// <summary>vehicles.movementSystem.attackHoldPullThroughAdd (s; thoi_gian, was Sim/Movement/MovementSystem.cs:1236).</summary>
+                public static float AttackHoldPullThroughAdd = 3f;
+                /// <summary>vehicles.movementSystem.attackHoldReachScale3 (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1242).</summary>
+                public static float AttackHoldReachScale3 = 1.25f;
+                /// <summary>vehicles.movementSystem.attackHoldGapScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1258).</summary>
+                public static float AttackHoldGapScale = 1.5f;
+                /// <summary>vehicles.movementSystem.attackHoldCruiseScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1258).</summary>
+                public static float AttackHoldCruiseScale = 0.5f;
+                /// <summary>vehicles.movementSystem.attackHoldHoldUntilFloor (s; thoi_gian, was Sim/Movement/MovementSystem.cs:1262).</summary>
+                public static double AttackHoldHoldUntilFloor = 0.3;
+                /// <summary>vehicles.movementSystem.attackHoldSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.cs:1265).</summary>
+                public static float AttackHoldSpeedScale = 1.1f;
+                /// <summary>vehicles.movementSystem.attackHoldTurnRateScale (x; tan_suat, was Sim/Movement/MovementSystem.cs:1266).</summary>
+                public static float AttackHoldTurnRateScale = 1.4f;
+                /// <summary>vehicles.movementSystem.attackHoldPullThroughScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1273).</summary>
+                public static float AttackHoldPullThroughScale = 2f;
+                /// <summary>vehicles.movementSystem.holdSecondsClipAdd (s; thoi_gian, was Sim/Movement/MovementSystem.cs:1289).</summary>
+                public static float HoldSecondsClipAdd = 0.6f;
+                /// <summary>vehicles.movementSystem.fastMoverSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.cs:1325).</summary>
+                public static float FastMoverSpeedScale = 0.35f;
+                /// <summary>vehicles.movementSystem.underFlakRangeAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1338).</summary>
+                public static float UnderFlakRangeAdd = 6f;
+                /// <summary>vehicles.movementSystem.orbitAroundDistanceMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1350).</summary>
+                public static float OrbitAroundDistanceMin = 0.1f;
+                /// <summary>vehicles.movementSystem.orbitAroundClampScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1352).</summary>
+                public static float OrbitAroundClampScale = 1.4f;
+                /// <summary>vehicles.movementSystem.steerToRearmOrbitScale (x; thoi_gian, was Sim/Movement/MovementSystem.cs:1369).</summary>
+                public static float SteerToRearmOrbitScale = 2f;
+                /// <summary>vehicles.movementSystem.steerToRearmOrbitAdd (s; thoi_gian, was Sim/Movement/MovementSystem.cs:1369).</summary>
+                public static float SteerToRearmOrbitAdd = 10f;
+                /// <summary>vehicles.movementSystem.steerToRearmFixedWingFalse (s; thoi_gian, was Sim/Movement/MovementSystem.cs:1369).</summary>
+                public static float SteerToRearmFixedWingFalse = 2.5f;
+                /// <summary>vehicles.movementSystem.steerToRearmOrbitAdd2 (s; thoi_gian, was Sim/Movement/MovementSystem.cs:1372).</summary>
+                public static float SteerToRearmOrbitAdd2 = 4f;
+                /// <summary>vehicles.movementSystem.steerToRearmDistanceMin (m; thoi_gian, was Sim/Movement/MovementSystem.cs:1375).</summary>
+                public static float SteerToRearmDistanceMin = 8f;
+                /// <summary>vehicles.movementSystem.runTargetRangeScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1396).</summary>
+                public static float RunTargetRangeScale = 2.5f;
+                /// <summary>vehicles.movementSystem.orbitPointDistanceMin (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1422).</summary>
+                public static float OrbitPointDistanceMin = 0.1f;
+                /// <summary>vehicles.movementSystem.orbitPointClampScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1424).</summary>
+                public static float OrbitPointClampScale = 1.2f;
+                /// <summary>vehicles.movementSystem.sidestepSpeedScale (x; tan_suat, was Sim/Movement/MovementSystem.cs:1439, Sim/Movement/MovementSystem.cs:1453).</summary>
+                public static float SidestepSpeedScale = 0.3f;
+                /// <summary>vehicles.movementSystem.sidestepHullRadiusFloor (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1440).</summary>
+                public static float SidestepHullRadiusFloor = 1.5f;
+                /// <summary>vehicles.movementSystem.sidestepHullRadiusAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1440).</summary>
+                public static float SidestepHullRadiusAdd = 0.5f;
+                /// <summary>vehicles.movementSystem.sidestepSpeedScale2 (x; tan_suat, was Sim/Movement/MovementSystem.cs:1453).</summary>
+                public static float SidestepSpeedScale2 = 0.6f;
+                /// <summary>vehicles.movementSystem.sidestepTimeAdd (s; thoi_gian, was Sim/Movement/MovementSystem.cs:1457).</summary>
+                public static double SidestepTimeAdd = 1.5;
+                /// <summary>vehicles.movementSystem.tryDetourKDivisor (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1494).</summary>
+                public static float TryDetourKDivisor = 16f;
+                /// <summary>vehicles.movementSystem.tryDetourRingScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1494).</summary>
+                public static float TryDetourRingScale = 2.5f;
+                /// <summary>vehicles.movementSystem.tryDetourLineOfSightFalse (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1496).</summary>
+                public static float TryDetourLineOfSightFalse = 12f;
+                /// <summary>vehicles.movementSystem.stillQueuedHullBoundAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1575).</summary>
+                public static float StillQueuedHullBoundAdd = 8f;
+                /// <summary>vehicles.movementSystem.crowdedHullBoundScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1605).</summary>
+                public static float CrowdedHullBoundScale = 2f;
+                /// <summary>vehicles.movementSystem.crowdedHullBoundAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1605, Sim/Movement/MovementSystem.cs:1609).</summary>
+                public static float CrowdedHullBoundAdd = 1.5f;
+                /// <summary>vehicles.movementSystem.tryUnjamNextDoubleAdd (m; ban_kinh, was Sim/Movement/MovementSystem.cs:1624).</summary>
+                public static float TryUnjamNextDoubleAdd = 3.5f;
+                /// <summary>vehicles.movementSystem.tryUnjamNextDoubleScale (x; ban_kinh, was Sim/Movement/MovementSystem.cs:1624).</summary>
+                public static float TryUnjamNextDoubleScale = 2.5f;
+                /// <summary>vehicles.movementSystem.brakeShareMax (x; tan_suat, was Sim/Movement/MovementSystem.cs:1737).</summary>
+                public static float BrakeShareMax = 0.2f;
+                /// <summary>vehicles.movementSystem.brakeAgainstMin (x; tan_suat, was Sim/Movement/MovementSystem.cs:1739).</summary>
+                public static float BrakeAgainstMin = 0.3f;
+                /// <summary>vehicles.movementSystem.brakeMinScale (x; tan_suat, was Sim/Movement/MovementSystem.cs:1739).</summary>
+                public static float BrakeMinScale = 0.5f;
+            }
+
+            public static partial class Passage
+            {
+                /// <summary>vehicles.passage.reachMaxScale (x; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:40).</summary>
+                public static float ReachMaxScale = 0.5f;
+                /// <summary>vehicles.passage.reachMaxAdd (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:40).</summary>
+                public static float ReachMaxAdd = 3f;
+                /// <summary>vehicles.passage.throughputSpeedFloor (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:47).</summary>
+                public static float ThroughputSpeedFloor = 0.5f;
+                /// <summary>vehicles.passage.throughputHullLengthFloor (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:47).</summary>
+                public static float ThroughputHullLengthFloor = 2f;
+                /// <summary>vehicles.passage.throughputHullLengthAdd (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:47).</summary>
+                public static float ThroughputHullLengthAdd = 4f;
+                /// <summary>vehicles.passage.queuePointWidthAdd (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:75).</summary>
+                public static float QueuePointWidthAdd = 3f;
+            }
+
+            public static partial class Prop
+            {
+                /// <summary>vehicles.prop.ctorWidthScale (x; ban_kinh, was Sim/Entities/Prop.cs:23).</summary>
+                public static float CtorWidthScale = 0.70710677f;
+                /// <summary>vehicles.prop.radiusMaxScale (x; ban_kinh, was Sim/Entities/Prop.cs:40).</summary>
+                public static float RadiusMaxScale = 0.5f;
+            }
+
+            public static partial class PropDef
+            {
+                /// <summary>vehicles.propDef.indestructibleMaxHpMin (count; nguong, was Sim/Content/Definitions.cs:933).</summary>
+                public static float IndestructibleMaxHpMin = 100000f;
+            }
+
+            public static partial class RailCrossingDef
+            {
+                /// <summary>vehicles.railCrossingDef.halfMaxScale (x; ban_kinh, was Sim/Navigation/RailSpline.cs:41).</summary>
+                public static float HalfMaxScale = 0.5f;
+            }
+
+            public static partial class RailSpline
+            {
+                /// <summary>vehicles.railSpline.gateAtToLengthSub (m; ban_kinh, was Sim/Navigation/RailSpline.cs:93).</summary>
+                public static float GateAtToLengthSub = 0.01f;
+                /// <summary>vehicles.railSpline.segmentAtLengthSub (m; ban_kinh, was Sim/Navigation/RailSpline.cs:100).</summary>
+                public static int SegmentAtLengthSub = 2;
+            }
+
+            public static partial class RailSystem
+            {
+                /// <summary>vehicles.railSystem.dt (x; khac, was Sim/Movement/RailSystem.cs:166).</summary>
+                public static float Dt = 0.05f;
+                /// <summary>vehicles.railSystem.warningForLengthAdd (m; thoi_gian, was Sim/Movement/RailSystem.cs:225).</summary>
+                public static float WarningForLengthAdd = 0.5f;
+                /// <summary>vehicles.railSystem.stepSpeedFloor (m/s; tan_suat, was Sim/Movement/RailSystem.cs:311).</summary>
+                public static float StepSpeedFloor = 0.05f;
+                /// <summary>vehicles.railSystem.stepWidthFloor (m; ban_kinh, was Sim/Movement/RailSystem.cs:312).</summary>
+                public static float StepWidthFloor = 1.2f;
+                /// <summary>vehicles.railSystem.stepSpeedMin (m/s; thoi_gian, was Sim/Movement/RailSystem.cs:320).</summary>
+                public static float StepSpeedMin = 0.02f;
+                /// <summary>vehicles.railSystem.frontStopMaxScale (x; ban_kinh, was Sim/Movement/RailSystem.cs:329).</summary>
+                public static float FrontStopMaxScale = 0.5f;
+                /// <summary>vehicles.railSystem.bufferGap (m; ban_kinh, was Sim/Movement/RailSystem.cs:332).</summary>
+                public static float BufferGap = 2f;
+                /// <summary>vehicles.railSystem.driveSpeedFloor (m/s; tan_suat, was Sim/Movement/RailSystem.cs:341, Sim/Movement/RailSystem.cs:346).</summary>
+                public static float DriveSpeedFloor = 0.05f;
+                /// <summary>vehicles.railSystem.driveMaxScale (x; tan_suat, was Sim/Movement/RailSystem.cs:346).</summary>
+                public static float DriveMaxScale = 2f;
+                /// <summary>vehicles.railSystem.driveSpeedMax (m/s; tan_suat, was Sim/Movement/RailSystem.cs:355).</summary>
+                public static float DriveSpeedMax = 0.01f;
+                /// <summary>vehicles.railSystem.stepRunsSupportTravelScale (x; thoi_gian, was Sim/Movement/RailSystem.cs:365, Sim/Movement/RailSystem.cs:373).</summary>
+                public static float StepRunsSupportTravelScale = 3f;
+                /// <summary>vehicles.railSystem.stepRunsCountMin (count; gioi_han_thuc_the, was Sim/Movement/RailSystem.cs:377).</summary>
+                public static int StepRunsCountMin = 16;
+                /// <summary>vehicles.railSystem.stepRunsSupportRunScale (x; ban_kinh, was Sim/Movement/RailSystem.cs:386).</summary>
+                public static float StepRunsSupportRunScale = 2f;
+                /// <summary>vehicles.railSystem.reachKMax (m; ban_kinh, was Sim/Movement/RailSystem.cs:399).</summary>
+                public static int ReachKMax = 120;
+                /// <summary>vehicles.railSystem.reachKScale (x; thoi_gian, was Sim/Movement/RailSystem.cs:401).</summary>
+                public static double ReachKScale = 0.1;
+                /// <summary>vehicles.railSystem.setTimeMin (s; thoi_gian, was Sim/Movement/RailSystem.cs:482).</summary>
+                public static double SetTimeMin = 20.0;
+                /// <summary>vehicles.railSystem.markDangersKScale (x; thoi_gian, was Sim/Movement/RailSystem.cs:504).</summary>
+                public static double MarkDangersKScale = 0.5;
+                /// <summary>vehicles.railSystem.markDangersSpeedMax (m/s; tan_suat, was Sim/Movement/RailSystem.cs:511).</summary>
+                public static float MarkDangersSpeedMax = 0.02f;
+                /// <summary>vehicles.railSystem.markDangersSAdd (x; nguong, was Sim/Movement/RailSystem.cs:535).</summary>
+                public static float MarkDangersSAdd = 10f;
+                /// <summary>vehicles.railSystem.markDangersS2 (x; nguong, was Sim/Movement/RailSystem.cs:541).</summary>
+                public static float MarkDangersS2 = 6f;
+                /// <summary>vehicles.railSystem.markDangersBandHalfAdd (x; nguong, was Sim/Movement/RailSystem.cs:541).</summary>
+                public static float MarkDangersBandHalfAdd = 3f;
+                /// <summary>vehicles.railSystem.markDangersHalfAdd (s; thoi_gian, was Sim/Movement/RailSystem.cs:548).</summary>
+                public static float MarkDangersHalfAdd = 3f;
+                /// <summary>vehicles.railSystem.tellBandHalfAdd (m; ban_kinh, was Sim/Movement/RailSystem.cs:565, Sim/Movement/RailSystem.cs:566).</summary>
+                public static float TellBandHalfAdd = 3f;
+                /// <summary>vehicles.railSystem.pushSpeedScale (x; ban_kinh, was Sim/Movement/RailSystem.cs:618).</summary>
+                public static float PushSpeedScale = 2f;
+                /// <summary>vehicles.railSystem.pushSpeedAdd (m/s; ban_kinh, was Sim/Movement/RailSystem.cs:618).</summary>
+                public static float PushSpeedAdd = 0.5f;
+                /// <summary>vehicles.railSystem.pushNowMin (s; thoi_gian, was Sim/Movement/RailSystem.cs:634).</summary>
+                public static double PushNowMin = 2.0;
+                /// <summary>vehicles.railSystem.offRailAbsMin (x; nguong, was Sim/Movement/RailSystem.cs:692).</summary>
+                public static float OffRailAbsMin = 0.3f;
+            }
+
+            public static partial class SetChip
+            {
+                /// <summary>vehicles.setChip.twoPieceCountMin (count; gioi_han_thuc_the, was Game/Match/Gear.Model.cs:179).</summary>
+                public static int TwoPieceCountMin = 2;
+            }
+
+            public static partial class SimWorld
+            {
+                /// <summary>vehicles.simWorld.commanderOutgoingMaxHpScale (x; sat_thuong, was Sim/SimWorld.Commanders.cs:121).</summary>
+                public static float CommanderOutgoingMaxHpScale = 0.5f;
+                /// <summary>vehicles.simWorld.aiRandomSeedScale (x; xac_suat, was Sim/SimWorld.Intel.cs:31).</summary>
+                public static int AiRandomSeedScale = 7919;
+                /// <summary>vehicles.simWorld.aiRandomTeamAdd (share; xac_suat, was Sim/SimWorld.Intel.cs:31).</summary>
+                public static int AiRandomTeamAdd = 3;
+                /// <summary>vehicles.simWorld.aiRandomTeamScale (x; xac_suat, was Sim/SimWorld.Intel.cs:31).</summary>
+                public static int AiRandomTeamScale = 104729;
+                /// <summary>vehicles.simWorld.aiRandomLayerScale (x; xac_suat, was Sim/SimWorld.Intel.cs:31).</summary>
+                public static int AiRandomLayerScale = 1299709;
+            }
+
+            public static partial class SquadCorridors
+            {
+                /// <summary>vehicles.squadCorridors.stepTickMod (ticks; thoi_gian, was Sim/Movement/SquadCorridor.cs:90).</summary>
+                public static int StepTickMod = 40;
+                /// <summary>vehicles.squadCorridors.stepTickIs (ticks; thoi_gian, was Sim/Movement/SquadCorridor.cs:90).</summary>
+                public static int StepTickIs = 17;
+                /// <summary>vehicles.squadCorridors.stepTimeMin (s; thoi_gian, was Sim/Movement/SquadCorridor.cs:92).</summary>
+                public static double StepTimeMin = 30.0;
+                /// <summary>vehicles.squadCorridors.getDistanceMax (m; ban_kinh, was Sim/Movement/SquadCorridor.cs:119, Sim/Movement/SquadCorridor.cs:126).</summary>
+                public static float GetDistanceMax = 10f;
+                /// <summary>vehicles.squadCorridors.getDistanceMax2 (m; thoi_gian, was Sim/Movement/SquadCorridor.cs:120).</summary>
+                public static float GetDistanceMax2 = 40f;
+                /// <summary>vehicles.squadCorridors.planCorridorNodesFloor (x; nguong, was Sim/Movement/SquadCorridor.cs:169).</summary>
+                public static int PlanCorridorNodesFloor = 500;
+                /// <summary>vehicles.squadCorridors.composeCountMax (count; gioi_han_thuc_the, was Sim/Movement/SquadCorridor.cs:194).</summary>
+                public static int ComposeCountMax = 2;
+                /// <summary>vehicles.squadCorridors.composeNearestAdd (count; gioi_han_thuc_the, was Sim/Movement/SquadCorridor.cs:206).</summary>
+                public static int ComposeNearestAdd = 3;
+                /// <summary>vehicles.squadCorridors.composeCountSub (count; ban_kinh, was Sim/Movement/SquadCorridor.cs:214).</summary>
+                public static int ComposeCountSub = 2;
+                /// <summary>vehicles.squadCorridors.composeLastSub (x; nguong, was Sim/Movement/SquadCorridor.cs:223).</summary>
+                public static int ComposeLastSub = 4;
+                /// <summary>vehicles.squadCorridors.composeDistanceSquaredMin (m; ban_kinh, was Sim/Movement/SquadCorridor.cs:232).</summary>
+                public static float ComposeDistanceSquaredMin = 0.25f;
+            }
+
+            public static partial class SupplySystem
+            {
+                /// <summary>vehicles.supplySystem.stepValueMod (s; thoi_gian, was Sim/Abilities/SupplySystem.cs:92).</summary>
+                public static int StepValueMod = 5;
+                /// <summary>vehicles.supplySystem.decideValueMod (s; thoi_gian, was Sim/Abilities/SupplySystem.cs:120, Sim/Abilities/SupplySystem.cs:134).</summary>
+                public static int DecideValueMod = 20;
+                /// <summary>vehicles.supplySystem.canBreakOffRangeScale (x; ban_kinh, was Sim/Abilities/SupplySystem.cs:163).</summary>
+                public static float CanBreakOffRangeScale = 1.4f;
+                /// <summary>vehicles.supplySystem.readyToFightShareMin (x; nguong, was Sim/Abilities/SupplySystem.cs:175).</summary>
+                public static float ReadyToFightShareMin = 0.999f;
+                /// <summary>vehicles.supplySystem.hasWorkVisionRangeFloor (m; ban_kinh, was Sim/Abilities/SupplySystem.cs:184).</summary>
+                public static float HasWorkVisionRangeFloor = 50f;
+                /// <summary>vehicles.supplySystem.hasWorkRangeScale (x; ban_kinh, was Sim/Abilities/SupplySystem.cs:184).</summary>
+                public static float HasWorkRangeScale = 1.4f;
+                /// <summary>vehicles.supplySystem.hasWorkInterceptorFalse (m; ban_kinh, was Sim/Abilities/SupplySystem.cs:184).</summary>
+                public static float HasWorkInterceptorFalse = 20f;
+                /// <summary>vehicles.supplySystem.orbitSpeedFloor (m/s; tan_suat, was Sim/Abilities/SupplySystem.cs:221).</summary>
+                public static float OrbitSpeedFloor = 14f;
+                /// <summary>vehicles.supplySystem.orbitSpeedScale (x; tan_suat, was Sim/Abilities/SupplySystem.cs:221).</summary>
+                public static float OrbitSpeedScale = 1.6f;
+                /// <summary>vehicles.supplySystem.chooseSiteSpeedFloor (m/s; tan_suat, was Sim/Abilities/SupplySystem.cs:232).</summary>
+                public static float ChooseSiteSpeedFloor = 4f;
+                /// <summary>vehicles.supplySystem.chooseSiteMaxHpScale (x; sat_thuong, was Sim/Abilities/SupplySystem.cs:250).</summary>
+                public static float ChooseSiteMaxHpScale = 0.6f;
+                /// <summary>vehicles.supplySystem.chooseSiteTimeScale (x; sat_thuong, was Sim/Abilities/SupplySystem.cs:251).</summary>
+                public static float ChooseSiteTimeScale = 1.5f;
+                /// <summary>vehicles.supplySystem.chooseSiteTimeAdd (x; sat_thuong, was Sim/Abilities/SupplySystem.cs:251).</summary>
+                public static float ChooseSiteTimeAdd = 5f;
+                /// <summary>vehicles.supplySystem.carrierSpeedFloor (m/s; tan_suat, was Sim/Abilities/SupplySystem.cs:297).</summary>
+                public static float CarrierSpeedFloor = 40f;
+                /// <summary>vehicles.supplySystem.carrierSpeedScale (x; tan_suat, was Sim/Abilities/SupplySystem.cs:297).</summary>
+                public static float CarrierSpeedScale = 5f;
+                /// <summary>vehicles.supplySystem.holdingPointLengthSquaredMax (m; ban_kinh, was Sim/Abilities/SupplySystem.cs:332).</summary>
+                public static float HoldingPointLengthSquaredMax = 25f;
+                /// <summary>vehicles.supplySystem.holdingPointLengthSquaredMin (m; ban_kinh, was Sim/Abilities/SupplySystem.cs:337).</summary>
+                public static float HoldingPointLengthSquaredMin = 0.01f;
+                /// <summary>vehicles.supplySystem.holdingPointSpeedFloor (m/s; tan_suat, was Sim/Abilities/SupplySystem.cs:339).</summary>
+                public static float HoldingPointSpeedFloor = 30f;
+                /// <summary>vehicles.supplySystem.holdingPointSpeedScale (x; tan_suat, was Sim/Abilities/SupplySystem.cs:340).</summary>
+                public static float HoldingPointSpeedScale = 1.3f;
+                /// <summary>vehicles.supplySystem.holdingPointSpeedAdd (m/s; tan_suat, was Sim/Abilities/SupplySystem.cs:340).</summary>
+                public static float HoldingPointSpeedAdd = 4f;
+                /// <summary>vehicles.supplySystem.holdingPointFixedWingFalse (x; tan_suat, was Sim/Abilities/SupplySystem.cs:340).</summary>
+                public static float HoldingPointFixedWingFalse = 6f;
+                /// <summary>vehicles.supplySystem.holdingPointSpeedScale2 (x; tan_suat, was Sim/Abilities/SupplySystem.cs:343).</summary>
+                public static float HoldingPointSpeedScale2 = 2f;
+                /// <summary>vehicles.supplySystem.holdingPointSpeedFloor2 (m/s; tan_suat, was Sim/Abilities/SupplySystem.cs:343).</summary>
+                public static float HoldingPointSpeedFloor2 = 20f;
+                /// <summary>vehicles.supplySystem.holdingPointSpeedScale3 (x; tan_suat, was Sim/Abilities/SupplySystem.cs:343).</summary>
+                public static float HoldingPointSpeedScale3 = 1.2f;
+                /// <summary>vehicles.supplySystem.airReachInterceptorTrue (m; ban_kinh, was Sim/Abilities/SupplySystem.cs:396).</summary>
+                public static float AirReachInterceptorTrue = 1.2f;
+                /// <summary>vehicles.supplySystem.siteRateAirReachAdd (m; ban_kinh, was Sim/Abilities/SupplySystem.cs:448).</summary>
+                public static float SiteRateAirReachAdd = 2f;
+            }
+
+            public static partial class TrafficCoordinator
+            {
+                /// <summary>vehicles.trafficCoordinator.stepTickMod (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:285, Sim/Movement/TrafficCoordinator.cs:290).</summary>
+                public static int StepTickMod = 20;
+                /// <summary>vehicles.trafficCoordinator.stepTickMod2 (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:286, Sim/Movement/TrafficCoordinator.cs:287, Sim/Movement/TrafficCoordinator.cs:288).</summary>
+                public static int StepTickMod2 = 10;
+                /// <summary>vehicles.trafficCoordinator.stepTickIs (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:286).</summary>
+                public static int StepTickIs = 3;
+                /// <summary>vehicles.trafficCoordinator.stepTickIs2 (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:287).</summary>
+                public static int StepTickIs2 = 5;
+                /// <summary>vehicles.trafficCoordinator.stepTickIs3 (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:288).</summary>
+                public static int StepTickIs3 = 7;
+                /// <summary>vehicles.trafficCoordinator.stepTickMod3 (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:289).</summary>
+                public static int StepTickMod3 = 40;
+                /// <summary>vehicles.trafficCoordinator.stepTickIs4 (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:289).</summary>
+                public static int StepTickIs4 = 11;
+                /// <summary>vehicles.trafficCoordinator.stepTickIs5 (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:290).</summary>
+                public static int StepTickIs5 = 13;
+                /// <summary>vehicles.trafficCoordinator.ensureBuiltDistanceSquaredMin (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:312).</summary>
+                public static float EnsureBuiltDistanceSquaredMin = 4f;
+                /// <summary>vehicles.trafficCoordinator.firstPassageAlongReachScale (x; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:370).</summary>
+                public static float FirstPassageAlongReachScale = 0.5f;
+                /// <summary>vehicles.trafficCoordinator.predictArrivalsSpeedFloor (m/s; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:564).</summary>
+                public static float PredictArrivalsSpeedFloor = 4f;
+                /// <summary>vehicles.trafficCoordinator.queueDelayThroughputFloor (s; thoi_gian, was Sim/Movement/TrafficCoordinator.cs:578).</summary>
+                public static float QueueDelayThroughputFloor = 0.05f;
+                /// <summary>vehicles.trafficCoordinator.sweepPassingHullBoundAdd (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:652).</summary>
+                public static float SweepPassingHullBoundAdd = 2f;
+                /// <summary>vehicles.trafficCoordinator.outOfExitLengthSquaredMin (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:690).</summary>
+                public static float OutOfExitLengthSquaredMin = 0.25f;
+                /// <summary>vehicles.trafficCoordinator.splashSpacingEnemySplashFloor (m; sat_thuong, was Sim/Movement/TrafficCoordinator.cs:723).</summary>
+                public static float SplashSpacingEnemySplashFloor = 6f;
+                /// <summary>vehicles.trafficCoordinator.addCongestionCongestionRadiusAdd (m; ban_kinh, was Sim/Movement/TrafficCoordinator.cs:787).</summary>
+                public static float AddCongestionCongestionRadiusAdd = 6f;
+            }
+
+            public static partial class TrafficSteering
+            {
+                /// <summary>vehicles.trafficSteering.avoidDotMax (x; tan_suat, was Sim/Movement/TrafficSteering.cs:94).</summary>
+                public static float AvoidDotMax = -0.5f;
+                /// <summary>vehicles.trafficSteering.avoidCombinedFloor (x; nguong, was Sim/Movement/TrafficSteering.cs:97).</summary>
+                public static float AvoidCombinedFloor = 0.1f;
+                /// <summary>vehicles.trafficSteering.avoidUrgencyFloor (x; nguong, was Sim/Movement/TrafficSteering.cs:98).</summary>
+                public static float AvoidUrgencyFloor = 0.2f;
+                /// <summary>vehicles.trafficSteering.avoidDepthFloor (x; nguong, was Sim/Movement/TrafficSteering.cs:98).</summary>
+                public static float AvoidDepthFloor = 0.25f;
+            }
+
+            public static partial class TraitDef
+            {
+                /// <summary>vehicles.traitDef.atLengthMin (m; ban_kinh, was Game/Match/GearCatalog.cs:148).</summary>
+                public static int AtLengthMin = 2;
+            }
+
+            public static partial class Vehicle
+            {
+                /// <summary>vehicles.vehicle.fireFactorOverdrivenTrue (x; tan_suat, was Sim/Entities/Vehicle.cs:364).</summary>
+                public static float FireFactorOverdrivenTrue = 1.3f;
+                /// <summary>vehicles.vehicle.isMovingSpeedMin (m/s; tan_suat, was Sim/Entities/Vehicle.cs:462).</summary>
+                public static float IsMovingSpeedMin = 0.1f;
+            }
+
+            public static partial class VehicleDef
+            {
+                /// <summary>vehicles.vehicleDef.ctorRadiusScale2 (x; ban_kinh, was Sim/Content/Definitions.cs:535).</summary>
+                public static float CtorRadiusScale2 = 1.6f;
+                /// <summary>vehicles.vehicleDef.ctorRadiusScale3 (x; ban_kinh, was Sim/Content/Definitions.cs:536).</summary>
+                public static float CtorRadiusScale3 = 2.7f;
+                /// <summary>vehicles.vehicleDef.hullRadiusWidthScale (x; ban_kinh, was Sim/Content/Definitions.cs:664).</summary>
+                public static float HullRadiusWidthScale = 0.46f;
+                /// <summary>vehicles.vehicleDef.powerMaxHpDivisor (x; nguong, was Sim/Content/Definitions.cs:797).</summary>
+                public static float PowerMaxHpDivisor = 150f;
+                /// <summary>vehicles.vehicleDef.powerMaxHpDivisor2 (x; nguong, was Sim/Content/Definitions.cs:797).</summary>
+                public static float PowerMaxHpDivisor2 = 250f;
+                /// <summary>vehicles.vehicleDef.fortPowerSizeValue (count; gioi_han_thuc_the, was Sim/Content/Definitions.cs:808).</summary>
+                public static float FortPowerSizeValue = 11f;
+                /// <summary>vehicles.vehicleDef.fortPowerSizeValue2 (count; gioi_han_thuc_the, was Sim/Content/Definitions.cs:808).</summary>
+                public static float FortPowerSizeValue2 = 7f;
+                /// <summary>vehicles.vehicleDef.fortPowerSizeValue3 (count; gioi_han_thuc_the, was Sim/Content/Definitions.cs:808).</summary>
+                public static float FortPowerSizeValue3 = 4f;
+                /// <summary>vehicles.vehicleDef.inferWeightMaxHpMin (count; nguong, was Sim/Content/VehicleDef.P31.cs:28).</summary>
+                public static float InferWeightMaxHpMin = 1400f;
+            }
+
+            public static partial class VehicleFit
+            {
+                /// <summary>vehicles.vehicleFit.classMeetsNScale (x; gioi_han_thuc_the, was Game/Match/VehicleFit.cs:269).</summary>
+                public static int ClassMeetsNScale = 3;
+            }
+
+            public static partial class WeaponDef
+            {
+                /// <summary>vehicles.weaponDef.ctorBurstInterval (s; thoi_gian, was Sim/Content/Definitions.cs:13).</summary>
+                public static float CtorBurstInterval = 0.1f;
+                /// <summary>vehicles.weaponDef.magazineReloadAmmoScale (x; thoi_gian, was Sim/Content/Definitions.cs:82).</summary>
+                public static float MagazineReloadAmmoScale = 0.4f;
+                /// <summary>vehicles.weaponDef.magazineReloadAmmoMin (s; thoi_gian, was Sim/Content/Definitions.cs:82).</summary>
+                public static float MagazineReloadAmmoMin = 10f;
+                /// <summary>vehicles.weaponDef.magazineReloadAmmoMax (s; thoi_gian, was Sim/Content/Definitions.cs:82).</summary>
+                public static float MagazineReloadAmmoMax = 28f;
+                /// <summary>vehicles.weaponDef.sustainedDpsCycleSecondsFloor (s; sat_thuong, was Sim/Content/Definitions.cs:126).</summary>
+                public static float SustainedDpsCycleSecondsFloor = 0.05f;
+                /// <summary>vehicles.weaponDef.antiArmourPenetrationMin (x; sat_thuong, was Sim/Content/Definitions.cs:260).</summary>
+                public static int AntiArmourPenetrationMin = 3;
+                /// <summary>vehicles.weaponDef.tunedCooldownFloor (x; sat_thuong, was Sim/Content/Definitions.cs:311).</summary>
+                public static float TunedCooldownFloor = 0.01f;
+                /// <summary>vehicles.weaponDef.tunedMinRangeAdd (m; sat_thuong, was Sim/Content/Definitions.cs:311).</summary>
+                public static float TunedMinRangeAdd = 0.5f;
+                /// <summary>vehicles.weaponDef.tunedProjectileSpeedFloor (m/s; sat_thuong, was Sim/Content/Definitions.cs:312).</summary>
+                public static float TunedProjectileSpeedFloor = 0.1f;
+            }
+
+            public static partial class WreckField
+            {
+                /// <summary>vehicles.wreckField.aheadDistanceScale (x; ban_kinh, was Sim/Movement/WreckField.cs:160).</summary>
+                public static float AheadDistanceScale = 0.5f;
+                /// <summary>vehicles.wreckField.overlapValueScale (x; ban_kinh, was Sim/Movement/WreckField.cs:199).</summary>
+                public static float OverlapValueScale = 2.39996f;
+            }
+
+            public static partial class WreckStates
+            {
+                /// <summary>vehicles.wreckStates.animatingSeconds (s; thoi_gian, was Sim/Movement/WreckStates.cs:63).</summary>
+                public static double AnimatingSeconds = 2.5;
+            }
         }
 
         private static readonly Entry[] Pass2Vehicles =
         {
+            new Entry("vehicles.abilitySystem.ploughHullBoundAdd", "m", () => Vehicles.AbilitySystem.PloughHullBoundAdd, v => Vehicles.AbilitySystem.PloughHullBoundAdd = (float)v),
+            new Entry("vehicles.abilitySystem.scootNextDoubleMax", "share", () => Vehicles.AbilitySystem.ScootNextDoubleMax, v => Vehicles.AbilitySystem.ScootNextDoubleMax = v),
+            new Entry("vehicles.abilitySystem.scootRangeSub", "m", () => Vehicles.AbilitySystem.ScootRangeSub, v => Vehicles.AbilitySystem.ScootRangeSub = (float)v),
+            new Entry("vehicles.abilitySystem.scootMinRangeAdd", "m", () => Vehicles.AbilitySystem.ScootMinRangeAdd, v => Vehicles.AbilitySystem.ScootMinRangeAdd = (float)v),
+            new Entry("vehicles.abilitySystem.stepDistanceSquaredMin", "m", () => Vehicles.AbilitySystem.StepDistanceSquaredMin, v => Vehicles.AbilitySystem.StepDistanceSquaredMin = (float)v),
+            new Entry("vehicles.abilitySystem.stepNowMin", "x", () => Vehicles.AbilitySystem.StepNowMin, v => Vehicles.AbilitySystem.StepNowMin = v),
+            new Entry("vehicles.abilitySystem.stepMaxHpScale", "x", () => Vehicles.AbilitySystem.StepMaxHpScale, v => Vehicles.AbilitySystem.StepMaxHpScale = (float)v),
+            new Entry("vehicles.abilitySystem.stepSkillTimer", "s", () => Vehicles.AbilitySystem.StepSkillTimer, v => Vehicles.AbilitySystem.StepSkillTimer = (float)v),
+            new Entry("vehicles.abilitySystem.stepMaxHpScale2", "x", () => Vehicles.AbilitySystem.StepMaxHpScale2, v => Vehicles.AbilitySystem.StepMaxHpScale2 = (float)v),
+            new Entry("vehicles.abilitySystem.stepMaxHpScale3", "x", () => Vehicles.AbilitySystem.StepMaxHpScale3, v => Vehicles.AbilitySystem.StepMaxHpScale3 = (float)v),
+            new Entry("vehicles.abilitySystem.regeneratingNowMin", "s", () => Vehicles.AbilitySystem.RegeneratingNowMin, v => Vehicles.AbilitySystem.RegeneratingNowMin = v),
+            new Entry("vehicles.abilitySystem.regeneratingStatSub", "s", () => Vehicles.AbilitySystem.RegeneratingStatSub, v => Vehicles.AbilitySystem.RegeneratingStatSub = v),
+            new Entry("vehicles.abilitySystem.supportStaticTrue", "x", () => Vehicles.AbilitySystem.SupportStaticTrue, v => Vehicles.AbilitySystem.SupportStaticTrue = (float)v),
+            new Entry("vehicles.abilitySystem.slowAurasAuraIntervalScale", "x", () => Vehicles.AbilitySystem.SlowAurasAuraIntervalScale, v => Vehicles.AbilitySystem.SlowAurasAuraIntervalScale = (float)v),
+            new Entry("vehicles.abilitySystem.topUpAuraIntervalScale", "x", () => Vehicles.AbilitySystem.TopUpAuraIntervalScale, v => Vehicles.AbilitySystem.TopUpAuraIntervalScale = (float)v),
+            new Entry("vehicles.abilitySystem.layMinesDistanceSquaredMax", "m", () => Vehicles.AbilitySystem.LayMinesDistanceSquaredMax, v => Vehicles.AbilitySystem.LayMinesDistanceSquaredMax = (float)v),
+            new Entry("vehicles.abilitySystem.layMinesHullHalfAdd", "m", () => Vehicles.AbilitySystem.LayMinesHullHalfAdd, v => Vehicles.AbilitySystem.LayMinesHullHalfAdd = (float)v),
+            new Entry("vehicles.abilitySystem.layMinesNowAdd", "s", () => Vehicles.AbilitySystem.LayMinesNowAdd, v => Vehicles.AbilitySystem.LayMinesNowAdd = v),
+            new Entry("vehicles.abilitySystem.layStripHullHalfAdd", "m", () => Vehicles.AbilitySystem.LayStripHullHalfAdd, v => Vehicles.AbilitySystem.LayStripHullHalfAdd = (float)v),
+            new Entry("vehicles.abilitySystem.layStripNowAdd", "s", () => Vehicles.AbilitySystem.LayStripNowAdd, v => Vehicles.AbilitySystem.LayStripNowAdd = v),
+            new Entry("vehicles.abilitySystem.layFieldNextDoubleAdd", "share", () => Vehicles.AbilitySystem.LayFieldNextDoubleAdd, v => Vehicles.AbilitySystem.LayFieldNextDoubleAdd = (float)v),
+            new Entry("vehicles.abilitySystem.layFieldNextDoubleScale", "x", () => Vehicles.AbilitySystem.LayFieldNextDoubleScale, v => Vehicles.AbilitySystem.LayFieldNextDoubleScale = (float)v),
+            new Entry("vehicles.abilitySystem.layFieldDistanceSquaredMax", "m", () => Vehicles.AbilitySystem.LayFieldDistanceSquaredMax, v => Vehicles.AbilitySystem.LayFieldDistanceSquaredMax = (float)v),
+            new Entry("vehicles.abilitySystem.beginPhaseRadiusScale", "x", () => Vehicles.AbilitySystem.BeginPhaseRadiusScale, v => Vehicles.AbilitySystem.BeginPhaseRadiusScale = (float)v),
+            new Entry("vehicles.abilitySystem.useSkillsDurationFloor", "s", () => Vehicles.AbilitySystem.UseSkillsDurationFloor, v => Vehicles.AbilitySystem.UseSkillsDurationFloor = (float)v),
+            new Entry("vehicles.abilitySystem.useSkillsStatFloor", "x", () => Vehicles.AbilitySystem.UseSkillsStatFloor, v => Vehicles.AbilitySystem.UseSkillsStatFloor = (float)v),
+            new Entry("vehicles.abilitySystem.rechargeFlaresFlareFalse", "s", () => Vehicles.AbilitySystem.RechargeFlaresFlareFalse, v => Vehicles.AbilitySystem.RechargeFlaresFlareFalse = (float)v),
+            new Entry("vehicles.abilitySystem.fireAmountFalse", "x", () => Vehicles.AbilitySystem.FireAmountFalse, v => Vehicles.AbilitySystem.FireAmountFalse = (float)v),
+            new Entry("vehicles.abilitySystem.fireAmountMax", "x", () => Vehicles.AbilitySystem.FireAmountMax, v => Vehicles.AbilitySystem.FireAmountMax = (float)v),
+            new Entry("vehicles.abilitySystem.fireRadiusFalse", "m", () => Vehicles.AbilitySystem.FireRadiusFalse, v => Vehicles.AbilitySystem.FireRadiusFalse = (float)v),
+            new Entry("vehicles.abilitySystem.fireKAdd", "x", () => Vehicles.AbilitySystem.FireKAdd, v => Vehicles.AbilitySystem.FireKAdd = (float)v),
+            new Entry("vehicles.abilitySystem.fireHullBoundAdd", "x", () => Vehicles.AbilitySystem.FireHullBoundAdd, v => Vehicles.AbilitySystem.FireHullBoundAdd = (float)v),
+            new Entry("vehicles.catalog.parseExtrasFloatMin3", "s", () => Vehicles.Catalog.ParseExtrasFloatMin3, v => Vehicles.Catalog.ParseExtrasFloatMin3 = (float)v),
+            new Entry("vehicles.catalog.parseExtrasFloatMax4", "s", () => Vehicles.Catalog.ParseExtrasFloatMax4, v => Vehicles.Catalog.ParseExtrasFloatMax4 = (float)v),
+            new Entry("vehicles.catalog.parseExtrasCountFalse2", "count", () => Vehicles.Catalog.ParseExtrasCountFalse2, v => Vehicles.Catalog.ParseExtrasCountFalse2 = (float)v),
+            new Entry("vehicles.catalog.finishExtrasFallback", "m", () => Vehicles.Catalog.FinishExtrasFallback, v => Vehicles.Catalog.FinishExtrasFallback = (int)System.Math.Round(v)),
+            new Entry("vehicles.catalog.finishExtrasCooldownFloor", "s", () => Vehicles.Catalog.FinishExtrasCooldownFloor, v => Vehicles.Catalog.FinishExtrasCooldownFloor = (float)v),
+            new Entry("vehicles.catalog.finishExtrasRangeFloor", "m", () => Vehicles.Catalog.FinishExtrasRangeFloor, v => Vehicles.Catalog.FinishExtrasRangeFloor = (float)v),
+            new Entry("vehicles.catalog.parseP25AFloatMax", "x", () => Vehicles.Catalog.ParseP25AFloatMax, v => Vehicles.Catalog.ParseP25AFloatMax = (float)v),
+            new Entry("vehicles.catalog.parseP25AFloatMax4", "x", () => Vehicles.Catalog.ParseP25AFloatMax4, v => Vehicles.Catalog.ParseP25AFloatMax4 = (float)v),
+            new Entry("vehicles.catalog.parseP25AFloatFloor3", "s", () => Vehicles.Catalog.ParseP25AFloatFloor3, v => Vehicles.Catalog.ParseP25AFloatFloor3 = (float)v),
+            new Entry("vehicles.catalog.parseP25AFloatMax5", "m", () => Vehicles.Catalog.ParseP25AFloatMax5, v => Vehicles.Catalog.ParseP25AFloatMax5 = (float)v),
+            new Entry("vehicles.catalog.parseP25AFloatMin2", "m", () => Vehicles.Catalog.ParseP25AFloatMin2, v => Vehicles.Catalog.ParseP25AFloatMin2 = (float)v),
+            new Entry("vehicles.catalog.parseP25AFloatMax6", "m", () => Vehicles.Catalog.ParseP25AFloatMax6, v => Vehicles.Catalog.ParseP25AFloatMax6 = (float)v),
+            new Entry("vehicles.catalog.parseP25AClampScale", "x", () => Vehicles.Catalog.ParseP25AClampScale, v => Vehicles.Catalog.ParseP25AClampScale = (float)v),
+            new Entry("vehicles.catalog.parseP25AClampDivisor", "x", () => Vehicles.Catalog.ParseP25AClampDivisor, v => Vehicles.Catalog.ParseP25AClampDivisor = (float)v),
+            new Entry("vehicles.catalog.parseP25AFloatFloor4", "s", () => Vehicles.Catalog.ParseP25AFloatFloor4, v => Vehicles.Catalog.ParseP25AFloatFloor4 = (float)v),
+            new Entry("vehicles.catalog.parseP25AFloatFloor5", "s", () => Vehicles.Catalog.ParseP25AFloatFloor5, v => Vehicles.Catalog.ParseP25AFloatFloor5 = (float)v),
+            new Entry("vehicles.catalog.armyCapForTryGetValueFalse", "count", () => Vehicles.Catalog.ArmyCapForTryGetValueFalse, v => Vehicles.Catalog.ArmyCapForTryGetValueFalse = (int)System.Math.Round(v)),
+            new Entry("vehicles.catalog.defaultRearmDefaultRearm", "s", () => Vehicles.Catalog.DefaultRearmDefaultRearm, v => Vehicles.Catalog.DefaultRearmDefaultRearm = (float)v),
+            new Entry("vehicles.catalog.defaultRearmDefaultRearm2", "s", () => Vehicles.Catalog.DefaultRearmDefaultRearm2, v => Vehicles.Catalog.DefaultRearmDefaultRearm2 = (float)v),
+            new Entry("vehicles.catalog.defaultRearmProjectileTrue", "s", () => Vehicles.Catalog.DefaultRearmProjectileTrue, v => Vehicles.Catalog.DefaultRearmProjectileTrue = (float)v),
+            new Entry("vehicles.catalog.defaultRearmProjectileFalse", "s", () => Vehicles.Catalog.DefaultRearmProjectileFalse, v => Vehicles.Catalog.DefaultRearmProjectileFalse = (float)v),
+            new Entry("vehicles.catalog.inferClassMaxHpMin", "count", () => Vehicles.Catalog.InferClassMaxHpMin, v => Vehicles.Catalog.InferClassMaxHpMin = (float)v),
+            new Entry("vehicles.catalog.inferClassSpeedMin", "m/s", () => Vehicles.Catalog.InferClassSpeedMin, v => Vehicles.Catalog.InferClassSpeedMin = (float)v),
+            new Entry("vehicles.catalog.fromJsonLevel", "x", () => Vehicles.Catalog.FromJsonLevel, v => Vehicles.Catalog.FromJsonLevel = (int)System.Math.Round(v)),
+            new Entry("vehicles.catalog.fromJsonCountIs", "count", () => Vehicles.Catalog.FromJsonCountIs, v => Vehicles.Catalog.FromJsonCountIs = (int)System.Math.Round(v)),
+            new Entry("vehicles.catalog.fromJsonFallback", "count", () => Vehicles.Catalog.FromJsonFallback, v => Vehicles.Catalog.FromJsonFallback = (int)System.Math.Round(v)),
+            new Entry("vehicles.catalog.readSharesFloatMax", "share", () => Vehicles.Catalog.ReadSharesFloatMax, v => Vehicles.Catalog.ReadSharesFloatMax = (float)v),
+            new Entry("vehicles.catalog.readArmyCapsFallback", "m", () => Vehicles.Catalog.ReadArmyCapsFallback, v => Vehicles.Catalog.ReadArmyCapsFallback = (int)System.Math.Round(v)),
+            new Entry("vehicles.catalog.withEdgeSplashRadiusMax", "m", () => Vehicles.Catalog.WithEdgeSplashRadiusMax, v => Vehicles.Catalog.WithEdgeSplashRadiusMax = (float)v),
+            new Entry("vehicles.clusterDef.defaultPenetration", "x", () => Vehicles.ClusterDef.DefaultPenetration, v => Vehicles.ClusterDef.DefaultPenetration = (int)System.Math.Round(v)),
+            new Entry("vehicles.commanderRules.buildCapsCaps", "x", () => Vehicles.CommanderRules.BuildCapsCaps, v => Vehicles.CommanderRules.BuildCapsCaps = (float)v),
+            new Entry("vehicles.commanderRules.buildCapsCaps2", "x", () => Vehicles.CommanderRules.BuildCapsCaps2, v => Vehicles.CommanderRules.BuildCapsCaps2 = (float)v),
+            new Entry("vehicles.commanderRules.buildCapsCaps3", "m", () => Vehicles.CommanderRules.BuildCapsCaps3, v => Vehicles.CommanderRules.BuildCapsCaps3 = (float)v),
+            new Entry("vehicles.commanderRules.buildCapsCaps4", "s", () => Vehicles.CommanderRules.BuildCapsCaps4, v => Vehicles.CommanderRules.BuildCapsCaps4 = (float)v),
+            new Entry("vehicles.commanderRules.buildCapsCaps5", "x", () => Vehicles.CommanderRules.BuildCapsCaps5, v => Vehicles.CommanderRules.BuildCapsCaps5 = (float)v),
+            new Entry("vehicles.commanderRules.mergeStatFloor", "x", () => Vehicles.CommanderRules.MergeStatFloor, v => Vehicles.CommanderRules.MergeStatFloor = (float)v),
+            new Entry("vehicles.commanderRules.fitStatValue", "m", () => Vehicles.CommanderRules.FitStatValue, v => Vehicles.CommanderRules.FitStatValue = (float)v),
+            new Entry("vehicles.commanderRules.fitStatValue2", "x", () => Vehicles.CommanderRules.FitStatValue2, v => Vehicles.CommanderRules.FitStatValue2 = (float)v),
+            new Entry("vehicles.commanderRules.fitStatValue3", "s", () => Vehicles.CommanderRules.FitStatValue3, v => Vehicles.CommanderRules.FitStatValue3 = (float)v),
+            new Entry("vehicles.commanderRules.fitStatValue4", "m", () => Vehicles.CommanderRules.FitStatValue4, v => Vehicles.CommanderRules.FitStatValue4 = (float)v),
+            new Entry("vehicles.commanderRules.fitCaptureRateTrue", "x", () => Vehicles.CommanderRules.FitCaptureRateTrue, v => Vehicles.CommanderRules.FitCaptureRateTrue = (float)v),
+            new Entry("vehicles.commanderRules.fitFit", "s", () => Vehicles.CommanderRules.FitFit, v => Vehicles.CommanderRules.FitFit = (float)v),
+            new Entry("vehicles.commanders.kade1DamageArmy", "x", () => Vehicles.Commanders.Kade1DamageArmy, v => Vehicles.Commanders.Kade1DamageArmy = (float)v),
+            new Entry("vehicles.commanders.kade2HealthArmy", "x", () => Vehicles.Commanders.Kade2HealthArmy, v => Vehicles.Commanders.Kade2HealthArmy = (float)v),
+            new Entry("vehicles.commanders.lindPricesScale", "x", () => Vehicles.Commanders.LindPricesScale, v => Vehicles.Commanders.LindPricesScale = (float)v),
+            new Entry("vehicles.commanders.lindLinesValue", "x", () => Vehicles.Commanders.LindLinesValue, v => Vehicles.Commanders.LindLinesValue = (float)v),
+            new Entry("vehicles.commanders.reyesAirRearm", "s", () => Vehicles.Commanders.ReyesAirRearm, v => Vehicles.Commanders.ReyesAirRearm = (float)v),
+            new Entry("vehicles.commanders.reyesStrikeCooldown", "s", () => Vehicles.Commanders.ReyesStrikeCooldown, v => Vehicles.Commanders.ReyesStrikeCooldown = (float)v),
+            new Entry("vehicles.commanders.reyesLines1Value", "x", () => Vehicles.Commanders.ReyesLines1Value, v => Vehicles.Commanders.ReyesLines1Value = (float)v),
+            new Entry("vehicles.commanders.reyesLines2Value", "x", () => Vehicles.Commanders.ReyesLines2Value, v => Vehicles.Commanders.ReyesLines2Value = (float)v),
+            new Entry("vehicles.commanders.reyesLines3Value", "s", () => Vehicles.Commanders.ReyesLines3Value, v => Vehicles.Commanders.ReyesLines3Value = (float)v),
+            new Entry("vehicles.commanders.reyesLines4Value", "x", () => Vehicles.Commanders.ReyesLines4Value, v => Vehicles.Commanders.ReyesLines4Value = (float)v),
+            new Entry("vehicles.commanders.kerrStealthSight", "m", () => Vehicles.Commanders.KerrStealthSight, v => Vehicles.Commanders.KerrStealthSight = (float)v),
+            new Entry("vehicles.commanders.kerrExposedTaken", "m", () => Vehicles.Commanders.KerrExposedTaken, v => Vehicles.Commanders.KerrExposedTaken = (float)v),
+            new Entry("vehicles.commanders.kerrLines1Value", "x", () => Vehicles.Commanders.KerrLines1Value, v => Vehicles.Commanders.KerrLines1Value = (float)v),
+            new Entry("vehicles.commanders.kerrLines2Value", "x", () => Vehicles.Commanders.KerrLines2Value, v => Vehicles.Commanders.KerrLines2Value = (float)v),
+            new Entry("vehicles.commanders.vennLines1Value", "x", () => Vehicles.Commanders.VennLines1Value, v => Vehicles.Commanders.VennLines1Value = (float)v),
+            new Entry("vehicles.commanders.vennLines2Value", "x", () => Vehicles.Commanders.VennLines2Value, v => Vehicles.Commanders.VennLines2Value = (float)v),
+            new Entry("vehicles.commanders.vennLines3Value", "m", () => Vehicles.Commanders.VennLines3Value, v => Vehicles.Commanders.VennLines3Value = (float)v),
+            new Entry("vehicles.commanders.vennLines4Value", "x", () => Vehicles.Commanders.VennLines4Value, v => Vehicles.Commanders.VennLines4Value = (float)v),
+            new Entry("vehicles.commanders.mendezLines1Value", "x", () => Vehicles.Commanders.MendezLines1Value, v => Vehicles.Commanders.MendezLines1Value = (float)v),
+            new Entry("vehicles.commanders.mendezLines2Value", "x", () => Vehicles.Commanders.MendezLines2Value, v => Vehicles.Commanders.MendezLines2Value = (float)v),
+            new Entry("vehicles.commanders.mendezLines3Value", "x", () => Vehicles.Commanders.MendezLines3Value, v => Vehicles.Commanders.MendezLines3Value = (float)v),
+            new Entry("vehicles.commanders.brandtPricesScale", "x", () => Vehicles.Commanders.BrandtPricesScale, v => Vehicles.Commanders.BrandtPricesScale = (float)v),
+            new Entry("vehicles.commanders.brandtLines1Value", "x", () => Vehicles.Commanders.BrandtLines1Value, v => Vehicles.Commanders.BrandtLines1Value = (float)v),
+            new Entry("vehicles.commanders.brandtLines2Value", "x", () => Vehicles.Commanders.BrandtLines2Value, v => Vehicles.Commanders.BrandtLines2Value = (float)v),
+            new Entry("vehicles.commanders.brandtLines3Value", "m", () => Vehicles.Commanders.BrandtLines3Value, v => Vehicles.Commanders.BrandtLines3Value = (float)v),
+            new Entry("vehicles.commanders.dahlArtilleryDamageArtillery", "x", () => Vehicles.Commanders.DahlArtilleryDamageArtillery, v => Vehicles.Commanders.DahlArtilleryDamageArtillery = (float)v),
+            new Entry("vehicles.commanders.dahlArtilleryRangeArtillery", "x", () => Vehicles.Commanders.DahlArtilleryRangeArtillery, v => Vehicles.Commanders.DahlArtilleryRangeArtillery = (float)v),
+            new Entry("vehicles.commanders.dahlArtilleryHealthArtillery", "x", () => Vehicles.Commanders.DahlArtilleryHealthArtillery, v => Vehicles.Commanders.DahlArtilleryHealthArtillery = (float)v),
+            new Entry("vehicles.commanders.dahlArtilleryDamageDirectFire", "x", () => Vehicles.Commanders.DahlArtilleryDamageDirectFire, v => Vehicles.Commanders.DahlArtilleryDamageDirectFire = (float)v),
+            new Entry("vehicles.commanders.dahlSetStrikeCooldown", "s", () => Vehicles.Commanders.DahlSetStrikeCooldown, v => Vehicles.Commanders.DahlSetStrikeCooldown = (float)v),
+            new Entry("vehicles.commanders.brennLinesValue", "x", () => Vehicles.Commanders.BrennLinesValue, v => Vehicles.Commanders.BrennLinesValue = (float)v),
+            new Entry("vehicles.commanders.adlerLinesValue", "m", () => Vehicles.Commanders.AdlerLinesValue, v => Vehicles.Commanders.AdlerLinesValue = (float)v),
+            new Entry("vehicles.commanders.varroPricesScale", "x", () => Vehicles.Commanders.VarroPricesScale, v => Vehicles.Commanders.VarroPricesScale = (float)v),
+            new Entry("vehicles.commanders.varroLinesValue", "x", () => Vehicles.Commanders.VarroLinesValue, v => Vehicles.Commanders.VarroLinesValue = (float)v),
+            new Entry("vehicles.commanders.reynPricesScale", "x", () => Vehicles.Commanders.ReynPricesScale, v => Vehicles.Commanders.ReynPricesScale = (float)v),
+            new Entry("vehicles.commanders.reynLines1Value", "x", () => Vehicles.Commanders.ReynLines1Value, v => Vehicles.Commanders.ReynLines1Value = (float)v),
+            new Entry("vehicles.commanders.reynLines2Value", "x", () => Vehicles.Commanders.ReynLines2Value, v => Vehicles.Commanders.ReynLines2Value = (float)v),
+            new Entry("vehicles.commanders.allKillRefund", "x", () => Vehicles.Commanders.AllKillRefund, v => Vehicles.Commanders.AllKillRefund = (float)v),
+            new Entry("vehicles.commanders.allEarlySeconds", "s", () => Vehicles.Commanders.AllEarlySeconds, v => Vehicles.Commanders.AllEarlySeconds = (float)v),
+            new Entry("vehicles.commanders.brandt1HealthTowers", "x", () => Vehicles.Commanders.Brandt1HealthTowers, v => Vehicles.Commanders.Brandt1HealthTowers = (float)v),
+            new Entry("vehicles.commanders.brandt2SpeedVehicles", "x", () => Vehicles.Commanders.Brandt2SpeedVehicles, v => Vehicles.Commanders.Brandt2SpeedVehicles = (float)v),
+            new Entry("vehicles.commanders.varga1HealthArmour", "x", () => Vehicles.Commanders.Varga1HealthArmour, v => Vehicles.Commanders.Varga1HealthArmour = (float)v),
+            new Entry("vehicles.commanders.varga2DamageAircraft", "x", () => Vehicles.Commanders.Varga2DamageAircraft, v => Vehicles.Commanders.Varga2DamageAircraft = (float)v),
+            new Entry("vehicles.commanders.orlov1RangeArtillery", "m", () => Vehicles.Commanders.Orlov1RangeArtillery, v => Vehicles.Commanders.Orlov1RangeArtillery = (float)v),
+            new Entry("vehicles.commanders.orlov2SpreadArtillery", "m", () => Vehicles.Commanders.Orlov2SpreadArtillery, v => Vehicles.Commanders.Orlov2SpreadArtillery = (float)v),
+            new Entry("vehicles.commanders.orlov3HealthLight", "x", () => Vehicles.Commanders.Orlov3HealthLight, v => Vehicles.Commanders.Orlov3HealthLight = (float)v),
+            new Entry("vehicles.commanders.kessler1HealthShips", "x", () => Vehicles.Commanders.Kessler1HealthShips, v => Vehicles.Commanders.Kessler1HealthShips = (float)v),
+            new Entry("vehicles.commanders.kessler2HealthTowers", "x", () => Vehicles.Commanders.Kessler2HealthTowers, v => Vehicles.Commanders.Kessler2HealthTowers = (float)v),
+            new Entry("vehicles.commanders.kesslerSetPricesScale", "x", () => Vehicles.Commanders.KesslerSetPricesScale, v => Vehicles.Commanders.KesslerSetPricesScale = (float)v),
+            new Entry("vehicles.commanders.sen1HealthDroneUnits", "x", () => Vehicles.Commanders.Sen1HealthDroneUnits, v => Vehicles.Commanders.Sen1HealthDroneUnits = (float)v),
+            new Entry("vehicles.commanders.sen2DamageTanks", "x", () => Vehicles.Commanders.Sen2DamageTanks, v => Vehicles.Commanders.Sen2DamageTanks = (float)v),
+            new Entry("vehicles.commanders.quaden1DamageAircraft", "x", () => Vehicles.Commanders.Quaden1DamageAircraft, v => Vehicles.Commanders.Quaden1DamageAircraft = (float)v),
+            new Entry("vehicles.commanders.quaden2DamageGround", "x", () => Vehicles.Commanders.Quaden2DamageGround, v => Vehicles.Commanders.Quaden2DamageGround = (float)v),
+            new Entry("vehicles.commanders.hung1DamageArmy", "x", () => Vehicles.Commanders.Hung1DamageArmy, v => Vehicles.Commanders.Hung1DamageArmy = (float)v),
+            new Entry("vehicles.commanders.hungSetLowHpDamage", "x", () => Vehicles.Commanders.HungSetLowHpDamage, v => Vehicles.Commanders.HungSetLowHpDamage = (float)v),
+            new Entry("vehicles.commanders.aurel1DamageEnergy", "x", () => Vehicles.Commanders.Aurel1DamageEnergy, v => Vehicles.Commanders.Aurel1DamageEnergy = (float)v),
+            new Entry("vehicles.commanders.aurel2HealthShielded", "x", () => Vehicles.Commanders.Aurel2HealthShielded, v => Vehicles.Commanders.Aurel2HealthShielded = (float)v),
+            new Entry("vehicles.commanders.aurel3HealthLight", "x", () => Vehicles.Commanders.Aurel3HealthLight, v => Vehicles.Commanders.Aurel3HealthLight = (float)v),
+            new Entry("vehicles.deploySystem.stepNowFloor", "s", () => Vehicles.DeploySystem.StepNowFloor, v => Vehicles.DeploySystem.StepNowFloor = v),
+            new Entry("vehicles.deploySystem.insideMinRangeAdd", "m", () => Vehicles.DeploySystem.InsideMinRangeAdd, v => Vehicles.DeploySystem.InsideMinRangeAdd = (float)v),
+            new Entry("vehicles.deploySystem.wantsRangeAdd", "m", () => Vehicles.DeploySystem.WantsRangeAdd, v => Vehicles.DeploySystem.WantsRangeAdd = (float)v),
+            new Entry("vehicles.domeSystem.absorbDamageSub", "x", () => Vehicles.DomeSystem.AbsorbDamageSub, v => Vehicles.DomeSystem.AbsorbDamageSub = (float)v),
+            new Entry("vehicles.eliteRules.budgetForTryGetValueFalse", "x", () => Vehicles.EliteRules.BudgetForTryGetValueFalse, v => Vehicles.EliteRules.BudgetForTryGetValueFalse = (float)v),
+            new Entry("vehicles.eliteRules.capForTryGetValueFalse", "count", () => Vehicles.EliteRules.CapForTryGetValueFalse, v => Vehicles.EliteRules.CapForTryGetValueFalse = (int)System.Math.Round(v)),
+            new Entry("vehicles.eliteRules.powerEdgeCostScaleFloor", "CP", () => Vehicles.EliteRules.PowerEdgeCostScaleFloor, v => Vehicles.EliteRules.PowerEdgeCostScaleFloor = (float)v),
+            new Entry("vehicles.fieldWorksSystem.coverFactorShooterDistanceMin", "m", () => Vehicles.FieldWorksSystem.CoverFactorShooterDistanceMin, v => Vehicles.FieldWorksSystem.CoverFactorShooterDistanceMin = (float)v),
+            new Entry("vehicles.fieldWorksSystem.coverFactorDMax", "m", () => Vehicles.FieldWorksSystem.CoverFactorDMax, v => Vehicles.FieldWorksSystem.CoverFactorDMax = (float)v),
+            new Entry("vehicles.fieldWorksSystem.keepOffBalloonsSpeedFloor", "m/s", () => Vehicles.FieldWorksSystem.KeepOffBalloonsSpeedFloor, v => Vehicles.FieldWorksSystem.KeepOffBalloonsSpeedFloor = (float)v),
+            new Entry("vehicles.fieldWorksSystem.flaresForwardScale", "x", () => Vehicles.FieldWorksSystem.FlaresForwardScale, v => Vehicles.FieldWorksSystem.FlaresForwardScale = (float)v),
+            new Entry("vehicles.fieldWorksSystem.n3", "m", () => Vehicles.FieldWorksSystem.N3, v => Vehicles.FieldWorksSystem.N3 = (int)System.Math.Round(v)),
+            new Entry("vehicles.fieldWorksSystem.flyPassTimeMin", "s", () => Vehicles.FieldWorksSystem.FlyPassTimeMin, v => Vehicles.FieldWorksSystem.FlyPassTimeMin = v),
+            new Entry("vehicles.fieldWorksSystem.n32", "m", () => Vehicles.FieldWorksSystem.N32, v => Vehicles.FieldWorksSystem.N32 = (int)System.Math.Round(v)),
+            new Entry("vehicles.fieldWorksSystem.stepDropsPodLandsFloor", "s", () => Vehicles.FieldWorksSystem.StepDropsPodLandsFloor, v => Vehicles.FieldWorksSystem.StepDropsPodLandsFloor = v),
+            new Entry("vehicles.fieldWorksSystem.stepDropsHpMin", "x", () => Vehicles.FieldWorksSystem.StepDropsHpMin, v => Vehicles.FieldWorksSystem.StepDropsHpMin = (float)v),
+            new Entry("vehicles.gear.subCount1", "count", () => Vehicles.Gear.SubCount1, v => Vehicles.Gear.SubCount1 = (int)System.Math.Round(v)),
+            new Entry("vehicles.gear.subCount2", "count", () => Vehicles.Gear.SubCount2, v => Vehicles.Gear.SubCount2 = (int)System.Math.Round(v)),
+            new Entry("vehicles.gear.subCount3", "count", () => Vehicles.Gear.SubCount3, v => Vehicles.Gear.SubCount3 = (int)System.Math.Round(v)),
+            new Entry("vehicles.gear.subCount4", "count", () => Vehicles.Gear.SubCount4, v => Vehicles.Gear.SubCount4 = (int)System.Math.Round(v)),
+            new Entry("vehicles.gear.subCount5", "count", () => Vehicles.Gear.SubCount5, v => Vehicles.Gear.SubCount5 = (int)System.Math.Round(v)),
+            new Entry("vehicles.gear.levelShareLevelAdd", "share", () => Vehicles.Gear.LevelShareLevelAdd, v => Vehicles.Gear.LevelShareLevelAdd = (float)v),
+            new Entry("vehicles.gear.levelShareLevelScale", "x", () => Vehicles.Gear.LevelShareLevelScale, v => Vehicles.Gear.LevelShareLevelScale = (float)v),
+            new Entry("vehicles.gear.subValueRollMin", "m", () => Vehicles.Gear.SubValueRollMin, v => Vehicles.Gear.SubValueRollMin = (float)v),
+            new Entry("vehicles.gear.subQualityRollSub", "share", () => Vehicles.Gear.SubQualityRollSub, v => Vehicles.Gear.SubQualityRollSub = (float)v),
+            new Entry("vehicles.gear.subQualityRollDivisor", "x", () => Vehicles.Gear.SubQualityRollDivisor, v => Vehicles.Gear.SubQualityRollDivisor = (float)v),
+            new Entry("vehicles.gear.fillSubsNextDoubleAdd", "share", () => Vehicles.Gear.FillSubsNextDoubleAdd, v => Vehicles.Gear.FillSubsNextDoubleAdd = (float)v),
+            new Entry("vehicles.gear.fillSubsNextDoubleScale", "x", () => Vehicles.Gear.FillSubsNextDoubleScale, v => Vehicles.Gear.FillSubsNextDoubleScale = (float)v),
+            new Entry("vehicles.gearCatalog.longBarrelTop1", "m", () => Vehicles.GearCatalog.LongBarrelTop1, v => Vehicles.GearCatalog.LongBarrelTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.longBarrelTop2", "m", () => Vehicles.GearCatalog.LongBarrelTop2, v => Vehicles.GearCatalog.LongBarrelTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.longBarrelTop3", "m", () => Vehicles.GearCatalog.LongBarrelTop3, v => Vehicles.GearCatalog.LongBarrelTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.longBarrelTop4", "m", () => Vehicles.GearCatalog.LongBarrelTop4, v => Vehicles.GearCatalog.LongBarrelTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.longBarrelTop5", "m", () => Vehicles.GearCatalog.LongBarrelTop5, v => Vehicles.GearCatalog.LongBarrelTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.tungstenPenetratorTop1", "x", () => Vehicles.GearCatalog.TungstenPenetratorTop1, v => Vehicles.GearCatalog.TungstenPenetratorTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.tungstenPenetratorTop2", "x", () => Vehicles.GearCatalog.TungstenPenetratorTop2, v => Vehicles.GearCatalog.TungstenPenetratorTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.tungstenPenetratorTop3", "x", () => Vehicles.GearCatalog.TungstenPenetratorTop3, v => Vehicles.GearCatalog.TungstenPenetratorTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.tungstenPenetratorTop4", "x", () => Vehicles.GearCatalog.TungstenPenetratorTop4, v => Vehicles.GearCatalog.TungstenPenetratorTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.heFragFillerTop1", "x", () => Vehicles.GearCatalog.HeFragFillerTop1, v => Vehicles.GearCatalog.HeFragFillerTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.heFragFillerTop2", "x", () => Vehicles.GearCatalog.HeFragFillerTop2, v => Vehicles.GearCatalog.HeFragFillerTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.heFragFillerTop3", "x", () => Vehicles.GearCatalog.HeFragFillerTop3, v => Vehicles.GearCatalog.HeFragFillerTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.heFragFillerTop4", "x", () => Vehicles.GearCatalog.HeFragFillerTop4, v => Vehicles.GearCatalog.HeFragFillerTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.heFragFillerTop5", "x", () => Vehicles.GearCatalog.HeFragFillerTop5, v => Vehicles.GearCatalog.HeFragFillerTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.proximityFuzeTop1", "x", () => Vehicles.GearCatalog.ProximityFuzeTop1, v => Vehicles.GearCatalog.ProximityFuzeTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.proximityFuzeTop2", "x", () => Vehicles.GearCatalog.ProximityFuzeTop2, v => Vehicles.GearCatalog.ProximityFuzeTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.proximityFuzeTop3", "x", () => Vehicles.GearCatalog.ProximityFuzeTop3, v => Vehicles.GearCatalog.ProximityFuzeTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.proximityFuzeTop4", "x", () => Vehicles.GearCatalog.ProximityFuzeTop4, v => Vehicles.GearCatalog.ProximityFuzeTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.proximityFuzeTop5", "x", () => Vehicles.GearCatalog.ProximityFuzeTop5, v => Vehicles.GearCatalog.ProximityFuzeTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.bunkerBusterTop1", "x", () => Vehicles.GearCatalog.BunkerBusterTop1, v => Vehicles.GearCatalog.BunkerBusterTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.bunkerBusterTop2", "x", () => Vehicles.GearCatalog.BunkerBusterTop2, v => Vehicles.GearCatalog.BunkerBusterTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.bunkerBusterTop3", "x", () => Vehicles.GearCatalog.BunkerBusterTop3, v => Vehicles.GearCatalog.BunkerBusterTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.bunkerBusterTop4", "x", () => Vehicles.GearCatalog.BunkerBusterTop4, v => Vehicles.GearCatalog.BunkerBusterTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.bunkerBusterTop5", "x", () => Vehicles.GearCatalog.BunkerBusterTop5, v => Vehicles.GearCatalog.BunkerBusterTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.heavyBarrelTop3", "m", () => Vehicles.GearCatalog.HeavyBarrelTop3, v => Vehicles.GearCatalog.HeavyBarrelTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.heavyBarrelTop4", "m", () => Vehicles.GearCatalog.HeavyBarrelTop4, v => Vehicles.GearCatalog.HeavyBarrelTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.heavyBarrelTop5", "m", () => Vehicles.GearCatalog.HeavyBarrelTop5, v => Vehicles.GearCatalog.HeavyBarrelTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.heavyBarrelPenaltyTop3", "x", () => Vehicles.GearCatalog.HeavyBarrelPenaltyTop3, v => Vehicles.GearCatalog.HeavyBarrelPenaltyTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.heavyBarrelPenaltyTop4", "x", () => Vehicles.GearCatalog.HeavyBarrelPenaltyTop4, v => Vehicles.GearCatalog.HeavyBarrelPenaltyTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.heavyBarrelPenaltyTop5", "x", () => Vehicles.GearCatalog.HeavyBarrelPenaltyTop5, v => Vehicles.GearCatalog.HeavyBarrelPenaltyTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.heavyBarrelMinRarity", "x", () => Vehicles.GearCatalog.HeavyBarrelMinRarity, v => Vehicles.GearCatalog.HeavyBarrelMinRarity = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.flankingRoundsTop1", "x", () => Vehicles.GearCatalog.FlankingRoundsTop1, v => Vehicles.GearCatalog.FlankingRoundsTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.flankingRoundsTop2", "x", () => Vehicles.GearCatalog.FlankingRoundsTop2, v => Vehicles.GearCatalog.FlankingRoundsTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.flankingRoundsTop3", "x", () => Vehicles.GearCatalog.FlankingRoundsTop3, v => Vehicles.GearCatalog.FlankingRoundsTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.flankingRoundsTop4", "x", () => Vehicles.GearCatalog.FlankingRoundsTop4, v => Vehicles.GearCatalog.FlankingRoundsTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.flankingRoundsTop5", "x", () => Vehicles.GearCatalog.FlankingRoundsTop5, v => Vehicles.GearCatalog.FlankingRoundsTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.airburstRoundsTop1", "x", () => Vehicles.GearCatalog.AirburstRoundsTop1, v => Vehicles.GearCatalog.AirburstRoundsTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.airburstRoundsTop2", "x", () => Vehicles.GearCatalog.AirburstRoundsTop2, v => Vehicles.GearCatalog.AirburstRoundsTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.airburstRoundsTop3", "x", () => Vehicles.GearCatalog.AirburstRoundsTop3, v => Vehicles.GearCatalog.AirburstRoundsTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.airburstRoundsTop4", "x", () => Vehicles.GearCatalog.AirburstRoundsTop4, v => Vehicles.GearCatalog.AirburstRoundsTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.airburstRoundsTop5", "x", () => Vehicles.GearCatalog.AirburstRoundsTop5, v => Vehicles.GearCatalog.AirburstRoundsTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.carouselAutoloaderTop1", "s", () => Vehicles.GearCatalog.CarouselAutoloaderTop1, v => Vehicles.GearCatalog.CarouselAutoloaderTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.carouselAutoloaderTop2", "s", () => Vehicles.GearCatalog.CarouselAutoloaderTop2, v => Vehicles.GearCatalog.CarouselAutoloaderTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.carouselAutoloaderTop3", "s", () => Vehicles.GearCatalog.CarouselAutoloaderTop3, v => Vehicles.GearCatalog.CarouselAutoloaderTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.carouselAutoloaderTop4", "s", () => Vehicles.GearCatalog.CarouselAutoloaderTop4, v => Vehicles.GearCatalog.CarouselAutoloaderTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.carouselAutoloaderTop5", "s", () => Vehicles.GearCatalog.CarouselAutoloaderTop5, v => Vehicles.GearCatalog.CarouselAutoloaderTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.beltFeedTop1", "s", () => Vehicles.GearCatalog.BeltFeedTop1, v => Vehicles.GearCatalog.BeltFeedTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.beltFeedTop2", "s", () => Vehicles.GearCatalog.BeltFeedTop2, v => Vehicles.GearCatalog.BeltFeedTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.beltFeedTop3", "s", () => Vehicles.GearCatalog.BeltFeedTop3, v => Vehicles.GearCatalog.BeltFeedTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.beltFeedTop4", "s", () => Vehicles.GearCatalog.BeltFeedTop4, v => Vehicles.GearCatalog.BeltFeedTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.beltFeedTop5", "s", () => Vehicles.GearCatalog.BeltFeedTop5, v => Vehicles.GearCatalog.BeltFeedTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.salvoRackTop1", "s", () => Vehicles.GearCatalog.SalvoRackTop1, v => Vehicles.GearCatalog.SalvoRackTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.salvoRackTop2", "s", () => Vehicles.GearCatalog.SalvoRackTop2, v => Vehicles.GearCatalog.SalvoRackTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.salvoRackTop3", "s", () => Vehicles.GearCatalog.SalvoRackTop3, v => Vehicles.GearCatalog.SalvoRackTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.salvoRackTop4", "s", () => Vehicles.GearCatalog.SalvoRackTop4, v => Vehicles.GearCatalog.SalvoRackTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.salvoRackTop5", "s", () => Vehicles.GearCatalog.SalvoRackTop5, v => Vehicles.GearCatalog.SalvoRackTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.hairTriggerTop3", "x", () => Vehicles.GearCatalog.HairTriggerTop3, v => Vehicles.GearCatalog.HairTriggerTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.hairTriggerTop4", "x", () => Vehicles.GearCatalog.HairTriggerTop4, v => Vehicles.GearCatalog.HairTriggerTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.hairTriggerTop5", "x", () => Vehicles.GearCatalog.HairTriggerTop5, v => Vehicles.GearCatalog.HairTriggerTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.hairTriggerPenaltyTop3", "x", () => Vehicles.GearCatalog.HairTriggerPenaltyTop3, v => Vehicles.GearCatalog.HairTriggerPenaltyTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.hairTriggerPenaltyTop4", "x", () => Vehicles.GearCatalog.HairTriggerPenaltyTop4, v => Vehicles.GearCatalog.HairTriggerPenaltyTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.hairTriggerPenaltyTop5", "x", () => Vehicles.GearCatalog.HairTriggerPenaltyTop5, v => Vehicles.GearCatalog.HairTriggerPenaltyTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.hairTriggerMinRarity", "x", () => Vehicles.GearCatalog.HairTriggerMinRarity, v => Vehicles.GearCatalog.HairTriggerMinRarity = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.hairTriggerMainScale", "x", () => Vehicles.GearCatalog.HairTriggerMainScale, v => Vehicles.GearCatalog.HairTriggerMainScale = (float)v),
+            new Entry("vehicles.gearCatalog.compositeAddonTop1", "x", () => Vehicles.GearCatalog.CompositeAddonTop1, v => Vehicles.GearCatalog.CompositeAddonTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.compositeAddonTop2", "x", () => Vehicles.GearCatalog.CompositeAddonTop2, v => Vehicles.GearCatalog.CompositeAddonTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.compositeAddonTop3", "x", () => Vehicles.GearCatalog.CompositeAddonTop3, v => Vehicles.GearCatalog.CompositeAddonTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.compositeAddonTop4", "x", () => Vehicles.GearCatalog.CompositeAddonTop4, v => Vehicles.GearCatalog.CompositeAddonTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.compositeAddonTop5", "x", () => Vehicles.GearCatalog.CompositeAddonTop5, v => Vehicles.GearCatalog.CompositeAddonTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.spallLinerTop1", "x", () => Vehicles.GearCatalog.SpallLinerTop1, v => Vehicles.GearCatalog.SpallLinerTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.spallLinerTop2", "x", () => Vehicles.GearCatalog.SpallLinerTop2, v => Vehicles.GearCatalog.SpallLinerTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.spallLinerTop3", "x", () => Vehicles.GearCatalog.SpallLinerTop3, v => Vehicles.GearCatalog.SpallLinerTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.spallLinerTop4", "x", () => Vehicles.GearCatalog.SpallLinerTop4, v => Vehicles.GearCatalog.SpallLinerTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.spallLinerTop5", "x", () => Vehicles.GearCatalog.SpallLinerTop5, v => Vehicles.GearCatalog.SpallLinerTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.appliqueSteelTop1", "x", () => Vehicles.GearCatalog.AppliqueSteelTop1, v => Vehicles.GearCatalog.AppliqueSteelTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.appliqueSteelTop2", "x", () => Vehicles.GearCatalog.AppliqueSteelTop2, v => Vehicles.GearCatalog.AppliqueSteelTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.appliqueSteelTop3", "x", () => Vehicles.GearCatalog.AppliqueSteelTop3, v => Vehicles.GearCatalog.AppliqueSteelTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.appliqueSteelTop4", "x", () => Vehicles.GearCatalog.AppliqueSteelTop4, v => Vehicles.GearCatalog.AppliqueSteelTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRetardantHullTop1", "x", () => Vehicles.GearCatalog.FireRetardantHullTop1, v => Vehicles.GearCatalog.FireRetardantHullTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRetardantHullTop2", "x", () => Vehicles.GearCatalog.FireRetardantHullTop2, v => Vehicles.GearCatalog.FireRetardantHullTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRetardantHullTop3", "x", () => Vehicles.GearCatalog.FireRetardantHullTop3, v => Vehicles.GearCatalog.FireRetardantHullTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRetardantHullTop4", "x", () => Vehicles.GearCatalog.FireRetardantHullTop4, v => Vehicles.GearCatalog.FireRetardantHullTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRetardantHullTop5", "x", () => Vehicles.GearCatalog.FireRetardantHullTop5, v => Vehicles.GearCatalog.FireRetardantHullTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.armouredTubTop1", "x", () => Vehicles.GearCatalog.ArmouredTubTop1, v => Vehicles.GearCatalog.ArmouredTubTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.armouredTubTop2", "x", () => Vehicles.GearCatalog.ArmouredTubTop2, v => Vehicles.GearCatalog.ArmouredTubTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.armouredTubTop3", "x", () => Vehicles.GearCatalog.ArmouredTubTop3, v => Vehicles.GearCatalog.ArmouredTubTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.armouredTubTop4", "x", () => Vehicles.GearCatalog.ArmouredTubTop4, v => Vehicles.GearCatalog.ArmouredTubTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.armouredTubTop5", "x", () => Vehicles.GearCatalog.ArmouredTubTop5, v => Vehicles.GearCatalog.ArmouredTubTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.monolithPlatePenaltyTop3", "x", () => Vehicles.GearCatalog.MonolithPlatePenaltyTop3, v => Vehicles.GearCatalog.MonolithPlatePenaltyTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.monolithPlatePenaltyTop4", "x", () => Vehicles.GearCatalog.MonolithPlatePenaltyTop4, v => Vehicles.GearCatalog.MonolithPlatePenaltyTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.monolithPlatePenaltyTop5", "x", () => Vehicles.GearCatalog.MonolithPlatePenaltyTop5, v => Vehicles.GearCatalog.MonolithPlatePenaltyTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.monolithPlateMinRarity", "x", () => Vehicles.GearCatalog.MonolithPlateMinRarity, v => Vehicles.GearCatalog.MonolithPlateMinRarity = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.monolithPlateMainScale", "x", () => Vehicles.GearCatalog.MonolithPlateMainScale, v => Vehicles.GearCatalog.MonolithPlateMainScale = (float)v),
+            new Entry("vehicles.gearCatalog.energyDissipationLinerTop1", "x", () => Vehicles.GearCatalog.EnergyDissipationLinerTop1, v => Vehicles.GearCatalog.EnergyDissipationLinerTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.energyDissipationLinerTop2", "x", () => Vehicles.GearCatalog.EnergyDissipationLinerTop2, v => Vehicles.GearCatalog.EnergyDissipationLinerTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.energyDissipationLinerTop3", "x", () => Vehicles.GearCatalog.EnergyDissipationLinerTop3, v => Vehicles.GearCatalog.EnergyDissipationLinerTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.energyDissipationLinerTop4", "x", () => Vehicles.GearCatalog.EnergyDissipationLinerTop4, v => Vehicles.GearCatalog.EnergyDissipationLinerTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.energyDissipationLinerTop5", "x", () => Vehicles.GearCatalog.EnergyDissipationLinerTop5, v => Vehicles.GearCatalog.EnergyDissipationLinerTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.radarAbsorbentCoatingTop1", "x", () => Vehicles.GearCatalog.RadarAbsorbentCoatingTop1, v => Vehicles.GearCatalog.RadarAbsorbentCoatingTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.radarAbsorbentCoatingTop2", "x", () => Vehicles.GearCatalog.RadarAbsorbentCoatingTop2, v => Vehicles.GearCatalog.RadarAbsorbentCoatingTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.radarAbsorbentCoatingTop3", "x", () => Vehicles.GearCatalog.RadarAbsorbentCoatingTop3, v => Vehicles.GearCatalog.RadarAbsorbentCoatingTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.radarAbsorbentCoatingTop4", "x", () => Vehicles.GearCatalog.RadarAbsorbentCoatingTop4, v => Vehicles.GearCatalog.RadarAbsorbentCoatingTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.radarAbsorbentCoatingTop5", "x", () => Vehicles.GearCatalog.RadarAbsorbentCoatingTop5, v => Vehicles.GearCatalog.RadarAbsorbentCoatingTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.frontalWedgeTop1", "x", () => Vehicles.GearCatalog.FrontalWedgeTop1, v => Vehicles.GearCatalog.FrontalWedgeTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.frontalWedgeTop2", "x", () => Vehicles.GearCatalog.FrontalWedgeTop2, v => Vehicles.GearCatalog.FrontalWedgeTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.frontalWedgeTop3", "x", () => Vehicles.GearCatalog.FrontalWedgeTop3, v => Vehicles.GearCatalog.FrontalWedgeTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.frontalWedgeTop4", "x", () => Vehicles.GearCatalog.FrontalWedgeTop4, v => Vehicles.GearCatalog.FrontalWedgeTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.frontalWedgeTop5", "x", () => Vehicles.GearCatalog.FrontalWedgeTop5, v => Vehicles.GearCatalog.FrontalWedgeTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.slatCageTop1", "x", () => Vehicles.GearCatalog.SlatCageTop1, v => Vehicles.GearCatalog.SlatCageTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.slatCageTop2", "x", () => Vehicles.GearCatalog.SlatCageTop2, v => Vehicles.GearCatalog.SlatCageTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.slatCageTop3", "x", () => Vehicles.GearCatalog.SlatCageTop3, v => Vehicles.GearCatalog.SlatCageTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.slatCageTop4", "x", () => Vehicles.GearCatalog.SlatCageTop4, v => Vehicles.GearCatalog.SlatCageTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.slatCageTop5", "x", () => Vehicles.GearCatalog.SlatCageTop5, v => Vehicles.GearCatalog.SlatCageTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.overheadScreenTop1", "x", () => Vehicles.GearCatalog.OverheadScreenTop1, v => Vehicles.GearCatalog.OverheadScreenTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.overheadScreenTop2", "x", () => Vehicles.GearCatalog.OverheadScreenTop2, v => Vehicles.GearCatalog.OverheadScreenTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.overheadScreenTop3", "x", () => Vehicles.GearCatalog.OverheadScreenTop3, v => Vehicles.GearCatalog.OverheadScreenTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.overheadScreenTop4", "x", () => Vehicles.GearCatalog.OverheadScreenTop4, v => Vehicles.GearCatalog.OverheadScreenTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.overheadScreenTop5", "x", () => Vehicles.GearCatalog.OverheadScreenTop5, v => Vehicles.GearCatalog.OverheadScreenTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.underbellyArmorTop1", "x", () => Vehicles.GearCatalog.UnderbellyArmorTop1, v => Vehicles.GearCatalog.UnderbellyArmorTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.underbellyArmorTop2", "x", () => Vehicles.GearCatalog.UnderbellyArmorTop2, v => Vehicles.GearCatalog.UnderbellyArmorTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.underbellyArmorTop3", "x", () => Vehicles.GearCatalog.UnderbellyArmorTop3, v => Vehicles.GearCatalog.UnderbellyArmorTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.underbellyArmorTop4", "x", () => Vehicles.GearCatalog.UnderbellyArmorTop4, v => Vehicles.GearCatalog.UnderbellyArmorTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.underbellyArmorTop5", "x", () => Vehicles.GearCatalog.UnderbellyArmorTop5, v => Vehicles.GearCatalog.UnderbellyArmorTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop1", "x", () => Vehicles.GearCatalog.DrivetrainTop1, v => Vehicles.GearCatalog.DrivetrainTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop2", "x", () => Vehicles.GearCatalog.DrivetrainTop2, v => Vehicles.GearCatalog.DrivetrainTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop3", "x", () => Vehicles.GearCatalog.DrivetrainTop3, v => Vehicles.GearCatalog.DrivetrainTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop4", "x", () => Vehicles.GearCatalog.DrivetrainTop4, v => Vehicles.GearCatalog.DrivetrainTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop5", "x", () => Vehicles.GearCatalog.DrivetrainTop5, v => Vehicles.GearCatalog.DrivetrainTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop2N1", "x", () => Vehicles.GearCatalog.DrivetrainTop2N1, v => Vehicles.GearCatalog.DrivetrainTop2N1 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop2N2", "x", () => Vehicles.GearCatalog.DrivetrainTop2N2, v => Vehicles.GearCatalog.DrivetrainTop2N2 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop2N3", "x", () => Vehicles.GearCatalog.DrivetrainTop2N3, v => Vehicles.GearCatalog.DrivetrainTop2N3 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop2N4", "x", () => Vehicles.GearCatalog.DrivetrainTop2N4, v => Vehicles.GearCatalog.DrivetrainTop2N4 = (float)v),
+            new Entry("vehicles.gearCatalog.drivetrainTop2N5", "x", () => Vehicles.GearCatalog.DrivetrainTop2N5, v => Vehicles.GearCatalog.DrivetrainTop2N5 = (float)v),
+            new Entry("vehicles.gearCatalog.transitGearboxTop1", "x", () => Vehicles.GearCatalog.TransitGearboxTop1, v => Vehicles.GearCatalog.TransitGearboxTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.transitGearboxTop2", "x", () => Vehicles.GearCatalog.TransitGearboxTop2, v => Vehicles.GearCatalog.TransitGearboxTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.transitGearboxTop3", "x", () => Vehicles.GearCatalog.TransitGearboxTop3, v => Vehicles.GearCatalog.TransitGearboxTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.transitGearboxTop4", "x", () => Vehicles.GearCatalog.TransitGearboxTop4, v => Vehicles.GearCatalog.TransitGearboxTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.transitGearboxTop5", "x", () => Vehicles.GearCatalog.TransitGearboxTop5, v => Vehicles.GearCatalog.TransitGearboxTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.overtunedEngineTop3", "x", () => Vehicles.GearCatalog.OvertunedEngineTop3, v => Vehicles.GearCatalog.OvertunedEngineTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.overtunedEngineTop4", "x", () => Vehicles.GearCatalog.OvertunedEngineTop4, v => Vehicles.GearCatalog.OvertunedEngineTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.overtunedEngineTop5", "x", () => Vehicles.GearCatalog.OvertunedEngineTop5, v => Vehicles.GearCatalog.OvertunedEngineTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.overtunedEnginePenaltyTop3", "x", () => Vehicles.GearCatalog.OvertunedEnginePenaltyTop3, v => Vehicles.GearCatalog.OvertunedEnginePenaltyTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.overtunedEnginePenaltyTop4", "x", () => Vehicles.GearCatalog.OvertunedEnginePenaltyTop4, v => Vehicles.GearCatalog.OvertunedEnginePenaltyTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.overtunedEnginePenaltyTop5", "x", () => Vehicles.GearCatalog.OvertunedEnginePenaltyTop5, v => Vehicles.GearCatalog.OvertunedEnginePenaltyTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.overtunedEngineMinRarity", "x", () => Vehicles.GearCatalog.OvertunedEngineMinRarity, v => Vehicles.GearCatalog.OvertunedEngineMinRarity = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.overtunedEngineMainScale", "x", () => Vehicles.GearCatalog.OvertunedEngineMainScale, v => Vehicles.GearCatalog.OvertunedEngineMainScale = (float)v),
+            new Entry("vehicles.gearCatalog.reverseGearboxTop1", "x", () => Vehicles.GearCatalog.ReverseGearboxTop1, v => Vehicles.GearCatalog.ReverseGearboxTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.reverseGearboxTop2", "x", () => Vehicles.GearCatalog.ReverseGearboxTop2, v => Vehicles.GearCatalog.ReverseGearboxTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.reverseGearboxTop3", "x", () => Vehicles.GearCatalog.ReverseGearboxTop3, v => Vehicles.GearCatalog.ReverseGearboxTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.reverseGearboxTop4", "x", () => Vehicles.GearCatalog.ReverseGearboxTop4, v => Vehicles.GearCatalog.ReverseGearboxTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.reverseGearboxTop5", "x", () => Vehicles.GearCatalog.ReverseGearboxTop5, v => Vehicles.GearCatalog.ReverseGearboxTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.toolboxTop2", "s", () => Vehicles.GearCatalog.ToolboxTop2, v => Vehicles.GearCatalog.ToolboxTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.toolboxTop3", "s", () => Vehicles.GearCatalog.ToolboxTop3, v => Vehicles.GearCatalog.ToolboxTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.toolboxTop4", "s", () => Vehicles.GearCatalog.ToolboxTop4, v => Vehicles.GearCatalog.ToolboxTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.toolboxTop5", "s", () => Vehicles.GearCatalog.ToolboxTop5, v => Vehicles.GearCatalog.ToolboxTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.crewDrillsTop1", "s", () => Vehicles.GearCatalog.CrewDrillsTop1, v => Vehicles.GearCatalog.CrewDrillsTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.crewDrillsTop2", "s", () => Vehicles.GearCatalog.CrewDrillsTop2, v => Vehicles.GearCatalog.CrewDrillsTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.crewDrillsTop3", "s", () => Vehicles.GearCatalog.CrewDrillsTop3, v => Vehicles.GearCatalog.CrewDrillsTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.crewDrillsTop4", "s", () => Vehicles.GearCatalog.CrewDrillsTop4, v => Vehicles.GearCatalog.CrewDrillsTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.crewDrillsTop5", "s", () => Vehicles.GearCatalog.CrewDrillsTop5, v => Vehicles.GearCatalog.CrewDrillsTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.fireExtinguisherTop1", "s", () => Vehicles.GearCatalog.FireExtinguisherTop1, v => Vehicles.GearCatalog.FireExtinguisherTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.fireExtinguisherTop2", "s", () => Vehicles.GearCatalog.FireExtinguisherTop2, v => Vehicles.GearCatalog.FireExtinguisherTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.fireExtinguisherTop3", "s", () => Vehicles.GearCatalog.FireExtinguisherTop3, v => Vehicles.GearCatalog.FireExtinguisherTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.fireExtinguisherTop4", "s", () => Vehicles.GearCatalog.FireExtinguisherTop4, v => Vehicles.GearCatalog.FireExtinguisherTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.fireExtinguisherTop5", "s", () => Vehicles.GearCatalog.FireExtinguisherTop5, v => Vehicles.GearCatalog.FireExtinguisherTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.laserRangefinderTop1", "m", () => Vehicles.GearCatalog.LaserRangefinderTop1, v => Vehicles.GearCatalog.LaserRangefinderTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.laserRangefinderTop2", "m", () => Vehicles.GearCatalog.LaserRangefinderTop2, v => Vehicles.GearCatalog.LaserRangefinderTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.laserRangefinderTop3", "m", () => Vehicles.GearCatalog.LaserRangefinderTop3, v => Vehicles.GearCatalog.LaserRangefinderTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.laserRangefinderTop4", "m", () => Vehicles.GearCatalog.LaserRangefinderTop4, v => Vehicles.GearCatalog.LaserRangefinderTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.laserRangefinderTop5", "m", () => Vehicles.GearCatalog.LaserRangefinderTop5, v => Vehicles.GearCatalog.LaserRangefinderTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.commandersPeriscopeTop1", "m", () => Vehicles.GearCatalog.CommandersPeriscopeTop1, v => Vehicles.GearCatalog.CommandersPeriscopeTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.commandersPeriscopeTop2", "m", () => Vehicles.GearCatalog.CommandersPeriscopeTop2, v => Vehicles.GearCatalog.CommandersPeriscopeTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.commandersPeriscopeTop3", "m", () => Vehicles.GearCatalog.CommandersPeriscopeTop3, v => Vehicles.GearCatalog.CommandersPeriscopeTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.commandersPeriscopeTop4", "m", () => Vehicles.GearCatalog.CommandersPeriscopeTop4, v => Vehicles.GearCatalog.CommandersPeriscopeTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.commandersPeriscopeTop5", "m", () => Vehicles.GearCatalog.CommandersPeriscopeTop5, v => Vehicles.GearCatalog.CommandersPeriscopeTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop1", "x", () => Vehicles.GearCatalog.SignalRelayTop1, v => Vehicles.GearCatalog.SignalRelayTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop2", "x", () => Vehicles.GearCatalog.SignalRelayTop2, v => Vehicles.GearCatalog.SignalRelayTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop3", "x", () => Vehicles.GearCatalog.SignalRelayTop3, v => Vehicles.GearCatalog.SignalRelayTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop4", "x", () => Vehicles.GearCatalog.SignalRelayTop4, v => Vehicles.GearCatalog.SignalRelayTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop5", "x", () => Vehicles.GearCatalog.SignalRelayTop5, v => Vehicles.GearCatalog.SignalRelayTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop2N1", "m", () => Vehicles.GearCatalog.SignalRelayTop2N1, v => Vehicles.GearCatalog.SignalRelayTop2N1 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop2N2", "m", () => Vehicles.GearCatalog.SignalRelayTop2N2, v => Vehicles.GearCatalog.SignalRelayTop2N2 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop2N3", "m", () => Vehicles.GearCatalog.SignalRelayTop2N3, v => Vehicles.GearCatalog.SignalRelayTop2N3 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop2N4", "m", () => Vehicles.GearCatalog.SignalRelayTop2N4, v => Vehicles.GearCatalog.SignalRelayTop2N4 = (float)v),
+            new Entry("vehicles.gearCatalog.signalRelayTop2N5", "m", () => Vehicles.GearCatalog.SignalRelayTop2N5, v => Vehicles.GearCatalog.SignalRelayTop2N5 = (float)v),
+            new Entry("vehicles.gearCatalog.laserWarningTop1", "s", () => Vehicles.GearCatalog.LaserWarningTop1, v => Vehicles.GearCatalog.LaserWarningTop1 = (float)v),
+            new Entry("vehicles.gearCatalog.laserWarningTop2", "s", () => Vehicles.GearCatalog.LaserWarningTop2, v => Vehicles.GearCatalog.LaserWarningTop2 = (float)v),
+            new Entry("vehicles.gearCatalog.laserWarningTop3", "s", () => Vehicles.GearCatalog.LaserWarningTop3, v => Vehicles.GearCatalog.LaserWarningTop3 = (float)v),
+            new Entry("vehicles.gearCatalog.laserWarningTop4", "s", () => Vehicles.GearCatalog.LaserWarningTop4, v => Vehicles.GearCatalog.LaserWarningTop4 = (float)v),
+            new Entry("vehicles.gearCatalog.laserWarningTop5", "s", () => Vehicles.GearCatalog.LaserWarningTop5, v => Vehicles.GearCatalog.LaserWarningTop5 = (float)v),
+            new Entry("vehicles.gearCatalog.reactiveArmorEpic", "x", () => Vehicles.GearCatalog.ReactiveArmorEpic, v => Vehicles.GearCatalog.ReactiveArmorEpic = (float)v),
+            new Entry("vehicles.gearCatalog.reactiveArmorLegendary", "x", () => Vehicles.GearCatalog.ReactiveArmorLegendary, v => Vehicles.GearCatalog.ReactiveArmorLegendary = (float)v),
+            new Entry("vehicles.gearCatalog.mineDispenserEpic", "x", () => Vehicles.GearCatalog.MineDispenserEpic, v => Vehicles.GearCatalog.MineDispenserEpic = (float)v),
+            new Entry("vehicles.gearCatalog.mineDispenserLegendary", "x", () => Vehicles.GearCatalog.MineDispenserLegendary, v => Vehicles.GearCatalog.MineDispenserLegendary = (float)v),
+            new Entry("vehicles.gearCatalog.mineDispenserEpic2", "x", () => Vehicles.GearCatalog.MineDispenserEpic2, v => Vehicles.GearCatalog.MineDispenserEpic2 = (float)v),
+            new Entry("vehicles.gearCatalog.mineDispenserLegendary2", "x", () => Vehicles.GearCatalog.MineDispenserLegendary2, v => Vehicles.GearCatalog.MineDispenserLegendary2 = (float)v),
+            new Entry("vehicles.gearCatalog.killReloadEpic1", "x", () => Vehicles.GearCatalog.KillReloadEpic1, v => Vehicles.GearCatalog.KillReloadEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.killReloadLegendary1", "x", () => Vehicles.GearCatalog.KillReloadLegendary1, v => Vehicles.GearCatalog.KillReloadLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.skywardPintleEpic1", "s", () => Vehicles.GearCatalog.SkywardPintleEpic1, v => Vehicles.GearCatalog.SkywardPintleEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.skywardPintleLegendary1", "s", () => Vehicles.GearCatalog.SkywardPintleLegendary1, v => Vehicles.GearCatalog.SkywardPintleLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.aegisBarrierEpic1", "x", () => Vehicles.GearCatalog.AegisBarrierEpic1, v => Vehicles.GearCatalog.AegisBarrierEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.aegisBarrierEpic2", "x", () => Vehicles.GearCatalog.AegisBarrierEpic2, v => Vehicles.GearCatalog.AegisBarrierEpic2 = (float)v),
+            new Entry("vehicles.gearCatalog.aegisBarrierLegendary1", "x", () => Vehicles.GearCatalog.AegisBarrierLegendary1, v => Vehicles.GearCatalog.AegisBarrierLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.aegisBarrierLegendary2", "x", () => Vehicles.GearCatalog.AegisBarrierLegendary2, v => Vehicles.GearCatalog.AegisBarrierLegendary2 = (float)v),
+            new Entry("vehicles.gearCatalog.unbreakableEpic1", "x", () => Vehicles.GearCatalog.UnbreakableEpic1, v => Vehicles.GearCatalog.UnbreakableEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.unbreakableLegendary1", "x", () => Vehicles.GearCatalog.UnbreakableLegendary1, v => Vehicles.GearCatalog.UnbreakableLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.guardianLinkEpic1", "x", () => Vehicles.GearCatalog.GuardianLinkEpic1, v => Vehicles.GearCatalog.GuardianLinkEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.guardianLinkLegendary1", "x", () => Vehicles.GearCatalog.GuardianLinkLegendary1, v => Vehicles.GearCatalog.GuardianLinkLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.darkCrownEpic1", "x", () => Vehicles.GearCatalog.DarkCrownEpic1, v => Vehicles.GearCatalog.DarkCrownEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.darkCrownEpic2", "x", () => Vehicles.GearCatalog.DarkCrownEpic2, v => Vehicles.GearCatalog.DarkCrownEpic2 = (float)v),
+            new Entry("vehicles.gearCatalog.darkCrownLegendary1", "x", () => Vehicles.GearCatalog.DarkCrownLegendary1, v => Vehicles.GearCatalog.DarkCrownLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.darkCrownLegendary2", "x", () => Vehicles.GearCatalog.DarkCrownLegendary2, v => Vehicles.GearCatalog.DarkCrownLegendary2 = (float)v),
+            new Entry("vehicles.gearCatalog.adaptivePlatingEpic1", "x", () => Vehicles.GearCatalog.AdaptivePlatingEpic1, v => Vehicles.GearCatalog.AdaptivePlatingEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.adaptivePlatingLegendary1", "x", () => Vehicles.GearCatalog.AdaptivePlatingLegendary1, v => Vehicles.GearCatalog.AdaptivePlatingLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.reactiveBlocksEpic1", "x", () => Vehicles.GearCatalog.ReactiveBlocksEpic1, v => Vehicles.GearCatalog.ReactiveBlocksEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.reactiveBlocksEpic2", "x", () => Vehicles.GearCatalog.ReactiveBlocksEpic2, v => Vehicles.GearCatalog.ReactiveBlocksEpic2 = (float)v),
+            new Entry("vehicles.gearCatalog.reactiveBlocksLegendary1", "x", () => Vehicles.GearCatalog.ReactiveBlocksLegendary1, v => Vehicles.GearCatalog.ReactiveBlocksLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.reactiveBlocksLegendary2", "x", () => Vehicles.GearCatalog.ReactiveBlocksLegendary2, v => Vehicles.GearCatalog.ReactiveBlocksLegendary2 = (float)v),
+            new Entry("vehicles.gearCatalog.ablativeLayerEpic1", "x", () => Vehicles.GearCatalog.AblativeLayerEpic1, v => Vehicles.GearCatalog.AblativeLayerEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.ablativeLayerLegendary1", "x", () => Vehicles.GearCatalog.AblativeLayerLegendary1, v => Vehicles.GearCatalog.AblativeLayerLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.angledGlacisEpic1", "x", () => Vehicles.GearCatalog.AngledGlacisEpic1, v => Vehicles.GearCatalog.AngledGlacisEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.angledGlacisLegendary1", "x", () => Vehicles.GearCatalog.AngledGlacisLegendary1, v => Vehicles.GearCatalog.AngledGlacisLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.siegeAnchorEpic1", "x", () => Vehicles.GearCatalog.SiegeAnchorEpic1, v => Vehicles.GearCatalog.SiegeAnchorEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.siegeAnchorEpic2", "x", () => Vehicles.GearCatalog.SiegeAnchorEpic2, v => Vehicles.GearCatalog.SiegeAnchorEpic2 = (float)v),
+            new Entry("vehicles.gearCatalog.siegeAnchorLegendary1", "x", () => Vehicles.GearCatalog.SiegeAnchorLegendary1, v => Vehicles.GearCatalog.SiegeAnchorLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.siegeAnchorLegendary2", "x", () => Vehicles.GearCatalog.SiegeAnchorLegendary2, v => Vehicles.GearCatalog.SiegeAnchorLegendary2 = (float)v),
+            new Entry("vehicles.gearCatalog.damageControlEpic1", "x", () => Vehicles.GearCatalog.DamageControlEpic1, v => Vehicles.GearCatalog.DamageControlEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.damageControlLegendary1", "x", () => Vehicles.GearCatalog.DamageControlLegendary1, v => Vehicles.GearCatalog.DamageControlLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.counterBatteryRadarEpic1", "count", () => Vehicles.GearCatalog.CounterBatteryRadarEpic1, v => Vehicles.GearCatalog.CounterBatteryRadarEpic1 = (float)v),
+            new Entry("vehicles.gearCatalog.counterBatteryRadarEpic2", "count", () => Vehicles.GearCatalog.CounterBatteryRadarEpic2, v => Vehicles.GearCatalog.CounterBatteryRadarEpic2 = (float)v),
+            new Entry("vehicles.gearCatalog.counterBatteryRadarEpic3", "count", () => Vehicles.GearCatalog.CounterBatteryRadarEpic3, v => Vehicles.GearCatalog.CounterBatteryRadarEpic3 = (float)v),
+            new Entry("vehicles.gearCatalog.counterBatteryRadarLegendary1", "count", () => Vehicles.GearCatalog.CounterBatteryRadarLegendary1, v => Vehicles.GearCatalog.CounterBatteryRadarLegendary1 = (float)v),
+            new Entry("vehicles.gearCatalog.counterBatteryRadarLegendary2", "count", () => Vehicles.GearCatalog.CounterBatteryRadarLegendary2, v => Vehicles.GearCatalog.CounterBatteryRadarLegendary2 = (float)v),
+            new Entry("vehicles.gearCatalog.counterBatteryRadarLegendary3", "count", () => Vehicles.GearCatalog.CounterBatteryRadarLegendary3, v => Vehicles.GearCatalog.CounterBatteryRadarLegendary3 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsLightValues1", "x", () => Vehicles.GearCatalog.DamageVsLightValues1, v => Vehicles.GearCatalog.DamageVsLightValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsLightValues2", "x", () => Vehicles.GearCatalog.DamageVsLightValues2, v => Vehicles.GearCatalog.DamageVsLightValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsLightValues3", "x", () => Vehicles.GearCatalog.DamageVsLightValues3, v => Vehicles.GearCatalog.DamageVsLightValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsLightValues4", "x", () => Vehicles.GearCatalog.DamageVsLightValues4, v => Vehicles.GearCatalog.DamageVsLightValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsHeavyValues1", "x", () => Vehicles.GearCatalog.DamageVsHeavyValues1, v => Vehicles.GearCatalog.DamageVsHeavyValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsHeavyValues2", "x", () => Vehicles.GearCatalog.DamageVsHeavyValues2, v => Vehicles.GearCatalog.DamageVsHeavyValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsHeavyValues3", "x", () => Vehicles.GearCatalog.DamageVsHeavyValues3, v => Vehicles.GearCatalog.DamageVsHeavyValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsHeavyValues4", "x", () => Vehicles.GearCatalog.DamageVsHeavyValues4, v => Vehicles.GearCatalog.DamageVsHeavyValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsAirValues1", "x", () => Vehicles.GearCatalog.DamageVsAirValues1, v => Vehicles.GearCatalog.DamageVsAirValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsAirValues2", "x", () => Vehicles.GearCatalog.DamageVsAirValues2, v => Vehicles.GearCatalog.DamageVsAirValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsAirValues3", "x", () => Vehicles.GearCatalog.DamageVsAirValues3, v => Vehicles.GearCatalog.DamageVsAirValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsAirValues4", "x", () => Vehicles.GearCatalog.DamageVsAirValues4, v => Vehicles.GearCatalog.DamageVsAirValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsStructureValues1", "x", () => Vehicles.GearCatalog.DamageVsStructureValues1, v => Vehicles.GearCatalog.DamageVsStructureValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsStructureValues2", "x", () => Vehicles.GearCatalog.DamageVsStructureValues2, v => Vehicles.GearCatalog.DamageVsStructureValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsStructureValues3", "x", () => Vehicles.GearCatalog.DamageVsStructureValues3, v => Vehicles.GearCatalog.DamageVsStructureValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.damageVsStructureValues4", "x", () => Vehicles.GearCatalog.DamageVsStructureValues4, v => Vehicles.GearCatalog.DamageVsStructureValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRateValues1", "x", () => Vehicles.GearCatalog.FireRateValues1, v => Vehicles.GearCatalog.FireRateValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRateValues2", "x", () => Vehicles.GearCatalog.FireRateValues2, v => Vehicles.GearCatalog.FireRateValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRateValues3", "x", () => Vehicles.GearCatalog.FireRateValues3, v => Vehicles.GearCatalog.FireRateValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.fireRateValues4", "x", () => Vehicles.GearCatalog.FireRateValues4, v => Vehicles.GearCatalog.FireRateValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.damageValues1", "x", () => Vehicles.GearCatalog.DamageValues1, v => Vehicles.GearCatalog.DamageValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.damageValues2", "x", () => Vehicles.GearCatalog.DamageValues2, v => Vehicles.GearCatalog.DamageValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.damageValues3", "x", () => Vehicles.GearCatalog.DamageValues3, v => Vehicles.GearCatalog.DamageValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.damageValues4", "x", () => Vehicles.GearCatalog.DamageValues4, v => Vehicles.GearCatalog.DamageValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.rangeValues1", "m", () => Vehicles.GearCatalog.RangeValues1, v => Vehicles.GearCatalog.RangeValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.rangeValues2", "m", () => Vehicles.GearCatalog.RangeValues2, v => Vehicles.GearCatalog.RangeValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.rangeValues3", "m", () => Vehicles.GearCatalog.RangeValues3, v => Vehicles.GearCatalog.RangeValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.rangeValues4", "m", () => Vehicles.GearCatalog.RangeValues4, v => Vehicles.GearCatalog.RangeValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.visionValues1", "m", () => Vehicles.GearCatalog.VisionValues1, v => Vehicles.GearCatalog.VisionValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.visionValues2", "m", () => Vehicles.GearCatalog.VisionValues2, v => Vehicles.GearCatalog.VisionValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.visionValues3", "m", () => Vehicles.GearCatalog.VisionValues3, v => Vehicles.GearCatalog.VisionValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.visionValues4", "m", () => Vehicles.GearCatalog.VisionValues4, v => Vehicles.GearCatalog.VisionValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.projectileSpeedValues1", "x", () => Vehicles.GearCatalog.ProjectileSpeedValues1, v => Vehicles.GearCatalog.ProjectileSpeedValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.projectileSpeedValues2", "x", () => Vehicles.GearCatalog.ProjectileSpeedValues2, v => Vehicles.GearCatalog.ProjectileSpeedValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.projectileSpeedValues3", "x", () => Vehicles.GearCatalog.ProjectileSpeedValues3, v => Vehicles.GearCatalog.ProjectileSpeedValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.projectileSpeedValues4", "x", () => Vehicles.GearCatalog.ProjectileSpeedValues4, v => Vehicles.GearCatalog.ProjectileSpeedValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.magazineReloadValues1", "s", () => Vehicles.GearCatalog.MagazineReloadValues1, v => Vehicles.GearCatalog.MagazineReloadValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.magazineReloadValues2", "s", () => Vehicles.GearCatalog.MagazineReloadValues2, v => Vehicles.GearCatalog.MagazineReloadValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.magazineReloadValues3", "s", () => Vehicles.GearCatalog.MagazineReloadValues3, v => Vehicles.GearCatalog.MagazineReloadValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.magazineReloadValues4", "s", () => Vehicles.GearCatalog.MagazineReloadValues4, v => Vehicles.GearCatalog.MagazineReloadValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.healthValues1", "x", () => Vehicles.GearCatalog.HealthValues1, v => Vehicles.GearCatalog.HealthValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.healthValues2", "x", () => Vehicles.GearCatalog.HealthValues2, v => Vehicles.GearCatalog.HealthValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.healthValues3", "x", () => Vehicles.GearCatalog.HealthValues3, v => Vehicles.GearCatalog.HealthValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.healthValues4", "x", () => Vehicles.GearCatalog.HealthValues4, v => Vehicles.GearCatalog.HealthValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.resistKineticValues1", "x", () => Vehicles.GearCatalog.ResistKineticValues1, v => Vehicles.GearCatalog.ResistKineticValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.resistKineticValues2", "x", () => Vehicles.GearCatalog.ResistKineticValues2, v => Vehicles.GearCatalog.ResistKineticValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.resistKineticValues3", "x", () => Vehicles.GearCatalog.ResistKineticValues3, v => Vehicles.GearCatalog.ResistKineticValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.resistKineticValues4", "x", () => Vehicles.GearCatalog.ResistKineticValues4, v => Vehicles.GearCatalog.ResistKineticValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.resistKineticWeight", "x", () => Vehicles.GearCatalog.ResistKineticWeight, v => Vehicles.GearCatalog.ResistKineticWeight = (float)v),
+            new Entry("vehicles.gearCatalog.resistShapedChargeValues1", "x", () => Vehicles.GearCatalog.ResistShapedChargeValues1, v => Vehicles.GearCatalog.ResistShapedChargeValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.resistShapedChargeValues2", "x", () => Vehicles.GearCatalog.ResistShapedChargeValues2, v => Vehicles.GearCatalog.ResistShapedChargeValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.resistShapedChargeValues3", "x", () => Vehicles.GearCatalog.ResistShapedChargeValues3, v => Vehicles.GearCatalog.ResistShapedChargeValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.resistShapedChargeValues4", "x", () => Vehicles.GearCatalog.ResistShapedChargeValues4, v => Vehicles.GearCatalog.ResistShapedChargeValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.resistShapedChargeWeight", "x", () => Vehicles.GearCatalog.ResistShapedChargeWeight, v => Vehicles.GearCatalog.ResistShapedChargeWeight = (float)v),
+            new Entry("vehicles.gearCatalog.resistHighExplosiveValues1", "x", () => Vehicles.GearCatalog.ResistHighExplosiveValues1, v => Vehicles.GearCatalog.ResistHighExplosiveValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.resistHighExplosiveValues2", "x", () => Vehicles.GearCatalog.ResistHighExplosiveValues2, v => Vehicles.GearCatalog.ResistHighExplosiveValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.resistHighExplosiveValues3", "x", () => Vehicles.GearCatalog.ResistHighExplosiveValues3, v => Vehicles.GearCatalog.ResistHighExplosiveValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.resistHighExplosiveValues4", "x", () => Vehicles.GearCatalog.ResistHighExplosiveValues4, v => Vehicles.GearCatalog.ResistHighExplosiveValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.resistHighExplosiveWeight", "x", () => Vehicles.GearCatalog.ResistHighExplosiveWeight, v => Vehicles.GearCatalog.ResistHighExplosiveWeight = (float)v),
+            new Entry("vehicles.gearCatalog.resistFireValues1", "x", () => Vehicles.GearCatalog.ResistFireValues1, v => Vehicles.GearCatalog.ResistFireValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.resistFireValues2", "x", () => Vehicles.GearCatalog.ResistFireValues2, v => Vehicles.GearCatalog.ResistFireValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.resistFireValues3", "x", () => Vehicles.GearCatalog.ResistFireValues3, v => Vehicles.GearCatalog.ResistFireValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.resistFireValues4", "x", () => Vehicles.GearCatalog.ResistFireValues4, v => Vehicles.GearCatalog.ResistFireValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.resistFireWeight", "x", () => Vehicles.GearCatalog.ResistFireWeight, v => Vehicles.GearCatalog.ResistFireWeight = (float)v),
+            new Entry("vehicles.gearCatalog.resistFragmentationValues1", "x", () => Vehicles.GearCatalog.ResistFragmentationValues1, v => Vehicles.GearCatalog.ResistFragmentationValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.resistFragmentationValues2", "x", () => Vehicles.GearCatalog.ResistFragmentationValues2, v => Vehicles.GearCatalog.ResistFragmentationValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.resistFragmentationValues3", "x", () => Vehicles.GearCatalog.ResistFragmentationValues3, v => Vehicles.GearCatalog.ResistFragmentationValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.resistFragmentationValues4", "x", () => Vehicles.GearCatalog.ResistFragmentationValues4, v => Vehicles.GearCatalog.ResistFragmentationValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.resistFragmentationWeight", "x", () => Vehicles.GearCatalog.ResistFragmentationWeight, v => Vehicles.GearCatalog.ResistFragmentationWeight = (float)v),
+            new Entry("vehicles.gearCatalog.speedValues1", "x", () => Vehicles.GearCatalog.SpeedValues1, v => Vehicles.GearCatalog.SpeedValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.speedValues2", "x", () => Vehicles.GearCatalog.SpeedValues2, v => Vehicles.GearCatalog.SpeedValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.speedValues3", "x", () => Vehicles.GearCatalog.SpeedValues3, v => Vehicles.GearCatalog.SpeedValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.speedValues4", "x", () => Vehicles.GearCatalog.SpeedValues4, v => Vehicles.GearCatalog.SpeedValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.turretRateValues1", "x", () => Vehicles.GearCatalog.TurretRateValues1, v => Vehicles.GearCatalog.TurretRateValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.turretRateValues2", "x", () => Vehicles.GearCatalog.TurretRateValues2, v => Vehicles.GearCatalog.TurretRateValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.turretRateValues3", "x", () => Vehicles.GearCatalog.TurretRateValues3, v => Vehicles.GearCatalog.TurretRateValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.turretRateValues4", "x", () => Vehicles.GearCatalog.TurretRateValues4, v => Vehicles.GearCatalog.TurretRateValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.captureRateValues1", "x", () => Vehicles.GearCatalog.CaptureRateValues1, v => Vehicles.GearCatalog.CaptureRateValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.captureRateValues2", "x", () => Vehicles.GearCatalog.CaptureRateValues2, v => Vehicles.GearCatalog.CaptureRateValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.captureRateValues3", "x", () => Vehicles.GearCatalog.CaptureRateValues3, v => Vehicles.GearCatalog.CaptureRateValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.captureRateValues4", "x", () => Vehicles.GearCatalog.CaptureRateValues4, v => Vehicles.GearCatalog.CaptureRateValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.cooldownsValues1", "s", () => Vehicles.GearCatalog.CooldownsValues1, v => Vehicles.GearCatalog.CooldownsValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.cooldownsValues2", "s", () => Vehicles.GearCatalog.CooldownsValues2, v => Vehicles.GearCatalog.CooldownsValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.cooldownsValues3", "s", () => Vehicles.GearCatalog.CooldownsValues3, v => Vehicles.GearCatalog.CooldownsValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.cooldownsValues4", "s", () => Vehicles.GearCatalog.CooldownsValues4, v => Vehicles.GearCatalog.CooldownsValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.regenValues1", "x", () => Vehicles.GearCatalog.RegenValues1, v => Vehicles.GearCatalog.RegenValues1 = (float)v),
+            new Entry("vehicles.gearCatalog.regenValues2", "x", () => Vehicles.GearCatalog.RegenValues2, v => Vehicles.GearCatalog.RegenValues2 = (float)v),
+            new Entry("vehicles.gearCatalog.regenValues3", "x", () => Vehicles.GearCatalog.RegenValues3, v => Vehicles.GearCatalog.RegenValues3 = (float)v),
+            new Entry("vehicles.gearCatalog.regenValues4", "x", () => Vehicles.GearCatalog.RegenValues4, v => Vehicles.GearCatalog.RegenValues4 = (float)v),
+            new Entry("vehicles.gearCatalog.ironcladValue", "x", () => Vehicles.GearCatalog.IroncladValue, v => Vehicles.GearCatalog.IroncladValue = (float)v),
+            new Entry("vehicles.gearCatalog.ironcladFourPieceSetBulwark", "x", () => Vehicles.GearCatalog.IroncladFourPieceSetBulwark, v => Vehicles.GearCatalog.IroncladFourPieceSetBulwark = (float)v),
+            new Entry("vehicles.gearCatalog.kestrelIndex", "x", () => Vehicles.GearCatalog.KestrelIndex, v => Vehicles.GearCatalog.KestrelIndex = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.kestrelValue", "x", () => Vehicles.GearCatalog.KestrelValue, v => Vehicles.GearCatalog.KestrelValue = (float)v),
+            new Entry("vehicles.gearCatalog.kestrelFourPieceASetHitAndRun", "x", () => Vehicles.GearCatalog.KestrelFourPieceASetHitAndRun, v => Vehicles.GearCatalog.KestrelFourPieceASetHitAndRun = (float)v),
+            new Entry("vehicles.gearCatalog.kestrelFourPieceBSetHitAndRun", "x", () => Vehicles.GearCatalog.KestrelFourPieceBSetHitAndRun, v => Vehicles.GearCatalog.KestrelFourPieceBSetHitAndRun = (float)v),
+            new Entry("vehicles.gearCatalog.vulcanIndex", "x", () => Vehicles.GearCatalog.VulcanIndex, v => Vehicles.GearCatalog.VulcanIndex = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.vulcanValue", "x", () => Vehicles.GearCatalog.VulcanValue, v => Vehicles.GearCatalog.VulcanValue = (float)v),
+            new Entry("vehicles.gearCatalog.vulcanFourPieceASetFirestorm", "x", () => Vehicles.GearCatalog.VulcanFourPieceASetFirestorm, v => Vehicles.GearCatalog.VulcanFourPieceASetFirestorm = (float)v),
+            new Entry("vehicles.gearCatalog.vulcanFourPieceBSetFirestorm", "x", () => Vehicles.GearCatalog.VulcanFourPieceBSetFirestorm, v => Vehicles.GearCatalog.VulcanFourPieceBSetFirestorm = (float)v),
+            new Entry("vehicles.gearCatalog.longbowIndex", "m", () => Vehicles.GearCatalog.LongbowIndex, v => Vehicles.GearCatalog.LongbowIndex = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.longbowValue", "m", () => Vehicles.GearCatalog.LongbowValue, v => Vehicles.GearCatalog.LongbowValue = (float)v),
+            new Entry("vehicles.gearCatalog.longbowFourPieceSetDeepStrike", "m", () => Vehicles.GearCatalog.LongbowFourPieceSetDeepStrike, v => Vehicles.GearCatalog.LongbowFourPieceSetDeepStrike = (float)v),
+            new Entry("vehicles.gearCatalog.aegisIndex", "x", () => Vehicles.GearCatalog.AegisIndex, v => Vehicles.GearCatalog.AegisIndex = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.aegisValue", "x", () => Vehicles.GearCatalog.AegisValue, v => Vehicles.GearCatalog.AegisValue = (float)v),
+            new Entry("vehicles.gearCatalog.aegisFourPieceASetSharedShield", "x", () => Vehicles.GearCatalog.AegisFourPieceASetSharedShield, v => Vehicles.GearCatalog.AegisFourPieceASetSharedShield = (float)v),
+            new Entry("vehicles.gearCatalog.aegisFourPieceBSetSharedShield", "x", () => Vehicles.GearCatalog.AegisFourPieceBSetSharedShield, v => Vehicles.GearCatalog.AegisFourPieceBSetSharedShield = (float)v),
+            new Entry("vehicles.gearCatalog.aegisFourPieceCSetSharedShield", "x", () => Vehicles.GearCatalog.AegisFourPieceCSetSharedShield, v => Vehicles.GearCatalog.AegisFourPieceCSetSharedShield = (float)v),
+            new Entry("vehicles.gearCatalog.hivemindIndex", "x", () => Vehicles.GearCatalog.HivemindIndex, v => Vehicles.GearCatalog.HivemindIndex = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.hivemindValue", "x", () => Vehicles.GearCatalog.HivemindValue, v => Vehicles.GearCatalog.HivemindValue = (float)v),
+            new Entry("vehicles.gearCatalog.hivemindFourPieceSetSwarm", "x", () => Vehicles.GearCatalog.HivemindFourPieceSetSwarm, v => Vehicles.GearCatalog.HivemindFourPieceSetSwarm = (float)v),
+            new Entry("vehicles.gearCatalog.spectreIndex", "m", () => Vehicles.GearCatalog.SpectreIndex, v => Vehicles.GearCatalog.SpectreIndex = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.spectreValue", "m", () => Vehicles.GearCatalog.SpectreValue, v => Vehicles.GearCatalog.SpectreValue = (float)v),
+            new Entry("vehicles.gearCatalog.spectreFourPieceSetGhostNet", "m", () => Vehicles.GearCatalog.SpectreFourPieceSetGhostNet, v => Vehicles.GearCatalog.SpectreFourPieceSetGhostNet = (float)v),
+            new Entry("vehicles.gearCatalog.hammerfallIndex", "x", () => Vehicles.GearCatalog.HammerfallIndex, v => Vehicles.GearCatalog.HammerfallIndex = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.hammerfallValue", "x", () => Vehicles.GearCatalog.HammerfallValue, v => Vehicles.GearCatalog.HammerfallValue = (float)v),
+            new Entry("vehicles.gearCatalog.hammerfallFourPieceASetHeavyRound", "x", () => Vehicles.GearCatalog.HammerfallFourPieceASetHeavyRound, v => Vehicles.GearCatalog.HammerfallFourPieceASetHeavyRound = (float)v),
+            new Entry("vehicles.gearCatalog.wolfpackIndex", "count", () => Vehicles.GearCatalog.WolfpackIndex, v => Vehicles.GearCatalog.WolfpackIndex = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearCatalog.wolfpackFourPieceSetPackFocus", "count", () => Vehicles.GearCatalog.WolfpackFourPieceSetPackFocus, v => Vehicles.GearCatalog.WolfpackFourPieceSetPackFocus = (float)v),
+            new Entry("vehicles.gearCatalog.bulwarkValue", "x", () => Vehicles.GearCatalog.BulwarkValue, v => Vehicles.GearCatalog.BulwarkValue = (float)v),
+            new Entry("vehicles.gearCatalog.bulwarkFourPieceSetBulwarkPost", "x", () => Vehicles.GearCatalog.BulwarkFourPieceSetBulwarkPost, v => Vehicles.GearCatalog.BulwarkFourPieceSetBulwarkPost = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap", "x", () => Vehicles.GearCatalog.BuildCapsCap, v => Vehicles.GearCatalog.BuildCapsCap = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap2", "count", () => Vehicles.GearCatalog.BuildCapsCap2, v => Vehicles.GearCatalog.BuildCapsCap2 = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap4", "x", () => Vehicles.GearCatalog.BuildCapsCap4, v => Vehicles.GearCatalog.BuildCapsCap4 = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap5", "x", () => Vehicles.GearCatalog.BuildCapsCap5, v => Vehicles.GearCatalog.BuildCapsCap5 = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap6", "m", () => Vehicles.GearCatalog.BuildCapsCap6, v => Vehicles.GearCatalog.BuildCapsCap6 = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap8", "count", () => Vehicles.GearCatalog.BuildCapsCap8, v => Vehicles.GearCatalog.BuildCapsCap8 = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap9", "s", () => Vehicles.GearCatalog.BuildCapsCap9, v => Vehicles.GearCatalog.BuildCapsCap9 = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap10", "count", () => Vehicles.GearCatalog.BuildCapsCap10, v => Vehicles.GearCatalog.BuildCapsCap10 = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap11", "s", () => Vehicles.GearCatalog.BuildCapsCap11, v => Vehicles.GearCatalog.BuildCapsCap11 = (float)v),
+            new Entry("vehicles.gearCatalog.buildCapsCap13", "s", () => Vehicles.GearCatalog.BuildCapsCap13, v => Vehicles.GearCatalog.BuildCapsCap13 = (float)v),
+            new Entry("vehicles.gearSystem.moduleScaleMaxDivisor", "x", () => Vehicles.GearSystem.ModuleScaleMaxDivisor, v => Vehicles.GearSystem.ModuleScaleMaxDivisor = (float)v),
+            new Entry("vehicles.gearSystem.moduleScaleMaxMin", "count", () => Vehicles.GearSystem.ModuleScaleMaxMin, v => Vehicles.GearSystem.ModuleScaleMaxMin = (float)v),
+            new Entry("vehicles.gearSystem.moduleScaleMaxMax", "count", () => Vehicles.GearSystem.ModuleScaleMaxMax, v => Vehicles.GearSystem.ModuleScaleMaxMax = (float)v),
+            new Entry("vehicles.gearSystem.hitIntervalCooldownMax", "s", () => Vehicles.GearSystem.HitIntervalCooldownMax, v => Vehicles.GearSystem.HitIntervalCooldownMax = (float)v),
+            new Entry("vehicles.gearSystem.hitIntervalInterval", "s", () => Vehicles.GearSystem.HitIntervalInterval, v => Vehicles.GearSystem.HitIntervalInterval = (float)v),
+            new Entry("vehicles.gearSystem.hitIntervalIntervalFloor", "s", () => Vehicles.GearSystem.HitIntervalIntervalFloor, v => Vehicles.GearSystem.HitIntervalIntervalFloor = (float)v),
+            new Entry("vehicles.gearSystem.procCoefficientHitIntervalMin", "s", () => Vehicles.GearSystem.ProcCoefficientHitIntervalMin, v => Vehicles.GearSystem.ProcCoefficientHitIntervalMin = (float)v),
+            new Entry("vehicles.gearSystem.procCoefficientHitIntervalMax", "s", () => Vehicles.GearSystem.ProcCoefficientHitIntervalMax, v => Vehicles.GearSystem.ProcCoefficientHitIntervalMax = (float)v),
+            new Entry("vehicles.gearSystem.suppressedShareValueMax", "share", () => Vehicles.GearSystem.SuppressedShareValueMax, v => Vehicles.GearSystem.SuppressedShareValueMax = (float)v),
+            new Entry("vehicles.gearSystem.stepLinesSeconds", "s", () => Vehicles.GearSystem.StepLinesSeconds, v => Vehicles.GearSystem.StepLinesSeconds = (float)v),
+            new Entry("vehicles.gearSystem.stepLinesNowAdd", "s", () => Vehicles.GearSystem.StepLinesNowAdd, v => Vehicles.GearSystem.StepLinesNowAdd = v),
+            new Entry("vehicles.gearSystem.movingAwayAbsMax", "x", () => Vehicles.GearSystem.MovingAwayAbsMax, v => Vehicles.GearSystem.MovingAwayAbsMax = (float)v),
+            new Entry("vehicles.gearSystem.movingAwayLengthSquaredMax", "m", () => Vehicles.GearSystem.MovingAwayLengthSquaredMax, v => Vehicles.GearSystem.MovingAwayLengthSquaredMax = (float)v),
+            new Entry("vehicles.gearSystem.backOffRangeFloor", "m", () => Vehicles.GearSystem.BackOffRangeFloor, v => Vehicles.GearSystem.BackOffRangeFloor = (float)v),
+            new Entry("vehicles.gearSystem.backOffRangeScale", "x", () => Vehicles.GearSystem.BackOffRangeScale, v => Vehicles.GearSystem.BackOffRangeScale = (float)v),
+            new Entry("vehicles.gearSystem.backOffNowAdd", "s", () => Vehicles.GearSystem.BackOffNowAdd, v => Vehicles.GearSystem.BackOffNowAdd = v),
+            new Entry("vehicles.gearSystem.shootDownStatScale", "x", () => Vehicles.GearSystem.ShootDownStatScale, v => Vehicles.GearSystem.ShootDownStatScale = (float)v),
+            new Entry("vehicles.gearSystem.shootDownLengthSquaredMin", "m", () => Vehicles.GearSystem.ShootDownLengthSquaredMin, v => Vehicles.GearSystem.ShootDownLengthSquaredMin = (float)v),
+            new Entry("vehicles.gearSystem.deathLinesBFalse", "m", () => Vehicles.GearSystem.DeathLinesBFalse, v => Vehicles.GearSystem.DeathLinesBFalse = (float)v),
+            new Entry("vehicles.gearSystem.deathLinesCFalse", "s", () => Vehicles.GearSystem.DeathLinesCFalse, v => Vehicles.GearSystem.DeathLinesCFalse = (float)v),
+            new Entry("vehicles.gearSystem.healAFalse", "x", () => Vehicles.GearSystem.HealAFalse, v => Vehicles.GearSystem.HealAFalse = (float)v),
+            new Entry("vehicles.gearSystem.healBFalse", "x", () => Vehicles.GearSystem.HealBFalse, v => Vehicles.GearSystem.HealBFalse = (float)v),
+            new Entry("vehicles.gearSystem.absorbOverhealValueMax", "x", () => Vehicles.GearSystem.AbsorbOverhealValueMax, v => Vehicles.GearSystem.AbsorbOverhealValueMax = (float)v),
+            new Entry("vehicles.gearSystem.empBurstDuration", "x", () => Vehicles.GearSystem.EmpBurstDuration, v => Vehicles.GearSystem.EmpBurstDuration = (float)v),
+            new Entry("vehicles.gearSystem.empBurstRadius", "x", () => Vehicles.GearSystem.EmpBurstRadius, v => Vehicles.GearSystem.EmpBurstRadius = (float)v),
+            new Entry("vehicles.gearSystem.equipStatScale", "x", () => Vehicles.GearSystem.EquipStatScale, v => Vehicles.GearSystem.EquipStatScale = (float)v),
+            new Entry("vehicles.gearSystem.equipFlareRechargeScale", "x", () => Vehicles.GearSystem.EquipFlareRechargeScale, v => Vehicles.GearSystem.EquipFlareRechargeScale = (float)v),
+            new Entry("vehicles.gearSystem.equipSpecialPower2False", "x", () => Vehicles.GearSystem.EquipSpecialPower2False, v => Vehicles.GearSystem.EquipSpecialPower2False = (float)v),
+            new Entry("vehicles.gearSystem.equipTrigger", "x", () => Vehicles.GearSystem.EquipTrigger, v => Vehicles.GearSystem.EquipTrigger = (float)v),
+            new Entry("vehicles.gearSystem.equipNowAdd", "s", () => Vehicles.GearSystem.EquipNowAdd, v => Vehicles.GearSystem.EquipNowAdd = v),
+            new Entry("vehicles.gearSystem.equipNowAdd2", "s", () => Vehicles.GearSystem.EquipNowAdd2, v => Vehicles.GearSystem.EquipNowAdd2 = v),
+            new Entry("vehicles.gearSystem.equipNowAdd3", "s", () => Vehicles.GearSystem.EquipNowAdd3, v => Vehicles.GearSystem.EquipNowAdd3 = v),
+            new Entry("vehicles.gearSystem.tuneWeaponsStatFloor", "x", () => Vehicles.GearSystem.TuneWeaponsStatFloor, v => Vehicles.GearSystem.TuneWeaponsStatFloor = (float)v),
+            new Entry("vehicles.gearSystem.tuneWeaponsStatFloor2", "s", () => Vehicles.GearSystem.TuneWeaponsStatFloor2, v => Vehicles.GearSystem.TuneWeaponsStatFloor2 = (float)v),
+            new Entry("vehicles.gearSystem.tuneWeaponsDamageFloor", "x", () => Vehicles.GearSystem.TuneWeaponsDamageFloor, v => Vehicles.GearSystem.TuneWeaponsDamageFloor = (float)v),
+            new Entry("vehicles.gearSystem.tuneWeaponsDamageScale", "x", () => Vehicles.GearSystem.TuneWeaponsDamageScale, v => Vehicles.GearSystem.TuneWeaponsDamageScale = (float)v),
+            new Entry("vehicles.gearSystem.tuneWeaponsRadius", "x", () => Vehicles.GearSystem.TuneWeaponsRadius, v => Vehicles.GearSystem.TuneWeaponsRadius = (float)v),
+            new Entry("vehicles.gearSystem.tuneWeaponsRadiusFloor", "m", () => Vehicles.GearSystem.TuneWeaponsRadiusFloor, v => Vehicles.GearSystem.TuneWeaponsRadiusFloor = (float)v),
+            new Entry("vehicles.gearSystem.tuneWeaponsMoreMin", "x", () => Vehicles.GearSystem.TuneWeaponsMoreMin, v => Vehicles.GearSystem.TuneWeaponsMoreMin = (float)v),
+            new Entry("vehicles.gearSystem.tuneWeaponsFasterFloor", "s", () => Vehicles.GearSystem.TuneWeaponsFasterFloor, v => Vehicles.GearSystem.TuneWeaponsFasterFloor = (float)v),
+            new Entry("vehicles.gearSystem.mineBlastDamageScale", "x", () => Vehicles.GearSystem.MineBlastDamageScale, v => Vehicles.GearSystem.MineBlastDamageScale = (float)v),
+            new Entry("vehicles.gearSystem.mineBlastDamageDefault", "x", () => Vehicles.GearSystem.MineBlastDamageDefault, v => Vehicles.GearSystem.MineBlastDamageDefault = (float)v),
+            new Entry("vehicles.gearSystem.mineBlastRadiusDefault", "m", () => Vehicles.GearSystem.MineBlastRadiusDefault, v => Vehicles.GearSystem.MineBlastRadiusDefault = (float)v),
+            new Entry("vehicles.gearSystem.mineBlastRadiusCap", "m", () => Vehicles.GearSystem.MineBlastRadiusCap, v => Vehicles.GearSystem.MineBlastRadiusCap = (float)v),
+            new Entry("vehicles.gearSystem.droneForDamageFloor", "x", () => Vehicles.GearSystem.DroneForDamageFloor, v => Vehicles.GearSystem.DroneForDamageFloor = (float)v),
+            new Entry("vehicles.gearSystem.droneForDamageScale", "x", () => Vehicles.GearSystem.DroneForDamageScale, v => Vehicles.GearSystem.DroneForDamageScale = (float)v),
+            new Entry("vehicles.gearSystem.droneForRange", "x", () => Vehicles.GearSystem.DroneForRange, v => Vehicles.GearSystem.DroneForRange = (float)v),
+            new Entry("vehicles.gearSystem.droneForProjectileSpeed", "m/s", () => Vehicles.GearSystem.DroneForProjectileSpeed, v => Vehicles.GearSystem.DroneForProjectileSpeed = (float)v),
+            new Entry("vehicles.gearSystem.droneForSplashRadius", "m", () => Vehicles.GearSystem.DroneForSplashRadius, v => Vehicles.GearSystem.DroneForSplashRadius = (float)v),
+            new Entry("vehicles.gearSystem.droneForPenetration", "x", () => Vehicles.GearSystem.DroneForPenetration, v => Vehicles.GearSystem.DroneForPenetration = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.droneForSize", "x", () => Vehicles.GearSystem.DroneForSize, v => Vehicles.GearSystem.DroneForSize = (float)v),
+            new Entry("vehicles.gearSystem.droneForSplashRadiusCap", "m", () => Vehicles.GearSystem.DroneForSplashRadiusCap, v => Vehicles.GearSystem.DroneForSplashRadiusCap = (float)v),
+            new Entry("vehicles.gearSystem.cooldownFactorStatFloor", "s", () => Vehicles.GearSystem.CooldownFactorStatFloor, v => Vehicles.GearSystem.CooldownFactorStatFloor = (float)v),
+            new Entry("vehicles.gearSystem.stepGearSpeed", "s", () => Vehicles.GearSystem.StepGearSpeed, v => Vehicles.GearSystem.StepGearSpeed = (float)v),
+            new Entry("vehicles.gearSystem.stepGearStillForMin2", "s", () => Vehicles.GearSystem.StepGearStillForMin2, v => Vehicles.GearSystem.StepGearStillForMin2 = v),
+            new Entry("vehicles.gearSystem.stepGearNowMin", "s", () => Vehicles.GearSystem.StepGearNowMin, v => Vehicles.GearSystem.StepGearNowMin = v),
+            new Entry("vehicles.gearSystem.stepGearNowAdd", "s", () => Vehicles.GearSystem.StepGearNowAdd, v => Vehicles.GearSystem.StepGearNowAdd = v),
+            new Entry("vehicles.gearSystem.stepGearNowAdd2", "s", () => Vehicles.GearSystem.StepGearNowAdd2, v => Vehicles.GearSystem.StepGearNowAdd2 = v),
+            new Entry("vehicles.gearSystem.stepGearMaxHpScale", "x", () => Vehicles.GearSystem.StepGearMaxHpScale, v => Vehicles.GearSystem.StepGearMaxHpScale = (float)v),
+            new Entry("vehicles.gearSystem.stepGearNowAdd3", "s", () => Vehicles.GearSystem.StepGearNowAdd3, v => Vehicles.GearSystem.StepGearNowAdd3 = v),
+            new Entry("vehicles.gearSystem.stepGearMaxHpDivisor", "x", () => Vehicles.GearSystem.StepGearMaxHpDivisor, v => Vehicles.GearSystem.StepGearMaxHpDivisor = (float)v),
+            new Entry("vehicles.gearSystem.stepGearNowAdd4", "x", () => Vehicles.GearSystem.StepGearNowAdd4, v => Vehicles.GearSystem.StepGearNowAdd4 = v),
+            new Entry("vehicles.gearSystem.stepGearCdScale", "x", () => Vehicles.GearSystem.StepGearCdScale, v => Vehicles.GearSystem.StepGearCdScale = v),
+            new Entry("vehicles.gearSystem.stepGearMaxHpScale2", "x", () => Vehicles.GearSystem.StepGearMaxHpScale2, v => Vehicles.GearSystem.StepGearMaxHpScale2 = (float)v),
+            new Entry("vehicles.gearSystem.stepGearSpecialPower2False", "s", () => Vehicles.GearSystem.StepGearSpecialPower2False, v => Vehicles.GearSystem.StepGearSpecialPower2False = (float)v),
+            new Entry("vehicles.gearSystem.stepGearMaxHpScale3", "x", () => Vehicles.GearSystem.StepGearMaxHpScale3, v => Vehicles.GearSystem.StepGearMaxHpScale3 = (float)v),
+            new Entry("vehicles.gearSystem.stepGearSpecialPower2False2", "s", () => Vehicles.GearSystem.StepGearSpecialPower2False2, v => Vehicles.GearSystem.StepGearSpecialPower2False2 = (float)v),
+            new Entry("vehicles.gearSystem.stepGearHullBoundAdd", "x", () => Vehicles.GearSystem.StepGearHullBoundAdd, v => Vehicles.GearSystem.StepGearHullBoundAdd = (float)v),
+            new Entry("vehicles.gearSystem.stepGearSpecialPower2False3", "s", () => Vehicles.GearSystem.StepGearSpecialPower2False3, v => Vehicles.GearSystem.StepGearSpecialPower2False3 = (float)v),
+            new Entry("vehicles.gearSystem.stepGearSpecialPower2False4", "s", () => Vehicles.GearSystem.StepGearSpecialPower2False4, v => Vehicles.GearSystem.StepGearSpecialPower2False4 = (float)v),
+            new Entry("vehicles.gearSystem.jamCFalse", "m", () => Vehicles.GearSystem.JamCFalse, v => Vehicles.GearSystem.JamCFalse = (float)v),
+            new Entry("vehicles.gearSystem.shareShieldCFalse", "share", () => Vehicles.GearSystem.ShareShieldCFalse, v => Vehicles.GearSystem.ShareShieldCFalse = (float)v),
+            new Entry("vehicles.gearSystem.shareShieldNowMin", "share", () => Vehicles.GearSystem.ShareShieldNowMin, v => Vehicles.GearSystem.ShareShieldNowMin = v),
+            new Entry("vehicles.gearSystem.fieldRepairBFalse", "m", () => Vehicles.GearSystem.FieldRepairBFalse, v => Vehicles.GearSystem.FieldRepairBFalse = (float)v),
+            new Entry("vehicles.gearSystem.fieldRepairNowMax", "s", () => Vehicles.GearSystem.FieldRepairNowMax, v => Vehicles.GearSystem.FieldRepairNowMax = v),
+            new Entry("vehicles.gearSystem.buffNowAdd", "s", () => Vehicles.GearSystem.BuffNowAdd, v => Vehicles.GearSystem.BuffNowAdd = v),
+            new Entry("vehicles.gearSystem.repairFactorHasTrue", "s", () => Vehicles.GearSystem.RepairFactorHasTrue, v => Vehicles.GearSystem.RepairFactorHasTrue = (float)v),
+            new Entry("vehicles.gearSystem.launchDronesKScale", "x", () => Vehicles.GearSystem.LaunchDronesKScale, v => Vehicles.GearSystem.LaunchDronesKScale = (float)v),
+            new Entry("vehicles.gearSystem.launchDronesDistanceFloor", "m", () => Vehicles.GearSystem.LaunchDronesDistanceFloor, v => Vehicles.GearSystem.LaunchDronesDistanceFloor = (float)v),
+            new Entry("vehicles.gearSystem.launchDronesKScale2", "x", () => Vehicles.GearSystem.LaunchDronesKScale2, v => Vehicles.GearSystem.LaunchDronesKScale2 = (float)v),
+            new Entry("vehicles.gearSystem.barrageStatScale", "x", () => Vehicles.GearSystem.BarrageStatScale, v => Vehicles.GearSystem.BarrageStatScale = (float)v),
+            new Entry("vehicles.gearSystem.barrageRadius", "x", () => Vehicles.GearSystem.BarrageRadius, v => Vehicles.GearSystem.BarrageRadius = (float)v),
+            new Entry("vehicles.gearSystem.barrageSqrtScale", "x", () => Vehicles.GearSystem.BarrageSqrtScale, v => Vehicles.GearSystem.BarrageSqrtScale = (float)v),
+            new Entry("vehicles.gearSystem.barrageKAdd", "x", () => Vehicles.GearSystem.BarrageKAdd, v => Vehicles.GearSystem.BarrageKAdd = v),
+            new Entry("vehicles.gearSystem.barrageKScale", "x", () => Vehicles.GearSystem.BarrageKScale, v => Vehicles.GearSystem.BarrageKScale = v),
+            new Entry("vehicles.gearSystem.shotNowAdd", "s", () => Vehicles.GearSystem.ShotNowAdd, v => Vehicles.GearSystem.ShotNowAdd = v),
+            new Entry("vehicles.gearSystem.shotRangeScale", "x", () => Vehicles.GearSystem.ShotRangeScale, v => Vehicles.GearSystem.ShotRangeScale = (float)v),
+            new Entry("vehicles.gearSystem.shotStreakCarryCap", "count", () => Vehicles.GearSystem.ShotStreakCarryCap, v => Vehicles.GearSystem.ShotStreakCarryCap = (float)v),
+            new Entry("vehicles.gearSystem.shotExtraSplash", "x", () => Vehicles.GearSystem.ShotExtraSplash, v => Vehicles.GearSystem.ShotExtraSplash = (float)v),
+            new Entry("vehicles.gearSystem.shotNowMax", "s", () => Vehicles.GearSystem.ShotNowMax, v => Vehicles.GearSystem.ShotNowMax = v),
+            new Entry("vehicles.gearSystem.shotAFloor", "x", () => Vehicles.GearSystem.ShotAFloor, v => Vehicles.GearSystem.ShotAFloor = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.shotEveryTrue", "x", () => Vehicles.GearSystem.ShotEveryTrue, v => Vehicles.GearSystem.ShotEveryTrue = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.extraRoundsAFloor", "x", () => Vehicles.GearSystem.ExtraRoundsAFloor, v => Vehicles.GearSystem.ExtraRoundsAFloor = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.machineGunRoundAFloor", "x", () => Vehicles.GearSystem.MachineGunRoundAFloor, v => Vehicles.GearSystem.MachineGunRoundAFloor = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.machineGunRoundSalvosTrue", "x", () => Vehicles.GearSystem.MachineGunRoundSalvosTrue, v => Vehicles.GearSystem.MachineGunRoundSalvosTrue = (float)v),
+            new Entry("vehicles.gearSystem.spreadFactorCutFloor", "x", () => Vehicles.GearSystem.SpreadFactorCutFloor, v => Vehicles.GearSystem.SpreadFactorCutFloor = (float)v),
+            new Entry("vehicles.gearSystem.tauntsTimeMin", "s", () => Vehicles.GearSystem.TauntsTimeMin, v => Vehicles.GearSystem.TauntsTimeMin = v),
+            new Entry("vehicles.gearSystem.tauntsScale", "x", () => Vehicles.GearSystem.TauntsScale, v => Vehicles.GearSystem.TauntsScale = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitStreakCarryCap", "count", () => Vehicles.GearSystem.OnDirectHitStreakCarryCap, v => Vehicles.GearSystem.OnDirectHitStreakCarryCap = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitCCap", "count", () => Vehicles.GearSystem.OnDirectHitCCap, v => Vehicles.GearSystem.OnDirectHitCCap = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitGapFloor", "m", () => Vehicles.GearSystem.OnDirectHitGapFloor, v => Vehicles.GearSystem.OnDirectHitGapFloor = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitGapScale", "x", () => Vehicles.GearSystem.OnDirectHitGapScale, v => Vehicles.GearSystem.OnDirectHitGapScale = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitMaxStacks", "m", () => Vehicles.GearSystem.OnDirectHitMaxStacks, v => Vehicles.GearSystem.OnDirectHitMaxStacks = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.onDirectHitGapFloor2", "m", () => Vehicles.GearSystem.OnDirectHitGapFloor2, v => Vehicles.GearSystem.OnDirectHitGapFloor2 = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitGapScale2", "x", () => Vehicles.GearSystem.OnDirectHitGapScale2, v => Vehicles.GearSystem.OnDirectHitGapScale2 = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitGapFloor3", "m", () => Vehicles.GearSystem.OnDirectHitGapFloor3, v => Vehicles.GearSystem.OnDirectHitGapFloor3 = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitGapScale3", "x", () => Vehicles.GearSystem.OnDirectHitGapScale3, v => Vehicles.GearSystem.OnDirectHitGapScale3 = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitReach", "m", () => Vehicles.GearSystem.OnDirectHitReach, v => Vehicles.GearSystem.OnDirectHitReach = (float)v),
+            new Entry("vehicles.gearSystem.onDirectHitEarnedFloor", "x", () => Vehicles.GearSystem.OnDirectHitEarnedFloor, v => Vehicles.GearSystem.OnDirectHitEarnedFloor = (float)v),
+            new Entry("vehicles.gearSystem.ricochetSqrtFloor", "x", () => Vehicles.GearSystem.RicochetSqrtFloor, v => Vehicles.GearSystem.RicochetSqrtFloor = (float)v),
+            new Entry("vehicles.gearSystem.outgoingMaxHpScale", "x", () => Vehicles.GearSystem.OutgoingMaxHpScale, v => Vehicles.GearSystem.OutgoingMaxHpScale = (float)v),
+            new Entry("vehicles.gearSystem.fireLinkBFalse", "s", () => Vehicles.GearSystem.FireLinkBFalse, v => Vehicles.GearSystem.FireLinkBFalse = (float)v),
+            new Entry("vehicles.gearSystem.counterBatteryTeamMin", "count", () => Vehicles.GearSystem.CounterBatteryTeamMin, v => Vehicles.GearSystem.CounterBatteryTeamMin = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.incomingM", "s", () => Vehicles.GearSystem.IncomingM, v => Vehicles.GearSystem.IncomingM = (float)v),
+            new Entry("vehicles.gearSystem.incomingCutMax", "x", () => Vehicles.GearSystem.IncomingCutMax, v => Vehicles.GearSystem.IncomingCutMax = (float)v),
+            new Entry("vehicles.gearSystem.incomingNowAdd", "s", () => Vehicles.GearSystem.IncomingNowAdd, v => Vehicles.GearSystem.IncomingNowAdd = v),
+            new Entry("vehicles.gearSystem.incomingNowMin", "s", () => Vehicles.GearSystem.IncomingNowMin, v => Vehicles.GearSystem.IncomingNowMin = v),
+            new Entry("vehicles.gearSystem.incomingCut", "s", () => Vehicles.GearSystem.IncomingCut, v => Vehicles.GearSystem.IncomingCut = (float)v),
+            new Entry("vehicles.gearSystem.incomingCutMax2", "x", () => Vehicles.GearSystem.IncomingCutMax2, v => Vehicles.GearSystem.IncomingCutMax2 = (float)v),
+            new Entry("vehicles.gearSystem.incomingM2", "x", () => Vehicles.GearSystem.IncomingM2, v => Vehicles.GearSystem.IncomingM2 = (float)v),
+            new Entry("vehicles.gearSystem.incomingAFloor", "x", () => Vehicles.GearSystem.IncomingAFloor, v => Vehicles.GearSystem.IncomingAFloor = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.frontalLengthSquaredMax", "m", () => Vehicles.GearSystem.FrontalLengthSquaredMax, v => Vehicles.GearSystem.FrontalLengthSquaredMax = (float)v),
+            new Entry("vehicles.gearSystem.soakWithinScale", "x", () => Vehicles.GearSystem.SoakWithinScale, v => Vehicles.GearSystem.SoakWithinScale = (float)v),
+            new Entry("vehicles.gearSystem.redirectDistanceSquaredMin", "m", () => Vehicles.GearSystem.RedirectDistanceSquaredMin, v => Vehicles.GearSystem.RedirectDistanceSquaredMin = (float)v),
+            new Entry("vehicles.gearSystem.afterDamagedAdaptCap", "count", () => Vehicles.GearSystem.AfterDamagedAdaptCap, v => Vehicles.GearSystem.AfterDamagedAdaptCap = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.afterDamagedNowAdd", "x", () => Vehicles.GearSystem.AfterDamagedNowAdd, v => Vehicles.GearSystem.AfterDamagedNowAdd = v),
+            new Entry("vehicles.gearSystem.afterDamagedAdaptIs", "x", () => Vehicles.GearSystem.AfterDamagedAdaptIs, v => Vehicles.GearSystem.AfterDamagedAdaptIs = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.onDeathHitIntervalFloor", "s", () => Vehicles.GearSystem.OnDeathHitIntervalFloor, v => Vehicles.GearSystem.OnDeathHitIntervalFloor = (float)v),
+            new Entry("vehicles.gearSystem.onDeathHitIntervalScale", "x", () => Vehicles.GearSystem.OnDeathHitIntervalScale, v => Vehicles.GearSystem.OnDeathHitIntervalScale = (float)v),
+            new Entry("vehicles.gearSystem.onDeathDistanceSquaredMin", "m", () => Vehicles.GearSystem.OnDeathDistanceSquaredMin, v => Vehicles.GearSystem.OnDeathDistanceSquaredMin = (float)v),
+            new Entry("vehicles.gearSystem.onDeathSelfFalse", "x", () => Vehicles.GearSystem.OnDeathSelfFalse, v => Vehicles.GearSystem.OnDeathSelfFalse = (float)v),
+            new Entry("vehicles.gearSystem.onDeathBFalse", "x", () => Vehicles.GearSystem.OnDeathBFalse, v => Vehicles.GearSystem.OnDeathBFalse = (float)v),
+            new Entry("vehicles.gearSystem.onDeathDelay", "x", () => Vehicles.GearSystem.OnDeathDelay, v => Vehicles.GearSystem.OnDeathDelay = v),
+            new Entry("vehicles.gearSystem.onDeathScale", "x", () => Vehicles.GearSystem.OnDeathScale, v => Vehicles.GearSystem.OnDeathScale = (float)v),
+            new Entry("vehicles.gearSystem.onDeathCrownStacksCap", "count", () => Vehicles.GearSystem.OnDeathCrownStacksCap, v => Vehicles.GearSystem.OnDeathCrownStacksCap = (int)System.Math.Round(v)),
+            new Entry("vehicles.gearSystem.empPayloadSpecialPower2False", "m", () => Vehicles.GearSystem.EmpPayloadSpecialPower2False, v => Vehicles.GearSystem.EmpPayloadSpecialPower2False = (float)v),
+            new Entry("vehicles.jamTracker.isLowDesiredSpeedFloor", "m/s", () => Vehicles.JamTracker.IsLowDesiredSpeedFloor, v => Vehicles.JamTracker.IsLowDesiredSpeedFloor = (float)v),
+            new Entry("vehicles.movementSystem.clearGroundMaxScale", "x", () => Vehicles.MovementSystem.ClearGroundMaxScale, v => Vehicles.MovementSystem.ClearGroundMaxScale = (float)v),
+            new Entry("vehicles.movementSystem.trackJamNowMax", "s", () => Vehicles.MovementSystem.TrackJamNowMax, v => Vehicles.MovementSystem.TrackJamNowMax = v),
+            new Entry("vehicles.movementSystem.runJamStageNowAdd", "s", () => Vehicles.MovementSystem.RunJamStageNowAdd, v => Vehicles.MovementSystem.RunJamStageNowAdd = v),
+            new Entry("vehicles.movementSystem.emergencyStageTimeAdd", "s", () => Vehicles.MovementSystem.EmergencyStageTimeAdd, v => Vehicles.MovementSystem.EmergencyStageTimeAdd = v),
+            new Entry("vehicles.movementSystem.tryLocalWaypointLengthSquaredMin", "m", () => Vehicles.MovementSystem.TryLocalWaypointLengthSquaredMin, v => Vehicles.MovementSystem.TryLocalWaypointLengthSquaredMin = (float)v),
+            new Entry("vehicles.movementSystem.tryLocalWaypointDistanceSquaredMin", "m", () => Vehicles.MovementSystem.TryLocalWaypointDistanceSquaredMin, v => Vehicles.MovementSystem.TryLocalWaypointDistanceSquaredMin = (float)v),
+            new Entry("vehicles.movementSystem.orcaTurnSpeedScale", "x", () => Vehicles.MovementSystem.OrcaTurnSpeedScale, v => Vehicles.MovementSystem.OrcaTurnSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.orcaTurnPreferredAdd", "m", () => Vehicles.MovementSystem.OrcaTurnPreferredAdd, v => Vehicles.MovementSystem.OrcaTurnPreferredAdd = (float)v),
+            new Entry("vehicles.movementSystem.orcaTurnMinScale", "x", () => Vehicles.MovementSystem.OrcaTurnMinScale, v => Vehicles.MovementSystem.OrcaTurnMinScale = (float)v),
+            new Entry("vehicles.movementSystem.resolveDeadlocksTickIs", "ticks", () => Vehicles.MovementSystem.ResolveDeadlocksTickIs, v => Vehicles.MovementSystem.ResolveDeadlocksTickIs = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.resolveDeadlocksCountMax", "count", () => Vehicles.MovementSystem.ResolveDeadlocksCountMax, v => Vehicles.MovementSystem.ResolveDeadlocksCountMax = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.resolveDeadlocksCountMin", "count", () => Vehicles.MovementSystem.ResolveDeadlocksCountMin, v => Vehicles.MovementSystem.ResolveDeadlocksCountMin = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.waitsForMaxAge", "s", () => Vehicles.MovementSystem.WaitsForMaxAge, v => Vehicles.MovementSystem.WaitsForMaxAge = v),
+            new Entry("vehicles.movementSystem.checkAnomalyAbsMax", "s", () => Vehicles.MovementSystem.CheckAnomalyAbsMax, v => Vehicles.MovementSystem.CheckAnomalyAbsMax = (float)v),
+            new Entry("vehicles.movementSystem.checkAnomalyTimeMax", "s", () => Vehicles.MovementSystem.CheckAnomalyTimeMax, v => Vehicles.MovementSystem.CheckAnomalyTimeMax = v),
+            new Entry("vehicles.movementSystem.flyWingDecoyScale", "x", () => Vehicles.MovementSystem.FlyWingDecoyScale, v => Vehicles.MovementSystem.FlyWingDecoyScale = (float)v),
+            new Entry("vehicles.movementSystem.flyWingWantFloor", "x", () => Vehicles.MovementSystem.FlyWingWantFloor, v => Vehicles.MovementSystem.FlyWingWantFloor = (float)v),
+            new Entry("vehicles.movementSystem.flyWingWantScale", "x", () => Vehicles.MovementSystem.FlyWingWantScale, v => Vehicles.MovementSystem.FlyWingWantScale = (float)v),
+            new Entry("vehicles.movementSystem.flyWingGapMin", "m", () => Vehicles.MovementSystem.FlyWingGapMin, v => Vehicles.MovementSystem.FlyWingGapMin = (float)v),
+            new Entry("vehicles.movementSystem.flyWingForwardScale", "x", () => Vehicles.MovementSystem.FlyWingForwardScale, v => Vehicles.MovementSystem.FlyWingForwardScale = (float)v),
+            new Entry("vehicles.movementSystem.flyWingSlotScale", "x", () => Vehicles.MovementSystem.FlyWingSlotScale, v => Vehicles.MovementSystem.FlyWingSlotScale = (float)v),
+            new Entry("vehicles.movementSystem.flyWingGapSub", "m", () => Vehicles.MovementSystem.FlyWingGapSub, v => Vehicles.MovementSystem.FlyWingGapSub = (float)v),
+            new Entry("vehicles.movementSystem.flyWingGapScale", "x", () => Vehicles.MovementSystem.FlyWingGapScale, v => Vehicles.MovementSystem.FlyWingGapScale = (float)v),
+            new Entry("vehicles.movementSystem.flyWingSpeedScale", "x", () => Vehicles.MovementSystem.FlyWingSpeedScale, v => Vehicles.MovementSystem.FlyWingSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.flyWingSpeedScale2", "x", () => Vehicles.MovementSystem.FlyWingSpeedScale2, v => Vehicles.MovementSystem.FlyWingSpeedScale2 = (float)v),
+            new Entry("vehicles.movementSystem.chooseLeaderFollowScale", "x", () => Vehicles.MovementSystem.ChooseLeaderFollowScale, v => Vehicles.MovementSystem.ChooseLeaderFollowScale = (float)v),
+            new Entry("vehicles.movementSystem.frontPointNormalizeScale", "x", () => Vehicles.MovementSystem.FrontPointNormalizeScale, v => Vehicles.MovementSystem.FrontPointNormalizeScale = (float)v),
+            new Entry("vehicles.movementSystem.seadTargetVisionRangeScale", "x", () => Vehicles.MovementSystem.SeadTargetVisionRangeScale, v => Vehicles.MovementSystem.SeadTargetVisionRangeScale = (float)v),
+            new Entry("vehicles.movementSystem.watchRescueTickMod", "ticks", () => Vehicles.MovementSystem.WatchRescueTickMod, v => Vehicles.MovementSystem.WatchRescueTickMod = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.tryHopLengthCap", "count", () => Vehicles.MovementSystem.TryHopLengthCap, v => Vehicles.MovementSystem.TryHopLengthCap = (float)v),
+            new Entry("vehicles.movementSystem.tryHopDMin", "m", () => Vehicles.MovementSystem.TryHopDMin, v => Vehicles.MovementSystem.TryHopDMin = (float)v),
+            new Entry("vehicles.movementSystem.tryHopD", "m", () => Vehicles.MovementSystem.TryHopD, v => Vehicles.MovementSystem.TryHopD = (float)v),
+            new Entry("vehicles.movementSystem.trafficPriorityMinRangeAdd", "m", () => Vehicles.MovementSystem.TrafficPriorityMinRangeAdd, v => Vehicles.MovementSystem.TrafficPriorityMinRangeAdd = (float)v),
+            new Entry("vehicles.movementSystem.trafficPriorityRangeMin", "m", () => Vehicles.MovementSystem.TrafficPriorityRangeMin, v => Vehicles.MovementSystem.TrafficPriorityRangeMin = (float)v),
+            new Entry("vehicles.movementSystem.trafficPriorityTrafficPriority5", "m", () => Vehicles.MovementSystem.TrafficPriorityTrafficPriority5, v => Vehicles.MovementSystem.TrafficPriorityTrafficPriority5 = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.trafficPriorityRangeScale", "x", () => Vehicles.MovementSystem.TrafficPriorityRangeScale, v => Vehicles.MovementSystem.TrafficPriorityRangeScale = (float)v),
+            new Entry("vehicles.movementSystem.trafficPriorityFindNearestEnemyTrue", "m", () => Vehicles.MovementSystem.TrafficPriorityFindNearestEnemyTrue, v => Vehicles.MovementSystem.TrafficPriorityFindNearestEnemyTrue = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.trafficPriorityFindNearestEnemyFalse", "m", () => Vehicles.MovementSystem.TrafficPriorityFindNearestEnemyFalse, v => Vehicles.MovementSystem.TrafficPriorityFindNearestEnemyFalse = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.moverDirectionLengthSquaredMin", "m", () => Vehicles.MovementSystem.MoverDirectionLengthSquaredMin, v => Vehicles.MovementSystem.MoverDirectionLengthSquaredMin = (float)v),
+            new Entry("vehicles.movementSystem.moverDirectionLengthSquaredMin2", "m", () => Vehicles.MovementSystem.MoverDirectionLengthSquaredMin2, v => Vehicles.MovementSystem.MoverDirectionLengthSquaredMin2 = (float)v),
+            new Entry("vehicles.movementSystem.tryYieldSpotLookAhead", "m", () => Vehicles.MovementSystem.TryYieldSpotLookAhead, v => Vehicles.MovementSystem.TryYieldSpotLookAhead = (float)v),
+            new Entry("vehicles.movementSystem.tryYieldSpotPassTrue", "m", () => Vehicles.MovementSystem.TryYieldSpotPassTrue, v => Vehicles.MovementSystem.TryYieldSpotPassTrue = (float)v),
+            new Entry("vehicles.movementSystem.tryYieldSpotKeepsTargetInReachFalse", "m", () => Vehicles.MovementSystem.TryYieldSpotKeepsTargetInReachFalse, v => Vehicles.MovementSystem.TryYieldSpotKeepsTargetInReachFalse = (float)v),
+            new Entry("vehicles.movementSystem.tryClearForwardLookAhead", "m", () => Vehicles.MovementSystem.TryClearForwardLookAhead, v => Vehicles.MovementSystem.TryClearForwardLookAhead = (float)v),
+            new Entry("vehicles.movementSystem.hullAtHullRadiusAdd", "m", () => Vehicles.MovementSystem.HullAtHullRadiusAdd, v => Vehicles.MovementSystem.HullAtHullRadiusAdd = (float)v),
+            new Entry("vehicles.movementSystem.keepsTargetInReachRangeScale", "x", () => Vehicles.MovementSystem.KeepsTargetInReachRangeScale, v => Vehicles.MovementSystem.KeepsTargetInReachRangeScale = (float)v),
+            new Entry("vehicles.movementSystem.negotiateAbsScale", "x", () => Vehicles.MovementSystem.NegotiateAbsScale, v => Vehicles.MovementSystem.NegotiateAbsScale = (float)v),
+            new Entry("vehicles.movementSystem.negotiateGapMin", "m", () => Vehicles.MovementSystem.NegotiateGapMin, v => Vehicles.MovementSystem.NegotiateGapMin = (float)v),
+            new Entry("vehicles.movementSystem.negotiateSpeedScale", "x", () => Vehicles.MovementSystem.NegotiateSpeedScale, v => Vehicles.MovementSystem.NegotiateSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.oncomingDotMin", "x", () => Vehicles.MovementSystem.OncomingDotMin, v => Vehicles.MovementSystem.OncomingDotMin = (float)v),
+            new Entry("vehicles.movementSystem.oncomingDotMax", "m", () => Vehicles.MovementSystem.OncomingDotMax, v => Vehicles.MovementSystem.OncomingDotMax = (float)v),
+            new Entry("vehicles.movementSystem.tryGateWaitSpotS", "s", () => Vehicles.MovementSystem.TryGateWaitSpotS, v => Vehicles.MovementSystem.TryGateWaitSpotS = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.tryGateWaitSpotBackScale", "x", () => Vehicles.MovementSystem.TryGateWaitSpotBackScale, v => Vehicles.MovementSystem.TryGateWaitSpotBackScale = (float)v),
+            new Entry("vehicles.movementSystem.tryGateWaitSpotRouteCountAtScale", "x", () => Vehicles.MovementSystem.TryGateWaitSpotRouteCountAtScale, v => Vehicles.MovementSystem.TryGateWaitSpotRouteCountAtScale = (float)v),
+            new Entry("vehicles.movementSystem.startReverseSpeedFloor", "m/s", () => Vehicles.MovementSystem.StartReverseSpeedFloor, v => Vehicles.MovementSystem.StartReverseSpeedFloor = (float)v),
+            new Entry("vehicles.movementSystem.startReverseTimeAdd", "s", () => Vehicles.MovementSystem.StartReverseTimeAdd, v => Vehicles.MovementSystem.StartReverseTimeAdd = v),
+            new Entry("vehicles.movementSystem.driveReverseSpeedScale", "x", () => Vehicles.MovementSystem.DriveReverseSpeedScale, v => Vehicles.MovementSystem.DriveReverseSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.onNoProgressHullBoundScale", "x", () => Vehicles.MovementSystem.OnNoProgressHullBoundScale, v => Vehicles.MovementSystem.OnNoProgressHullBoundScale = (float)v),
+            new Entry("vehicles.movementSystem.runPathQueueHullRadiusAdd", "m", () => Vehicles.MovementSystem.RunPathQueueHullRadiusAdd, v => Vehicles.MovementSystem.RunPathQueueHullRadiusAdd = (float)v),
+            new Entry("vehicles.movementSystem.applyCostedPathStrikesMin", "CP", () => Vehicles.MovementSystem.ApplyCostedPathStrikesMin, v => Vehicles.MovementSystem.ApplyCostedPathStrikesMin = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.keepCostedPathDistanceSquaredMax", "m", () => Vehicles.MovementSystem.KeepCostedPathDistanceSquaredMax, v => Vehicles.MovementSystem.KeepCostedPathDistanceSquaredMax = (float)v),
+            new Entry("vehicles.movementSystem.friendlyTrafficBehindSpeedMax", "m/s", () => Vehicles.MovementSystem.FriendlyTrafficBehindSpeedMax, v => Vehicles.MovementSystem.FriendlyTrafficBehindSpeedMax = (float)v),
+            new Entry("vehicles.movementSystem.friendlyTrafficBehindHullRadiusAdd", "m", () => Vehicles.MovementSystem.FriendlyTrafficBehindHullRadiusAdd, v => Vehicles.MovementSystem.FriendlyTrafficBehindHullRadiusAdd = (float)v),
+            new Entry("vehicles.movementSystem.tryOffLaneSpotRangeScale", "x", () => Vehicles.MovementSystem.TryOffLaneSpotRangeScale, v => Vehicles.MovementSystem.TryOffLaneSpotRangeScale = (float)v),
+            new Entry("vehicles.movementSystem.tryOffLaneSpotAlongScale", "x", () => Vehicles.MovementSystem.TryOffLaneSpotAlongScale, v => Vehicles.MovementSystem.TryOffLaneSpotAlongScale = (float)v),
+            new Entry("vehicles.movementSystem.tryOffLaneSpotFTrue", "count", () => Vehicles.MovementSystem.TryOffLaneSpotFTrue, v => Vehicles.MovementSystem.TryOffLaneSpotFTrue = (float)v),
+            new Entry("vehicles.movementSystem.tryOffLaneSpotCountScale", "x", () => Vehicles.MovementSystem.TryOffLaneSpotCountScale, v => Vehicles.MovementSystem.TryOffLaneSpotCountScale = (float)v),
+            new Entry("vehicles.movementSystem.clearShotFromRadiusScale", "x", () => Vehicles.MovementSystem.ClearShotFromRadiusScale, v => Vehicles.MovementSystem.ClearShotFromRadiusScale = (float)v),
+            new Entry("vehicles.movementSystem.clearShotFromRadiusScale2", "x", () => Vehicles.MovementSystem.ClearShotFromRadiusScale2, v => Vehicles.MovementSystem.ClearShotFromRadiusScale2 = (float)v),
+            new Entry("vehicles.movementSystem.tryStandBesideLengthSquaredMax", "m", () => Vehicles.MovementSystem.TryStandBesideLengthSquaredMax, v => Vehicles.MovementSystem.TryStandBesideLengthSquaredMax = (float)v),
+            new Entry("vehicles.movementSystem.blockerHullRadiusScale", "x", () => Vehicles.MovementSystem.BlockerHullRadiusScale, v => Vehicles.MovementSystem.BlockerHullRadiusScale = (float)v),
+            new Entry("vehicles.movementSystem.updateGuardReach", "s", () => Vehicles.MovementSystem.UpdateGuardReach, v => Vehicles.MovementSystem.UpdateGuardReach = (float)v),
+            new Entry("vehicles.movementSystem.updateGuardGuardLeashAdd", "m", () => Vehicles.MovementSystem.UpdateGuardGuardLeashAdd, v => Vehicles.MovementSystem.UpdateGuardGuardLeashAdd = (float)v),
+            new Entry("vehicles.movementSystem.updateGuardFromPostMin", "s", () => Vehicles.MovementSystem.UpdateGuardFromPostMin, v => Vehicles.MovementSystem.UpdateGuardFromPostMin = (float)v),
+            new Entry("vehicles.movementSystem.goalSealedMaxRings", "x", () => Vehicles.MovementSystem.GoalSealedMaxRings, v => Vehicles.MovementSystem.GoalSealedMaxRings = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.guardThreatInterceptorTrue", "m", () => Vehicles.MovementSystem.GuardThreatInterceptorTrue, v => Vehicles.MovementSystem.GuardThreatInterceptorTrue = (float)v),
+            new Entry("vehicles.movementSystem.guardThreatInterceptorFalse", "m", () => Vehicles.MovementSystem.GuardThreatInterceptorFalse, v => Vehicles.MovementSystem.GuardThreatInterceptorFalse = (float)v),
+            new Entry("vehicles.movementSystem.updateAttackMoveVisionRangeScale", "x", () => Vehicles.MovementSystem.UpdateAttackMoveVisionRangeScale, v => Vehicles.MovementSystem.UpdateAttackMoveVisionRangeScale = (float)v),
+            new Entry("vehicles.movementSystem.bombTargetVisionRangeFloor", "m", () => Vehicles.MovementSystem.BombTargetVisionRangeFloor, v => Vehicles.MovementSystem.BombTargetVisionRangeFloor = (float)v),
+            new Entry("vehicles.movementSystem.bombTargetWorthMin", "x", () => Vehicles.MovementSystem.BombTargetWorthMin, v => Vehicles.MovementSystem.BombTargetWorthMin = (float)v),
+            new Entry("vehicles.movementSystem.bombTargetWorthMax", "x", () => Vehicles.MovementSystem.BombTargetWorthMax, v => Vehicles.MovementSystem.BombTargetWorthMax = (float)v),
+            new Entry("vehicles.movementSystem.bombTargetDDivisor", "x", () => Vehicles.MovementSystem.BombTargetDDivisor, v => Vehicles.MovementSystem.BombTargetDDivisor = (float)v),
+            new Entry("vehicles.movementSystem.stayBehindArmourNearest", "x", () => Vehicles.MovementSystem.StayBehindArmourNearest, v => Vehicles.MovementSystem.StayBehindArmourNearest = (float)v),
+            new Entry("vehicles.movementSystem.stayBehindArmourHullBoundAdd", "x", () => Vehicles.MovementSystem.StayBehindArmourHullBoundAdd, v => Vehicles.MovementSystem.StayBehindArmourHullBoundAdd = (float)v),
+            new Entry("vehicles.movementSystem.stayBehindArmourReach", "x", () => Vehicles.MovementSystem.StayBehindArmourReach, v => Vehicles.MovementSystem.StayBehindArmourReach = (float)v),
+            new Entry("vehicles.movementSystem.stayBehindArmourDistanceMax", "m", () => Vehicles.MovementSystem.StayBehindArmourDistanceMax, v => Vehicles.MovementSystem.StayBehindArmourDistanceMax = (float)v),
+            new Entry("vehicles.movementSystem.stayBehindArmourDistanceMin", "m", () => Vehicles.MovementSystem.StayBehindArmourDistanceMin, v => Vehicles.MovementSystem.StayBehindArmourDistanceMin = (float)v),
+            new Entry("vehicles.movementSystem.stayBehindArmourRepathIntervalScale", "x", () => Vehicles.MovementSystem.StayBehindArmourRepathIntervalScale, v => Vehicles.MovementSystem.StayBehindArmourRepathIntervalScale = (float)v),
+            new Entry("vehicles.movementSystem.standoffPenetrationMin", "x", () => Vehicles.MovementSystem.StandoffPenetrationMin, v => Vehicles.MovementSystem.StandoffPenetrationMin = (int)System.Math.Round(v)),
+            new Entry("vehicles.movementSystem.standoffReachSub", "m", () => Vehicles.MovementSystem.StandoffReachSub, v => Vehicles.MovementSystem.StandoffReachSub = (float)v),
+            new Entry("vehicles.movementSystem.standoffLengthSquaredMin", "m", () => Vehicles.MovementSystem.StandoffLengthSquaredMin, v => Vehicles.MovementSystem.StandoffLengthSquaredMin = (float)v),
+            new Entry("vehicles.movementSystem.standoffGunScale", "x", () => Vehicles.MovementSystem.StandoffGunScale, v => Vehicles.MovementSystem.StandoffGunScale = (float)v),
+            new Entry("vehicles.movementSystem.standoffDegrees", "x", () => Vehicles.MovementSystem.StandoffDegrees, v => Vehicles.MovementSystem.StandoffDegrees = (float)v),
+            new Entry("vehicles.movementSystem.standoffReachScale", "x", () => Vehicles.MovementSystem.StandoffReachScale, v => Vehicles.MovementSystem.StandoffReachScale = (float)v),
+            new Entry("vehicles.movementSystem.standoffReachScale2", "x", () => Vehicles.MovementSystem.StandoffReachScale2, v => Vehicles.MovementSystem.StandoffReachScale2 = (float)v),
+            new Entry("vehicles.movementSystem.standoffBestExposureAdd", "m", () => Vehicles.MovementSystem.StandoffBestExposureAdd, v => Vehicles.MovementSystem.StandoffBestExposureAdd = (float)v),
+            new Entry("vehicles.movementSystem.hoverReachMainScale", "x", () => Vehicles.MovementSystem.HoverReachMainScale, v => Vehicles.MovementSystem.HoverReachMainScale = (float)v),
+            new Entry("vehicles.movementSystem.closeInMinRangeAdd", "m", () => Vehicles.MovementSystem.CloseInMinRangeAdd, v => Vehicles.MovementSystem.CloseInMinRangeAdd = (float)v),
+            new Entry("vehicles.movementSystem.closeInReachScale", "x", () => Vehicles.MovementSystem.CloseInReachScale, v => Vehicles.MovementSystem.CloseInReachScale = (float)v),
+            new Entry("vehicles.movementSystem.closeInRepathIntervalScale", "x", () => Vehicles.MovementSystem.CloseInRepathIntervalScale, v => Vehicles.MovementSystem.CloseInRepathIntervalScale = (float)v),
+            new Entry("vehicles.movementSystem.closeInReach", "s", () => Vehicles.MovementSystem.CloseInReach, v => Vehicles.MovementSystem.CloseInReach = (float)v),
+            new Entry("vehicles.movementSystem.closeInRangeAdd", "m", () => Vehicles.MovementSystem.CloseInRangeAdd, v => Vehicles.MovementSystem.CloseInRangeAdd = (float)v),
+            new Entry("vehicles.movementSystem.closeInGoalDriftMin", "s", () => Vehicles.MovementSystem.CloseInGoalDriftMin, v => Vehicles.MovementSystem.CloseInGoalDriftMin = (float)v),
+            new Entry("vehicles.movementSystem.holdToFireSeconds", "s", () => Vehicles.MovementSystem.HoldToFireSeconds, v => Vehicles.MovementSystem.HoldToFireSeconds = v),
+            new Entry("vehicles.movementSystem.driveSpeedScale", "x", () => Vehicles.MovementSystem.DriveSpeedScale, v => Vehicles.MovementSystem.DriveSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.driveSpeedMax", "m/s", () => Vehicles.MovementSystem.DriveSpeedMax, v => Vehicles.MovementSystem.DriveSpeedMax = (float)v),
+            new Entry("vehicles.movementSystem.driveTurnRateScale", "x", () => Vehicles.MovementSystem.DriveTurnRateScale, v => Vehicles.MovementSystem.DriveTurnRateScale = (float)v),
+            new Entry("vehicles.movementSystem.driveRadiusScale", "x", () => Vehicles.MovementSystem.DriveRadiusScale, v => Vehicles.MovementSystem.DriveRadiusScale = (float)v),
+            new Entry("vehicles.movementSystem.driveDistanceScale", "x", () => Vehicles.MovementSystem.DriveDistanceScale, v => Vehicles.MovementSystem.DriveDistanceScale = (float)v),
+            new Entry("vehicles.movementSystem.driveDistanceMin", "m", () => Vehicles.MovementSystem.DriveDistanceMin, v => Vehicles.MovementSystem.DriveDistanceMin = (float)v),
+            new Entry("vehicles.movementSystem.driveSpeedAdd", "m/s", () => Vehicles.MovementSystem.DriveSpeedAdd, v => Vehicles.MovementSystem.DriveSpeedAdd = (float)v),
+            new Entry("vehicles.movementSystem.driveSpeedScale2", "x", () => Vehicles.MovementSystem.DriveSpeedScale2, v => Vehicles.MovementSystem.DriveSpeedScale2 = (float)v),
+            new Entry("vehicles.movementSystem.driveSpeedScale3", "x", () => Vehicles.MovementSystem.DriveSpeedScale3, v => Vehicles.MovementSystem.DriveSpeedScale3 = (float)v),
+            new Entry("vehicles.movementSystem.driveDotMax", "x", () => Vehicles.MovementSystem.DriveDotMax, v => Vehicles.MovementSystem.DriveDotMax = (float)v),
+            new Entry("vehicles.movementSystem.driveSpeedScale4", "x", () => Vehicles.MovementSystem.DriveSpeedScale4, v => Vehicles.MovementSystem.DriveSpeedScale4 = (float)v),
+            new Entry("vehicles.movementSystem.driveHullHalfAdd", "m", () => Vehicles.MovementSystem.DriveHullHalfAdd, v => Vehicles.MovementSystem.DriveHullHalfAdd = (float)v),
+            new Entry("vehicles.movementSystem.driveHullRadiusScale", "x", () => Vehicles.MovementSystem.DriveHullRadiusScale, v => Vehicles.MovementSystem.DriveHullRadiusScale = (float)v),
+            new Entry("vehicles.movementSystem.driveAvoidSecondsScale", "x", () => Vehicles.MovementSystem.DriveAvoidSecondsScale, v => Vehicles.MovementSystem.DriveAvoidSecondsScale = v),
+            new Entry("vehicles.movementSystem.driveAbsMin", "m", () => Vehicles.MovementSystem.DriveAbsMin, v => Vehicles.MovementSystem.DriveAbsMin = (float)v),
+            new Entry("vehicles.movementSystem.driveSpeedScale5", "x", () => Vehicles.MovementSystem.DriveSpeedScale5, v => Vehicles.MovementSystem.DriveSpeedScale5 = (float)v),
+            new Entry("vehicles.movementSystem.driveDistanceMin2", "m", () => Vehicles.MovementSystem.DriveDistanceMin2, v => Vehicles.MovementSystem.DriveDistanceMin2 = (float)v),
+            new Entry("vehicles.movementSystem.driveMisalignmentMin", "m", () => Vehicles.MovementSystem.DriveMisalignmentMin, v => Vehicles.MovementSystem.DriveMisalignmentMin = (float)v),
+            new Entry("vehicles.movementSystem.driveFlyingTrue", "x", () => Vehicles.MovementSystem.DriveFlyingTrue, v => Vehicles.MovementSystem.DriveFlyingTrue = (float)v),
+            new Entry("vehicles.movementSystem.driveFlyingFalse", "x", () => Vehicles.MovementSystem.DriveFlyingFalse, v => Vehicles.MovementSystem.DriveFlyingFalse = (float)v),
+            new Entry("vehicles.movementSystem.driveMisalignmentTrue", "m", () => Vehicles.MovementSystem.DriveMisalignmentTrue, v => Vehicles.MovementSystem.DriveMisalignmentTrue = (float)v),
+            new Entry("vehicles.movementSystem.driveMisalignmentFalse", "m", () => Vehicles.MovementSystem.DriveMisalignmentFalse, v => Vehicles.MovementSystem.DriveMisalignmentFalse = (float)v),
+            new Entry("vehicles.movementSystem.driveDistanceScale2", "x", () => Vehicles.MovementSystem.DriveDistanceScale2, v => Vehicles.MovementSystem.DriveDistanceScale2 = (float)v),
+            new Entry("vehicles.movementSystem.driveTargetSpeedTrue", "m/s", () => Vehicles.MovementSystem.DriveTargetSpeedTrue, v => Vehicles.MovementSystem.DriveTargetSpeedTrue = (float)v),
+            new Entry("vehicles.movementSystem.driveTargetSpeedFalse", "m/s", () => Vehicles.MovementSystem.DriveTargetSpeedFalse, v => Vehicles.MovementSystem.DriveTargetSpeedFalse = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneTurnRadiusScale", "x", () => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale, v => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneTurnRadiusAdd", "m", () => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusAdd, v => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusAdd = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneTurnRadiusScale2", "x", () => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale2, v => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale2 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneRangeScale", "x", () => Vehicles.MovementSystem.DriveAeroplaneRangeScale, v => Vehicles.MovementSystem.DriveAeroplaneRangeScale = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneHalfXSub", "m", () => Vehicles.MovementSystem.DriveAeroplaneHalfXSub, v => Vehicles.MovementSystem.DriveAeroplaneHalfXSub = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneHalfZSub", "m", () => Vehicles.MovementSystem.DriveAeroplaneHalfZSub, v => Vehicles.MovementSystem.DriveAeroplaneHalfZSub = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneRangeFloor", "m", () => Vehicles.MovementSystem.DriveAeroplaneRangeFloor, v => Vehicles.MovementSystem.DriveAeroplaneRangeFloor = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneRangeScale2", "x", () => Vehicles.MovementSystem.DriveAeroplaneRangeScale2, v => Vehicles.MovementSystem.DriveAeroplaneRangeScale2 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneRangeScale3", "x", () => Vehicles.MovementSystem.DriveAeroplaneRangeScale3, v => Vehicles.MovementSystem.DriveAeroplaneRangeScale3 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneRangeScale4", "x", () => Vehicles.MovementSystem.DriveAeroplaneRangeScale4, v => Vehicles.MovementSystem.DriveAeroplaneRangeScale4 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneTurnRadiusScale3", "x", () => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale3, v => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale3 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneDistanceScale", "x", () => Vehicles.MovementSystem.DriveAeroplaneDistanceScale, v => Vehicles.MovementSystem.DriveAeroplaneDistanceScale = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneRangeScale5", "x", () => Vehicles.MovementSystem.DriveAeroplaneRangeScale5, v => Vehicles.MovementSystem.DriveAeroplaneRangeScale5 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneDistanceScale2", "x", () => Vehicles.MovementSystem.DriveAeroplaneDistanceScale2, v => Vehicles.MovementSystem.DriveAeroplaneDistanceScale2 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneGapScale", "x", () => Vehicles.MovementSystem.DriveAeroplaneGapScale, v => Vehicles.MovementSystem.DriveAeroplaneGapScale = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneVtolTrue", "x", () => Vehicles.MovementSystem.DriveAeroplaneVtolTrue, v => Vehicles.MovementSystem.DriveAeroplaneVtolTrue = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneVtolFalse", "x", () => Vehicles.MovementSystem.DriveAeroplaneVtolFalse, v => Vehicles.MovementSystem.DriveAeroplaneVtolFalse = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneGapAdd", "m", () => Vehicles.MovementSystem.DriveAeroplaneGapAdd, v => Vehicles.MovementSystem.DriveAeroplaneGapAdd = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneGapMin", "m", () => Vehicles.MovementSystem.DriveAeroplaneGapMin, v => Vehicles.MovementSystem.DriveAeroplaneGapMin = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneRangeScale6", "x", () => Vehicles.MovementSystem.DriveAeroplaneRangeScale6, v => Vehicles.MovementSystem.DriveAeroplaneRangeScale6 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneThrottle", "m", () => Vehicles.MovementSystem.DriveAeroplaneThrottle, v => Vehicles.MovementSystem.DriveAeroplaneThrottle = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneTurnRadiusFloor", "m", () => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusFloor, v => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusFloor = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneTurnRadiusFloor2", "m", () => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusFloor2, v => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusFloor2 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneTurnRadiusScale4", "x", () => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale4, v => Vehicles.MovementSystem.DriveAeroplaneTurnRadiusScale4 = (float)v),
+            new Entry("vehicles.movementSystem.driveAeroplaneSpeedScale", "x", () => Vehicles.MovementSystem.DriveAeroplaneSpeedScale, v => Vehicles.MovementSystem.DriveAeroplaneSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.dogfightDistanceMin", "m", () => Vehicles.MovementSystem.DogfightDistanceMin, v => Vehicles.MovementSystem.DogfightDistanceMin = (float)v),
+            new Entry("vehicles.movementSystem.dogfightTheirsMin", "m", () => Vehicles.MovementSystem.DogfightTheirsMin, v => Vehicles.MovementSystem.DogfightTheirsMin = (float)v),
+            new Entry("vehicles.movementSystem.dogfightMineMin", "m", () => Vehicles.MovementSystem.DogfightMineMin, v => Vehicles.MovementSystem.DogfightMineMin = (float)v),
+            new Entry("vehicles.movementSystem.dogfightTheirsMin2", "m", () => Vehicles.MovementSystem.DogfightTheirsMin2, v => Vehicles.MovementSystem.DogfightTheirsMin2 = (float)v),
+            new Entry("vehicles.movementSystem.dogfightTimeScale", "x", () => Vehicles.MovementSystem.DogfightTimeScale, v => Vehicles.MovementSystem.DogfightTimeScale = (float)v),
+            new Entry("vehicles.movementSystem.dogfightSinScale", "x", () => Vehicles.MovementSystem.DogfightSinScale, v => Vehicles.MovementSystem.DogfightSinScale = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldReachFloor", "m", () => Vehicles.MovementSystem.AttackHoldReachFloor, v => Vehicles.MovementSystem.AttackHoldReachFloor = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldReachScale", "x", () => Vehicles.MovementSystem.AttackHoldReachScale, v => Vehicles.MovementSystem.AttackHoldReachScale = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldReachScale2", "x", () => Vehicles.MovementSystem.AttackHoldReachScale2, v => Vehicles.MovementSystem.AttackHoldReachScale2 = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldPullThroughAdd", "s", () => Vehicles.MovementSystem.AttackHoldPullThroughAdd, v => Vehicles.MovementSystem.AttackHoldPullThroughAdd = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldReachScale3", "x", () => Vehicles.MovementSystem.AttackHoldReachScale3, v => Vehicles.MovementSystem.AttackHoldReachScale3 = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldGapScale", "x", () => Vehicles.MovementSystem.AttackHoldGapScale, v => Vehicles.MovementSystem.AttackHoldGapScale = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldCruiseScale", "x", () => Vehicles.MovementSystem.AttackHoldCruiseScale, v => Vehicles.MovementSystem.AttackHoldCruiseScale = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldHoldUntilFloor", "s", () => Vehicles.MovementSystem.AttackHoldHoldUntilFloor, v => Vehicles.MovementSystem.AttackHoldHoldUntilFloor = v),
+            new Entry("vehicles.movementSystem.attackHoldSpeedScale", "x", () => Vehicles.MovementSystem.AttackHoldSpeedScale, v => Vehicles.MovementSystem.AttackHoldSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldTurnRateScale", "x", () => Vehicles.MovementSystem.AttackHoldTurnRateScale, v => Vehicles.MovementSystem.AttackHoldTurnRateScale = (float)v),
+            new Entry("vehicles.movementSystem.attackHoldPullThroughScale", "x", () => Vehicles.MovementSystem.AttackHoldPullThroughScale, v => Vehicles.MovementSystem.AttackHoldPullThroughScale = (float)v),
+            new Entry("vehicles.movementSystem.holdSecondsClipAdd", "s", () => Vehicles.MovementSystem.HoldSecondsClipAdd, v => Vehicles.MovementSystem.HoldSecondsClipAdd = (float)v),
+            new Entry("vehicles.movementSystem.fastMoverSpeedScale", "x", () => Vehicles.MovementSystem.FastMoverSpeedScale, v => Vehicles.MovementSystem.FastMoverSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.underFlakRangeAdd", "m", () => Vehicles.MovementSystem.UnderFlakRangeAdd, v => Vehicles.MovementSystem.UnderFlakRangeAdd = (float)v),
+            new Entry("vehicles.movementSystem.orbitAroundDistanceMin", "m", () => Vehicles.MovementSystem.OrbitAroundDistanceMin, v => Vehicles.MovementSystem.OrbitAroundDistanceMin = (float)v),
+            new Entry("vehicles.movementSystem.orbitAroundClampScale", "x", () => Vehicles.MovementSystem.OrbitAroundClampScale, v => Vehicles.MovementSystem.OrbitAroundClampScale = (float)v),
+            new Entry("vehicles.movementSystem.steerToRearmOrbitScale", "x", () => Vehicles.MovementSystem.SteerToRearmOrbitScale, v => Vehicles.MovementSystem.SteerToRearmOrbitScale = (float)v),
+            new Entry("vehicles.movementSystem.steerToRearmOrbitAdd", "s", () => Vehicles.MovementSystem.SteerToRearmOrbitAdd, v => Vehicles.MovementSystem.SteerToRearmOrbitAdd = (float)v),
+            new Entry("vehicles.movementSystem.steerToRearmFixedWingFalse", "s", () => Vehicles.MovementSystem.SteerToRearmFixedWingFalse, v => Vehicles.MovementSystem.SteerToRearmFixedWingFalse = (float)v),
+            new Entry("vehicles.movementSystem.steerToRearmOrbitAdd2", "s", () => Vehicles.MovementSystem.SteerToRearmOrbitAdd2, v => Vehicles.MovementSystem.SteerToRearmOrbitAdd2 = (float)v),
+            new Entry("vehicles.movementSystem.steerToRearmDistanceMin", "m", () => Vehicles.MovementSystem.SteerToRearmDistanceMin, v => Vehicles.MovementSystem.SteerToRearmDistanceMin = (float)v),
+            new Entry("vehicles.movementSystem.runTargetRangeScale", "x", () => Vehicles.MovementSystem.RunTargetRangeScale, v => Vehicles.MovementSystem.RunTargetRangeScale = (float)v),
+            new Entry("vehicles.movementSystem.orbitPointDistanceMin", "m", () => Vehicles.MovementSystem.OrbitPointDistanceMin, v => Vehicles.MovementSystem.OrbitPointDistanceMin = (float)v),
+            new Entry("vehicles.movementSystem.orbitPointClampScale", "x", () => Vehicles.MovementSystem.OrbitPointClampScale, v => Vehicles.MovementSystem.OrbitPointClampScale = (float)v),
+            new Entry("vehicles.movementSystem.sidestepSpeedScale", "x", () => Vehicles.MovementSystem.SidestepSpeedScale, v => Vehicles.MovementSystem.SidestepSpeedScale = (float)v),
+            new Entry("vehicles.movementSystem.sidestepHullRadiusFloor", "m", () => Vehicles.MovementSystem.SidestepHullRadiusFloor, v => Vehicles.MovementSystem.SidestepHullRadiusFloor = (float)v),
+            new Entry("vehicles.movementSystem.sidestepHullRadiusAdd", "m", () => Vehicles.MovementSystem.SidestepHullRadiusAdd, v => Vehicles.MovementSystem.SidestepHullRadiusAdd = (float)v),
+            new Entry("vehicles.movementSystem.sidestepSpeedScale2", "x", () => Vehicles.MovementSystem.SidestepSpeedScale2, v => Vehicles.MovementSystem.SidestepSpeedScale2 = (float)v),
+            new Entry("vehicles.movementSystem.sidestepTimeAdd", "s", () => Vehicles.MovementSystem.SidestepTimeAdd, v => Vehicles.MovementSystem.SidestepTimeAdd = v),
+            new Entry("vehicles.movementSystem.tryDetourKDivisor", "x", () => Vehicles.MovementSystem.TryDetourKDivisor, v => Vehicles.MovementSystem.TryDetourKDivisor = (float)v),
+            new Entry("vehicles.movementSystem.tryDetourRingScale", "x", () => Vehicles.MovementSystem.TryDetourRingScale, v => Vehicles.MovementSystem.TryDetourRingScale = (float)v),
+            new Entry("vehicles.movementSystem.tryDetourLineOfSightFalse", "m", () => Vehicles.MovementSystem.TryDetourLineOfSightFalse, v => Vehicles.MovementSystem.TryDetourLineOfSightFalse = (float)v),
+            new Entry("vehicles.movementSystem.stillQueuedHullBoundAdd", "m", () => Vehicles.MovementSystem.StillQueuedHullBoundAdd, v => Vehicles.MovementSystem.StillQueuedHullBoundAdd = (float)v),
+            new Entry("vehicles.movementSystem.crowdedHullBoundScale", "x", () => Vehicles.MovementSystem.CrowdedHullBoundScale, v => Vehicles.MovementSystem.CrowdedHullBoundScale = (float)v),
+            new Entry("vehicles.movementSystem.crowdedHullBoundAdd", "m", () => Vehicles.MovementSystem.CrowdedHullBoundAdd, v => Vehicles.MovementSystem.CrowdedHullBoundAdd = (float)v),
+            new Entry("vehicles.movementSystem.tryUnjamNextDoubleAdd", "m", () => Vehicles.MovementSystem.TryUnjamNextDoubleAdd, v => Vehicles.MovementSystem.TryUnjamNextDoubleAdd = (float)v),
+            new Entry("vehicles.movementSystem.tryUnjamNextDoubleScale", "x", () => Vehicles.MovementSystem.TryUnjamNextDoubleScale, v => Vehicles.MovementSystem.TryUnjamNextDoubleScale = (float)v),
+            new Entry("vehicles.movementSystem.brakeShareMax", "x", () => Vehicles.MovementSystem.BrakeShareMax, v => Vehicles.MovementSystem.BrakeShareMax = (float)v),
+            new Entry("vehicles.movementSystem.brakeAgainstMin", "x", () => Vehicles.MovementSystem.BrakeAgainstMin, v => Vehicles.MovementSystem.BrakeAgainstMin = (float)v),
+            new Entry("vehicles.movementSystem.brakeMinScale", "x", () => Vehicles.MovementSystem.BrakeMinScale, v => Vehicles.MovementSystem.BrakeMinScale = (float)v),
+            new Entry("vehicles.passage.reachMaxScale", "x", () => Vehicles.Passage.ReachMaxScale, v => Vehicles.Passage.ReachMaxScale = (float)v),
+            new Entry("vehicles.passage.reachMaxAdd", "m", () => Vehicles.Passage.ReachMaxAdd, v => Vehicles.Passage.ReachMaxAdd = (float)v),
+            new Entry("vehicles.passage.throughputSpeedFloor", "m", () => Vehicles.Passage.ThroughputSpeedFloor, v => Vehicles.Passage.ThroughputSpeedFloor = (float)v),
+            new Entry("vehicles.passage.throughputHullLengthFloor", "m", () => Vehicles.Passage.ThroughputHullLengthFloor, v => Vehicles.Passage.ThroughputHullLengthFloor = (float)v),
+            new Entry("vehicles.passage.throughputHullLengthAdd", "m", () => Vehicles.Passage.ThroughputHullLengthAdd, v => Vehicles.Passage.ThroughputHullLengthAdd = (float)v),
+            new Entry("vehicles.passage.queuePointWidthAdd", "m", () => Vehicles.Passage.QueuePointWidthAdd, v => Vehicles.Passage.QueuePointWidthAdd = (float)v),
+            new Entry("vehicles.prop.ctorWidthScale", "x", () => Vehicles.Prop.CtorWidthScale, v => Vehicles.Prop.CtorWidthScale = (float)v),
+            new Entry("vehicles.prop.radiusMaxScale", "x", () => Vehicles.Prop.RadiusMaxScale, v => Vehicles.Prop.RadiusMaxScale = (float)v),
+            new Entry("vehicles.propDef.indestructibleMaxHpMin", "count", () => Vehicles.PropDef.IndestructibleMaxHpMin, v => Vehicles.PropDef.IndestructibleMaxHpMin = (float)v),
+            new Entry("vehicles.railCrossingDef.halfMaxScale", "x", () => Vehicles.RailCrossingDef.HalfMaxScale, v => Vehicles.RailCrossingDef.HalfMaxScale = (float)v),
+            new Entry("vehicles.railSpline.gateAtToLengthSub", "m", () => Vehicles.RailSpline.GateAtToLengthSub, v => Vehicles.RailSpline.GateAtToLengthSub = (float)v),
+            new Entry("vehicles.railSpline.segmentAtLengthSub", "m", () => Vehicles.RailSpline.SegmentAtLengthSub, v => Vehicles.RailSpline.SegmentAtLengthSub = (int)System.Math.Round(v)),
+            new Entry("vehicles.railSystem.dt", "x", () => Vehicles.RailSystem.Dt, v => Vehicles.RailSystem.Dt = (float)v),
+            new Entry("vehicles.railSystem.warningForLengthAdd", "m", () => Vehicles.RailSystem.WarningForLengthAdd, v => Vehicles.RailSystem.WarningForLengthAdd = (float)v),
+            new Entry("vehicles.railSystem.stepSpeedFloor", "m/s", () => Vehicles.RailSystem.StepSpeedFloor, v => Vehicles.RailSystem.StepSpeedFloor = (float)v),
+            new Entry("vehicles.railSystem.stepWidthFloor", "m", () => Vehicles.RailSystem.StepWidthFloor, v => Vehicles.RailSystem.StepWidthFloor = (float)v),
+            new Entry("vehicles.railSystem.stepSpeedMin", "m/s", () => Vehicles.RailSystem.StepSpeedMin, v => Vehicles.RailSystem.StepSpeedMin = (float)v),
+            new Entry("vehicles.railSystem.frontStopMaxScale", "x", () => Vehicles.RailSystem.FrontStopMaxScale, v => Vehicles.RailSystem.FrontStopMaxScale = (float)v),
+            new Entry("vehicles.railSystem.bufferGap", "m", () => Vehicles.RailSystem.BufferGap, v => Vehicles.RailSystem.BufferGap = (float)v),
+            new Entry("vehicles.railSystem.driveSpeedFloor", "m/s", () => Vehicles.RailSystem.DriveSpeedFloor, v => Vehicles.RailSystem.DriveSpeedFloor = (float)v),
+            new Entry("vehicles.railSystem.driveMaxScale", "x", () => Vehicles.RailSystem.DriveMaxScale, v => Vehicles.RailSystem.DriveMaxScale = (float)v),
+            new Entry("vehicles.railSystem.driveSpeedMax", "m/s", () => Vehicles.RailSystem.DriveSpeedMax, v => Vehicles.RailSystem.DriveSpeedMax = (float)v),
+            new Entry("vehicles.railSystem.stepRunsSupportTravelScale", "x", () => Vehicles.RailSystem.StepRunsSupportTravelScale, v => Vehicles.RailSystem.StepRunsSupportTravelScale = (float)v),
+            new Entry("vehicles.railSystem.stepRunsCountMin", "count", () => Vehicles.RailSystem.StepRunsCountMin, v => Vehicles.RailSystem.StepRunsCountMin = (int)System.Math.Round(v)),
+            new Entry("vehicles.railSystem.stepRunsSupportRunScale", "x", () => Vehicles.RailSystem.StepRunsSupportRunScale, v => Vehicles.RailSystem.StepRunsSupportRunScale = (float)v),
+            new Entry("vehicles.railSystem.reachKMax", "m", () => Vehicles.RailSystem.ReachKMax, v => Vehicles.RailSystem.ReachKMax = (int)System.Math.Round(v)),
+            new Entry("vehicles.railSystem.reachKScale", "x", () => Vehicles.RailSystem.ReachKScale, v => Vehicles.RailSystem.ReachKScale = v),
+            new Entry("vehicles.railSystem.setTimeMin", "s", () => Vehicles.RailSystem.SetTimeMin, v => Vehicles.RailSystem.SetTimeMin = v),
+            new Entry("vehicles.railSystem.markDangersKScale", "x", () => Vehicles.RailSystem.MarkDangersKScale, v => Vehicles.RailSystem.MarkDangersKScale = v),
+            new Entry("vehicles.railSystem.markDangersSpeedMax", "m/s", () => Vehicles.RailSystem.MarkDangersSpeedMax, v => Vehicles.RailSystem.MarkDangersSpeedMax = (float)v),
+            new Entry("vehicles.railSystem.markDangersSAdd", "x", () => Vehicles.RailSystem.MarkDangersSAdd, v => Vehicles.RailSystem.MarkDangersSAdd = (float)v),
+            new Entry("vehicles.railSystem.markDangersS2", "x", () => Vehicles.RailSystem.MarkDangersS2, v => Vehicles.RailSystem.MarkDangersS2 = (float)v),
+            new Entry("vehicles.railSystem.markDangersBandHalfAdd", "x", () => Vehicles.RailSystem.MarkDangersBandHalfAdd, v => Vehicles.RailSystem.MarkDangersBandHalfAdd = (float)v),
+            new Entry("vehicles.railSystem.markDangersHalfAdd", "s", () => Vehicles.RailSystem.MarkDangersHalfAdd, v => Vehicles.RailSystem.MarkDangersHalfAdd = (float)v),
+            new Entry("vehicles.railSystem.tellBandHalfAdd", "m", () => Vehicles.RailSystem.TellBandHalfAdd, v => Vehicles.RailSystem.TellBandHalfAdd = (float)v),
+            new Entry("vehicles.railSystem.pushSpeedScale", "x", () => Vehicles.RailSystem.PushSpeedScale, v => Vehicles.RailSystem.PushSpeedScale = (float)v),
+            new Entry("vehicles.railSystem.pushSpeedAdd", "m/s", () => Vehicles.RailSystem.PushSpeedAdd, v => Vehicles.RailSystem.PushSpeedAdd = (float)v),
+            new Entry("vehicles.railSystem.pushNowMin", "s", () => Vehicles.RailSystem.PushNowMin, v => Vehicles.RailSystem.PushNowMin = v),
+            new Entry("vehicles.railSystem.offRailAbsMin", "x", () => Vehicles.RailSystem.OffRailAbsMin, v => Vehicles.RailSystem.OffRailAbsMin = (float)v),
+            new Entry("vehicles.setChip.twoPieceCountMin", "count", () => Vehicles.SetChip.TwoPieceCountMin, v => Vehicles.SetChip.TwoPieceCountMin = (int)System.Math.Round(v)),
+            new Entry("vehicles.simWorld.commanderOutgoingMaxHpScale", "x", () => Vehicles.SimWorld.CommanderOutgoingMaxHpScale, v => Vehicles.SimWorld.CommanderOutgoingMaxHpScale = (float)v),
+            new Entry("vehicles.simWorld.aiRandomSeedScale", "x", () => Vehicles.SimWorld.AiRandomSeedScale, v => Vehicles.SimWorld.AiRandomSeedScale = (int)System.Math.Round(v)),
+            new Entry("vehicles.simWorld.aiRandomTeamAdd", "share", () => Vehicles.SimWorld.AiRandomTeamAdd, v => Vehicles.SimWorld.AiRandomTeamAdd = (int)System.Math.Round(v)),
+            new Entry("vehicles.simWorld.aiRandomTeamScale", "x", () => Vehicles.SimWorld.AiRandomTeamScale, v => Vehicles.SimWorld.AiRandomTeamScale = (int)System.Math.Round(v)),
+            new Entry("vehicles.simWorld.aiRandomLayerScale", "x", () => Vehicles.SimWorld.AiRandomLayerScale, v => Vehicles.SimWorld.AiRandomLayerScale = (int)System.Math.Round(v)),
+            new Entry("vehicles.squadCorridors.stepTickMod", "ticks", () => Vehicles.SquadCorridors.StepTickMod, v => Vehicles.SquadCorridors.StepTickMod = (int)System.Math.Round(v)),
+            new Entry("vehicles.squadCorridors.stepTickIs", "ticks", () => Vehicles.SquadCorridors.StepTickIs, v => Vehicles.SquadCorridors.StepTickIs = (int)System.Math.Round(v)),
+            new Entry("vehicles.squadCorridors.stepTimeMin", "s", () => Vehicles.SquadCorridors.StepTimeMin, v => Vehicles.SquadCorridors.StepTimeMin = v),
+            new Entry("vehicles.squadCorridors.getDistanceMax", "m", () => Vehicles.SquadCorridors.GetDistanceMax, v => Vehicles.SquadCorridors.GetDistanceMax = (float)v),
+            new Entry("vehicles.squadCorridors.getDistanceMax2", "m", () => Vehicles.SquadCorridors.GetDistanceMax2, v => Vehicles.SquadCorridors.GetDistanceMax2 = (float)v),
+            new Entry("vehicles.squadCorridors.planCorridorNodesFloor", "x", () => Vehicles.SquadCorridors.PlanCorridorNodesFloor, v => Vehicles.SquadCorridors.PlanCorridorNodesFloor = (int)System.Math.Round(v)),
+            new Entry("vehicles.squadCorridors.composeCountMax", "count", () => Vehicles.SquadCorridors.ComposeCountMax, v => Vehicles.SquadCorridors.ComposeCountMax = (int)System.Math.Round(v)),
+            new Entry("vehicles.squadCorridors.composeNearestAdd", "count", () => Vehicles.SquadCorridors.ComposeNearestAdd, v => Vehicles.SquadCorridors.ComposeNearestAdd = (int)System.Math.Round(v)),
+            new Entry("vehicles.squadCorridors.composeCountSub", "count", () => Vehicles.SquadCorridors.ComposeCountSub, v => Vehicles.SquadCorridors.ComposeCountSub = (int)System.Math.Round(v)),
+            new Entry("vehicles.squadCorridors.composeLastSub", "x", () => Vehicles.SquadCorridors.ComposeLastSub, v => Vehicles.SquadCorridors.ComposeLastSub = (int)System.Math.Round(v)),
+            new Entry("vehicles.squadCorridors.composeDistanceSquaredMin", "m", () => Vehicles.SquadCorridors.ComposeDistanceSquaredMin, v => Vehicles.SquadCorridors.ComposeDistanceSquaredMin = (float)v),
+            new Entry("vehicles.supplySystem.stepValueMod", "s", () => Vehicles.SupplySystem.StepValueMod, v => Vehicles.SupplySystem.StepValueMod = (int)System.Math.Round(v)),
+            new Entry("vehicles.supplySystem.decideValueMod", "s", () => Vehicles.SupplySystem.DecideValueMod, v => Vehicles.SupplySystem.DecideValueMod = (int)System.Math.Round(v)),
+            new Entry("vehicles.supplySystem.canBreakOffRangeScale", "x", () => Vehicles.SupplySystem.CanBreakOffRangeScale, v => Vehicles.SupplySystem.CanBreakOffRangeScale = (float)v),
+            new Entry("vehicles.supplySystem.readyToFightShareMin", "x", () => Vehicles.SupplySystem.ReadyToFightShareMin, v => Vehicles.SupplySystem.ReadyToFightShareMin = (float)v),
+            new Entry("vehicles.supplySystem.hasWorkVisionRangeFloor", "m", () => Vehicles.SupplySystem.HasWorkVisionRangeFloor, v => Vehicles.SupplySystem.HasWorkVisionRangeFloor = (float)v),
+            new Entry("vehicles.supplySystem.hasWorkRangeScale", "x", () => Vehicles.SupplySystem.HasWorkRangeScale, v => Vehicles.SupplySystem.HasWorkRangeScale = (float)v),
+            new Entry("vehicles.supplySystem.hasWorkInterceptorFalse", "m", () => Vehicles.SupplySystem.HasWorkInterceptorFalse, v => Vehicles.SupplySystem.HasWorkInterceptorFalse = (float)v),
+            new Entry("vehicles.supplySystem.orbitSpeedFloor", "m/s", () => Vehicles.SupplySystem.OrbitSpeedFloor, v => Vehicles.SupplySystem.OrbitSpeedFloor = (float)v),
+            new Entry("vehicles.supplySystem.orbitSpeedScale", "x", () => Vehicles.SupplySystem.OrbitSpeedScale, v => Vehicles.SupplySystem.OrbitSpeedScale = (float)v),
+            new Entry("vehicles.supplySystem.chooseSiteSpeedFloor", "m/s", () => Vehicles.SupplySystem.ChooseSiteSpeedFloor, v => Vehicles.SupplySystem.ChooseSiteSpeedFloor = (float)v),
+            new Entry("vehicles.supplySystem.chooseSiteMaxHpScale", "x", () => Vehicles.SupplySystem.ChooseSiteMaxHpScale, v => Vehicles.SupplySystem.ChooseSiteMaxHpScale = (float)v),
+            new Entry("vehicles.supplySystem.chooseSiteTimeScale", "x", () => Vehicles.SupplySystem.ChooseSiteTimeScale, v => Vehicles.SupplySystem.ChooseSiteTimeScale = (float)v),
+            new Entry("vehicles.supplySystem.chooseSiteTimeAdd", "x", () => Vehicles.SupplySystem.ChooseSiteTimeAdd, v => Vehicles.SupplySystem.ChooseSiteTimeAdd = (float)v),
+            new Entry("vehicles.supplySystem.carrierSpeedFloor", "m/s", () => Vehicles.SupplySystem.CarrierSpeedFloor, v => Vehicles.SupplySystem.CarrierSpeedFloor = (float)v),
+            new Entry("vehicles.supplySystem.carrierSpeedScale", "x", () => Vehicles.SupplySystem.CarrierSpeedScale, v => Vehicles.SupplySystem.CarrierSpeedScale = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointLengthSquaredMax", "m", () => Vehicles.SupplySystem.HoldingPointLengthSquaredMax, v => Vehicles.SupplySystem.HoldingPointLengthSquaredMax = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointLengthSquaredMin", "m", () => Vehicles.SupplySystem.HoldingPointLengthSquaredMin, v => Vehicles.SupplySystem.HoldingPointLengthSquaredMin = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointSpeedFloor", "m/s", () => Vehicles.SupplySystem.HoldingPointSpeedFloor, v => Vehicles.SupplySystem.HoldingPointSpeedFloor = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointSpeedScale", "x", () => Vehicles.SupplySystem.HoldingPointSpeedScale, v => Vehicles.SupplySystem.HoldingPointSpeedScale = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointSpeedAdd", "m/s", () => Vehicles.SupplySystem.HoldingPointSpeedAdd, v => Vehicles.SupplySystem.HoldingPointSpeedAdd = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointFixedWingFalse", "x", () => Vehicles.SupplySystem.HoldingPointFixedWingFalse, v => Vehicles.SupplySystem.HoldingPointFixedWingFalse = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointSpeedScale2", "x", () => Vehicles.SupplySystem.HoldingPointSpeedScale2, v => Vehicles.SupplySystem.HoldingPointSpeedScale2 = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointSpeedFloor2", "m/s", () => Vehicles.SupplySystem.HoldingPointSpeedFloor2, v => Vehicles.SupplySystem.HoldingPointSpeedFloor2 = (float)v),
+            new Entry("vehicles.supplySystem.holdingPointSpeedScale3", "x", () => Vehicles.SupplySystem.HoldingPointSpeedScale3, v => Vehicles.SupplySystem.HoldingPointSpeedScale3 = (float)v),
+            new Entry("vehicles.supplySystem.airReachInterceptorTrue", "m", () => Vehicles.SupplySystem.AirReachInterceptorTrue, v => Vehicles.SupplySystem.AirReachInterceptorTrue = (float)v),
+            new Entry("vehicles.supplySystem.siteRateAirReachAdd", "m", () => Vehicles.SupplySystem.SiteRateAirReachAdd, v => Vehicles.SupplySystem.SiteRateAirReachAdd = (float)v),
+            new Entry("vehicles.trafficCoordinator.stepTickMod", "s", () => Vehicles.TrafficCoordinator.StepTickMod, v => Vehicles.TrafficCoordinator.StepTickMod = (int)System.Math.Round(v)),
+            new Entry("vehicles.trafficCoordinator.stepTickMod2", "s", () => Vehicles.TrafficCoordinator.StepTickMod2, v => Vehicles.TrafficCoordinator.StepTickMod2 = (int)System.Math.Round(v)),
+            new Entry("vehicles.trafficCoordinator.stepTickIs", "s", () => Vehicles.TrafficCoordinator.StepTickIs, v => Vehicles.TrafficCoordinator.StepTickIs = (int)System.Math.Round(v)),
+            new Entry("vehicles.trafficCoordinator.stepTickIs2", "s", () => Vehicles.TrafficCoordinator.StepTickIs2, v => Vehicles.TrafficCoordinator.StepTickIs2 = (int)System.Math.Round(v)),
+            new Entry("vehicles.trafficCoordinator.stepTickIs3", "s", () => Vehicles.TrafficCoordinator.StepTickIs3, v => Vehicles.TrafficCoordinator.StepTickIs3 = (int)System.Math.Round(v)),
+            new Entry("vehicles.trafficCoordinator.stepTickMod3", "s", () => Vehicles.TrafficCoordinator.StepTickMod3, v => Vehicles.TrafficCoordinator.StepTickMod3 = (int)System.Math.Round(v)),
+            new Entry("vehicles.trafficCoordinator.stepTickIs4", "s", () => Vehicles.TrafficCoordinator.StepTickIs4, v => Vehicles.TrafficCoordinator.StepTickIs4 = (int)System.Math.Round(v)),
+            new Entry("vehicles.trafficCoordinator.stepTickIs5", "s", () => Vehicles.TrafficCoordinator.StepTickIs5, v => Vehicles.TrafficCoordinator.StepTickIs5 = (int)System.Math.Round(v)),
+            new Entry("vehicles.trafficCoordinator.ensureBuiltDistanceSquaredMin", "m", () => Vehicles.TrafficCoordinator.EnsureBuiltDistanceSquaredMin, v => Vehicles.TrafficCoordinator.EnsureBuiltDistanceSquaredMin = (float)v),
+            new Entry("vehicles.trafficCoordinator.firstPassageAlongReachScale", "x", () => Vehicles.TrafficCoordinator.FirstPassageAlongReachScale, v => Vehicles.TrafficCoordinator.FirstPassageAlongReachScale = (float)v),
+            new Entry("vehicles.trafficCoordinator.predictArrivalsSpeedFloor", "m/s", () => Vehicles.TrafficCoordinator.PredictArrivalsSpeedFloor, v => Vehicles.TrafficCoordinator.PredictArrivalsSpeedFloor = (float)v),
+            new Entry("vehicles.trafficCoordinator.queueDelayThroughputFloor", "s", () => Vehicles.TrafficCoordinator.QueueDelayThroughputFloor, v => Vehicles.TrafficCoordinator.QueueDelayThroughputFloor = (float)v),
+            new Entry("vehicles.trafficCoordinator.sweepPassingHullBoundAdd", "m", () => Vehicles.TrafficCoordinator.SweepPassingHullBoundAdd, v => Vehicles.TrafficCoordinator.SweepPassingHullBoundAdd = (float)v),
+            new Entry("vehicles.trafficCoordinator.outOfExitLengthSquaredMin", "m", () => Vehicles.TrafficCoordinator.OutOfExitLengthSquaredMin, v => Vehicles.TrafficCoordinator.OutOfExitLengthSquaredMin = (float)v),
+            new Entry("vehicles.trafficCoordinator.splashSpacingEnemySplashFloor", "m", () => Vehicles.TrafficCoordinator.SplashSpacingEnemySplashFloor, v => Vehicles.TrafficCoordinator.SplashSpacingEnemySplashFloor = (float)v),
+            new Entry("vehicles.trafficCoordinator.addCongestionCongestionRadiusAdd", "m", () => Vehicles.TrafficCoordinator.AddCongestionCongestionRadiusAdd, v => Vehicles.TrafficCoordinator.AddCongestionCongestionRadiusAdd = (float)v),
+            new Entry("vehicles.trafficSteering.avoidDotMax", "x", () => Vehicles.TrafficSteering.AvoidDotMax, v => Vehicles.TrafficSteering.AvoidDotMax = (float)v),
+            new Entry("vehicles.trafficSteering.avoidCombinedFloor", "x", () => Vehicles.TrafficSteering.AvoidCombinedFloor, v => Vehicles.TrafficSteering.AvoidCombinedFloor = (float)v),
+            new Entry("vehicles.trafficSteering.avoidUrgencyFloor", "x", () => Vehicles.TrafficSteering.AvoidUrgencyFloor, v => Vehicles.TrafficSteering.AvoidUrgencyFloor = (float)v),
+            new Entry("vehicles.trafficSteering.avoidDepthFloor", "x", () => Vehicles.TrafficSteering.AvoidDepthFloor, v => Vehicles.TrafficSteering.AvoidDepthFloor = (float)v),
+            new Entry("vehicles.traitDef.atLengthMin", "m", () => Vehicles.TraitDef.AtLengthMin, v => Vehicles.TraitDef.AtLengthMin = (int)System.Math.Round(v)),
+            new Entry("vehicles.vehicle.fireFactorOverdrivenTrue", "x", () => Vehicles.Vehicle.FireFactorOverdrivenTrue, v => Vehicles.Vehicle.FireFactorOverdrivenTrue = (float)v),
+            new Entry("vehicles.vehicle.isMovingSpeedMin", "m/s", () => Vehicles.Vehicle.IsMovingSpeedMin, v => Vehicles.Vehicle.IsMovingSpeedMin = (float)v),
+            new Entry("vehicles.vehicleDef.ctorRadiusScale2", "x", () => Vehicles.VehicleDef.CtorRadiusScale2, v => Vehicles.VehicleDef.CtorRadiusScale2 = (float)v),
+            new Entry("vehicles.vehicleDef.ctorRadiusScale3", "x", () => Vehicles.VehicleDef.CtorRadiusScale3, v => Vehicles.VehicleDef.CtorRadiusScale3 = (float)v),
+            new Entry("vehicles.vehicleDef.hullRadiusWidthScale", "x", () => Vehicles.VehicleDef.HullRadiusWidthScale, v => Vehicles.VehicleDef.HullRadiusWidthScale = (float)v),
+            new Entry("vehicles.vehicleDef.powerMaxHpDivisor", "x", () => Vehicles.VehicleDef.PowerMaxHpDivisor, v => Vehicles.VehicleDef.PowerMaxHpDivisor = (float)v),
+            new Entry("vehicles.vehicleDef.powerMaxHpDivisor2", "x", () => Vehicles.VehicleDef.PowerMaxHpDivisor2, v => Vehicles.VehicleDef.PowerMaxHpDivisor2 = (float)v),
+            new Entry("vehicles.vehicleDef.fortPowerSizeValue", "count", () => Vehicles.VehicleDef.FortPowerSizeValue, v => Vehicles.VehicleDef.FortPowerSizeValue = (float)v),
+            new Entry("vehicles.vehicleDef.fortPowerSizeValue2", "count", () => Vehicles.VehicleDef.FortPowerSizeValue2, v => Vehicles.VehicleDef.FortPowerSizeValue2 = (float)v),
+            new Entry("vehicles.vehicleDef.fortPowerSizeValue3", "count", () => Vehicles.VehicleDef.FortPowerSizeValue3, v => Vehicles.VehicleDef.FortPowerSizeValue3 = (float)v),
+            new Entry("vehicles.vehicleDef.inferWeightMaxHpMin", "count", () => Vehicles.VehicleDef.InferWeightMaxHpMin, v => Vehicles.VehicleDef.InferWeightMaxHpMin = (float)v),
+            new Entry("vehicles.vehicleFit.classMeetsNScale", "x", () => Vehicles.VehicleFit.ClassMeetsNScale, v => Vehicles.VehicleFit.ClassMeetsNScale = (int)System.Math.Round(v)),
+            new Entry("vehicles.weaponDef.ctorBurstInterval", "s", () => Vehicles.WeaponDef.CtorBurstInterval, v => Vehicles.WeaponDef.CtorBurstInterval = (float)v),
+            new Entry("vehicles.weaponDef.magazineReloadAmmoScale", "x", () => Vehicles.WeaponDef.MagazineReloadAmmoScale, v => Vehicles.WeaponDef.MagazineReloadAmmoScale = (float)v),
+            new Entry("vehicles.weaponDef.magazineReloadAmmoMin", "s", () => Vehicles.WeaponDef.MagazineReloadAmmoMin, v => Vehicles.WeaponDef.MagazineReloadAmmoMin = (float)v),
+            new Entry("vehicles.weaponDef.magazineReloadAmmoMax", "s", () => Vehicles.WeaponDef.MagazineReloadAmmoMax, v => Vehicles.WeaponDef.MagazineReloadAmmoMax = (float)v),
+            new Entry("vehicles.weaponDef.sustainedDpsCycleSecondsFloor", "s", () => Vehicles.WeaponDef.SustainedDpsCycleSecondsFloor, v => Vehicles.WeaponDef.SustainedDpsCycleSecondsFloor = (float)v),
+            new Entry("vehicles.weaponDef.antiArmourPenetrationMin", "x", () => Vehicles.WeaponDef.AntiArmourPenetrationMin, v => Vehicles.WeaponDef.AntiArmourPenetrationMin = (int)System.Math.Round(v)),
+            new Entry("vehicles.weaponDef.tunedCooldownFloor", "x", () => Vehicles.WeaponDef.TunedCooldownFloor, v => Vehicles.WeaponDef.TunedCooldownFloor = (float)v),
+            new Entry("vehicles.weaponDef.tunedMinRangeAdd", "m", () => Vehicles.WeaponDef.TunedMinRangeAdd, v => Vehicles.WeaponDef.TunedMinRangeAdd = (float)v),
+            new Entry("vehicles.weaponDef.tunedProjectileSpeedFloor", "m/s", () => Vehicles.WeaponDef.TunedProjectileSpeedFloor, v => Vehicles.WeaponDef.TunedProjectileSpeedFloor = (float)v),
+            new Entry("vehicles.wreckField.aheadDistanceScale", "x", () => Vehicles.WreckField.AheadDistanceScale, v => Vehicles.WreckField.AheadDistanceScale = (float)v),
+            new Entry("vehicles.wreckField.overlapValueScale", "x", () => Vehicles.WreckField.OverlapValueScale, v => Vehicles.WreckField.OverlapValueScale = (float)v),
+            new Entry("vehicles.wreckStates.animatingSeconds", "s", () => Vehicles.WreckStates.AnimatingSeconds, v => Vehicles.WreckStates.AnimatingSeconds = v),
         };
     }
 }

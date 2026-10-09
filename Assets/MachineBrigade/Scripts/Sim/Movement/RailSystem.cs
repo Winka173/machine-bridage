@@ -163,7 +163,7 @@ namespace MachineBrigade.Sim.Movement
         private readonly PathCosts _costs = new();
         private readonly EntityId[] _one = new EntityId[1];
         private double _bossAlertAt = double.NegativeInfinity;
-        private float _dt = 0.05f;
+        private float _dt = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.Dt;
 
         /// <summary>A train this step: its rail, the stretch it covers (s from back to front), the way it runs and how fast.</summary>
         private struct Train
@@ -222,7 +222,7 @@ namespace MachineBrigade.Sim.Movement
         public int Pushed { get; private set; }
 
         /// <summary>A crossing's least warning: max(4 s, its length / 4.5 m/s + 0.5 s).</summary>
-        public static float WarningFor(RailCrossingDef c) => MathF.Max(MinWarning, c.Length / SlowReference + 0.5f);
+        public static float WarningFor(RailCrossingDef c) => MathF.Max(MinWarning, c.Length / SlowReference + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.WarningForLengthAdd);
 
         /// <summary>The support train's front against its stop at <paramref name="t"/> s from its stop time (the view's curve: in, wait, out).</summary>
         public static float SupportOffset(float t)
@@ -308,8 +308,8 @@ namespace MachineBrigade.Sim.Movement
                 _trains.Add(new Train
                 {
                     Rail = v.Rail, Back = v.RailS - half, Front = v.RailS + half, Dir = v.RailDir, Speed = MathF.Abs(v.Speed),
-                    Top = MathF.Max(0.05f, v.Def.Speed * v.SpeedFactor), Boss = v.Def.Boss && !v.Def.Static, Team = v.Team,
-                    HalfWidth = MathF.Max(1.2f, v.Def.Width * 0.5f), Vehicle = v,
+                    Top = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.StepSpeedFloor, v.Def.Speed * v.SpeedFactor), Boss = v.Def.Boss && !v.Def.Static, Team = v.Team,
+                    HalfWidth = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.StepWidthFloor, v.Def.Width * 0.5f), Vehicle = v,
                 });
             }
             StepRuns(now);
@@ -317,7 +317,7 @@ namespace MachineBrigade.Sim.Movement
             MarkDangers(now);
             Tell(now);
             foreach (var t in _trains)
-                if (t.Speed > 0.02f || t.Run != null) Push(t, dt, now);
+                if (t.Speed > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.StepSpeedMin || t.Run != null) Push(t, dt, now);
         }
 
         /// <summary>
@@ -326,10 +326,10 @@ namespace MachineBrigade.Sim.Movement
         /// A line too short for the whole train keeps it at the start of its play range.
         /// </summary>
         private static float FrontStop(Vehicle v, RailSpline line) =>
-            MathF.Max(line.PlayFrom, MathF.Min(line.PlayTo, line.Length - MathF.Max(1f, MathF.Max(v.Def.Length, v.Def.ModelLength) * 0.5f) - BufferGap));
+            MathF.Max(line.PlayFrom, MathF.Min(line.PlayTo, line.Length - MathF.Max(1f, MathF.Max(v.Def.Length, v.Def.ModelLength) * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.FrontStopMaxScale) - BufferGap));
 
         /// <summary>Metres a train stops short of the buffer stop at the end of its track.</summary>
-        private const float BufferGap = 2f;
+        private static float BufferGap => global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.BufferGap;
 
         /// <summary>A train runs along its rail to its order's point taken onto the line (speeding up and braking at its own rate).</summary>
         private void Drive(Vehicle v, float dt)
@@ -338,12 +338,12 @@ namespace MachineBrigade.Sim.Movement
             var target = v.RailS;
             if (v.Order.Kind is OrderKind.Move or OrderKind.AttackMove) target = Math.Clamp(line.Project(v.Order.Point, out _), line.PlayFrom, FrontStop(v, line));
             var top = v.Stunned || v.Charging || v.Transforming ? 0f : v.Def.Speed * v.SpeedFactor;
-            var accel = MathF.Max(0.05f, v.Def.Speed) * dt;
+            var accel = MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.DriveSpeedFloor, v.Def.Speed) * dt;
             var left = target - v.RailS;
             var dir = MathF.Abs(left) < 0.05f ? 0 : MathF.Sign(left);
             // The signed speed along the rail: braking to stop at the target.
             var along = v.Speed * v.RailDir;
-            var want = dir == 0 ? 0f : dir * MathF.Min(top, MathF.Sqrt(2f * MathF.Max(0.05f, v.Def.Speed) * MathF.Abs(left)));
+            var want = dir == 0 ? 0f : dir * MathF.Min(top, MathF.Sqrt(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.DriveMaxScale * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.DriveSpeedFloor, v.Def.Speed) * MathF.Abs(left)));
             along += Math.Clamp(want - along, -accel, accel);
             var step = along * dt;
             if (dir != 0 && MathF.Abs(step) > MathF.Abs(left)) step = left;
@@ -352,7 +352,7 @@ namespace MachineBrigade.Sim.Movement
             v.Speed = MathF.Abs(along);
             v.Position = line.At(v.RailS);
             v.Heading = SimMath.HeadingOf(line.Tangent(v.RailS) * v.RailDir);
-            if (v.Order.Kind == OrderKind.Move && dir == 0 && v.Speed < 0.01f) v.SetOrder(Order.Idle);
+            if (v.Order.Kind == OrderKind.Move && dir == 0 && v.Speed < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.DriveSpeedMax) v.SetOrder(Order.Idle);
         }
 
         private void StepRuns(double now)
@@ -362,7 +362,7 @@ namespace MachineBrigade.Sim.Movement
                 var run = _runs[i];
                 var line = Lines[run.Rail];
                 var front = run.FrontAt(now);
-                var inside = front >= line.PlayFrom && now - run.Due < SupportWait + 3f * SupportTravel;
+                var inside = front >= line.PlayFrom && now - run.Due < SupportWait + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.StepRunsSupportTravelScale * SupportTravel;
                 if (inside && !run.Inside && run.EntryTick < 0) run.EntryTick = _world.Tick;
                 if (!inside && run.Inside)
                 {
@@ -370,11 +370,11 @@ namespace MachineBrigade.Sim.Movement
                     run.Done = true;
                 }
                 run.Inside = inside;
-                if (run.Done || now - run.Due > SupportWait + 3f * SupportTravel)
+                if (run.Done || now - run.Due > SupportWait + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.StepRunsSupportTravelScale * SupportTravel)
                 {
                     _runs.RemoveAt(i--);
                     _finished.Add(run);
-                    if (_finished.Count > 16) _finished.RemoveAt(0);
+                    if (_finished.Count > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.StepRunsCountMin) _finished.RemoveAt(0);
                     continue;
                 }
                 if (!inside) continue;
@@ -383,7 +383,7 @@ namespace MachineBrigade.Sim.Movement
                 _trains.Add(new Train
                 {
                     Rail = run.Rail, Back = back, Front = front, Dir = later >= front ? 1 : -1, Speed = MathF.Abs(later - front) / _dt,
-                    Top = 2f * SupportRun / SupportTravel, Boss = false, Team = run.Team, HalfWidth = SupportHalfWidth, Run = run,
+                    Top = global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.StepRunsSupportRunScale * SupportRun / SupportTravel, Boss = false, Team = run.Team, HalfWidth = SupportHalfWidth, Run = run,
                 });
             }
         }
@@ -396,9 +396,9 @@ namespace MachineBrigade.Sim.Movement
             if (t.Run is { } run)
             {
                 // The support train's curve, looked ahead a tenth of a second at a time (its first 12 s).
-                for (var k = 1; k <= 120; k++)
+                for (var k = 1; k <= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.ReachKMax; k++)
                 {
-                    var time = now + 0.1 * k;
+                    var time = now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.ReachKScale * k;
                     var front = run.FrontAt(time);
                     var line = Lines[run.Rail];
                     if (front < line.PlayFrom) continue;
@@ -479,7 +479,7 @@ namespace MachineBrigade.Sim.Movement
             var wasShut = was is CrossingState.Closed or CrossingState.TrainPassing;
             if (c.Closes && shut != wasShut) _world.NavStates.Schedule(c.Site, shut ? ClosedState : OpenState, _world.Tick + 1, _world.Tick);
             // A boss train bearing down on a crossing: a boss's warning (the siren and a notice), at most every 20 s.
-            if (state == CrossingState.Warning && c.Boss && _world.Time - _bossAlertAt >= 20.0)
+            if (state == CrossingState.Warning && c.Boss && _world.Time - _bossAlertAt >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.SetTimeMin)
             {
                 _bossAlertAt = _world.Time;
                 _world.Emit(SimEvent.Alert(c.Def.Position, "toast.railBoss"));
@@ -501,14 +501,14 @@ namespace MachineBrigade.Sim.Movement
                     to = t.Front;
                     for (var k = 1; k <= 11; k++)
                     {
-                        var f = run.FrontAt(now + 0.5 * k);
+                        var f = run.FrontAt(now + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.MarkDangersKScale * k);
                         from = MathF.Min(from, MathF.Max(line.PlayFrom, f - SupportLength));
                         to = MathF.Max(to, f);
                     }
                 }
                 else
                 {
-                    if (t.Speed < 0.02f && (t.Vehicle == null || t.Vehicle.Order.Kind == OrderKind.Idle)) continue;
+                    if (t.Speed < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.MarkDangersSpeedMax && (t.Vehicle == null || t.Vehicle.Order.Kind == OrderKind.Idle)) continue;
                     var ahead = MathF.Max(WarnFloor, t.Top * (MinWarning + CloseLead));
                     from = t.Dir > 0 ? t.Front : t.Back - ahead;
                     to = t.Dir > 0 ? t.Front + ahead : t.Back;
@@ -532,20 +532,20 @@ namespace MachineBrigade.Sim.Movement
                 var line = Lines[rail];
                 for (var s = from; s < to; s += 10f)
                 {
-                    var e = MathF.Min(to, s + 10f);
+                    var e = MathF.Min(to, s + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.MarkDangersSAdd);
                     var a = line.At(s);
                     var b = line.At(e);
                     var pad = RailSpline.BandHalf;
                     _avoid.Add((new Vector2(MathF.Min(a.X, b.X) - pad, MathF.Min(a.Y, b.Y) - pad), new Vector2(MathF.Max(a.X, b.X) + pad, MathF.Max(a.Y, b.Y) + pad)));
                 }
-                for (var s = from; s <= to + 0.01f; s += 6f) _dangers.Add((line.At(MathF.Min(s, to)), RailSpline.BandHalf + 3f, due));
+                for (var s = from; s <= to + 0.01f; s += global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.MarkDangersS2) _dangers.Add((line.At(MathF.Min(s, to)), RailSpline.BandHalf + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.MarkDangersBandHalfAdd, due));
             }
             foreach (var c in _crossings)
             {
                 if (c.State == CrossingState.Open) continue;
                 var half = new Vector2(c.Def.Width * 0.5f, c.Def.Depth * 0.5f);
                 _avoid.Add((c.Def.Position - half, c.Def.Position + half));
-                _dangers.Add((c.Def.Position, c.Def.Half + 3f, now + c.WarnSeconds));
+                _dangers.Add((c.Def.Position, c.Def.Half + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.MarkDangersHalfAdd, now + c.WarnSeconds));
             }
         }
 
@@ -562,8 +562,8 @@ namespace MachineBrigade.Sim.Movement
                 if (!InDanger(v, out var rail, out var s, out var lateral)) continue;
                 var line = Lines[rail];
                 var side = lateral >= 0f ? 1f : -1f;
-                var exit = line.At(s) + line.Left(s) * side * (RailSpline.BandHalf + v.Radius + 3f);
-                if (!_world.Grid.IsWalkable(exit)) exit = line.At(s) - line.Left(s) * side * (RailSpline.BandHalf + v.Radius + 3f);
+                var exit = line.At(s) + line.Left(s) * side * (RailSpline.BandHalf + v.Radius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.TellBandHalfAdd);
+                if (!_world.Grid.IsWalkable(exit)) exit = line.At(s) - line.Left(s) * side * (RailSpline.BandHalf + v.Radius + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.TellBandHalfAdd);
                 if (!_world.Grid.IsWalkable(exit) && !_world.Grid.TryNearestWalkable(exit, 4, out exit)) continue;
                 if (!_world.Map.Contains(exit)) continue;
                 v.RailToldAt = now;
@@ -615,7 +615,7 @@ namespace MachineBrigade.Sim.Movement
         private void Push(in Train t, float dt, double now)
         {
             var line = Lines[t.Rail];
-            var reach = t.Speed * dt * 2f + 0.5f;
+            var reach = t.Speed * dt * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.PushSpeedScale + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.PushSpeedAdd;
             var back = t.Dir > 0 ? t.Back : t.Back - reach;
             var front = t.Dir > 0 ? t.Front + reach : t.Front;
             foreach (var v in _world.VehicleList)
@@ -631,7 +631,7 @@ namespace MachineBrigade.Sim.Movement
                 }
                 if (!PutBeside(v, line, s, lateral)) continue;
                 Pushed++;
-                if (t.Boss && t.Vehicle is { } ram && v.Team != t.Team && !v.Invulnerable && now - v.RailPushedAt >= 2.0)
+                if (t.Boss && t.Vehicle is { } ram && v.Team != t.Team && !v.Invulnerable && now - v.RailPushedAt >= global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.PushNowMin)
                     _world.Damage.Apply(v, RamDamage * ram.DamageBoost, DamageType.Kinetic, Hit(ram));
                 v.RailPushedAt = now;
             }
@@ -689,7 +689,7 @@ namespace MachineBrigade.Sim.Movement
                 if (MathF.Abs(lateral) >= band) continue;
                 // To the side the vehicle is on (it need not cross the line), else the side of the point.
                 line.Project(v.Position, out var mine);
-                var side = MathF.Abs(mine) > 0.3f ? MathF.Sign(mine) : lateral >= 0f ? 1f : -1f;
+                var side = MathF.Abs(mine) > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.RailSystem.OffRailAbsMin ? MathF.Sign(mine) : lateral >= 0f ? 1f : -1f;
                 var spot = line.At(s) + line.Left(s) * side * (band + 1f);
                 if (!_world.Grid.IsWalkable(spot)) spot = line.At(s) - line.Left(s) * side * (band + 1f);
                 if (_world.Grid.IsWalkable(spot) && _world.Map.Contains(spot)) return spot;

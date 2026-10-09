@@ -127,14 +127,14 @@ namespace MachineBrigade.Sim.Abilities
                 var from = hit.Attacker?.Position ?? hit.Origin;
                 var toShooter = from - victim.Position;
                 var shooterDistance = toShooter.Length();
-                if (shooterDistance > 0.5f)
+                if (shooterDistance > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.CoverFactorShooterDistanceMin)
                     foreach (var wall in _walls)
                     {
                         if (wall.Team != victim.Team) continue;
                         var w = wall.Def.BlastWall!;
                         var toWall = wall.Position - victim.Position;
                         var d = toWall.Length();
-                        if (d > w.Radius + wall.Def.HullBound || d >= shooterDistance || d < 0.1f) continue;
+                        if (d > w.Radius + wall.Def.HullBound || d >= shooterDistance || d < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.CoverFactorDMax) continue;
                         var cos = Vector2.Dot(toWall, toShooter) / (d * shooterDistance);
                         if (cos < MathF.Cos(w.Cone)) continue;
                         factor *= 1f - w.Cut;
@@ -293,7 +293,7 @@ namespace MachineBrigade.Sim.Abilities
                 var d = out_.Length();
                 if (d >= r) continue;
                 var away = d > 0.01f ? out_ / d : SimMath.Forward(v.Heading + MathF.PI);
-                var push = MathF.Min(r - d, MathF.Max(2f, v.Def.Speed) * dt);
+                var push = MathF.Min(r - d, MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.KeepOffBalloonsSpeedFloor, v.Def.Speed) * dt);
                 v.Position = _world.ClampToMap(v.Position + away * push);
             }
         }
@@ -341,7 +341,7 @@ namespace MachineBrigade.Sim.Abilities
                 best = d2;
                 mark = e.Position;
             }
-            var at = mark ?? _world.ClampToMap(tower.Position + SimMath.Forward(tower.Heading) * f.Range * 0.75f);
+            var at = mark ?? _world.ClampToMap(tower.Position + SimMath.Forward(tower.Heading) * f.Range * global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.FlaresForwardScale);
             tower.WorksNextAt = now + f.Every;
             _lit.Add((tower.Team, at, f.Radius, now + FlareRise + f.Seconds));
             tower.TurretHeading = SimMath.HeadingOf(at - tower.Position);
@@ -375,7 +375,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 v.PassStarted = true;
                 v.PassHeading = v.Heading;
-                foreach (var team in new[] { 0, 1, 2 })
+                foreach (var team in new[] { 0, 1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.N3 })
                     if (team != v.Team && _world.TryGetRally(team, out var enemy))
                     {
                         v.PassHeading = SimMath.HeadingOf(enemy - v.Position);
@@ -387,7 +387,7 @@ namespace MachineBrigade.Sim.Abilities
             v.Speed = v.Def.Speed * v.SpeedFactor;
             var next = v.Position + SimMath.Forward(v.Heading) * v.Speed * dt;
             // Off the map: gone (no wreck, no kill; the pass was the card).
-            if (!_world.Map.Contains(next) || _world.Map.EdgeDistance(next) < 1f && _world.Time - v.SpawnedAt > 3.0)
+            if (!_world.Map.Contains(next) || _world.Map.EdgeDistance(next) < 1f && _world.Time - v.SpawnedAt > global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.FlyPassTimeMin)
             {
                 v.Hp = 0f;
                 _world.Emit(SimEvent.Retired(v));
@@ -416,7 +416,7 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>A point within <paramref name="keepOut"/> of an enemy side's camp (its HQ and drop zone).</summary>
         internal bool NearEnemyBase(int team, Vector2 point, float keepOut)
         {
-            foreach (var other in new[] { 0, 1, 2 })
+            foreach (var other in new[] { 0, 1, global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.N32 })
                 if (other != team && _world.TryGetRally(other, out var camp) && Vector2.DistanceSquared(camp, point) < keepOut * keepOut) return true;
             return false;
         }
@@ -461,11 +461,11 @@ namespace MachineBrigade.Sim.Abilities
                     _drops.RemoveAt(i);
                     continue;
                 }
-                var u = (float)Math.Clamp((now - proxy.PodLaunched) / Math.Max(0.1, proxy.PodLands - proxy.PodLaunched), 0.0, 1.0);
+                var u = (float)Math.Clamp((now - proxy.PodLaunched) / Math.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.StepDropsPodLandsFloor, proxy.PodLands - proxy.PodLaunched), 0.0, 1.0);
                 proxy.AltitudeNow = proxy.PodFrom + (DropGround - proxy.PodFrom) * u;
                 if (now < proxy.PodLands) continue;
                 _drops.RemoveAt(i);
-                var share = Math.Clamp(proxy.Hp / MathF.Max(1f, proxy.MaxHp), 0.05f, 1f);
+                var share = Math.Clamp(proxy.Hp / MathF.Max(1f, proxy.MaxHp), global::MachineBrigade.Sim.Content.SimTunables.Vehicles.FieldWorksSystem.StepDropsHpMin, 1f);
                 if (proxy.DropUnit != null && _world.Catalog.Vehicles.ContainsKey(proxy.DropUnit))
                 {
                     var landed = _world.SpawnVehicle(proxy.DropUnit, proxy.Team, proxy.DropAt, proxy.Heading);

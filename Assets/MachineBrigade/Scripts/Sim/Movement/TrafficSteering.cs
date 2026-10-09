@@ -91,11 +91,11 @@ namespace MachineBrigade.Sim.Movement
             var forward = speed > 1e-3f ? selfVel / speed : (relPos.LengthSquared() > 1e-6f ? Vector2.Normalize(relPos) : Vector2.UnitY);
             var right = new Vector2(forward.Y, -forward.X);
             var otherSpeed = otherVel.Length();
-            var oncoming = otherSpeed > 1e-3f && Vector2.Dot(forward, otherVel / otherSpeed) < -0.5f;
+            var oncoming = otherSpeed > 1e-3f && Vector2.Dot(forward, otherVel / otherSpeed) < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficSteering.AvoidDotMax;
             var side = oncoming ? 1 : pairSide;
             var urgency = horizon > 1e-3f ? 1f - time / horizon : 1f;
-            var depth = Math.Clamp((combined - miss) / MathF.Max(0.1f, combined), 0f, 1f);
-            return right * (side * Responsibility(selfPriority, otherPriority) * MathF.Max(0.2f, urgency) * MathF.Max(0.25f, depth));
+            var depth = Math.Clamp((combined - miss) / MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficSteering.AvoidCombinedFloor, combined), 0f, 1f);
+            return right * (side * Responsibility(selfPriority, otherPriority) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficSteering.AvoidUrgencyFloor, urgency) * MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Vehicles.TrafficSteering.AvoidDepthFloor, depth));
         }
 
         /// <summary>The heading change (radians, + is to the right) for a summed lateral avoidance, at most <paramref name="maxTurn"/>.</summary>

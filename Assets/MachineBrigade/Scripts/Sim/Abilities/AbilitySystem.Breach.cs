@@ -23,7 +23,7 @@ namespace MachineBrigade.Sim.Abilities
             foreach (var o in _world.VehicleList)
             {
                 if (!o.IsAlive || !o.Def.Obstacle || o.Def.Wall || o.Team == v.Team || o.Team < 0) continue;
-                var reach = v.Def.HullBound + o.Def.HullBound + 1.5f;
+                var reach = v.Def.HullBound + o.Def.HullBound + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.PloughHullBoundAdd;
                 if (Vector2.DistanceSquared(o.Position, v.Position) > reach * reach) continue;
                 _world.Damage.Apply(o, o.Hp + o.MaxHp, v.Weapon.DamageType, new HitInfo(v, v.Team, v.Weapon, v.Position, HitKind.Direct, false));
                 _world.Emit(SimEvent.Proc(v, "plough"));
@@ -49,7 +49,7 @@ namespace MachineBrigade.Sim.Abilities
             var distance = scoot.Min + (float)rng.NextDouble() * MathF.Max(0f, scoot.Max - scoot.Min);
             // Across the line of fire first (either way, drawn), then angled back, then straight back.
             var bearing = target is { } t && Vector2.DistanceSquared(t, v.Position) > 1f ? SimMath.HeadingOf(v.Position - t) : v.Heading + MathF.PI;
-            var first = rng.NextDouble() < 0.5 ? 1f : -1f;
+            var first = rng.NextDouble() < global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.ScootNextDoubleMax ? 1f : -1f;
             float[] turns = { 1.57f * first, -1.57f * first, 2.2f * first, -2.2f * first, 0f };
             foreach (var turn in turns)
             {
@@ -59,7 +59,7 @@ namespace MachineBrigade.Sim.Abilities
                 if (target is { } aim)
                 {
                     var reach = Vector2.Distance(spot, aim);
-                    if (reach > weapon.Range - 2f || reach < weapon.MinRange + 3f) continue;
+                    if (reach > weapon.Range - global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.ScootRangeSub || reach < weapon.MinRange + global::MachineBrigade.Sim.Content.SimTunables.Vehicles.AbilitySystem.ScootMinRangeAdd) continue;
                 }
                 if (!_world.PathTo(v, spot)) continue;
                 v.Relocating = true;
