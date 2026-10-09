@@ -42,7 +42,17 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The least length of sea it has to cover to get away (it turns about if the nearer end is closer).</summary>
         public float EscapeRun { get; internal set; } = 150f;
 
+        /// <summary>
+        /// Its station on its flagship, metres along the lane (an escort); naval FINAL spec 09/10: a negative station keeps it
+        /// that far astern of the flagship, never ahead (a CIWS / EW escort that must not lead the formation).
+        /// </summary>
         public float Station { get; internal set; }
+
+        /// <summary>
+        /// Naval FINAL spec 09/10 (data "patrol"): the lane an escort patrols on its own, its flagship gone or never given
+        /// (far: a missile / AA ship's standoff; near: a gun ship's envelope off the shore). Null: the near lane, as before.
+        /// </summary>
+        public string? Patrol { get; internal set; }
 
         public float DashW { get; internal set; } = 48f;
         public float DashEvery { get; internal set; } = 26f;

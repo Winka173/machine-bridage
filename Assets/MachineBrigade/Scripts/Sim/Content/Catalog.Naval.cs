@@ -21,6 +21,7 @@ namespace MachineBrigade.Sim.Content
                     EscapeSpeed = Math.Clamp(n.Float("escapeSpeed", 0.6f), 0.1f, 2f),
                     EscapeRun = n.Float("escapeRun", 150f),
                     Station = n.Float("station", 0f),
+                    Patrol = n.Has("patrol") ? n.String("patrol") : null,
                     DashW = n.Float("dashW", 48f),
                     DashEvery = n.Float("dashEvery", 26f),
                     DashHold = n.Float("dashHold", 7f),

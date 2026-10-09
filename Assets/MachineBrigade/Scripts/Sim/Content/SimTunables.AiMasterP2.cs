@@ -21,6 +21,10 @@ namespace MachineBrigade.Sim.Content
                 public static float LastResort = 0.35f;
                 /// <summary>ai.roleDoctrine.heavySalvoMinWorth (CP): B8's minimum target value for a heavy salvo weapon.</summary>
                 public static float HeavySalvoMinWorth = 4f;
+                /// <summary>ai.roleDoctrine.navalSalvoMinAlpha (HP): a ship's main weapon this big a trigger pull is a "big salvo" (naval FINAL 09/10).</summary>
+                public static float NavalSalvoMinAlpha = 600f;
+                /// <summary>ai.roleDoctrine.navalSalvoMinWorth (CP): a big naval salvo's light / drone target below this is a last resort (naval FINAL 09/10).</summary>
+                public static float NavalSalvoMinWorth = 8f;
                 /// <summary>ai.roleDoctrine.clusterRadius (m): enemies this close to a target make it a cluster (B8, B11).</summary>
                 public static float ClusterRadius = 8f;
             }
@@ -186,6 +190,8 @@ namespace MachineBrigade.Sim.Content
             new Entry("ai.roleDoctrine.rankStep", "x", () => Ai.RoleDoctrine.RankStep, v => Ai.RoleDoctrine.RankStep = (float)v),
             new Entry("ai.roleDoctrine.lastResort", "x", () => Ai.RoleDoctrine.LastResort, v => Ai.RoleDoctrine.LastResort = (float)v),
             new Entry("ai.roleDoctrine.heavySalvoMinWorth", "CP", () => Ai.RoleDoctrine.HeavySalvoMinWorth, v => Ai.RoleDoctrine.HeavySalvoMinWorth = (float)v),
+            new Entry("ai.roleDoctrine.navalSalvoMinAlpha", "HP", () => Ai.RoleDoctrine.NavalSalvoMinAlpha, v => Ai.RoleDoctrine.NavalSalvoMinAlpha = (float)v),
+            new Entry("ai.roleDoctrine.navalSalvoMinWorth", "CP", () => Ai.RoleDoctrine.NavalSalvoMinWorth, v => Ai.RoleDoctrine.NavalSalvoMinWorth = (float)v),
             new Entry("ai.roleDoctrine.clusterRadius", "m", () => Ai.RoleDoctrine.ClusterRadius, v => Ai.RoleDoctrine.ClusterRadius = (float)v),
             Entry.FloatArray("ai.modeDoctrine.mortarBand", "share", () => Ai.ModeDoctrine.MortarBand, v => Ai.ModeDoctrine.MortarBand = v),
             Entry.FloatArray("ai.modeDoctrine.artilleryBand", "share", () => Ai.ModeDoctrine.ArtilleryBand, v => Ai.ModeDoctrine.ArtilleryBand = v),

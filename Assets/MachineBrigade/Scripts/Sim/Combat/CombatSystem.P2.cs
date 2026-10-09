@@ -52,7 +52,8 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>Part B B4-B13 / F1: the role ladder's factor for <paramref name="v"/>'s main weapon on <paramref name="other"/>.</summary>
         private float P2RoleWorth(Vehicle v, Vehicle other, WeaponDef weapon)
         {
-            if (MountOf(v, weapon) != MainMount(v) && !(v.Def.Deploy is { Siege: true })) return 1f;
+            // Naval FINAL spec 09/10: a ship's main battery is every mount of its main weapon (the battleship's three turrets).
+            if (MountOf(v, weapon) != MainMount(v) && !(v.Def.Deploy is { Siege: true }) && !(v.Def.Naval != null && weapon.Id == v.Def.Weapon.Id)) return 1f;
             var role = RoleCached(v);
             if (role is DoctrineRole.Generic or DoctrineRole.Recon or DoctrineRole.Support or DoctrineRole.Breacher or DoctrineRole.Siege) return 1f;
             var c = ClassCached(other);
@@ -63,7 +64,8 @@ namespace MachineBrigade.Sim.Combat
             var onOurHeavy = _world.TryGetVehicle(other.Target, out var victim) && victim.Team == v.Team &&
                              victim.Def.Class is UnitClass.Tank or UnitClass.Heavy;
             var salvo = weapon.Burst > 1 && weapon.MinRange > 0f;
-            return CombatRoleDoctrine.Worth(role, c, survival, objective, clustered, onOurHeavy, other.IsMoving, Worth(other), salvo);
+            return CombatRoleDoctrine.Worth(role, c, survival, objective, clustered, onOurHeavy, other.IsMoving, Worth(other), salvo,
+                CombatRoleDoctrine.NavalSalvo(v.Def, weapon));
         }
 
         /// <summary>B5 "immediate threat to self / squad": aiming at one of our vehicles within 15 m of this one, able to hit it.</summary>
