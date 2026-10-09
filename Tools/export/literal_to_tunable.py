@@ -88,6 +88,7 @@ GAME_EXCLUDE_FILES = {
     "Game/Match/MatchRunner.Ending.cs": "presentation: the end-of-match note's timing",
     "Game/Match/MatchRunner.MissionEvents.cs": "presentation: toast seconds, arrow threshold, haptics",
     "Game/Match/MatchRunner.cs": "presentation: toast seconds and the tower art's bar count",
+    "Game/Match/MatchRunner.Dialogue.cs": "presentation: how often the dialogue director re-checks for a boss (frames)",
     "Game/Match/ShowdownSession.cs": "presentation (toast seconds) and the after-battle coin reward",
     "Game/Match/PlayerCommander.cs": "input geometry: half the support line's length at the tap point",
 }
@@ -219,6 +220,22 @@ def _math_rule(c, src_line: str):
         return "infrastructure: a cache's size cap (memory), not gameplay"
     if re.search(r"new\s+(System\.)?Random\(", src_line) and ctx in ("multiply", "add"):
         return "RNG seed salt: an arbitrary constant mixed into a seed"
+    if ctx == "modulo" and v == 2:
+        return "math: parity (even / odd: alternate sides, or x, z pairs in the data)"
+    if ctx == "modulo" and v in (90, 180, 360):
+        return "math: an angle's quadrant"
+    if "FormatException" in src_line and ctx in ("equals", "compare", "modulo"):
+        return "data format check: the parser's expected count (a malformed file throws)"
+    if ctx == "equals" and v == 2 and re.search(r"\.Count\s*==\s*2\s*\?\s*\w+\[0\]", src_line):
+        return "data format: a [min, max] pair"
+    if ctx == "equals" and re.search(r"_teams\.Count\s*!=\s*2", src_line):
+        return "structure: a battle has two teams"
+    if ctx == "equals" and re.search(r"(?i)(stage|phase|kind|index|slot)$", c["name_hint"][:-2] if c["name_hint"].endswith("Is") else c["name_hint"]):
+        return "index: an id / stage / phase number compared with == (not a quantity)"
+    if ".Append(" in src_line and ("Sandbox" in f or "ToString(Inv)" in src_line):
+        return "text / save format of a scenario (serialisation)"
+    if v == 2 and ctx == "multiply" and re.search(r"(?i)radius(scale)?$", c["name_hint"]):
+        return "geometry: a diameter (2 x a radius)"
     if v == 0.5 and ctx == "multiply":
         hint = c["name_hint"]
         if GEOMETRY_OPERAND.search(hint) or re.search(r"(?i)(length|width|depth)\s*\*\s*$", before):

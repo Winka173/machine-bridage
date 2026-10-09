@@ -52,8 +52,8 @@ namespace MachineBrigade.Sim.Combat
         public static float LoadSeconds(WeaponDef w, VehicleDef? carrier = null)
         {
             var load = carrier?.LoadOf(w) ?? 0;
-            if (load > 0) return MathF.Max(0.05f, w.CycleSeconds) * MathF.Ceiling(load / (float)Math.Max(1, w.Burst));
-            return w.Ammo > 0 ? MathF.Max(0.05f, w.CycleSeconds) * w.Ammo : 0f;
+            if (load > 0) return MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.FirePower.LoadSecondsCycleSecondsFloor, w.CycleSeconds) * MathF.Ceiling(load / (float)Math.Max(1, w.Burst));
+            return w.Ammo > 0 ? MathF.Max(global::MachineBrigade.Sim.Content.SimTunables.Weapons.FirePower.LoadSecondsCycleSecondsFloor, w.CycleSeconds) * w.Ammo : 0f;
         }
     }
 }

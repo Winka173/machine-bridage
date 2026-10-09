@@ -81,6 +81,14 @@ namespace MachineBrigade.Sim.Content
                 public static float StickTolerance = 0.02f;
                 /// <summary>weapons.catalog.nearAbsFloor (s; thoi_gian, was Sim/Content/WeaponDef.Stick.cs:158).</summary>
                 public static float NearAbsFloor = 0.05f;
+                /// <summary>weapons.catalog.parseWeaponStickSplashRadiusScale (x; sat_thuong, was Sim/Content/WeaponDef.Stick.cs:127).</summary>
+                public static float ParseWeaponStickSplashRadiusScale = 0.25f;
+                /// <summary>weapons.catalog.parseWeaponStickSplashRadiusFloor (m; sat_thuong, was Sim/Content/WeaponDef.Stick.cs:129).</summary>
+                public static float ParseWeaponStickSplashRadiusFloor = 8f;
+                /// <summary>weapons.catalog.parseWeaponStickSpacingScale (x; thoi_gian, was Sim/Content/WeaponDef.Stick.cs:134).</summary>
+                public static float ParseWeaponStickSpacingScale = 0.15f;
+                /// <summary>weapons.catalog.parseWeaponStickJitterAcrossScale (x; thoi_gian, was Sim/Content/WeaponDef.Stick.cs:140).</summary>
+                public static float ParseWeaponStickJitterAcrossScale = 2f;
             }
 
             public static partial class CombatSystem
@@ -441,12 +449,18 @@ namespace MachineBrigade.Sim.Content
                 public static float SplashStepAtPMax2 = 0.5f;
                 /// <summary>weapons.damageTable.splashStepAtPMax3 (x; sat_thuong, was Sim/Content/DamageTable.cs:234).</summary>
                 public static float SplashStepAtPMax3 = 0.75f;
+                /// <summary>weapons.damageTable.defaultSplash4 (x; sat_thuong, was Sim/Content/DamageTable.cs:59).</summary>
+                public static float DefaultSplash4 = 1.00f;
+                /// <summary>weapons.damageTable.defaultSplash9 (x; sat_thuong, was Sim/Content/DamageTable.cs:59).</summary>
+                public static float DefaultSplash9 = 0f;
             }
 
             public static partial class FirePower
             {
                 /// <summary>weapons.firePower.onPaperCycleSecondsFloor (s; thoi_gian, was Sim/Combat/FirePower.cs:37).</summary>
                 public static float OnPaperCycleSecondsFloor = 0.05f;
+                /// <summary>weapons.firePower.loadSecondsCycleSecondsFloor (s; thoi_gian, was Sim/Combat/FirePower.cs:55, Sim/Combat/FirePower.cs:56).</summary>
+                public static float LoadSecondsCycleSecondsFloor = 0.05f;
             }
 
             public static partial class HullContact
@@ -625,6 +639,10 @@ namespace MachineBrigade.Sim.Content
             new Entry("weapons.armourLevels.groundClassFrontMin", "x", () => Weapons.ArmourLevels.GroundClassFrontMin, v => Weapons.ArmourLevels.GroundClassFrontMin = (int)System.Math.Round(v)),
             new Entry("weapons.catalog.stickTolerance", "s", () => Weapons.Catalog.StickTolerance, v => Weapons.Catalog.StickTolerance = (float)v),
             new Entry("weapons.catalog.nearAbsFloor", "s", () => Weapons.Catalog.NearAbsFloor, v => Weapons.Catalog.NearAbsFloor = (float)v),
+            new Entry("weapons.catalog.parseWeaponStickSplashRadiusScale", "x", () => Weapons.Catalog.ParseWeaponStickSplashRadiusScale, v => Weapons.Catalog.ParseWeaponStickSplashRadiusScale = (float)v),
+            new Entry("weapons.catalog.parseWeaponStickSplashRadiusFloor", "m", () => Weapons.Catalog.ParseWeaponStickSplashRadiusFloor, v => Weapons.Catalog.ParseWeaponStickSplashRadiusFloor = (float)v),
+            new Entry("weapons.catalog.parseWeaponStickSpacingScale", "x", () => Weapons.Catalog.ParseWeaponStickSpacingScale, v => Weapons.Catalog.ParseWeaponStickSpacingScale = (float)v),
+            new Entry("weapons.catalog.parseWeaponStickJitterAcrossScale", "x", () => Weapons.Catalog.ParseWeaponStickJitterAcrossScale, v => Weapons.Catalog.ParseWeaponStickJitterAcrossScale = (float)v),
             new Entry("weapons.combatSystem.bombFallHeightFloor", "m", () => Weapons.CombatSystem.BombFallHeightFloor, v => Weapons.CombatSystem.BombFallHeightFloor = (float)v),
             new Entry("weapons.combatSystem.stickStraddlesBlastScale", "x", () => Weapons.CombatSystem.StickStraddlesBlastScale, v => Weapons.CombatSystem.StickStraddlesBlastScale = (float)v),
             new Entry("weapons.combatSystem.bestStickCentreSpacingScale", "x", () => Weapons.CombatSystem.BestStickCentreSpacingScale, v => Weapons.CombatSystem.BestStickCentreSpacingScale = (float)v),
@@ -799,7 +817,10 @@ namespace MachineBrigade.Sim.Content
             new Entry("weapons.damageTable.splashStepAtPMax", "x", () => Weapons.DamageTable.SplashStepAtPMax, v => Weapons.DamageTable.SplashStepAtPMax = (float)v),
             new Entry("weapons.damageTable.splashStepAtPMax2", "x", () => Weapons.DamageTable.SplashStepAtPMax2, v => Weapons.DamageTable.SplashStepAtPMax2 = (float)v),
             new Entry("weapons.damageTable.splashStepAtPMax3", "x", () => Weapons.DamageTable.SplashStepAtPMax3, v => Weapons.DamageTable.SplashStepAtPMax3 = (float)v),
+            new Entry("weapons.damageTable.defaultSplash4", "x", () => Weapons.DamageTable.DefaultSplash4, v => Weapons.DamageTable.DefaultSplash4 = (float)v),
+            new Entry("weapons.damageTable.defaultSplash9", "x", () => Weapons.DamageTable.DefaultSplash9, v => Weapons.DamageTable.DefaultSplash9 = (float)v),
             new Entry("weapons.firePower.onPaperCycleSecondsFloor", "s", () => Weapons.FirePower.OnPaperCycleSecondsFloor, v => Weapons.FirePower.OnPaperCycleSecondsFloor = (float)v),
+            new Entry("weapons.firePower.loadSecondsCycleSecondsFloor", "s", () => Weapons.FirePower.LoadSecondsCycleSecondsFloor, v => Weapons.FirePower.LoadSecondsCycleSecondsFloor = (float)v),
             new Entry("weapons.hullContact.edgeWidthFloor", "m", () => Weapons.HullContact.EdgeWidthFloor, v => Weapons.HullContact.EdgeWidthFloor = (float)v),
             new Entry("weapons.munitionRules.flaresFighterNguong", "x", () => Weapons.MunitionRules.FlaresFighterNguong, v => Weapons.MunitionRules.FlaresFighterNguong = (int)System.Math.Round(v)),
             new Entry("weapons.munitionRules.flaresFighterNguong2", "x", () => Weapons.MunitionRules.FlaresFighterNguong2, v => Weapons.MunitionRules.FlaresFighterNguong2 = (int)System.Math.Round(v)),

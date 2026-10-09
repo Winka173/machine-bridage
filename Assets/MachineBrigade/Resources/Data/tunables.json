@@ -210,7 +210,9 @@
       "ctorThermobaricStructure": { "value": 2.0, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable (pack 2 pass 2, was Sim/Content/DamageTable.cs:98)" },
       "splashStepAtPMax": { "value": 0.25, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable (pack 2 pass 2, was Sim/Content/DamageTable.cs:229)" },
       "splashStepAtPMax2": { "value": 0.5, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable (pack 2 pass 2, was Sim/Content/DamageTable.cs:229)" },
-      "splashStepAtPMax3": { "value": 0.75, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable (pack 2 pass 2, was Sim/Content/DamageTable.cs:234)" }
+      "splashStepAtPMax3": { "value": 0.75, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable (pack 2 pass 2, was Sim/Content/DamageTable.cs:234)" },
+      "defaultSplash4": { "value": 1.0, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable (pack 2 pass 2, was Sim/Content/DamageTable.cs:59)" },
+      "defaultSplash9": { "value": 0.0, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "DamageTable (pack 2 pass 2, was Sim/Content/DamageTable.cs:59)" }
     },
     "weaponDef": {
       "minSwitchSeconds": { "value": 0.5, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef.MinSwitchSeconds" },
@@ -274,7 +276,8 @@
       "rangeFailCoeff": { "value": 0.08, "unit": "share", "kind": "xac_suat", "linh_vuc": "01", "code": "CombatSystem (pack 2, was Sim/Combat/CombatSystem.cs:1021)" }
     },
     "firePower": {
-      "onPaperCycleSecondsFloor": { "value": 0.05, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "FirePower (pack 2 pass 2, was Sim/Combat/FirePower.cs:37)" }
+      "onPaperCycleSecondsFloor": { "value": 0.05, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "FirePower (pack 2 pass 2, was Sim/Combat/FirePower.cs:37)" },
+      "loadSecondsCycleSecondsFloor": { "value": 0.05, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "FirePower (pack 2 pass 2, was Sim/Combat/FirePower.cs:55)" }
     },
     "hullContact": {
       "edgeWidthFloor": { "value": 0.5, "unit": "m", "kind": "ban_kinh", "linh_vuc": "01", "code": "HullContact (pack 2 pass 2, was Sim/Combat/HullContact.cs:25)" }
@@ -322,7 +325,11 @@
     },
     "catalog": {
       "stickTolerance": { "value": 0.02, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef (pack 2 pass 2, was Sim/Content/WeaponDef.Stick.cs:110)" },
-      "nearAbsFloor": { "value": 0.05, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef (pack 2 pass 2, was Sim/Content/WeaponDef.Stick.cs:158)" }
+      "nearAbsFloor": { "value": 0.05, "unit": "s", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef (pack 2 pass 2, was Sim/Content/WeaponDef.Stick.cs:158)" },
+      "parseWeaponStickSplashRadiusScale": { "value": 0.25, "unit": "x", "kind": "sat_thuong", "linh_vuc": "01", "code": "WeaponDef (pack 2 pass 2, was Sim/Content/WeaponDef.Stick.cs:127)" },
+      "parseWeaponStickSplashRadiusFloor": { "value": 8.0, "unit": "m", "kind": "sat_thuong", "linh_vuc": "01", "code": "WeaponDef (pack 2 pass 2, was Sim/Content/WeaponDef.Stick.cs:129)" },
+      "parseWeaponStickSpacingScale": { "value": 0.15, "unit": "x", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef (pack 2 pass 2, was Sim/Content/WeaponDef.Stick.cs:134)" },
+      "parseWeaponStickJitterAcrossScale": { "value": 2.0, "unit": "x", "kind": "thoi_gian", "linh_vuc": "01", "code": "WeaponDef (pack 2 pass 2, was Sim/Content/WeaponDef.Stick.cs:140)" }
     },
     "strikeSystem": {
       "launchLengthSquaredMin": { "value": 0.01, "unit": "m", "kind": "ban_kinh", "linh_vuc": "01", "code": "StrikeSystem (pack 2 pass 2, was Sim/Strikes/StrikeSystem.cs:190)" },
