@@ -310,7 +310,7 @@ static class NavalSuite
                             r.BigSalvos++;
                             if (r.FirstMainTarget == "" && shooter.Team == 0) r.FirstMainTarget = tgt.Def.Id;
                             var w = shooter.Def.Weapon;
-                            var alpha = w.Damage * Math.Max(1, w.Burst) * Math.Max(1, w.Barrels);
+                            var alpha = w.Damage * Math.Max(1, w.Burst) * w.RoundsPerPull;
                             if (world.Combat.Committed(tgt.Id) - alpha > MathF.Max(1f, tgt.Hp) * 1.15f) r.OverkillSalvos++;
                             if (tgt.Def.CpCost < SimTunables.Ai.RoleDoctrine.NavalSalvoMinWorth && tgt.Def.Class is UnitClass.Light or UnitClass.Scout) r.CheapSalvos++;
                         }
@@ -456,13 +456,13 @@ static class NavalSuite
     /// <summary>The main battery: every mount carrying the main weapon (the battleship's three turrets).</summary>
     static int MainMounts(VehicleDef d) => Math.Max(1, d.Mounts.Count(m => m.Weapon.Id == d.Weapon.Id));
 
-    static double Alpha(WeaponDef w) => w.Damage * Math.Max(1, w.Burst) * Math.Max(1, w.Barrels);
+    static double Alpha(WeaponDef w) => w.Damage * Math.Max(1, w.Burst) * w.RoundsPerPull;
 
     /// <summary>Sustained rounds of damage a second: a burst every cooldown (after its last round), a clip and its reload.</summary>
     static double Dps(WeaponDef w)
     {
         if (w.Damage <= 0f) return 0;
-        if (w.Clip > 0) return w.Clip * w.Damage * Math.Max(1, w.Barrels) / (w.Clip * Math.Max(0.001, w.Cooldown) + w.ClipReload);
+        if (w.Clip > 0) return w.Clip * w.Damage * w.RoundsPerPull / (w.Clip * Math.Max(0.001, w.Cooldown) + w.ClipReload);
         var cycle = Math.Max(0.05, w.Cooldown + (Math.Max(1, w.Burst) - 1) * w.BurstInterval);
         return Alpha(w) / cycle;
     }

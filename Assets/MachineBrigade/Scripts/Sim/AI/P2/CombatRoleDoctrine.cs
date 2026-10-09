@@ -316,11 +316,11 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>
-        /// Naval FINAL spec 09/10: <paramref name="weapon"/> is a ship's big salvo: its damage a trigger pull (rounds x barrels) at
+        /// Naval FINAL spec 09/10: <paramref name="weapon"/> is a ship's big salvo: its damage a trigger pull (rounds x barrels fired together) at
         /// least <see cref="Tun.RoleDoctrine.NavalSalvoMinAlpha"/> (a torpedo pair, an AShM salvo, a heavy turret's volley).
         /// </summary>
         public static bool NavalSalvo(VehicleDef def, WeaponDef weapon) =>
-            def.Naval != null && weapon.Damage * Math.Max(1, weapon.Burst) * Math.Max(1, weapon.Barrels) >= Tun.RoleDoctrine.NavalSalvoMinAlpha;
+            def.Naval != null && weapon.Damage * Math.Max(1, weapon.Burst) * weapon.RoundsPerPull >= Tun.RoleDoctrine.NavalSalvoMinAlpha;
 
         /// <summary>Whether two or more other enemies of <paramref name="t"/>'s side stand within the cluster radius of it.</summary>
         internal static bool Clustered(SimWorld world, Vehicle t)
