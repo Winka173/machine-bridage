@@ -280,10 +280,10 @@ def _math_rule(c, src_line: str):
         return "geometry: a diameter (2 x a radius)"
     if v == 0.5 and ctx == "multiply":
         hint = c["name_hint"]
-        if GEOMETRY_OPERAND.search(hint) or re.search(r"(?i)(length|width|depth)\s*\*\s*$", before):
-            return "geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant)"
         if re.search(r"-\s*1\)\s*\*\s*$", before):
             return "geometry: centring k - (n - 1) / 2 of a row of n slots (math)"
+        if GEOMETRY_OPERAND.search(hint) or re.search(r"(?i)(length|width|depth)\s*\*\s*$", before):
+            return "geometry: half of a length / width / depth (a box's half-extent; the §3.5 whitelist's math constant)"
     return None
 
 
@@ -315,10 +315,10 @@ def _tool(*args: str, capture: bool = False) -> subprocess.CompletedProcess:
 
 # ------------------------------------------------------------------------------------------------ plan
 
-def _scan_co():
+def _scan_co(use_excluded: bool = False):
     sys.path.insert(0, str(ROOT / "Tools/export"))
     from scan_constants import scan  # noqa: E402
-    return [r for r in scan(ROOT) if r["de_xuat_dua_ra_du_lieu"] == "co"]
+    return [r for r in scan(ROOT, use_excluded) if r["de_xuat_dua_ra_du_lieu"] == "co"]
 
 
 def _number(text: str):
@@ -458,7 +458,9 @@ def plan(args) -> int:
         w = csv.writer(fh)
         w.writerow(["file", "line", "col", "literal", "member", "reason", "line_text"])
         for c, why in sorted(excluded + manual, key=lambda x: (x[0]["file"], int(x[0]["line"]), int(x[0]["col"]))):
-            w.writerow([c["file"], c["line"], c["col"], c["literal"], c["member"], why, " ".join(c["line_text"].split())[:160]])
+            # line_text normalised as scan_constants' ngu_canh, so the scan can recognise the row (scan_constants.EXCLUDED)
+            w.writerow([c["file"], c["line"], c["col"], c["literal"], c["member"], why,
+                        " ".join(_source_line(c["file"], int(c["line"])).split())[:160]])
     print(f"plan: {len(co)} scan rows 'co', {len(pairs)} literal(s) joined, {len(miss)} not found by Roslyn")
     for lane in LANES:
         print(f"  moves_{lane}.csv: {len(moves.get(lane, []))}")
@@ -620,7 +622,7 @@ def check(args) -> int:
 # ------------------------------------------------------------------------------------------------ status
 
 def status(_args) -> int:
-    co = _scan_co()
+    co = _scan_co(use_excluded=True)  # what is left: the rows excluded with a reason are "khong" (scan_constants.EXCLUDED)
     c = collections.Counter()
     for r in co:
         p = _rel(r["tep"]).split("/")
