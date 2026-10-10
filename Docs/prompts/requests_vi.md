@@ -342,3 +342,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 10/10 "dừng các test lại hết, sẽ test lại sau khi agent ai bên kia làm lại xong" (triage dừng; nhánh feature/test-triage giữ, chưa merge).
 - 10/10 "rush boss và full rushboss có bug, cứ sau mỗi boss là tự render lại cả map tuy map và boss không thay đổi".
 - 10/10 "cần nhiều nhạc hơn, số lượng nhạc game đang khá ít".
+- 10/10 "BỎ FOG OF WAR, HOÀN THIỆN SCOUT TARGET DESIGNATION & STEALTH" -> Docs/scout/PROMPT_owner_vi.md (test vẫn tạm dừng: viết test, chưa chạy).
