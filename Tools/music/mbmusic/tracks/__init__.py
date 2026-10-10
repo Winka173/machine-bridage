@@ -26,6 +26,8 @@ TRACKS = {
     "boss_mini": "boss_mini",
     "boss_rush": "boss_rush",
     "survival": "survival",
+    "menu_2": "menu_2",
+    "campaign": "campaign",
     "victory": "stingers:victory",
     "defeat": "stingers:defeat",
 }
