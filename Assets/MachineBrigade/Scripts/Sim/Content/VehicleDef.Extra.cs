@@ -130,6 +130,9 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public float MarkedSpread { get; internal set; } = 1f;
 
+        /// <summary>Scout Target Designation: how far this scout marks an enemy (m; 0: it does not designate).</summary>
+        public float DesignationRange { get; internal set; }
+
         /// <summary>A multi-part boss's parts (empty: none).</summary>
         public IReadOnlyList<BossPartDef> Parts { get; internal set; } = Array.Empty<BossPartDef>();
 

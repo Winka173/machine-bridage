@@ -58,6 +58,7 @@ namespace MachineBrigade.Sim.Content
             foreach (var e in Entries) map.Add(e.Key, e);
             foreach (var e in RuleEntries) map.Add(e.Key, e);
             foreach (var e in Pack2Entries()) map.Add(e.Key, e);
+            foreach (var e in ScoutDesignationEntries()) map.Add(e.Key, e);
             _byKey = map;
             // The fields' values before any file was applied: the code's old constants.
             _defaults = new Dictionary<string, object>(StringComparer.Ordinal);
@@ -77,6 +78,7 @@ namespace MachineBrigade.Sim.Content
                 foreach (var e in Entries) yield return e.Key;
                 foreach (var e in RuleEntries) yield return e.Key;
                 foreach (var e in Pack2Entries()) yield return e.Key;
+                foreach (var e in ScoutDesignationEntries()) yield return e.Key;
             }
         }
 

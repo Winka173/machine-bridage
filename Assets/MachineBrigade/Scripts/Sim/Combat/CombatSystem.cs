@@ -401,6 +401,8 @@ namespace MachineBrigade.Sim.Combat
             score *= P3Worth(v, other, weapon);
             // AI MASTER P5 Part N: tower coordination on an AI side's towers (protected zone, AT, anti-artillery, critical, overkill).
             score *= P5Worth(v, other, weapon);
+            // Scout Target Designation: a target the shooter's side has marked is worth a little more (priority only, never reach or arc).
+            score *= _world.Designation.PriorityFor(v, other);
             score /= 1f + global::MachineBrigade.Sim.Content.SimTunables.Weapons.CombatSystem.ScoreDistanceScale * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
             return score;
         }

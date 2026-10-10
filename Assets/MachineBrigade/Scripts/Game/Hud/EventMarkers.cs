@@ -440,4 +440,81 @@ namespace MachineBrigade.Game.Hud
             }
         }
     }
+
+    /// <summary>
+    /// Scout Target Designation: one small red reticle over each marked target (never one per scout), a fixed pool placed by
+    /// the runner every frame (<see cref="Begin"/>, <see cref="Place"/>, <see cref="End"/>); nothing is created after the
+    /// constructor. It sits above the health bar's label point, takes no touches, and the pool's size bounds the clutter.
+    /// </summary>
+    internal sealed class DesignationMarks
+    {
+        public const int Max = 10;
+
+        private readonly IconElement[] _marks = new IconElement[Max];
+        private readonly bool[] _shown = new bool[Max];
+        private readonly bool[] _boss = new bool[Max];
+        private int _next;
+
+        public DesignationMarks()
+        {
+            Layer = Kit.Box("fc-desig-marks");
+            Layer.pickingMode = PickingMode.Ignore;
+            for (var i = 0; i < Max; i++)
+            {
+                var mark = Kit.Icon("crosshair", "fc-desig-mark", 2.2f);
+                mark.pickingMode = PickingMode.Ignore;
+                mark.style.display = DisplayStyle.None;
+                _marks[i] = mark;
+                Layer.Add(mark);
+            }
+        }
+
+        public VisualElement Layer { get; }
+
+        /// <summary>Reticles on screen (the checks).</summary>
+        internal int Showing
+        {
+            get
+            {
+                var n = 0;
+                for (var i = 0; i < Max; i++)
+                    if (_shown[i]) n++;
+                return n;
+            }
+        }
+
+        public void Begin() => _next = 0;
+
+        /// <summary>A reticle with its foot on <paramref name="panelPoint"/> (above the target's health bar); false when the pool is used up.</summary>
+        public bool Place(Vector2 panelPoint, bool boss)
+        {
+            if (_next >= Max) return false;
+            var i = _next++;
+            var mark = _marks[i];
+            var at = Layer.panel != null ? Layer.WorldToLocal(panelPoint) : panelPoint;
+            mark.style.left = at.x;
+            mark.style.top = at.y;
+            if (_boss[i] != boss || !_shown[i])
+            {
+                _boss[i] = boss;
+                mark.tooltip = Strings.Get(boss ? "status.designation.boss" : "status.designation");
+            }
+            if (!_shown[i])
+            {
+                _shown[i] = true;
+                mark.style.display = DisplayStyle.Flex;
+            }
+            return true;
+        }
+
+        public void End()
+        {
+            for (var i = _next; i < Max; i++)
+            {
+                if (!_shown[i]) continue;
+                _shown[i] = false;
+                _marks[i].style.display = DisplayStyle.None;
+            }
+        }
+    }
 }

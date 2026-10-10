@@ -19,6 +19,7 @@ namespace MachineBrigade.Game.Hud
     {
         private DirectionArrows _arrows;
         private GeneralTags _generalTags;
+        private DesignationMarks _designationMarks;
         private readonly List<Rect> _keepOut = new();
         private VisualElement _keepTop, _keepUnder, _keepLeft, _keepRail;
         private readonly List<VisualElement> _keepDeckExtras = new();
@@ -29,6 +30,9 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>F.5: the generals' name labels (null in the menu).</summary>
         internal GeneralTags GeneralTags => _generalTags;
+
+        /// <summary>Scout Target Designation: the reticles over marked targets, placed by the runner.</summary>
+        internal DesignationMarks DesignationMarks => _designationMarks;
 
         /// <summary>
         /// The battle's clock for warnings and side objectives: Unity's scaled time, which stops under the pause and slows with
@@ -52,6 +56,8 @@ namespace MachineBrigade.Game.Hud
             _generalTags = new GeneralTags();
             var hud = _safe.parent;
             hud.Insert(hud.IndexOf(_safe), _generalTags.Layer);
+            _designationMarks = new DesignationMarks();
+            hud.Insert(hud.IndexOf(_safe), _designationMarks.Layer);
             _keepTop = _safe.Q(className: "fc-hud__top");
             _keepUnder = _safe.Q(className: "fc-hud__under");
             _keepLeft = _safe.Q(className: "fc-hud__left");
