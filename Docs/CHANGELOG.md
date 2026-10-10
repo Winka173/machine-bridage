@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Scout Target Designation (10/10): scout_jeep, recon_drone and scout_heli each mark one enemy (35 / 55 / 45 m, 5 s, re-pick every 2 s); the marked take +10 % direct damage (boss +5 %) from the scouts' side, never stacked, never splash or burn; marked targets are x1.10 in the allies' target score; small red reticle on the HUD. No Fog of War exists, none added. Data in tunables.json `vehicles.scoutDesignation`. Tests written, not run (owner pause).
+
 - More music (10/10): 17 new original tracks (battle_4..8, naval, seven boss tracks, boss_rush, survival, menu_2, campaign; +35.7 MB); battles draw from every battle track, sea maps play naval, boss families use the bosses' "music" field, Survival/Endless, Boss Rush and the campaign map have their own.
 
 - Fix: Boss Rush no longer rebuilds the scene after a boss on the same map (the full hunt resets in place; the sea-return check tests the map id, not "has a sea").

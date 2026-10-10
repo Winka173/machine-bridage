@@ -50,6 +50,8 @@ static class P
             // Naval FINAL spec 09/10 (Naval.cs, Docs/naval/final/TEST_PLAN.md): the naval suite and its static economy table.
             case "naval": NavalSuite.Run(Cat, sb, Environment.GetEnvironmentVariable("MB_SET") ?? "all"); break;
             case "naval-econ": NavalSuite.Economy(Cat, sb); break;
+            // Scout Target Designation (10/10, ScoutDesignation.cs): the scout variants vs the opponent sets; MB_SET = all|light|heavy|artillery|air|siege|boss. Not run: testing paused.
+            case "scout": ScoutSuite.Run(Cat, sb, Environment.GetEnvironmentVariable("MB_SET") ?? "all", Seeds); break;
             default: Console.Error.WriteLine("mode?"); return 2;
         }
         File.WriteAllText(outFile, sb.ToString(), new UTF8Encoding(false));
