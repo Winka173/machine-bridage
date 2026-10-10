@@ -1602,7 +1602,7 @@ namespace MachineBrigade.Sim.Modes
         private static string? ArenaOf(SimWorld world, string id) => world.Catalog.Vehicles.TryGetValue(id, out var def) ? def.Arena : null;
 
         /// <summary>The battle is on this map (its id is the map's with the mode's suffix: "launchsite_sandbox").</summary>
-        private static bool On(SimWorld world, string map) => world.Map.Id == map || world.Map.Id.StartsWith(map + "_", StringComparison.Ordinal);
+        private static bool On(SimWorld world, string map) => world.Map.Id == map || BaseMap(world) == map;
 
         /// <summary>The battle is on some boss's own battlefield (to go home from after it).</summary>
         private bool OnAnArena(SimWorld world)
@@ -1698,10 +1698,11 @@ namespace MachineBrigade.Sim.Modes
                 var arena = ArenaOf(world, BossAt(Defeated));
                 if (sails && world.Map.Sea == null) SwitchTo = Carry(world, _rules.SeaMap);
                 else if (!sails && arena != null && !On(world, arena)) SwitchTo = Carry(world, arena);
-                else if (!sails && arena == null && world.Map.Sea != null && _rules.HomeMap != null && _rules.HomeMap != _rules.SeaMap) SwitchTo = Carry(world, _rules.HomeMap);
+                else if (!sails && arena == null && _rules.SeaMap != null && On(world, _rules.SeaMap) && _rules.HomeMap != null && _rules.HomeMap != _rules.SeaMap) SwitchTo = Carry(world, _rules.HomeMap);
                 else if (!sails && arena == null && _rules.HomeMap != null && !On(world, _rules.HomeMap) && OnAnArena(world)) SwitchTo = Carry(world, _rules.HomeMap);
                 // Prompt 26 E.3: the full hunt's next boss is a fresh battle (the scene is rebuilt with no army and the starting CP).
-                else if (_rules.Fresh && !_arrivedFresh && Defeated > 0) SwitchTo = Carry(world, BaseMap(world));
+                // Fix 10/10: same battlefield, so the scene stays; the battle is reset in place instead of reloaded.
+                else if (_rules.Fresh && !_arrivedFresh && Defeated > 0) ResetInPlace(world);
                 else Spawn(world);
                 if (SwitchTo != null) return;
             }
@@ -1715,6 +1716,19 @@ namespace MachineBrigade.Sim.Modes
             var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushMode.TickTimeMin && (!_rules.Fresh || Boss.IsValid);
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
             if (_wipedSince >= 0 && world.Time - _wipedSince > global::MachineBrigade.Sim.Content.SimTunables.Modes.BossRushMode.TickTimeMin2) Finish(world, Endless ? PlayerTeam : EnemyTeam);
+        }
+
+        /// <summary>
+        /// Fix 10/10: the full hunt's fresh battle on the map already loaded: no army, the starting CP, the field cleared of what is
+        /// left of the last fight (what the scene rebuild did); supports, checkpoint and carry state stay as they are.
+        /// </summary>
+        private void ResetInPlace(SimWorld world)
+        {
+            foreach (var v in new List<Vehicle>(world.VehicleList))
+                if (!v.Def.Static && !v.Scripted && !v.Def.Boss) world.RemoveQuietly(v);
+            if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, _rules.Player.StartCp);
+            _arrivedFresh = true;
+            _nextBossAt = world.Time + 6.0;
         }
 
         private void Spawn(SimWorld world)
