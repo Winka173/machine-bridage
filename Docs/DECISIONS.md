@@ -22211,3 +22211,7 @@ causes: `Docs/naval/final/NAVAL_FINAL_REPORT.md` "Naval tune (09/10)".
 - Battleship: `naval_406_bs` cooldown 18 s (spec "long reload"), APS recharge 3.0 s (not specialist tier).
 - Owner decision: hover_gunboat / river_patrol_boat cannot meet a torpedo boat at sea (not sea units; torpedo boat navalOnly);
   rows kept UNEXPECTED. Tried and dropped: enemy ships exempt from sea-route gap rules (broke gun vs missile destroyer at range).
+
+## Boss Rush same-map rebuild fix (10/10)
+- Cause: in BossRushMode the full hunt's "fresh battle" branch (`Fresh && !_arrivedFresh && Defeated > 0`) set SwitchTo to the same map, so every boss reloaded the scene. The "back home from the sea" branch tested `world.Map.Sea != null`, which also fires on a home map with a sea (normal rush).
+- Fix: the fresh battle is reset in place (non-static, non-scripted vehicles removed quietly, CP = starting CP, 6 s wait, supports/checkpoint/carry kept); the sea-return branch tests `On(SeaMap)`; `On` compares the base map id instead of a prefix. Real map changes (sea, arena) still switch scenes. No tests run; Sim.csproj builds with 0 errors.
