@@ -11,6 +11,10 @@ TRACKS = {
     "battle_3": "battle_3",
     "boss": "boss",
     "siege": "siege",
+    "battle_4": "battle_4",
+    "battle_5": "battle_5",
+    "battle_6": "battle_6",
+    "battle_7": "battle_7",
     "victory": "stingers:victory",
     "defeat": "stingers:defeat",
 }

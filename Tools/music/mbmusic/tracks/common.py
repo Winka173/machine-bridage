@@ -329,3 +329,74 @@ def pattern_beats(song: Song, bar0: int, nbars: int, pattern: str, steps: int = 
             if pat[i % len(pat)] in chars:
                 out.append(bar * song.beats_per_bar + i * step)
     return out
+
+
+# ----------------------------------------------------------------------------
+# Extra stems and instruments (added with the 10/10 tracks; the first eight
+# tracks never create these stems, so their renders are unchanged)
+# ----------------------------------------------------------------------------
+
+EXTRA_STEMS = {
+    "winds": dict(eq=[("hp2", 140), ("peak", 600, 1.0, -1.5), ("peak", 3000, 1.0, 1.0)], hall=0.42, room=0.06, width=1.05),
+    "gtr": dict(eq=[("hp2", 85), ("peak", 350, 1.0, -2.5), ("peak", 1600, 1.2, 1.5), ("lp", 7500)], room=0.12, hall=0.08,
+                width=1.25, duck=0.25),
+    "kit": dict(eq=[("hp2", 32), ("peak", 60, 0.9, 1.5), ("peak", 450, 1.0, -3.0), ("peak", 4000, 1.0, 1.0)], room=0.25,
+                hall=0.06, mono_below=150, drive=0.08),
+    "perc": dict(eq=[("hp2", 120), ("peak", 2500, 1.0, 1.0)], room=0.25, hall=0.18, width=1.2),
+    "harp": dict(eq=[("hp2", 90), ("peak", 2500, 1.0, 1.0)], hall=0.45, width=1.2),
+    "lead": dict(eq=[("hp2", 120), ("peak", 400, 1.0, -2.0), ("hs", 7000, 0.7, -3.0)], hall=0.22, delay=0.22, width=1.1),
+}
+
+
+def setup_extra(song: Song, gains: dict[str, float] | None = None, **overrides) -> None:
+    """Create the extra stems (call after :func:`setup_stems`); ``gains`` sets per-stem gain in dB."""
+    gains = gains or {}
+    for name, cfg in EXTRA_STEMS.items():
+        c = dict(cfg)
+        c.update(overrides.get(name, {}))
+        song.stem(name, gain_db=gains.get(name, 0.0), **c)
+
+
+def wind(song: Song, name: str, program: int, stem: str = "winds", vol: int = 92, pan: float = 0.0,
+         ens: int = 1, legato: float = 0.04) -> Part:
+    """Woodwinds and solo reeds: 68 oboe, 69 cor anglais, 70 bassoon, 71 clarinet, 72 piccolo, 73 flute, 111 shanai."""
+    return song.part(name, program, stem=stem, volume=vol, pan=pan, ens=ens, ens_cents=5, human_t=0.008,
+                     legato=legato, swell=0.6)
+
+
+def harp(song: Song, name: str = "harp", stem: str = "harp", vol: int = 92, pan: float = -0.2) -> Part:
+    return song.part(name, 46, stem=stem, volume=vol, pan=pan, human_t=0.004, human_v=4)
+
+
+def mallets(song: Song, name: str, program: int = 8, stem: str = "keys", vol: int = 86, pan: float = 0.15) -> Part:
+    """Tuned percussion: 8 celesta, 9 glockenspiel, 11 vibraphone, 12 marimba, 13 xylophone, 14 tubular bells."""
+    return song.part(name, program, stem=stem, volume=vol, pan=pan, human_t=0.004, human_v=4)
+
+
+def guitar(song: Song, name: str = "gtr", program: int = 30, stem: str = "gtr", vol: int = 96, pan: float = -0.3,
+           ens: int = 2) -> Part:
+    """Rock guitar (29 overdriven, 30 distortion); doubled and panned wide for a two-guitar wall."""
+    return song.part(name, program, stem=stem, volume=vol, pan=pan, ens=ens, ens_cents=8, ens_spread=0.9,
+                     ens_delay=0.018, human_t=0.004, human_v=5)
+
+
+def e_bass(song: Song, name: str = "ebass", program: int = 34, stem: str = "bass", vol: int = 96) -> Part:
+    """Electric bass (33 finger, 34 pick, 38/39 synth bass)."""
+    return song.part(name, program, stem=stem, volume=vol, human_t=0.004, human_v=5)
+
+
+def drum_kit(song: Song, name: str = "drumkit", program: int = 0, stem: str = "kit", vol: int = 100) -> Part:
+    """A GM kit on the drum channel (0 standard, 8 room, 16 power, 24 electronic, 25 TR-808).
+    Only one kit program per stem: every drum part of a stem shares MIDI channel 10."""
+    return song.part(name, program, drum=True, stem=stem, volume=vol, human_t=0.003, human_v=6)
+
+
+def synth_lead(song: Song, name: str = "slead", program: int = 81, stem: str = "lead", vol: int = 84,
+               pan: float = 0.0) -> Part:
+    """Synth lead (80 square, 81 saw, 87 bass+lead) or pads (89 warm, 91 choir, 95 sweep)."""
+    return song.part(name, program, stem=stem, volume=vol, pan=pan, ens=2, ens_cents=9, ens_spread=0.5,
+                     human_t=0.004, legato=0.03)
+
+
+def solo_horn(song: Song, name: str = "solo_horn", stem: str = "horns", vol: int = 96, pan: float = -0.1) -> Part:
+    return song.part(name, 60, stem=stem, volume=vol, pan=pan, ens=1, human_t=0.01, legato=0.05, swell=1.0)
