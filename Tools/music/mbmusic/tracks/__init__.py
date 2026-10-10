@@ -20,6 +20,8 @@ TRACKS = {
     "boss_air": "boss_air",
     "boss_naval": "boss_naval",
     "boss_land": "boss_land",
+    "boss_train": "boss_train",
+    "boss_orbital": "boss_orbital",
     "victory": "stingers:victory",
     "defeat": "stingers:defeat",
 }
