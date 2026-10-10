@@ -406,9 +406,17 @@ namespace MachineBrigade.Game.Match
             // MVA W2-B: the map's acoustic zones and the cover that occludes (spec parts AX, AY, BP); a fresh view telemetry.
             _audio.SetWorld(_world);
             Effects.ViewTelemetry.Reset();
-            // The soundtrack: the menu theme, the siege track for fortress battles, else a battle track.
-            var fortress = MatchSettings.Mode is GameModeKind.Siege or GameModeKind.Defend or GameModeKind.Endless;
-            _music = MusicDirector.Play(_menu ? MusicDirector.Mood.Menu : fortress ? MusicDirector.Mood.Siege : MusicDirector.Mood.Battle,
+            // The soundtrack: a menu theme, the siege track for fortress battles, the survival track for Survival and
+            // Endless, the Boss Rush track between its bosses, the naval track on a sea map, else a battle track.
+            var fortress = MatchSettings.Mode is GameModeKind.Siege or GameModeKind.Defend;
+            var survival = MatchSettings.Mode is GameModeKind.Survival or GameModeKind.Endless;
+            var sea = map.Sea != null || map.Edges.HasSea;
+            _music = MusicDirector.Play(_menu ? MusicDirector.Mood.Menu
+                : MatchSettings.Mode == GameModeKind.BossRush ? MusicDirector.Mood.BossRush
+                : survival ? MusicDirector.Mood.Survival
+                : fortress ? MusicDirector.Mood.Siege
+                : sea ? MusicDirector.Mood.Naval
+                : MusicDirector.Mood.Battle,
                 System.Environment.TickCount);
             UiKit.Clicked += _audio.Click;
             var weather = _menu ? WeatherKind.Clear
