@@ -32,7 +32,7 @@ from scipy import signal  # noqa: E402
 from mbmusic import dsp  # noqa: E402
 from mbmusic.paths import MUSIC_OUT, build_dir  # noqa: E402
 
-LOOPING = {"menu", "battle_1", "battle_2", "battle_3", "boss", "siege"}
+STINGERS = {"victory", "defeat"}  # every other track is a seamless loop
 BANDS = [(20, 60, "sub"), (60, 250, "low"), (250, 2000, "mid"), (2000, 8000, "presence"), (8000, 20000, "air")]
 
 
@@ -169,7 +169,7 @@ def analyze(path: Path, png_dir: Path) -> dict:
         longest = max(longest, run)
     res["longest_quiet_s"] = round(longest * 0.5, 1)
     res["st_lufs_range"] = [round(float(np.percentile(st_l, 10)), 1), round(float(np.percentile(st_l, 95)), 1)]
-    if name in LOOPING:
+    if name not in STINGERS:
         mp = build_dir() / "preview" / f"{name}.json"
         meta = json.loads(mp.read_text()) if mp.exists() else None
         res["seam"] = {k: round(v, 4) for k, v in seam_report(x, sr, meta).items()}

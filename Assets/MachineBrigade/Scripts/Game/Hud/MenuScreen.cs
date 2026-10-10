@@ -228,6 +228,8 @@ namespace MachineBrigade.Game.Hud
             foreach (var (t, item) in _navItems) item.Selected = t == tab;
             if (tab == Tab.Shop) SkinPreviewed?.Invoke(null);
             if (tab == Tab.Campaign) CampaignShown();
+            // More music (10/10): the campaign map has its own track; the menu theme returns on the other tabs.
+            MachineBrigade.Game.Audio.MusicDirector.Current?.CampaignMap(tab == Tab.Campaign);
             UpdateChrome();
             Refresh();
         }

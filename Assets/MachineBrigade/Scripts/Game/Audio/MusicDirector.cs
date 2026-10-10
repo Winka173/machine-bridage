@@ -5,9 +5,11 @@ using UnityEngine;
 namespace MachineBrigade.Game.Audio
 {
     /// <summary>
-    /// The soundtrack (our own compositions, see Tools/music): the menu theme, one of three battle
-    /// tracks, the siege track for fortress battles, the boss track while a boss is on the field,
-    /// and a short stinger on the result. Tracks cross-fade over two seconds; the music keeps
+    /// The soundtrack (our own compositions, see Tools/music): one of the two menu themes (the
+    /// campaign map has its own), one of the battle tracks (every "battle_N" present), the naval
+    /// track on a sea map, the siege track for fortress battles, the survival track for Survival and
+    /// Endless, the Boss Rush track between its bosses, a boss family's track while a boss is on the
+    /// field, and a short stinger on the result. Tracks cross-fade over two seconds; the music keeps
     /// playing under the pause screen, at its own volume under the sound effects.
     /// <para>
     /// There is one player for the whole session (test feedback 11D: tracks were heard on top of
@@ -27,6 +29,15 @@ namespace MachineBrigade.Game.Audio
             Siege,
             Boss,
             None,
+
+            /// <summary>More music (10/10): a battle on a sea map.</summary>
+            Naval,
+
+            /// <summary>More music (10/10): Boss Rush, between its bosses.</summary>
+            BossRush,
+
+            /// <summary>More music (10/10): Survival and Endless.</summary>
+            Survival,
         }
 
         /// <summary>The music sits this far under the effects (the effects carry the battle).</summary>
@@ -45,6 +56,14 @@ namespace MachineBrigade.Game.Audio
         private readonly float[] _levels = new float[2];
         private readonly AudioSource _stinger;
         private string _battle = "battle_1";
+        private string _menuTheme = "menu";
+        private bool _campaign;
+
+        /// <summary>More music (10/10): the menu themes a session picks from by its seed.</summary>
+        private static readonly string[] MenuThemes = { "menu", "menu_2" };
+
+        /// <summary>How many battle tracks ship ("battle_1" up to the first missing number); counted once.</summary>
+        private static int _battleCount;
         private int _live;
         private Mood _mood = Mood.None;
         private Mood _base;
@@ -56,17 +75,33 @@ namespace MachineBrigade.Game.Audio
 
         /// <summary>The editor keeps statics between Play sessions (domain reload is off); start clean.</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => _current = null;
+        private static void ResetStatics()
+        {
+            _current = null;
+            _battleCount = 0;
+        }
 
         /// <summary>
         /// A scene's soundtrack: the session's one player (made on first use) moves to this mood,
         /// cross-fading from whatever was playing. The same track carries on untouched; a battle
-        /// draws its track from <paramref name="seed"/>. The boss track and any duck are reset.
+        /// draws its track from <paramref name="seed"/> among every battle track present, and the
+        /// menu its theme (a theme already playing carries on). The boss track and any duck are reset.
         /// </summary>
         public static MusicDirector Play(Mood mood, int seed)
         {
             var music = Current ?? (_current = new MusicDirector());
-            music._battle = "battle_" + (1 + (int)((uint)seed % 3u));
+            music._battle = "battle_" + (1 + (int)((uint)seed % (uint)BattleCount()));
+            if (mood == Mood.Menu)
+            {
+                // A rebuilt menu keeps the theme it was playing; a fresh one draws its theme from the seed.
+                var playing = music._tracks[music._live];
+                if (Array.IndexOf(MenuThemes, playing) < 0 || !music._decks[music._live].isPlaying)
+                {
+                    var pick = MenuThemes[(int)((uint)seed % (uint)MenuThemes.Length)];
+                    music._menuTheme = Has(pick) ? pick : "menu";
+                }
+            }
+            else music._campaign = false;
             music._base = mood;
             music._boss = false;
             music._duckTarget = 1f;
@@ -99,6 +134,29 @@ namespace MachineBrigade.Game.Audio
             _stinger.spatialBlend = 0f;
             _stinger.ignoreListenerPause = true;
             _stinger.priority = 0;
+        }
+
+        /// <summary>
+        /// More music (10/10): the menu shows the campaign map (and its briefings): the campaign track
+        /// plays instead of the menu theme while it is up; the theme returns when another tab opens.
+        /// </summary>
+        public void CampaignMap(bool shown)
+        {
+            if (_campaign == shown) return;
+            _campaign = shown;
+            if (_mood == Mood.Menu) Switch(Mood.Menu);
+        }
+
+        /// <summary>Whether a track ships (Resources/Audio/Music/name).</summary>
+        private static bool Has(string name) => Resources.Load<AudioClip>("Audio/Music/" + name) != null;
+
+        /// <summary>The number of battle tracks: "battle_1", "battle_2", ... up to the first one missing (at least 1).</summary>
+        private static int BattleCount()
+        {
+            if (_battleCount > 0) return _battleCount;
+            var n = 0;
+            while (n < 64 && Has("battle_" + (n + 1))) n++;
+            return _battleCount = Math.Max(1, n);
         }
 
         /// <summary>Prompt 20 F.4, G.4: the boss track (a main boss's own, the mini bosses' shared one); a missing clip plays "boss".</summary>
@@ -162,10 +220,13 @@ namespace MachineBrigade.Game.Audio
         {
             var name = mood switch
             {
-                Mood.Menu => "menu",
+                Mood.Menu => _campaign && Has("campaign") ? "campaign" : _menuTheme,
                 Mood.Battle => _battle,
+                Mood.Naval => Has("naval") ? "naval" : _battle,
+                Mood.BossRush => Has("boss_rush") ? "boss_rush" : _battle,
+                Mood.Survival => Has("survival") ? "survival" : "siege",
                 Mood.Siege => "siege",
-                Mood.Boss => Resources.Load<AudioClip>("Audio/Music/" + BossTrack) != null ? BossTrack : "boss",
+                Mood.Boss => Has(BossTrack) ? BossTrack : "boss",
                 _ => null,
             };
             _mood = mood;
@@ -189,8 +250,9 @@ namespace MachineBrigade.Game.Audio
         /// <summary>Loudness of each track against the menu theme's (they are mastered alike, but differ in density).</summary>
         private float Trim => _mood switch
         {
-            Mood.Siege => 0.92f,
+            Mood.Siege or Mood.Survival => 0.92f,
             Mood.Boss => 0.81f,
+            Mood.Naval or Mood.BossRush => 0.85f,
             Mood.Battle => _battle == "battle_1" ? 0.88f : 0.85f,
             _ => 1f,
         };
