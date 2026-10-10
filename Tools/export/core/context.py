@@ -10,6 +10,49 @@ from .repo import ROOT
 from .sources import Source, discover
 
 
+
+# Pack 2 pass 2 (09/10) moved C# table literals to tunables.json: a table now reads
+# `global::MachineBrigade.Sim.Content.SimTunables.<Path>`. Put the tunables.json value back in place before parsing, so
+# the table readers keep seeing the numbers (the mirrors' `new Entry("<key>", ..., () => <Path>, ...)` map path -> key).
+_TUNABLE_VALUES = None
+
+
+def _tunable_values():
+    global _TUNABLE_VALUES
+    if _TUNABLE_VALUES is not None:
+        return _TUNABLE_VALUES
+    import json, re as _re
+    base = ROOT / "Assets/MachineBrigade/Scripts/Sim/Content"
+    paths = {}
+    for f in sorted(base.glob("SimTunables*.cs")):
+        for key, path in _re.findall(r'new Entry\("([^"]+)",[^,]*,\s*\(\)\s*=>\s*([A-Za-z0-9_.]+)\s*,', f.read_text("utf-8-sig")):
+            paths[path] = key
+    raw = (ROOT / "Assets/MachineBrigade/Resources/Data/tunables.json").read_text("utf-8-sig")
+    raw = _re.sub(r'(?m)^\s*//.*$', '', raw)
+    data = json.loads(raw)
+    out = {}
+    for path, key in paths.items():
+        node = data
+        for part in key.split("."):
+            node = node.get(part) if isinstance(node, dict) else None
+            if node is None:
+                break
+        if isinstance(node, dict) and "value" in node:
+            node = node["value"]
+        if isinstance(node, bool) or not isinstance(node, (int, float)):
+            continue
+        out[path] = (repr(float(node)) + "f") if isinstance(node, float) else str(node)
+    _TUNABLE_VALUES = out
+    return out
+
+
+def inline_tunables(text: str) -> str:
+    import re as _re
+    vals = _tunable_values()
+    def sub(m):
+        return vals.get(m.group(1), m.group(0))
+    return _re.sub(r'(?:global::MachineBrigade\.Sim\.Content\.)?SimTunables\.([A-Za-z0-9_.]+)', sub, text)
+
 class Context:
     def __init__(self, base_ref: str | None = None):
         self.sources: dict[str, Source] = discover()
@@ -51,7 +94,7 @@ class Context:
         if sid in self.sources:
             s = self.sources[sid]
             return sid, s.data["rows"], s.data["lines"]
-        text = (ROOT / path).read_text("utf-8-sig")
+        text = inline_tunables((ROOT / path).read_text("utf-8-sig"))
         extra_text = "\n".join((ROOT / e).read_text("utf-8-sig") for e in (extra or []))
 
         def load(_src):
@@ -71,7 +114,7 @@ class Context:
         if sid in self.sources:
             s = self.sources[sid]
             return sid, s.data["rows"], s.data["lines"]
-        text = (ROOT / path).read_text("utf-8-sig")
+        text = inline_tunables((ROOT / path).read_text("utf-8-sig"))
 
         def load(_src):
             rows, lines = extractor(text)

@@ -95,7 +95,8 @@ def cs_text(path: str) -> str:
     from core.repo import ROOT
     if path not in _CS_TEXT:
         p = ROOT / path
-        _CS_TEXT[path] = p.read_text("utf-8-sig") if p.exists() else ""
+        from core.context import inline_tunables
+        _CS_TEXT[path] = inline_tunables(p.read_text("utf-8-sig")) if p.exists() else ""
     return _CS_TEXT[path]
 
 

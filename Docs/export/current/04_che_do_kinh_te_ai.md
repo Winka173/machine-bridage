@@ -2,7 +2,7 @@
 
 Chế độ chơi, độ khó, kinh tế, tác chiến, thăng hạng, mở khóa, cửa hàng, giao diện.
 
-Gói cân bằng Machine Brigade, commit 9a62db3b, ngày 2026-10-06. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 31e5cc2e, ngày 2026-10-10. Số liệu đầy đủ ở 04_che_do_kinh_te_ai.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Tổng quan
 
@@ -423,7 +423,7 @@ Sheet 04_che_do_kinh_te_ai/Nhiem_vu_ngay — Nhiệm vụ ngày (8 dòng, 6 cộ
 | strikes | strikes | 6;10;15 | 120 |
 | wins | wins | 1;2;3 | 180 |
 
-Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (320 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (88 dòng).
+Bảng đầy đủ: xem sheet `Cai_dat_mac_dinh` (22 dòng), `Huong_dan` (332 dòng, bulk.zip), `Ban_do_menu` (25 dòng), `Mo_khoa` (88 dòng).
 
 ## Tham khảo ngoài đời và game
 
@@ -474,10 +474,10 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Meta_kinh_te_nguon` (23 dòng): Meta: nguồn và chỗ tiêu xu — Mỗi nguồn xu (thưởng trận, nhiệm vụ, hòm, nhiệm vụ ngày, Vô tận, cửa hàng) và chỗ tiêu xu (nâng hạng, hòm, skin): số xu, đơn vị, trần; số trong mã (R…
 - `Meta_kinh_te_tran` (12 dòng): Meta: xu mỗi trận nhanh — Xu một trận nhanh theo độ khó x kết quả (Rewards.Quick: cơ bản + min(hạ, trần) x xu + min(phút, trần) x xu, x hệ số độ khó), ở trận tham chiếu 20 xe…
 - `Meta_kinh_te` (10 dòng): Meta: kinh tế nâng hạng — Một thẻ từ hạng 1 lên hạng h: xu và bản thiết kế cho lần nâng, tổng từ hạng 1 (CardRanks.CoinsSpent / BlueprintsSpent), số trận thắng nhanh Bình thườ…
-- `Huong_dan` [bulk.zip] (320 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
+- `Huong_dan` [bulk.zip] (332 dòng): Hướng dẫn người chơi — Chuỗi hướng dẫn trong game: thẻ Hướng dẫn của trang chi tiết (guide.<id>: GuideText, BossText, BigAttackText...), mẹo (tip.*) và gợi ý thao tác (hint…
 - `Cai_dat_mac_dinh` (22 dòng): Cài đặt mặc định — Cài đặt mặc định của người chơi mới (âm lượng, đồ họa, rung, hỗ trợ, ngôn ngữ), đọc từ mã bởi ExportGameDoc
 - `Mutator_tuan` (1 dòng): Mutator tuần — Mutator tuần của Tác chiến
 - `Thu_hang` (1 dòng): Thứ hạng — Bảng xếp hạng
 - `Thuong` (1 dòng): Thưởng — Thưởng trận / chiến dịch
 - `Meta_tham_chieu` (13 dòng): Meta: game tham khảo cơ chế — Mỗi cơ chế ngoài trận một dòng (theo sheet): game tham khảo (nâng hạng, hòm đồ, nhiệm vụ ngày...) (spec 12.2; chỉ dữ liệu có trong repo)
-- `Hang_so_che_do` (72 dòng): Hằng số chế độ, tiếp tế và cờ chế độ — Assets/MachineBrigade/Resources/Data/tunables.json: 'modes' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…
+- `Hang_so_che_do` (344 dòng): Hằng số chế độ, tiếp tế và cờ chế độ — Assets/MachineBrigade/Resources/Data/tunables.json: 'modes' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…

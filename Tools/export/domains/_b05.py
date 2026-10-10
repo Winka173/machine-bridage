@@ -52,7 +52,7 @@ def _side_literals(ctx):
 
     # Conquest: ConquestRules.StartCp, TeamEconomy's default income, the enemy's x1.18, PointIncome per point held
     cp, c1 = LB.cs_num(ctx, CQ, r"public float StartCp \{ get; set; \} = " + N, what="ConquestRules.StartCp")
-    inc, c2 = LB.cs_num(ctx, ECO, r"float startCp = [\d.]+f, float income = " + N, what="TeamEconomy income default")
+    inc, c2 = LB.cs_num(ctx, ECO, r"float\?? startCp = (?:[\d.]+f|null), float income = " + N, what="TeamEconomy income default")
     k, c3 = LB.cs_num(ctx, MS, r"enemy\.ScaleIncome\(" + N + r"\)", after="class ConquestSession", what="Conquest enemy x")
     g, c4 = pair(MS, r"Bleed = " + N + r", PointIncome = " + N, "class ConquestSession", "Conquest PointIncome")
     out["conquest"] = {"player_cp": every(cp), "player_income": every(inc), "enemy_cp": every(cp), "enemy_income": inc,

@@ -2,7 +2,7 @@
 
 Chương, nhiệm vụ, biến cố, bộ bài game, nhân vật, thống kê thoại.
 
-Gói cân bằng Machine Brigade, commit 9a62db3b, ngày 2026-10-06. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 31e5cc2e, ngày 2026-10-10. Số liệu đầy đủ ở 05_chien_dich.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Chiến dịch
 
@@ -343,18 +343,18 @@ Sheet 05_chien_dich/Chuong — Chương (15 dòng, 14 cột)
 
 | id | maps | main | minis | general | tep_thoai_chuong | tep_thoai | so_cau_thoai | act | comic |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | landingbeach;greenvale;ashfield | fortress_bastion | bastion_mk0 | brandt | 1 | ch01.json | 82 | 1 | comic.1 |
+| 1 | landingbeach;greenvale;ashfield | fortress_bastion | bastion_mk0;bastion_aa | brandt | 1 | ch01.json | 82 | 1 | comic.1 |
 | 2 | dunebreak;redrock | behemoth | behemoth_inferno | varga | 2 | ch02.json | 108 | 1 | comic.2 |
-| 3 | whiteout;frostpeak | mobile_fortress | mega_gunship;fenrir | orlov | 3 | ch03.json | 111 | 1 | comic.3 |
+| 3 | whiteout;frostpeak | mobile_fortress | mega_gunship;fenrir;jotunn_artillery | orlov | 3 | ch03.json | 111 | 1 | comic.3 |
 | 4 | rustyard;ironport;lighthousebay | leviathan | behemoth_tempest;armored_train;scylla | kessler | 4 | ch04.json | 164 | 2 | comic.4 |
-| 5 | junglepass;emberridge | drone_mothership | locust | sen | 5 | ch05.json | 121 | 2 | comic.5 |
+| 5 | junglepass;emberridge | drone_mothership | locust;matriarch_flak | sen | 5 | ch05.json | 121 | 2 | comic.5 |
 | 6 | ashfield;whiteout;greenvale;landingbeach;hydrodam | moloch | landing_hovercraft;behemoth_mk2 | varga | 6 | ch06.json | 153 | 2 | comic.6 |
 | 7 | metrocity;veyra_old_quarter;capital | nuke_train | behemoth_mk2;behemoth_inferno;armored_train | hung | 7 | ch07.json | 149 | 3 | comic.7 |
 | 8 | redrock;openpit;hydrodam;dunebreak | moloch | ixion;earth_borer | hung | 8 | ch08.json | 129 | 3 | comic.8 |
 | 9 | ironport;landingbeach;lighthousebay;coralisles | typhon | landing_hovercraft;scylla | hung | 9 | ch09.json | 131 | 3 | comic.9 |
-| 10 | frostpeak;skyhold;whiteout | command_airship | icarus_mk0;argus;mega_gunship | quaden | 10 | ch10.json | 134 | 4 | comic.10 |
-| 11 | rustyard;skyhold;frostpeak;orbitalgate | daedalus | monster;locust | aurel | 11 | ch11.json | 120 | 4 | comic.11 |
-| 12 | launchsite;saltflat;dunebreak;lighthousebay | silver_bug | behemoth_mk2;scylla;locust | aurel | 12 | ch12.json | 93 | 4 | comic.12 |
+| 10 | frostpeak;skyhold;whiteout | command_airship | icarus_mk0;argus;mega_gunship;roc_gunship | quaden | 10 | ch10.json | 134 | 4 | comic.10 |
+| 11 | rustyard;skyhold;frostpeak;orbitalgate | daedalus | monster;locust;daedalus_assault | aurel | 11 | ch11.json | 120 | 4 | comic.11 |
+| 12 | launchsite;saltflat;dunebreak;lighthousebay | silver_bug | behemoth_mk2;scylla;locust;icarus_interceptor | aurel | 12 | ch12.json | 93 | 4 | comic.12 |
 | 13 | foundry |  | behemoth_mk0 | varga | 13 | ch13.json | 35 | 1 | comic.13 |
 | 14 | swamp;borderbridge |  | locust |  | 14 | ch14.json | 44 | 2 | comic.14 |
 | 15 | frostpeak;junglepass |  | mega_gunship | quaden | 15 | ch15.json | 40 | 3 | comic.15 |
@@ -541,4 +541,4 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Nhiem_vu_thong_ke` (193 dòng): Nhiệm vụ: thống kê thoại — Mỗi nhiệm vụ: số câu có văn bản tiếng Việt / tiếng Anh, số câu theo ưu tiên P0-P4 (COUNTIFS trên Thoai)
 - `Chien_dich_tham_chieu` (231 dòng): Chiến dịch: tham chiếu lịch sử / phim / game — Mỗi chương, nhiệm vụ, màn bộ bài game một dòng: tham chiếu lịch sử hoặc phim / game, mã màn (spec 12.2; chỉ dữ liệu có trong repo)
 - `Thoai_tham_chieu` (21 dòng): Thoại: nhân vật và giọng lấy ý — Mỗi nhân vật một dòng: nhân vật / giọng lấy ý (chỉ mức ý tưởng) (spec 12.2; chỉ dữ liệu có trong repo)
-- `Hang_so_chien_dich` (15 dòng): Hằng số chiến dịch, biến cố, thoại — Assets/MachineBrigade/Resources/Data/tunables.json: 'campaign' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…
+- `Hang_so_chien_dich` (201 dòng): Hằng số chiến dịch, biến cố, thoại — Assets/MachineBrigade/Resources/Data/tunables.json: 'campaign' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị…

@@ -2,7 +2,7 @@
 
 Tháp và nhánh, tường, nhà chính, mô-đun tiện ích, xây lại, AI căn cứ.
 
-Gói cân bằng Machine Brigade, commit 9a62db3b, ngày 2026-10-06. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 31e5cc2e, ngày 2026-10-10. Số liệu đầy đủ ở 03_can_cu.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Căn cứ và tháp
 
@@ -353,4 +353,4 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Anh_can_cu` (20 dòng): Ảnh bản đồ căn cứ — Resources/UI/Bases/*.json: ảnh nhìn từ trên của căn cứ trên màn Căn cứ (bản đồ, tâm, hướng, bãi thả, HQ, mét mỗi ảnh, viền, mũi tên)
 - `Anh_can_cu_vien` (142 dòng): Ảnh căn cứ: viền — outline[]: điểm viền căn cứ trên ảnh
 - `Anh_can_cu_mui_ten` (52 dòng): Ảnh căn cứ: mũi tên — arrows[]: mũi tên hướng tấn công trên ảnh
-- `Hang_so_can_cu` (33 dòng): Hằng số căn cứ và tháp — Assets/MachineBrigade/Resources/Data/tunables.json: 'bases' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…
+- `Hang_so_can_cu` (132 dòng): Hằng số căn cứ và tháp — Assets/MachineBrigade/Resources/Data/tunables.json: 'bases' (lớp chủ → tên): một dòng một hằng số; mã game đọc qua SimTunables, giữ nguyên giá trị kh…

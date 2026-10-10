@@ -2,7 +2,7 @@
 
 Hiệu ứng, âm thanh, hậu kỳ hình ảnh, model và số đo model, tài sản, giấy phép.
 
-Gói cân bằng Machine Brigade, commit 9a62db3b, ngày 2026-10-06. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
+Gói cân bằng Machine Brigade, commit 31e5cc2e, ngày 2026-10-10. Số liệu đầy đủ ở 07_hinh_anh_am_thanh_model.xlsx; file này chỉ nêu luật, giải thích, lý do thiết kế, tham khảo và bảng nhỏ (tối đa 20 dòng, bảng lớn: xem sheet).
 
 ## Hình ảnh
 
@@ -86,7 +86,7 @@ Gói cân bằng Machine Brigade, commit 9a62db3b, ngày 2026-10-06. Số liệu
 
 *Hình: Docs/doc-images/shots/siege.png. Đơn vị: ảnh chụp trong game, không lưới mét; thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (07_hinh_anh_am_thanh_model/Model).*
 
-Bảng đầy đủ: xem sheet `Anh_the` (187 dòng, bulk.zip).
+Bảng đầy đủ: xem sheet `Anh_the` (194 dòng, bulk.zip).
 
 ## Âm thanh
 
@@ -177,7 +177,7 @@ Sheet 07_hinh_anh_am_thanh_model/Am_thanh_mau — Âm thanh: bản ghi mẫu (3 
 
 *In 10 / 29 cột; 17 cột khác: xem sheet.*
 
-Bảng đầy đủ: xem sheet `Am_thanh` (239 dòng), `Am_thanh_bank` (90 dòng).
+Bảng đầy đủ: xem sheet `Am_thanh` (256 dòng), `Am_thanh_bank` (90 dòng).
 
 ## Hiệu ứng theo bậc và xác vỡ
 
@@ -212,7 +212,7 @@ Sheet 07_hinh_anh_am_thanh_model/Xac_vo — Xác vỡ (3 dòng, 7 cột)
 | Low | 6 | 20.1 | 30.15 | 60.3 |
 | Medium | 9 | 30 | 45 | 90 |
 
-Bảng đầy đủ: xem sheet `VFX_vu_khi` (73 dòng), `Hau_ky_hinh_anh` (52 dòng).
+Bảng đầy đủ: xem sheet `VFX_vu_khi` (77 dòng), `Hau_ky_hinh_anh` (52 dòng).
 
 ## Model
 
@@ -257,7 +257,7 @@ Sheet 07_hinh_anh_am_thanh_model/Giay_phep_tai_san — Giấy phép tài sản (
 | OFL-Inter | OFL-Inter.txt | Inter | SIL Open Font License | 75 |
 | OFL-JetBrainsMono | OFL-JetBrainsMono.txt | JetBrainsMono | SIL Open Font License | 74 |
 
-Bảng đầy đủ: xem sheet `Model` (473 dòng), `Model_kiem_chuan` (473 dòng), `Kich_thuoc_that` (84 dòng), `Kit_chi_tiet` (70 dòng), `Xem_truoc` (196 dòng).
+Bảng đầy đủ: xem sheet `Model` (473 dòng), `Model_kiem_chuan` (473 dòng), `Kich_thuoc_that` (84 dòng), `Kit_chi_tiet` (70 dòng), `Xem_truoc` (203 dòng).
 
 ### Model standard (fix pass 8)
 
@@ -435,7 +435,7 @@ Nguồn được dùng (tiêu đề như repo ghi; link khi repo có):
 
 Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_sheet, Schema). Sheet `input_<tên>` là bản chép của một sheet nguồn để công thức Excel đọc cùng file; sửa ở sheet nguồn, không sửa bản chép.
 
-- `Am_thanh` (239 dòng): Âm thanh: clip — Mỗi clip trong Resources/Audio một dòng: nhóm, bậc cỡ, đường dẫn, độ dài, nén, nguồn, giấy phép (Audio/CREDITS.md, Music/MUSIC_CREDITS.md)
+- `Am_thanh` (256 dòng): Âm thanh: clip — Mỗi clip trong Resources/Audio một dòng: nhóm, bậc cỡ, đường dẫn, độ dài, nén, nguồn, giấy phép (Audio/CREDITS.md, Music/MUSIC_CREDITS.md)
 - `Am_thanh_bank` (90 dòng): Âm thanh: bank — Tools/sfx/library.json banks: nhóm, bậc cỡ, hàng, số biến thể
 - `Am_thanh_thu_vien` (1 dòng): Âm thanh: thư viện — Tools/sfx/library.json: ghi chú (bậc cỡ theo cỡ nòng)
 - `Am_thanh_envelope` [bulk.zip] (226 dòng): Âm thanh: envelope — Audio/sfx/envelopes.txt: RMS mỗi 20 ms (50 Hz, x1000) của từng clip cho compressor của Effects; dòng '#' là ghi chú
@@ -447,8 +447,8 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Am_thanh_mixer` (9 dòng): Âm thanh: mixer — Mixer âm thanh: nhóm kênh và âm lượng mặc định
 - `Am_thanh_mau` (3 dòng): Âm thanh: bản ghi mẫu — Docs/audio/samples: 3 bản trộn trận mẫu (Tools/sfx/render_mix.py): file, độ dài, số sự kiện / phát / cắt, limiter, compressor, độ to (mixes.json); mố…
 - `Am_thanh_mau_moc` (24 dòng): Âm thanh mẫu: mốc tiếng lớn — Mỗi bản trộn: các cửa sổ 400 ms to nhất (bước 100 ms, K-weighting BS.1770 của Tools/sfx/analyze_sfx.py trên kênh trộn mono) không dưới 6 LU so với cử…
-- `VFX_vu_khi` (73 dòng): VFX theo vũ khí — EffectShots.FxBatch: mỗi bậc T0-T5 (vũ khí đại diện chọn lúc chụp) và mỗi vũ khí >= 120 mm có đơn vị mang: bậc, cỡ, số nòng, thư mục ảnh, số ảnh có /…
-- `VFX_vu_khi_anh` (614 dòng): VFX theo vũ khí: ảnh — Mỗi ảnh của mỗi chủ đề: khung (fire / impact / salvo), giây sau phát bắn / lúc chạm, đường dẫn tương đối Builds/effect_shots/<key>/<ảnh>, present / p…
+- `VFX_vu_khi` (77 dòng): VFX theo vũ khí — EffectShots.FxBatch: mỗi bậc T0-T5 (vũ khí đại diện chọn lúc chụp) và mỗi vũ khí >= 120 mm có đơn vị mang: bậc, cỡ, số nòng, thư mục ảnh, số ảnh có /…
+- `VFX_vu_khi_anh` (646 dòng): VFX theo vũ khí: ảnh — Mỗi ảnh của mỗi chủ đề: khung (fire / impact / salvo), giây sau phát bắn / lúc chạm, đường dẫn tương đối Builds/effect_shots/<key>/<ảnh>, present / p…
 - `Am_thanh_so_do` (221 dòng): Âm thanh: số đo — Mỗi clip trận (không gồm nhạc): LUFS, đỉnh dB, tỷ lệ năng lượng dưới 150 Hz, đuôi, phát hiện 'keng' (Docs/audio/metrics.json của Tools/sfx/analyze_sf…
 - `Am_thanh_so_do_bac` (15 dòng): Âm thanh: bảng theo bậc cỡ — Mỗi bậc cỡ x vai (bắn / nổ): trung bình M-max, LUFS, tỷ lệ dưới 150 Hz, đuôi của các bank hàng đó (metrics.json sizes); phải tăng đều từ <= 14,5 mm t…
 - `VFX_ngan_sach` (8 dòng): VFX: ngân sách — Ngân sách hiệu ứng: theo bậc T0-T5 (TierFx.cs: số vụ nổ chi tiết đầy đủ cùng lúc FullCap, trọng số với trần WeightCap, thời gian tính là đang chạy Bu…
@@ -467,12 +467,12 @@ Mọi sheet, số dòng và ý nghĩa cột nằm trong 00_index.xlsx (Muc_luc_s
 - `Kich_thuoc_that_chung` (1 dòng): Kích thước thật: ghi chú — reference_real.json: khóa ngoài units
 - `Model_chuan_vang` (925 dòng): Model: số đo bộ mẫu vàng — Tools/assets/gold_metrics.json: trung bình theo lớp của bộ model mẫu (quality_gate.compute_gold,)
 - `Model_spec_dung` (11798 dòng): Model: spec dựng lại — Tools/blender/specs/<model>.json: spec dựng lại model (mẫu thật, kích thước đích, bộ phận, vũ khí, ngân sách, vùng màu;); id = <model>.<đường dẫn>
-- `Anh_the` [bulk.zip] (187 dòng): Ảnh thẻ — Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)
+- `Anh_the` [bulk.zip] (194 dòng): Ảnh thẻ — Resources/UI/Cards/manifest.json entries: ảnh thẻ render từ model (loại, model, nguồn, hash)
 - `Anh_the_chung` (3 dòng): Ảnh thẻ: cài đặt render — manifest.json: camera, cỡ ảnh, phiên bản
-- `Dia_phuong_hoa` [bulk.zip] (6270 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
+- `Dia_phuong_hoa` [bulk.zip] (6317 dòng): Địa phương hóa — Mọi khóa chữ của các bảng C# ["key"] = ("en", "vi") một dòng
 - `Giay_phep_tai_san` (5 dòng): Giấy phép tài sản — Resources/Licenses/*.txt: mỗi file giấy phép một dòng (phông chữ OFL); nội dung từng dòng ở Giay_phep_noi_dung; âm thanh: 07_hinh_anh_am_thanh_model/…
 - `Giay_phep_noi_dung` [bulk.zip] (374 dòng): Giấy phép: nội dung — mỗi dòng không trống của file giấy phép
-- `Xem_truoc` (196 dòng): Màn xem trước — Màn xem trước của từng đơn vị: cảnh nền
+- `Xem_truoc` (203 dòng): Màn xem trước — Màn xem trước của từng đơn vị: cảnh nền
 - `Kit_chi_tiet` (70 dòng): Bộ chi tiết kit35 — Docs/models/kit_catalog/kit35_components.json: 70 chi tiết của Tools/blender/mb_kit35.py (tam giác, kích thước, lỗi kiểm); ảnh: kit35_catalog.png (An…
 - `Model_cham_diem` (163 dòng): Model: chấm điểm — Chấm điểm theo Docs/models/MODEL_STANDARD.md: tam giác trong ngân sách, Part_* thiếu, Mount / Muzzle thiếu, sai tỷ lệ, hình bóng (quét hình); điểm; x…
 - `Dia_phuong_hoa_van_de` [bulk.zip] (271 dòng): Địa phương hóa: khóa có vấn đề — Mỗi khóa chữ có vấn đề một dòng: thiếu tiếng Anh / Việt, khai hai lần, tên riêng chỉ có ở một thứ tiếng (danh sách tên của Tools/story/script_build.p…
