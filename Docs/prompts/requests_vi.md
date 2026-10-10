@@ -341,3 +341,4 @@ về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)
 - 10/10 "cứ theo gợi ý, và boss tạo tàu chiến mini nên có model mới, có 1 agent khác đang làm phần hiệu ứng và model" (triage commit/merge cho phép; Leviathan escape ở pha 50 % giữ; stash cây Unity rồi cập nhật; model mini-boss mới -> Docs/bosses/design_0910/MODEL_TODO.md cho agent model).
 - 10/10 "dừng các test lại hết, sẽ test lại sau khi agent ai bên kia làm lại xong" (triage dừng; nhánh feature/test-triage giữ, chưa merge).
 - 10/10 "rush boss và full rushboss có bug, cứ sau mỗi boss là tự render lại cả map tuy map và boss không thay đổi".
+- 10/10 "cần nhiều nhạc hơn, số lượng nhạc game đang khá ít".
