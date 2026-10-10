@@ -154,6 +154,7 @@ namespace MachineBrigade.Sim.Content
             def.InterceptionModeData = v.Has("interceptionMode") ? v.Enum<InterceptionMode>("interceptionMode") : null;
             def.Breacher = v.Bool("breacher", false);
             def.MarkedSpread = Math.Clamp(v.Float("markedSpread", 1f), 0.01f, 1f);
+            def.DesignationRange = Math.Max(0f, v.Float("designationRange", 0f));
             if (v.Has("radioSpawn")) def.RadioSpawn = v.String("radioSpawn");
             if (v.Has("scoot"))
             {

@@ -360,6 +360,27 @@
     }
   },
   "vehicles": {
+    "scoutDesignation": {
+      "damageBonus": { "value": 0.1, "unit": "share", "kind": "sat_thuong", "linh_vuc": "02", "code": "ScoutDesignation.DamageBonus" },
+      "bossDamageBonus": { "value": 0.05, "unit": "share", "kind": "sat_thuong", "linh_vuc": "02", "code": "ScoutDesignation.BossDamageBonus" },
+      "markSeconds": { "value": 5.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "ScoutDesignation.MarkSeconds (100 ticks)" },
+      "retargetSeconds": { "value": 2.0, "unit": "s", "kind": "thoi_gian", "linh_vuc": "02", "code": "ScoutDesignation.RetargetSeconds (40 ticks)" },
+      "maxTargetsPerScout": { "value": 1, "unit": "count", "kind": "tran", "linh_vuc": "02", "code": "ScoutDesignation.MaxTargetsPerScout (clamped to 1)" },
+      "markedPriorityMultiplier": { "value": 1.1, "unit": "x", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.MarkedPriorityMultiplier (CombatSystem.Score)" },
+      "switchMargin": { "value": 1.35, "unit": "x", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.SwitchMargin" },
+      "weightThreat": { "value": 3.0, "unit": "score", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.WeightThreat" },
+      "weightArtillery": { "value": 2.5, "unit": "score", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.WeightArtillery" },
+      "weightAirDefence": { "value": 3.0, "unit": "score", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.WeightAirDefence" },
+      "weightHeavy": { "value": 2.0, "unit": "score", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.WeightHeavy" },
+      "weightSupport": { "value": 1.5, "unit": "score", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.WeightSupport" },
+      "weightOther": { "value": 1.0, "unit": "score", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.WeightOther" },
+      "rangeFalloff": { "value": 0.25, "unit": "share", "kind": "nguong", "linh_vuc": "02", "code": "ScoutDesignation.RangeFalloff" },
+      "stacking": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "02", "code": "ScoutDesignation.Stacking" },
+      "applyToSelf": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "02", "code": "ScoutDesignation.ApplyToSelf" },
+      "affectsDirectDamage": { "value": true, "unit": "flag", "kind": "khac", "linh_vuc": "02", "code": "ScoutDesignation.AffectsDirect" },
+      "affectsSplashDamage": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "02", "code": "ScoutDesignation.AffectsSplash" },
+      "affectsDamageOverTime": { "value": false, "unit": "flag", "kind": "khac", "linh_vuc": "02", "code": "ScoutDesignation.AffectsDamageOverTime" }
+    },
     "trophyRules": {
       "radius": { "value": 20.0, "unit": "m", "kind": "ban_kinh", "linh_vuc": "02", "code": "GearSystem.TrophyAps" },
       "charges": { "value": 2, "unit": "count", "kind": "tran", "linh_vuc": "02", "code": "GearSystem.TrophyAps" },

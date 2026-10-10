@@ -123,6 +123,8 @@ namespace MachineBrigade.Game.Hud
             ["legend.bombs"] = ("Bombs", "Bom"),
             ["legend.drones"] = ("Drones", "Drone"),
             ["legend.other"] = ("Fire, energy and the rest", "Lửa, năng lượng và loại khác"),
+            ["status.designation"] = ("Target designation: the target takes 10% more direct damage from the scout's allies. Does not stack.", "Chỉ thị mục tiêu: mục tiêu nhận thêm 10% sát thương trực tiếp từ đồng minh của đơn vị trinh sát. Không cộng dồn."),
+            ["status.designation.boss"] = ("Target designation: the boss takes 5% more direct damage from the scout's allies. Does not stack.", "Chỉ thị mục tiêu: boss nhận thêm 5% sát thương trực tiếp từ đồng minh của đơn vị trinh sát. Không cộng dồn."),
             ["legend.marks"] = ("Damage types", "Loại sát thương"),
             ["legend.marks.info"] = ("The small mark in a weapon's corner.", "Dấu nhỏ ở góc biểu tượng vũ khí."),
             ["legend.kineticNoMark"] = ("Kinetic rounds carry no mark: the round's shape says it.", "Đạn động năng không có dấu: hình viên đạn đã rõ."),

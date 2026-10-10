@@ -84,6 +84,24 @@ namespace MachineBrigade.Game.Match
                 ScanEvents();
             }
             PlaceGeneralTags();
+            PlaceDesignationMarks();
+        }
+
+        /// <summary>Scout Target Designation: one pooled red reticle over each marked target, above its health bar (sim list, no scan).</summary>
+        private void PlaceDesignationMarks()
+        {
+            var marks = _hud.DesignationMarks;
+            if (marks == null) return;
+            marks.Begin();
+            var list = _world.MarkedTargets;
+            var camera = _camera.Camera;
+            for (var i = 0; i < list.Count; i++)
+            {
+                var v = list[i];
+                if (!_views.TryGet(v.Id, out var view) || !_hud.WorldToPanel(view.LabelPoint + Vector3.up * 0.9f, camera, out var at)) continue;
+                if (!marks.Place(at, v.Def.Boss)) break;
+            }
+            marks.End();
         }
 
         private void ScanEvents()

@@ -850,6 +850,9 @@
 .fc-general-tag__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-dialogue-enemy); letter-spacing: 1px; white-space: nowrap; }
 .fc-general-tag__mark { width: 18px; height: 18px; margin-right: var(--fc-space-1); --icon-color: var(--fc-text); display: none; }
 .fc-general-tag--speaking > .fc-general-tag__mark { display: flex; }
+/* Scout Target Designation: a small red reticle over a marked target (one per target, pooled). */
+.fc-desig-marks { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.fc-desig-mark { position: absolute; width: 22px; height: 22px; translate: -50% -100%; --icon-color: #ff3b30; opacity: 0.9; }
 /* F.3: a side objective under the mission's goal: a flag, what to do, its clock. */
 .fc-mission-bar__side { flex-direction: row; align-items: center; margin-top: var(--fc-space-1); }
 .fc-mission-bar__side-icon { width: 18px; height: 18px; margin-right: var(--fc-space-1); flex-shrink: 0; --icon-color: var(--fc-text-2); }

@@ -62,6 +62,7 @@ namespace MachineBrigade.Sim
             _lanes = new LaneMap(Grid);
             Damage = new DamageSystem(this);
             Status = new StatusSystem(this);
+            Designation = new Combat.DesignationSystem(this);
             Gear = new Abilities.GearSystem(this);
             Bosses = new MachineBrigade.Sim.Bosses.BossSystem(this);
             _movement = new MovementSystem(this);
@@ -164,6 +165,12 @@ namespace MachineBrigade.Sim
         internal MovementSystem Movement => _movement;
 
         internal DamageSystem Damage { get; }
+
+        /// <summary>Scout Target Designation: scouts mark one enemy each; the marked take extra direct damage from the scouts' side.</summary>
+        internal Combat.DesignationSystem Designation { get; }
+
+        /// <summary>Scout Target Designation: the vehicles carrying a live mark now (the HUD draws a reticle on each; read-only).</summary>
+        public System.Collections.Generic.IReadOnlyList<Entities.Vehicle> MarkedTargets => Designation.Marked;
 
         /// <summary>Timed effects: burning, slowed, shredded, marked, barriers and aura buffs.</summary>
         internal StatusSystem Status { get; }
@@ -904,6 +911,7 @@ namespace MachineBrigade.Sim
             Deploying.Step();
             Domes.Step();
             Works.Step(dt);
+            Designation.Step();
             t0 = perf.Begin();
             _combat.Step(dt);
             perf.End(AI.AiPerfSection.Targeting, t0);
@@ -964,6 +972,7 @@ namespace MachineBrigade.Sim
             Deploying.Step();
             Domes.Step();
             Works.Step(dt);
+            Designation.Step();
             Lap(7);
             _combat.Step(dt);
             CombatWatch.Step();
