@@ -22,6 +22,8 @@ TRACKS = {
     "boss_land": "boss_land",
     "boss_train": "boss_train",
     "boss_orbital": "boss_orbital",
+    "boss_final": "boss_final",
+    "boss_mini": "boss_mini",
     "victory": "stingers:victory",
     "defeat": "stingers:defeat",
 }
