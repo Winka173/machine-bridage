@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- More music (10/10): 17 new original tracks (battle_4..8, naval, seven boss tracks, boss_rush, survival, menu_2, campaign; +35.7 MB); battles draw from every battle track, sea maps play naval, boss families use the bosses' "music" field, Survival/Endless, Boss Rush and the campaign map have their own.
+
 - Fix: Boss Rush no longer rebuilds the scene after a boss on the same map (the full hunt resets in place; the sea-return check tests the map id, not "has a sea").
 
 - Naval tune (09/10): ships fight from doctrine bands without a flagship; air-only CIWS on new ships; AShM min reach 45 m; torpedo not interceptable 800 x 2 / 8 s; EW 57 mm; battleship reload 18 s. Naval suite 43 as expected / 2 owner decision.

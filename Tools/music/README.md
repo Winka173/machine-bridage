@@ -4,16 +4,41 @@ Every music track in the game is composed by the Python scripts in this
 folder and rendered offline. Nothing in here ships with the game; only the
 resulting `.ogg` files in `Assets/MachineBrigade/Resources/Audio/Music/` do.
 
-| Track        | Use                       | Key / tempo       | Length  | Loop |
-|--------------|---------------------------|-------------------|---------|------|
-| `menu`       | main menu                 | D minor, 80 BPM   | 108.0 s | yes  |
-| `battle_1`   | battle ("Armored Advance")| E minor, 128 BPM  | 135.0 s | yes  |
-| `battle_2`   | battle ("Iron Rain")      | C minor, 116 BPM  | 132.4 s | yes  |
-| `battle_3`   | battle ("Air Superiority")| G minor, 138 BPM  | 139.1 s | yes  |
-| `boss`       | boss fights               | B Phrygian, 92 BPM| 125.2 s | yes  |
-| `siege`      | Siege / Defend / Endless  | F minor, 108 BPM  | 115.6 s | yes  |
-| `victory`    | win stinger               | D major, 100 BPM  | ~8.6 s  | no   |
-| `defeat`     | loss stinger              | D minor, 66 BPM   | ~9.5 s  | no   |
+| Track          | Use                                         | Key / tempo                  | Length  | Loop |
+|----------------|---------------------------------------------|------------------------------|---------|------|
+| `menu`         | main menu ("Command Briefing"), one of two  | D minor, 80 BPM              | 108.0 s | yes  |
+| `menu_2`       | main menu ("Rally Point"), one of two       | G Mixolydian, 90 BPM         | 106.7 s | yes  |
+| `campaign`     | campaign map tab and briefings ("War Room") | Ab Lydian, 72 BPM            | 106.7 s | yes  |
+| `battle_1`     | battle ("Armored Advance")                  | E minor, 128 BPM             | 135.0 s | yes  |
+| `battle_2`     | battle ("Iron Rain")                        | C minor, 116 BPM             | 132.4 s | yes  |
+| `battle_3`     | battle ("Air Superiority")                  | G minor, 138 BPM             | 139.1 s | yes  |
+| `battle_4`     | battle ("Night Raid", stealth tension)      | F# minor, 100 BPM            | 105.6 s | yes  |
+| `battle_5`     | battle ("Dust Devils", desert)              | A Phrygian dominant, 112 BPM | 111.4 s | yes  |
+| `battle_6`     | battle ("Concrete Canyon", urban)           | C# minor, 132 BPM            | 109.1 s | yes  |
+| `battle_7`     | battle ("Frozen Front", arctic)             | Eb minor, 94 BPM             | 112.3 s | yes  |
+| `battle_8`     | battle ("Total Offensive")                  | Bb minor, 150 BPM            | 115.2 s | yes  |
+| `naval`        | battles on a sea map ("Steel Tide")         | G# minor, 12/8, 88 BPM       | 109.1 s | yes  |
+| `siege`        | Siege / Defend ("Hold the Line")            | F minor, 108 BPM             | 115.6 s | yes  |
+| `survival`     | Survival / Endless ("Last Stand")           | E Dorian, 104 BPM            | 110.8 s | yes  |
+| `boss_rush`    | Boss Rush between bosses ("Gauntlet")       | D Phrygian, 158 BPM          | 109.4 s | yes  |
+| `boss`         | main bosses without their own ("Colossus")  | B Phrygian, 92 BPM           | 125.2 s | yes  |
+| `boss_mini`    | mini bosses without their own ("Vanguard Hunter") | B minor, 120 BPM       | 104.0 s | yes  |
+| `boss_air`     | airship / air bosses ("Thunderhead")        | A Dorian, 124 BPM            | 108.4 s | yes  |
+| `boss_naval`   | capital ships, submarines ("Abyssal Titan") | C# Phrygian, 80 BPM          | 108.0 s | yes  |
+| `boss_land`    | land fortresses, super-heavies ("Iron Bastion") | G harmonic minor, 76 BPM | 113.7 s | yes  |
+| `boss_train`   | trains ("Juggernaut Express")               | F# Phrygian, 144 BPM         | 113.3 s | yes  |
+| `boss_orbital` | spacecraft, orbital bosses ("Orbital Lance") | E Lydian, 108 BPM           | 106.7 s | yes  |
+| `boss_final`   | the final boss ("Doomsday Engine")          | D harmonic minor, 7/4, 132 BPM | 114.5 s | yes |
+| `victory`      | win stinger                                 | D major, 100 BPM             | ~8.6 s  | no   |
+| `defeat`       | loss stinger                                | D minor, 66 BPM              | ~9.5 s  | no   |
+
+How the game picks them (`Scripts/Game/Audio/MusicDirector.cs`, `MatchRunner`): a battle draws one of
+every `battle_N` present from its seed; a map with sea (`"sea"` or a sea edge) plays `naval`; a boss on the
+field plays its data's `"music"` (balance.json, inherited by its variants), else its rank's (`boss` for main,
+`boss_mini` for mini); a missing clip falls back to `boss`. Boss families today: air = drone_mothership,
+command_airship, mega_gunship; naval = leviathan, typhon, landing_hovercraft; land = mobile_fortress,
+fortress_bastion, moloch, ixion, earth_borer; train = armored_train, nuke_train; orbital = daedalus, hyperion,
+icarus_mk0, icarus_interceptor; final = silver_bug; the Behemoth family keeps `boss`.
 
 ## Regenerate
 
@@ -37,7 +62,7 @@ Useful options:
   about 140-155 kbps).
 
 The build is deterministic: the same scripts, SoundFont and FluidSynth version
-give the same audio. A full build takes about 4 minutes; FluidSynth renders are
+give the same audio. A full build takes about 12 minutes; FluidSynth renders are
 cached by content hash, so re-mixing after a mix-only change is faster.
 
 Environment variables (all optional):
@@ -101,6 +126,13 @@ plus a short-term loudness curve per track to `<build>/qa/*.png`.
 
 * Copy one of the modules in `mbmusic/tracks/`, register it in
   `mbmusic/tracks/__init__.py` and build it with `--wav-only --stems`.
+  Extra stems (`winds`, `gtr`, `kit`, `perc`, `harp`, `lead`) come from
+  `common.setup_extra`; only one drum-kit program per stem (they share MIDI
+  channel 10). Other meters work: `boss_final` is 7/4 (`beats_per_bar=7`,
+  14-step patterns) and `naval` is 12/8 (12-step patterns).
+* A new `.ogg` needs a `.meta` beside it (copy one and give it a new GUID)
+  because nobody opens Unity to import it. `analyze_music.py` treats every
+  track except `victory` and `defeat` as a loop.
 * Keep the bar count a multiple of 4 and make the last bars lead back into
   bar 0; anything that rings past the end wraps into the start automatically.
 * Only use permissively licensed sources. The SoundFont is FluidR3_GM (MIT).
