@@ -6,6 +6,7 @@ using MachineBrigade.Sim;
 using MachineBrigade.Sim.Combat;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Entities;
+using MachineBrigade.Game.Match;
 
 namespace MachineBrigade.Tests
 {
