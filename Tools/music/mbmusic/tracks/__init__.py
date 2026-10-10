@@ -17,6 +17,9 @@ TRACKS = {
     "battle_7": "battle_7",
     "battle_8": "battle_8",
     "naval": "naval",
+    "boss_air": "boss_air",
+    "boss_naval": "boss_naval",
+    "boss_land": "boss_land",
     "victory": "stingers:victory",
     "defeat": "stingers:defeat",
 }
